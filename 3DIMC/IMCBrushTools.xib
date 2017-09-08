@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="10117" systemVersion="15G31" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" customObjectInstantitationMethod="direct">
+    <dependencies>
+        <deployment identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="10117"/>
+    </dependencies>
+    <objects>
+        <customObject id="-2" userLabel="File's Owner"/>
+        <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
+        <customObject id="-3" userLabel="Application" customClass="NSObject"/>
+        <customView id="c22-O7-iKe" customClass="IMCBrushTools">
+            <rect key="frame" x="0.0" y="0.0" width="321" height="73"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+            <subviews>
+                <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" id="6R9-fG-off">
+                    <rect key="frame" x="89" y="40" width="19" height="27"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    <stepperCell key="cell" continuous="YES" alignment="left" increment="2" minValue="1" maxValue="61" doubleValue="1" id="NTL-Bb-bdb"/>
+                    <connections>
+                        <action selector="changedValue:" target="c22-O7-iKe" id="5t6-vl-9n1"/>
+                    </connections>
+                </stepper>
+                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="hJz-Oy-YsE">
+                    <rect key="frame" x="60" y="44" width="33" height="18"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    <textFieldCell key="cell" controlSize="mini" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="1 px" id="mQI-18-EVG">
+                        <font key="font" metaFont="cellTitle"/>
+                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                    </textFieldCell>
+                </textField>
+                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="q5Q-aU-YEh">
+                    <rect key="frame" x="285" y="22" width="33" height="18"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    <textFieldCell key="cell" controlSize="mini" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="0.2" id="BRR-ka-nXY">
+                        <font key="font" metaFont="cellTitle"/>
+                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                    </textFieldCell>
+                </textField>
+                <slider verticalHuggingPriority="750" id="jQF-Fv-7qE">
+                    <rect key="frame" x="193" y="22" width="92" height="20"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    <sliderCell key="cell" state="on" alignment="left" maxValue="1" doubleValue="0.20000000000000001" tickMarkPosition="above" sliderType="linear" id="UMY-Dm-NsR"/>
+                    <connections>
+                        <action selector="changedValue:" target="c22-O7-iKe" id="uly-Oc-cn0"/>
+                    </connections>
+                </slider>
+                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="w02-sW-epO">
+                    <rect key="frame" x="193" y="39" width="60" height="18"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    <textFieldCell key="cell" controlSize="mini" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Tolerance" id="AeA-X0-LMY">
+                        <font key="font" metaFont="cellTitle"/>
+                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                    </textFieldCell>
+                </textField>
+                <customView id="7v8-Pq-geM" customClass="IMCBrushBullet">
+                    <rect key="frame" x="7" y="14" width="47" height="42"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                </customView>
+                <segmentedControl verticalHuggingPriority="750" id="A1h-rb-1GX">
+                    <rect key="frame" x="62" y="14" width="111" height="23"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    <segmentedCell key="cell" borderStyle="border" alignment="left" style="smallSquare" trackingMode="selectOne" id="Ca7-3Y-V8G">
+                        <font key="font" metaFont="system"/>
+                        <segments>
+                            <segment label="🖌" selected="YES"/>
+                            <segment label="☁︎" tag="1"/>
+                            <segment label="🗯"/>
+                        </segments>
+                    </segmentedCell>
+                </segmentedControl>
+            </subviews>
+            <connections>
+                <outlet property="brushBullet" destination="7v8-Pq-geM" id="Nhe-rj-pLW"/>
+                <outlet property="brushSize" destination="6R9-fG-off" id="dBt-sU-jRD"/>
+                <outlet property="brushSizeText" destination="hJz-Oy-YsE" id="cs2-qR-hU1"/>
+                <outlet property="tolerance" destination="jQF-Fv-7qE" id="mgV-3q-cY5"/>
+                <outlet property="toleranceText" destination="q5Q-aU-YEh" id="An9-y0-MTW"/>
+                <outlet property="typeOfBrush" destination="A1h-rb-1GX" id="Cej-F0-yIH"/>
+            </connections>
+            <point key="canvasLocation" x="255.5" y="552.5"/>
+        </customView>
+    </objects>
+</document>

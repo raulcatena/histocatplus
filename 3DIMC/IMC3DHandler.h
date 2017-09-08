@@ -1,0 +1,41 @@
+//
+//  IMC3DHandler.h
+//  3DIMC
+//
+//  Created by Raul Catena on 1/31/17.
+//  Copyright © 2017 University of Zürich. All rights reserved.
+//
+
+#import <Foundation/Foundation.h>
+#import "IMCImageStack.h"
+#import "IMCComputationOnMask.h"
+#import "IMCLoader.h"
+
+@interface IMC3DHandler : NSObject
+
+@property (nonatomic, assign) NSInteger width;
+@property (nonatomic, assign) NSInteger height;
+@property (nonatomic, assign) float *** allBuffer;
+@property (nonatomic, assign) bool *showMask;
+@property (nonatomic, assign) NSUInteger images;
+@property (nonatomic, assign) NSUInteger channels;
+@property (nonatomic, assign) NSRect interestProportions;
+@property (nonatomic, assign) float defaultZ;
+@property (nonatomic, weak) IMCLoader *loader;
+
+-(void)startBufferForImages:(NSInteger)images channels:(NSInteger)channels width:(NSInteger)width height:(NSInteger)height;
+-(void)addImageStack:(IMCImageStack *)stack atIndexOfStack:(NSInteger)indexStack channel:(NSInteger)channel;
+-(void)addComputation:(IMCComputationOnMask *)comp atIndexOfStack:(NSInteger)indexStack channel:(NSInteger)channel;
+-(NSInteger)bytes;
+-(float)megabytes;
+-(float)gigaBytes;
+-(BOOL)isReady;
+-(void)allocateMask;
+-(NSPoint)proportionalOffsetToCenter;
+-(void)prepDeltasAndProportionsWithStacks:(NSArray <IMCImageStack *>*)stacks;
+-(float *)zValues;
+-(float *)thicknesses;
+-(float)totalThickness;
+-(void)meanBlurModelWithKernel:(NSInteger)kernel mode:(NSInteger)mode;
+
+@end

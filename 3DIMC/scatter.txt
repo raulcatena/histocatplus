@@ -1,0 +1,19 @@
+library(ggplot2);
+library(RColorBrewer);
+read_data = file("{{}}temp_data_imc.cbin", "rb");
+#, endian = "little"
+bindata = readBin(read_data, double(), n = ({{events}} * {{channels}}), size = 4, endian = "little");
+channs = scan("{{}}temp_channs_imc.txt", character(), sep="\t");
+df = as.data.frame(matrix(bindata, ncol = {{channels}}), colnames=channs);
+df$V1 = as.factor(df$V1)
+#transform others to factors too
+#colnames(df) = channs
+myPlot <- ggplot(df, aes({{x_ggplot}}{{y_ggplot}}{{color_ggplot}}{{shape_ggplot}}))+{{legend_title}}
+    {{geom_type}}(alpha = {{alpha_geomp}}, size = {{size_geomp}}, {{color_gpoint}})+{{facet}}
+    scale_color_gradientn(colours=rev(brewer.pal(11, 'Spectral')), name=channs[{{c_channel}}])+
+    xlab(channs[{{x_channel}}])+
+    ylab(channs[{{y_channel}}])+
+    theme(panel.background = element_rect(fill = "transparent"));
+    #theme(panel.background = element_blank())+
+    #theme_bw();
+ggsave(filename="temp_result_imc.png", path="{{}}", plot=myPlot);

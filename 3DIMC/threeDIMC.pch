@@ -1,0 +1,30 @@
+//
+//  3DIMC.pch
+//  3DIMC
+//
+//  Created by Raul Catena on 1/19/17.
+//  Copyright © 2017 University of Zürich. All rights reserved.
+//
+
+#ifndef threeDIMC_pch
+#define threeDIMC_pch
+
+// Include any system framework and library headers here that should be included in all compilation units.
+// You will also need to set the Prefix Header build setting of one or more of your targets to reference this file.
+
+#endif /* 3DIMC_pch */
+
+//https://blogs.wcode.org/2014/11/howto-setup-xcode-6-1-to-work-with-opencv-libraries/
+#ifdef __cplusplus
+#include <opencv2/opencv.hpp>
+#endif
+
+#ifdef __OBJC__
+
+#import <Cocoa/Cocoa.h>
+#import "General.h"
+#import "IMCUtils.h"
+#import "globals.h"
+#import "NSColor+Utilities.h"
+
+#endif

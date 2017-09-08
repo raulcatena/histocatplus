@@ -1,0 +1,61 @@
+//
+//  IMCChannelSettingsDelegate.m
+//  3DIMC
+//
+//  Created by Raul Catena on 1/22/17.
+//  Copyright © 2017 University of Zürich. All rights reserved.
+//
+
+#import "IMCChannelSettingsDelegate.h"
+
+@interface IMCChannelSettingsDelegate()
+
+@end
+
+@implementation IMCChannelSettingsDelegate
+
+-(NSInteger)numberOfRowsInTableView:(NSTableView *)tableView{
+    return [self.delegate channelsForCell].count;
+}
+
+-(id)tableView:(NSTableView *)tableView viewForTableColumn:(nullable NSTableColumn *)tableColumn row:(NSInteger)row{
+    
+    IMCChannelSettings *infoView = [tableView makeViewWithIdentifier:@"ChannelSettings" owner:self];
+
+    infoView.channels = [self.delegate channelsForCell];
+    infoView.delegate = self;
+    NSInteger channelIndex = [[self.delegate indexesForCell][row]integerValue];
+    infoView.settingsDictionary = [self.settingsJsonArray objectAtIndex:channelIndex];
+    infoView.backgroundStyle = row%2 == 0?NSBackgroundStyleDark:NSBackgroundStyleLight;
+    [infoView setTag:channelIndex];
+    infoView.localIndex = row;
+    
+    return infoView;
+}
+
+-(NSArray *)collectColors{
+    NSMutableArray *array = @[].mutableCopy;
+    NSTableColumn *column = [[self.delegate whichTableView]tableColumnWithIdentifier:@"col"];
+    
+    for (NSInteger i = 0; i < [self.delegate channelsForCell].count; i++) {
+        IMCChannelSettings *cell = [self tableView:[self.delegate whichTableView] viewForTableColumn:column row:i];
+        [array addObject:cell.color.color];
+    }
+    return array;
+}
+
+#pragma mark Channel Cell Delegate
+
+-(void)madeChannelConfChanges{
+    [[self delegate]didChangeChannel:nil];
+}
+
+-(NSInteger)numberOfChannels{
+    return [self.delegate channelsForCell].count;
+}
+
+-(NSInteger)typeOfColoring{
+    return [self.delegate typeOfColoring];
+}
+
+@end
