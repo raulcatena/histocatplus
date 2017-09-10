@@ -24,11 +24,13 @@
 @property (nonatomic, strong) id<MTLBuffer> maskBuffer;
 @property (nonatomic, strong) id<MTLBuffer> layerIndexesBuffer;
 @property (nonatomic, strong) id<MTLBuffer> colorBuffer;
+@property (nonatomic, strong) id<MTLBuffer> heightDescriptor;
 @property (nonatomic, strong) id<MTLRenderPipelineState> pipelineState;
 @property (nonatomic, strong) id<MTLCommandQueue> commandQueue;
 @property (nonatomic, strong) id<MTLDepthStencilState> stencilState;
 @property (nonatomic, strong) NSArray *colorsObtained;
 @property (strong, nonatomic) NSArray *indexesObtained;
+@property (strong, nonatomic) NSIndexSet *slicesObtained;
 @property (assign, nonatomic) NSInteger renderWidth;
 @property (assign, nonatomic) NSInteger renderHeight;
 @property (assign, nonatomic) NSInteger slices;
@@ -39,6 +41,7 @@ typedef struct{
     GLKMatrix4 baseModelMatrix;
     GLKMatrix4 modelViewMatrix;
     GLKMatrix4 projectionMatrix;
+    GLKMatrix4 premultipliedMatrix;
     GLKMatrix3 normalMatrix;
 } Constants;
 
@@ -47,7 +50,7 @@ typedef struct{
     float rightX;
     float upperY;
     float lowerY;
-    float totalThickness;
+    float halfTotalThickness;
     uint32 totalLayers;
     uint32 widthModel;
     uint32 heightModel;
@@ -84,6 +87,19 @@ float cubeVertexData[] = {
     B,S,T ,B,T,C    //Bot
 };
 
+bool heightDescriptor[] = {
+    false,false,false ,false,false,false,   //Front
+    true,true,true ,true,true,true,   //Back
+    
+    true,true,false ,true,false,false,   //Left
+    false,false,true ,false,true,true,   //Right
+    
+    true,false,false, true,false,true,   //Top
+    false,true,true,false,true,false    //Bot
+};
+
+//Lower are B,C,S,T
+
 
 @implementation IMCMetalViewAndRenderer
 
@@ -108,19 +124,22 @@ float cubeVertexData[] = {
 
 -(void)projectionMatrixSetup:(MTKView *)view{
     float aspect = fabs(view.bounds.size.width / view.bounds.size.height);
-    projectionMatrix = [Matrix4 makePerspectiveViewAngle:[Matrix4 degreesToRad:65.0] aspectRatio:aspect nearZ:0.01 farZ:1000];
+    projectionMatrix = [Matrix4 makePerspectiveViewAngle:[Matrix4 degreesToRad:65.0] aspectRatio:aspect nearZ:0.01 farZ:1500];
 }
 
 -(BOOL)checkNeedsUpdate{
-    BOOL update = NO;
+    __block BOOL update = NO;
     
     //Check colors
+    
     NSArray * currentColors = [self.delegate colors];
+    
     if(self.colorsObtained.count != currentColors.count)
         update = YES;
     
     else
         for (NSInteger i = 0; i < self.colorsObtained.count; i++){
+    
             NSColor *a = self.colorsObtained[i];
             NSColor *b = currentColors[i];
             
@@ -128,6 +147,7 @@ float cubeVertexData[] = {
             b = [b colorUsingColorSpace:[NSColorSpace sRGBColorSpace]];
             if(!CGColorEqualToColor(a.CGColor, b.CGColor))
                 update = YES;
+    
         }
     
     //Check Indexes
@@ -140,12 +160,21 @@ float cubeVertexData[] = {
             if([self.indexesObtained[i] integerValue] != [currentIndexes[i] integerValue])
                 update = YES;
     
-//    if(bufferDataLayers != bufferDataLayersLoaded)
-//        update = YES;
+    //Layers
+    NSIndexSet *currentStacks = [self.delegate stacksIndexSet].copy;
+    if(self.slicesObtained.count != currentStacks.count)
+        update = YES;
     
+    else
+        [currentStacks enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop){
+            if(![self.slicesObtained containsIndex:idx])
+                update = YES;
+        }];
+
     if(update == YES){
         self.colorsObtained = currentColors;
         self.indexesObtained = currentIndexes;
+        //self.slicesObtained = currentStacks;
     }
     
     return update;
@@ -167,23 +196,30 @@ float cubeVertexData[] = {
     self.colorBuffer = [self.device newBufferWithBytes:vals length: 8 * 7 * sizeof(float) options:MTLResourceOptionCPUCacheModeDefault];
 }
 
--(void)updateColorBufferWithWidth:(NSInteger)width height:(NSInteger)height slices:(NSInteger)slices{
+-(void)updateColorBufferWithWidth:(NSInteger)width height:(NSInteger)height slices:(NSIndexSet *)slices{
     
-    [self syntheticCubes];
-    return;
+//    [self syntheticCubes];
+//    return;
     
     float *** data = [self.delegate threeDData];
-    if(data){
+    float * zPositions = [self.delegate zValues];
+    
+    if(data && zPositions){
         NSInteger area = width * height;
         CGRect rectToRender = [self.delegate rectToRender];
+        AlphaMode alphaMode = [self.delegate alphaMode];
 
-        self.renderWidth = (NSInteger)ceilf(rectToRender.size.width * width);
-        self.renderHeight = (NSInteger)ceilf(rectToRender.size.height * height);
-        self.slices = slices;
+        self.renderWidth = (NSInteger)(rectToRender.size.width * width);
+        self.renderHeight = (NSInteger)(rectToRender.size.height * height);
+        self.slices = slices.count;
+        NSInteger renderableArea = self.renderHeight * self.renderHeight;
         
-        float * buff = calloc(self.renderWidth * self.renderHeight * slices * 6, sizeof(float));//Color components and positions
+        int stride = 7;
+        
+        float * buff = calloc(renderableArea * slices.count * stride, sizeof(float));//Color components and positions
         if(buff){
-            float x , y, z = .0f;
+            
+            __block NSInteger x , y, z = 0, cursor = 0;
             
             self.colorsObtained = [self.delegate colors];
             self.indexesObtained = [self.delegate inOrderIndexes].copy;
@@ -200,53 +236,71 @@ float cubeVertexData[] = {
                 colors[i * 3 + 2] = colorObj.blueComponent;
             }
             
-            int stride = 7;
-            
-            NSInteger cursor = 0;
-            for (NSInteger slice = 0; slice < slices; slice++) {
+            [slices enumerateIndexesUsingBlock:^(NSUInteger slice, BOOL *stop){
                 float ** sliceData = data[slice];
                 if(sliceData){
-                    x = .0f;
-                    y = .0f;
+                    
+                    x = 0;
+                    y = 0;
+                    z = zPositions[slice];
+                    
                     for (NSInteger idx = 0; idx < self.indexesObtained.count; idx++) {
-                        float *chanData = sliceData[idx];
+                        
+                        NSInteger realIndex = [self.indexesObtained[idx]integerValue];
+                        
+                        
+                        float *chanData = sliceData[realIndex];
                         if(chanData){
+                            
+                            NSInteger internalCursor = 0;
                             for (NSInteger pix = 0; pix < area; pix++) {
                                 if(mask[pix] == false)
                                     continue;
-                                buff[cursor + pix * stride + 1] += chanData[pix] * colors[idx * 3];
-                                buff[cursor + pix * stride + 2] += chanData[pix] * colors[idx * 3 + 1];
-                                buff[cursor + pix * stride + 3] += chanData[pix] * colors[idx * 3 + 2];
-                                buff[cursor + pix * stride + 4] = x;
-                                buff[cursor + pix * stride + 5] = y;
-                                buff[cursor + pix * stride + 6] = z;
+                                if(internalCursor >= renderableArea)
+                                    break;
                                 
-                                x += 1.0f;
-                                if(x == self.renderWidth){
-                                    y += 1.0f;
-                                    x = 0.0f;
-                                }
+                                NSInteger internalStride = internalCursor * stride;
+                                
+                                buff[cursor + internalStride + 1] += chanData[pix] * colors[idx * 3];
+                                buff[cursor + internalStride + 2] += chanData[pix] * colors[idx * 3 + 1];
+                                buff[cursor + internalStride + 3] += chanData[pix] * colors[idx * 3 + 2];
+                                buff[cursor + internalStride + 4] = (float)(internalCursor % _renderWidth);
+                                buff[cursor + internalStride + 5] = (float)(internalCursor /_renderWidth);
+                                buff[cursor + internalStride + 6] = z;
+                                
                                 //Filters
                                 float max = .0f;
                                 float sum = .0f;
                                 for (int i = 1; i < 4; i++){
-                                    float val = buff[cursor + pix * stride + i];
+                                    float val = buff[cursor + internalCursor * stride + i];
                                     if(val > max)
                                         max = val;
                                     if(val > 1.0f)
-                                        buff[cursor + pix * stride + i] = 1.0f;
+                                        buff[cursor + internalCursor * stride + i] = 1.0f;
                                     sum += val;
                                 }
-                                buff[cursor + pix * stride] = max < minThresholdForAlpha ? 0.0f : MIN(1.0f, sum);//Alpha
+                                
+                                if(alphaMode == ALPHA_MODE_OPAQUE)
+                                    buff[cursor + internalCursor * stride] = max < minThresholdForAlpha ? 0.0f : 1.0f;
+                                if(alphaMode == ALPHA_MODE_FIXED)
+                                    buff[cursor + internalCursor * stride] = max < minThresholdForAlpha ? 0.0f : minThresholdForAlpha;//Alpha
+                                if(alphaMode == ALPHA_MODE_ADAPTIVE)
+                                    buff[cursor + internalCursor * stride] = max < minThresholdForAlpha ? 0.0f : MIN(1.0f, sum);//Alpha
+                                                                
+                                internalCursor++;
                             }
                         }
                     }
                 }
-                z += 1.0f;
-                cursor += area * 3;
-            }
-            if(self.renderWidth * self.renderHeight * slices * 6 * sizeof(float) < 1024000000)
-                self.colorBuffer = [self.device newBufferWithBytes:buff length:self.renderWidth * self.renderHeight * slices * 6 * sizeof(float) options:MTLResourceOptionCPUCacheModeDefault];
+                cursor += renderableArea * stride;
+            }];
+            
+//            for (NSInteger slice = 0; slice < slices.count; slice++) {
+//                
+//                
+//            }
+            if(self.renderWidth * self.renderHeight * slices.count * 6 * sizeof(float) < 1024000000)
+                self.colorBuffer = [self.device newBufferWithBytes:buff length:self.renderWidth * self.renderHeight * slices.count * 6 * sizeof(float) options:MTLResourceOptionCPUCacheModeDefault];
             else
                 self.colorBuffer = nil;
             free(buff);
@@ -257,7 +311,7 @@ float cubeVertexData[] = {
 
 -(void)drawInMTKView:(IMCMtkView *)view{
     
-    if(view.refresh == NO)
+    if(view.refresh == NO && !self.forceColorBufferRecalculation)
         return;
     
     view.refresh = NO;
@@ -268,7 +322,6 @@ float cubeVertexData[] = {
     }
     
     //Projection Matrix
-    
     [self projectionMatrixSetup:view];
     
     //Uniforms
@@ -277,43 +330,49 @@ float cubeVertexData[] = {
     uniforms.modelViewMatrix = view.rotationMatrix->glkMatrix;
     uniforms.baseModelMatrix = view.baseModelMatrix->glkMatrix;
     uniforms.projectionMatrix = projectionMatrix->glkMatrix;
+    GLKMatrix4 premultiplied = GLKMatrix4Multiply(uniforms.baseModelMatrix, uniforms.modelViewMatrix);
+    uniforms.premultipliedMatrix = GLKMatrix4Multiply(uniforms.projectionMatrix, premultiplied);
     
     self.uniformsBuffer = [self.device newBufferWithBytes:&uniforms length:sizeof(uniforms) options:MTLResourceOptionCPUCacheModeDefault];
+    
+    //Size model
+    NSInteger width = [self.delegate witdhModel];
+    NSInteger height = [self.delegate heightModel];
+    NSInteger areaModel = width * height;
+    NSInteger slices = [self.delegate stacksIndexSet].count;
+    
+    //Slice handling
+    
+    float * zThicknesses = [self.delegate thicknesses];
+    if(zThicknesses == NULL)
+        return;
+    float * collatedZ = calloc(slices * 2, sizeof(float));
+    [[self.delegate stacksIndexSet] enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop){
+        collatedZ[idx * 2 + 0] = 1.0f;
+        collatedZ[idx * 2 + 1] = zThicknesses[idx];
+    }];
+    self.layerIndexesBuffer = [self.device newBufferWithBytes:collatedZ length:slices * sizeof(float) * 2 options:MTLResourceOptionCPUCacheModeDefault];
+    free(collatedZ);
+    
+    //Positional Data
     
     PositionalData positional;
     positional.lowerY = view.lowerY;
     positional.upperY = view.upperY;
     positional.leftX = view.leftX;
     positional.rightX = view.rightX;
+    positional.halfTotalThickness = [self.delegate zValues][self.delegate.stacksIndexSet.lastIndex]/2;
     positional.widthModel = (uint)self.renderWidth;
     positional.heightModel = (uint)self.renderHeight;
     positional.totalLayers = (uint)self.slices;
+    positional.areaModel = (uint)(self.renderWidth * self.renderHeight);
     
     self.positionalBuffer = [self.device newBufferWithBytes:&positional length:sizeof(positional) options:MTLResourceOptionCPUCacheModeDefault];
     
-    //Size model
-    NSInteger width = [self.delegate witdhModel];
-    NSInteger height = [self.delegate heightModel];
-    NSInteger areaModel = width * height;
-    NSInteger slices = [self.delegate numberOfStacks];
-    
-    //Slice handling
-    float * zPositions = [self.delegate zValues];
-    float * zThicknesses = [self.delegate thicknesses];
-    if(zPositions == NULL || zThicknesses == NULL)
-        return;
-    float * collatedZ = calloc(slices * 3, sizeof(float));
-    [[self.delegate stacksIndexSet] enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop){
-        collatedZ[idx * 3 + 0] = 1.0f;
-        collatedZ[idx * 3 + 1] = zPositions[idx];
-        collatedZ[idx * 3 + 2] = zThicknesses[idx];
-    }];
-    self.layerIndexesBuffer = [self.device newBufferWithBytes:collatedZ length:self.slices * sizeof(float) * 3 options:MTLResourceOptionCPUCacheModeDefault];
-    free(collatedZ);
-    
     //prepareData
-    if([self checkNeedsUpdate])
-        [self updateColorBufferWithWidth:width height:height slices:slices];
+    if([self checkNeedsUpdate] || self.forceColorBufferRecalculation)
+        [self updateColorBufferWithWidth:width height:height slices:[self.delegate stacksIndexSet]];
+    self.forceColorBufferRecalculation = NO;
     if(!self.colorBuffer)
         return;
     
@@ -328,6 +387,9 @@ float cubeVertexData[] = {
     id<CAMetalDrawable> drawable = [view currentDrawable];
     if(!drawable)
         return;
+    
+    view.depthStencilPixelFormat = MTLPixelFormatDepth32Float;
+    
     //Create a render pass descriptor
     MTLRenderPassDescriptor * rpd = view.currentRenderPassDescriptor;//[MTLRenderPassDescriptor new];
     if(!rpd)
@@ -352,13 +414,14 @@ float cubeVertexData[] = {
     [renderEncoder setVertexBuffer:self.maskBuffer offset:0 atIndex:3];
     [renderEncoder setVertexBuffer:self.layerIndexesBuffer offset:0 atIndex:4];
     [renderEncoder setVertexBuffer:self.colorBuffer offset:0 atIndex:5];
-    NSLog(@"%@", self.stencilState);
+    [renderEncoder setVertexBuffer:self.heightDescriptor offset:0 atIndex:6];
+
     [renderEncoder setDepthStencilState:self.stencilState];
     [renderEncoder setFrontFacingWinding:MTLWindingCounterClockwise];
-    [renderEncoder setCullMode:MTLCullModeBack];
+    [renderEncoder setCullMode:  MTLCullModeNone ];
     
     //[renderEncoder drawPrimitives:MTLPrimitiveTypeTriangle vertexStart:0 vertexCount:sizeof(cubeVertexData)];
-    [renderEncoder drawPrimitives:MTLPrimitiveTypeTriangle vertexStart:0 vertexCount:36 instanceCount:8];//self.renderWidth * self.renderHeight * self.slices];
+    [renderEncoder drawPrimitives:MTLPrimitiveTypeTriangle vertexStart:0 vertexCount:36 instanceCount:self.renderWidth * self.renderHeight * self.slices];//8 for synthetic
     
     [renderEncoder endEncoding];
     
@@ -375,7 +438,7 @@ float cubeVertexData[] = {
 }
 
 -(void)createMetalStack{
-    //Create layer
+    //Create layer. Removed since introduced MetalKit
     //_metalLayer = [[CAMetalLayer alloc]init];
     //_metalLayer.device = self.device;
     //_metalLayer.pixelFormat = MTLPixelFormatBGRA8Unorm;
@@ -383,13 +446,11 @@ float cubeVertexData[] = {
     //_metalLayer.frame = self.bounds;
     //[_layer addSublayer:_metalLayer];
     
-    NSLog(@"%@", MTLCreateSystemDefaultDevice());
-    NSLog(@"%@", MTLCopyAllDevices());
-    NSLog(@"%@", self.device);
-    
     //Add VD for cube
     NSInteger dataSize = sizeof(cubeVertexData);
     self.vertexBuffer = [self.device newBufferWithBytes:cubeVertexData length:dataSize options:MTLResourceOptionCPUCacheModeDefault];
+    NSInteger dataSizeHeightDescriptor = sizeof(heightDescriptor);
+    self.heightDescriptor = [self.device newBufferWithBytes:heightDescriptor length:dataSizeHeightDescriptor options:MTLResourceOptionCPUCacheModeDefault];
     //Create pipeline state
     id<MTLLibrary> defaultLibrary = [self.device newDefaultLibrary];
     id<MTLFunction> vertexProgram = [defaultLibrary newFunctionWithName:@"vertexShader"];
@@ -398,14 +459,16 @@ float cubeVertexData[] = {
     MTLRenderPipelineDescriptor * pipelineDescriptor = [MTLRenderPipelineDescriptor new];
     pipelineDescriptor.vertexFunction = vertexProgram;
     pipelineDescriptor.fragmentFunction = fragmentProgram;
-//    pipelineDescriptor.colorAttachments[0].blendingEnabled = YES;
-//    
-//    pipelineDescriptor.colorAttachments[0].rgbBlendOperation = MTLBlendOperationAdd;
-//    pipelineDescriptor.colorAttachments[0].alphaBlendOperation = MTLBlendOperationAdd;
+    pipelineDescriptor.depthAttachmentPixelFormat = MTLPixelFormatDepth32Float;
+    pipelineDescriptor.colorAttachments[0].blendingEnabled = YES;
+    
+    pipelineDescriptor.colorAttachments[0].rgbBlendOperation = MTLBlendOperationAdd;
+    pipelineDescriptor.colorAttachments[0].alphaBlendOperation = MTLBlendOperationAdd;
 //    pipelineDescriptor.colorAttachments[0].sourceRGBBlendFactor = MTLBlendFactorSourceAlpha;
 //    pipelineDescriptor.colorAttachments[0].sourceAlphaBlendFactor = MTLBlendFactorSourceAlpha;
-//    pipelineDescriptor.colorAttachments[0].destinationRGBBlendFactor = MTLBlendFactorOneMinusSourceAlpha;
-//    pipelineDescriptor.colorAttachments[0].destinationAlphaBlendFactor = MTLBlendFactorOneMinusSourceAlpha;
+    pipelineDescriptor.colorAttachments[0].destinationRGBBlendFactor = MTLBlendFactorOneMinusSourceAlpha;
+    pipelineDescriptor.colorAttachments[0].destinationAlphaBlendFactor = MTLBlendFactorOneMinusSourceAlpha;
+    
     pipelineDescriptor.colorAttachments[0].pixelFormat = MTLPixelFormatBGRA8Unorm; ////// Kontuz. Must coincide with CAMetalLayer
     
     //Expensive. Do least possible
@@ -421,10 +484,6 @@ float cubeVertexData[] = {
     desc.depthCompareFunction = MTLCompareFunctionLess;
     desc.depthWriteEnabled = YES;
     self.stencilState = [self.device newDepthStencilStateWithDescriptor:desc];
-}
-
--(void)touchesBeganWithEvent:(NSEvent *)event{
-    //[self render];
 }
 
 @end

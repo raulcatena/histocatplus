@@ -16,6 +16,8 @@
 @interface IMCImageStack : IMCNodeWrapper
 
 @property (nonatomic, assign) float **stackData;
+@property (nonatomic, assign) float **compensatedData;
+@property (nonatomic, assign) BOOL usingCompensated;
 @property (nonatomic, strong) NSMutableArray *channels;
 @property (nonatomic, strong) NSMutableArray *channelSettings;
 @property (nonatomic, strong) NSMutableDictionary*transform;

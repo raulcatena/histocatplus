@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="12120" systemVersion="16G29" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" customObjectInstantitationMethod="direct">
     <dependencies>
+        <deployment identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="12120"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -31,6 +32,7 @@
                 <outlet property="colorLegend" destination="2w6-i3-rT2" id="mJg-XX-LHw"/>
                 <outlet property="colorPoints" destination="Ps2-R5-EP4" id="gRl-BE-oPG"/>
                 <outlet property="colorSpaceSelector" destination="Y6Z-6G-YdS" id="yse-pw-7Eb"/>
+                <outlet property="compensationSwitch" destination="4AE-et-rSj" id="diX-BQ-Mg7"/>
                 <outlet property="dropView" destination="JX5-dQ-dpn" id="GQB-3c-HZe"/>
                 <outlet property="elasticTransform" destination="IRC-5J-Xws" id="KrM-fL-ygl"/>
                 <outlet property="eventsTable" destination="AC1-NF-W0U" id="yfA-bF-fNH"/>
@@ -221,8 +223,8 @@
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" allowsCharacterPickerTouchBarItem="NO" id="1oL-fC-s8W">
-                        <rect key="frame" x="260" y="677" width="243" height="17"/>
+                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" misplaced="YES" allowsCharacterPickerTouchBarItem="NO" id="1oL-fC-s8W">
+                        <rect key="frame" x="260" y="678" width="243" height="17"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="justified" title="Channels" id="m4P-xJ-PWL">
                             <font key="font" metaFont="system"/>
@@ -351,13 +353,16 @@
                             <autoresizingMask key="autoresizingMask"/>
                         </tableHeaderView>
                     </scrollView>
-                    <button hidden="YES" misplaced="YES" id="4AE-et-rSj">
-                        <rect key="frame" x="404" y="677" width="99" height="18"/>
+                    <button misplaced="YES" id="4AE-et-rSj">
+                        <rect key="frame" x="387" y="677" width="99" height="18"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="check" title="Compensate" bezelStyle="regularSquare" imagePosition="left" inset="2" id="L7w-me-O3V">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
+                        <connections>
+                            <action selector="flipCompensation:" target="-2" id="MEP-bo-x4O"/>
+                        </connections>
                     </button>
                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="NO" id="KXV-IV-Ird">
                         <rect key="frame" x="12" y="90" width="206" height="17"/>
@@ -455,7 +460,7 @@
                                             <rect key="frame" x="-3" y="105" width="646" height="541"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <clipView key="contentView" id="G0P-xh-7z1">
-                                                <rect key="frame" x="1" y="1" width="644" height="539"/>
+                                                <rect key="frame" x="1" y="1" width="629" height="524"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <view id="bEC-dY-lh0">
@@ -465,10 +470,10 @@
                                                 </subviews>
                                             </clipView>
                                             <scroller key="horizontalScroller" verticalHuggingPriority="750" horizontal="YES" id="wde-Z5-Q5f">
-                                                <rect key="frame" x="1" y="524" width="644" height="16"/>
+                                                <rect key="frame" x="1" y="525" width="629" height="15"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                             </scroller>
-                                            <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="o3j-AT-rhz">
+                                            <scroller key="verticalScroller" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="o3j-AT-rhz">
                                                 <rect key="frame" x="630" y="1" width="15" height="524"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                             </scroller>
@@ -493,7 +498,7 @@
                                             <rect key="frame" x="-3" y="100" width="725" height="541"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <clipView key="contentView" id="mVh-zm-F3q">
-                                                <rect key="frame" x="1" y="1" width="723" height="539"/>
+                                                <rect key="frame" x="1" y="1" width="723" height="524"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                                 <subviews>
                                                     <view id="5lJ-K7-OS1">
@@ -1019,6 +1024,9 @@
                                             <rect key="frame" x="671" y="28" width="44" height="23"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
                                             <color key="color" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                            <connections>
+                                                <action selector="refresh3D:" target="-2" id="JA4-rK-Sax"/>
+                                            </connections>
                                         </colorWell>
                                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" misplaced="YES" allowsCharacterPickerTouchBarItem="NO" id="z47-Ej-ttZ">
                                             <rect key="frame" x="676" y="56" width="35" height="17"/>
@@ -1073,6 +1081,9 @@
                                                     <segment label="Adaptive"/>
                                                 </segments>
                                             </segmentedCell>
+                                            <connections>
+                                                <action selector="refresh3D:" target="-2" id="rSD-uP-c18"/>
+                                            </connections>
                                         </segmentedControl>
                                         <segmentedControl verticalHuggingPriority="750" misplaced="YES" id="FZW-dX-zXh">
                                             <rect key="frame" x="258" y="54" width="154" height="24"/>
@@ -1084,6 +1095,9 @@
                                                     <segment label="Emissive" tag="1"/>
                                                 </segments>
                                             </segmentedCell>
+                                            <connections>
+                                                <action selector="refresh3D:" target="-2" id="Mek-e4-8Zi"/>
+                                            </connections>
                                         </segmentedControl>
                                         <slider verticalHuggingPriority="750" misplaced="YES" id="XJD-Nh-PDj">
                                             <rect key="frame" x="258" y="3" width="202" height="20"/>
@@ -1183,7 +1197,7 @@
                                             <rect key="frame" x="505" y="397" width="209" height="205"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                             <clipView key="contentView" id="vjV-ev-Trj">
-                                                <rect key="frame" x="1" y="1" width="207" height="203"/>
+                                                <rect key="frame" x="1" y="1" width="192" height="188"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                                 <subviews>
                                                     <view id="s0h-HM-uaO">
@@ -1205,7 +1219,7 @@
                                             <rect key="frame" x="505" y="184" width="209" height="205"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                             <clipView key="contentView" id="4kB-pH-Vfs">
-                                                <rect key="frame" x="1" y="1" width="207" height="203"/>
+                                                <rect key="frame" x="1" y="1" width="192" height="188"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                                 <subviews>
                                                     <view id="wdS-J5-DxB">

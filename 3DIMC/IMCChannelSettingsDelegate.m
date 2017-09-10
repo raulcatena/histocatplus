@@ -9,7 +9,7 @@
 #import "IMCChannelSettingsDelegate.h"
 
 @interface IMCChannelSettingsDelegate()
-
+@property (nonatomic, strong) NSTableView *whichTableView;
 @end
 
 @implementation IMCChannelSettingsDelegate
@@ -37,8 +37,11 @@
     NSMutableArray *array = @[].mutableCopy;
     NSTableColumn *column = [[self.delegate whichTableView]tableColumnWithIdentifier:@"col"];
     
+    if(!self.whichTableView)
+        self.whichTableView = [self.delegate whichTableView];
+    
     for (NSInteger i = 0; i < [self.delegate channelsForCell].count; i++) {
-        IMCChannelSettings *cell = [self tableView:[self.delegate whichTableView] viewForTableColumn:column row:i];
+        IMCChannelSettings *cell = [self tableView:self.whichTableView viewForTableColumn:column row:i];
         [array addObject:cell.color.color];
     }
     return array;

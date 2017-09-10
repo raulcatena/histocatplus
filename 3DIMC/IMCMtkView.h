@@ -9,7 +9,9 @@
 #import <MetalKit/MetalKit.h>
 #import "Matrix4.h"
 
-@interface IMCMtkView : MTKView
+@interface IMCMtkView : MTKView{
+
+}
 @property (nonatomic, assign) CGFloat zoom;
 @property (nonatomic, assign) NSPoint position;
 @property (nonatomic, assign) CGPoint rotation;
@@ -21,4 +23,9 @@
 @property (nonatomic, assign) float upperY;
 @property (nonatomic, assign) float lowerY;
 @property (nonatomic, assign) IBInspectable BOOL refresh;
+
+-(void)rotateX:(float)angleX Y:(float)angleY Z:(float)angleZ;
+
+-(CGImageRef)captureImageRef;
+
 @end

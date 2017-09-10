@@ -14,7 +14,8 @@ struct Constants {
     float4x4 baseModelMatrix;
     float4x4 modelViewMatrix;
     float4x4 projectionMatrix;
-//    float4x4 rotationMatrix;
+    float4x4 premultipliedMatrix;
+    float3x3 rotationMatrix;
 };
 
 struct PositionalData{
@@ -22,7 +23,7 @@ struct PositionalData{
     float rightX;
     float upperY;
     float lowerY;
-    float totalThickness;
+    float halfTotalThickness;
     uint totalLayers;
     uint widthModel;
     uint heightModel;
@@ -80,30 +81,28 @@ vertex VertexOut vertexShader(
                               const device bool * mask [[ buffer(3) ]],
                               const device float * zValues [[ buffer(4) ]],
                               const device float * colors [[ buffer(5) ]],
+                              const device bool * heightDescriptor [[ buffer(6) ]],
                               unsigned int vid [[ vertex_id ]],
                               unsigned int iid [[ instance_id ]]) {
 
     VertexOut out;
     
     unsigned int baseIndex = iid * 7;
-    if(colors[baseIndex] == 0.0f){
-//        out.position = float4(vertex_array[vid][0] - positional.widthModel/2,
-//               vertex_array[vid][1] - positional.heightModel/2,
-//               vertex_array[vid][2], 1.0f );
-//        out.color = float4(1.0f);
+    if(colors[baseIndex] == 0.0f)//Precalculated 0 alpha if zero do not process further (optimization)
         return out;
-    }//Precalculated 0 alpha
     
+    uint indexZ = iid/positional.areaModel * 2;
+    
+    float down = heightDescriptor[vid] == true? zValues[indexZ + 1] - 1.0f : 0;
     
     float3 pos = float3(vertex_array[vid][0] + colors[baseIndex + 4] - positional.widthModel/2,
                         vertex_array[vid][1] + colors[baseIndex + 5] - positional.heightModel/2,
-                        vertex_array[vid][2] + colors[baseIndex + 6]);
+                        vertex_array[vid][2] + colors[baseIndex + 6] - down - positional.halfTotalThickness);
     
     
-    //if(mask[iid % positional.areaModel] == true){
-    out.position = uniforms.projectionMatrix * uniforms.baseModelMatrix * uniforms.modelViewMatrix * float4(pos, 1);
-    out.color = float4(colors[baseIndex + 1], colors[baseIndex + 2], colors[baseIndex + 3], 1);
-    //}
+    //out.position = uniforms.projectionMatrix * uniforms.baseModelMatrix * uniforms.modelViewMatrix * float4(pos, 1);
+    out.position = uniforms.premultipliedMatrix * float4(pos, 1);
+    out.color = float4(colors[baseIndex + 1], colors[baseIndex + 2], colors[baseIndex + 3], colors[baseIndex]);
     
     return out;
     

@@ -632,7 +632,6 @@
 		0DA630501F5EE60A0032E102 /* Matrix4.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DA6304D1F5EE60A0032E102 /* Matrix4.m */; };
 		0DA630521F5EE7D20032E102 /* shaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = 0DA630511F5EE7D20032E102 /* shaders.metal */; };
 		0DA630531F5EE7D20032E102 /* shaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = 0DA630511F5EE7D20032E102 /* shaders.metal */; };
-		0DA630541F5EE7D20032E102 /* shaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = 0DA630511F5EE7D20032E102 /* shaders.metal */; };
 		0DA630561F5EF3CA0032E102 /* MetalKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0DA630551F5EF3CA0032E102 /* MetalKit.framework */; };
 		0DA630581F5EF3CF0032E102 /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0DA630571F5EF3CF0032E102 /* Metal.framework */; };
 		0DA6660E1E6059FB003DD274 /* IMCCellDataExport.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DA6660D1E6059FB003DD274 /* IMCCellDataExport.m */; };
@@ -699,6 +698,16 @@
 		0DB400631E534D7D00179ECB /* bhsne.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0DB4005E1E534D7D00179ECB /* bhsne.cpp */; };
 		0DB400641E534D7D00179ECB /* sptree.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0DB400601E534D7D00179ECB /* sptree.cpp */; };
 		0DB4006A1E5359F700179ECB /* RandomForests.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0DB400681E5359F700179ECB /* RandomForests.cpp */; };
+		0DC0E4871F6343A700DD1B62 /* shaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = 0DA630511F5EE7D20032E102 /* shaders.metal */; };
+		0DC0E4891F63F2C500DD1B62 /* SpillOverTableCleanWithZeros.txt in Resources */ = {isa = PBXBuildFile; fileRef = 0DC0E4881F63F2C500DD1B62 /* SpillOverTableCleanWithZeros.txt */; };
+		0DC0E48A1F63F2C500DD1B62 /* SpillOverTableCleanWithZeros.txt in Resources */ = {isa = PBXBuildFile; fileRef = 0DC0E4881F63F2C500DD1B62 /* SpillOverTableCleanWithZeros.txt */; };
+		0DC0E48B1F63F2C500DD1B62 /* SpillOverTableCleanWithZeros.txt in Resources */ = {isa = PBXBuildFile; fileRef = 0DC0E4881F63F2C500DD1B62 /* SpillOverTableCleanWithZeros.txt */; };
+		0DC0E48D1F64944C00DD1B62 /* SpillOverTableCleanWithZerosBioRXivs.txt in Resources */ = {isa = PBXBuildFile; fileRef = 0DC0E48C1F64944C00DD1B62 /* SpillOverTableCleanWithZerosBioRXivs.txt */; };
+		0DC0E48E1F64944C00DD1B62 /* SpillOverTableCleanWithZerosBioRXivs.txt in Resources */ = {isa = PBXBuildFile; fileRef = 0DC0E48C1F64944C00DD1B62 /* SpillOverTableCleanWithZerosBioRXivs.txt */; };
+		0DC0E48F1F64944C00DD1B62 /* SpillOverTableCleanWithZerosBioRXivs.txt in Resources */ = {isa = PBXBuildFile; fileRef = 0DC0E48C1F64944C00DD1B62 /* SpillOverTableCleanWithZerosBioRXivs.txt */; };
+		0DC0E4911F64AEF700DD1B62 /* SpillOverTableCleanWithZerosBioRXivsIMC.txt in Resources */ = {isa = PBXBuildFile; fileRef = 0DC0E4901F64AEF700DD1B62 /* SpillOverTableCleanWithZerosBioRXivsIMC.txt */; };
+		0DC0E4921F64AEF700DD1B62 /* SpillOverTableCleanWithZerosBioRXivsIMC.txt in Resources */ = {isa = PBXBuildFile; fileRef = 0DC0E4901F64AEF700DD1B62 /* SpillOverTableCleanWithZerosBioRXivsIMC.txt */; };
+		0DC0E4931F64AEF700DD1B62 /* SpillOverTableCleanWithZerosBioRXivsIMC.txt in Resources */ = {isa = PBXBuildFile; fileRef = 0DC0E4901F64AEF700DD1B62 /* SpillOverTableCleanWithZerosBioRXivsIMC.txt */; };
 		0DC508CE1F5F3B3400C1E9D8 /* IMCMtkView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DC508CD1F5F3B3400C1E9D8 /* IMCMtkView.m */; };
 		0DC508CF1F5F3B3400C1E9D8 /* IMCMtkView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DC508CD1F5F3B3400C1E9D8 /* IMCMtkView.m */; };
 		0DC508D01F5F3B3400C1E9D8 /* IMCMtkView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DC508CD1F5F3B3400C1E9D8 /* IMCMtkView.m */; };
@@ -1035,6 +1044,9 @@
 		0DB400621E534D7D00179ECB /* vptree.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vptree.h; sourceTree = "<group>"; };
 		0DB400671E5359F700179ECB /* RandomForests.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = RandomForests.hpp; sourceTree = "<group>"; };
 		0DB400681E5359F700179ECB /* RandomForests.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RandomForests.cpp; sourceTree = "<group>"; };
+		0DC0E4881F63F2C500DD1B62 /* SpillOverTableCleanWithZeros.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = SpillOverTableCleanWithZeros.txt; sourceTree = "<group>"; };
+		0DC0E48C1F64944C00DD1B62 /* SpillOverTableCleanWithZerosBioRXivs.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = SpillOverTableCleanWithZerosBioRXivs.txt; sourceTree = "<group>"; };
+		0DC0E4901F64AEF700DD1B62 /* SpillOverTableCleanWithZerosBioRXivsIMC.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = SpillOverTableCleanWithZerosBioRXivsIMC.txt; sourceTree = "<group>"; };
 		0DC508BA1F5F35C400C1E9D8 /* histoCAT++-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "histoCAT++-Bridging-Header.h"; sourceTree = "<group>"; };
 		0DC508BB1F5F35C400C1E9D8 /* histoCAT++3D-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "histoCAT++3D-Bridging-Header.h"; sourceTree = "<group>"; };
 		0DC508BC1F5F35C500C1E9D8 /* Node.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Node.swift; sourceTree = "<group>"; };
@@ -1720,6 +1732,9 @@
 		0DB37CF51E304D2E002975E2 /* Loading */ = {
 			isa = PBXGroup;
 			children = (
+				0DC0E4881F63F2C500DD1B62 /* SpillOverTableCleanWithZeros.txt */,
+				0DC0E48C1F64944C00DD1B62 /* SpillOverTableCleanWithZerosBioRXivs.txt */,
+				0DC0E4901F64AEF700DD1B62 /* SpillOverTableCleanWithZerosBioRXivsIMC.txt */,
 				0DB37D271E32C4D0002975E2 /* NodeWrappers */,
 				0DB37D171E32AD51002975E2 /* FileLoaders */,
 			);
@@ -2072,6 +2087,7 @@
 				0D00AC591E64D53400887057 /* libopencv_highgui.3.2.dylib in Resources */,
 				0D00AC5A1E64D53400887057 /* libopencv_highgui.dylib in Resources */,
 				0D00AC5B1E64D53400887057 /* libopencv_imgcodecs.3.2.0.dylib in Resources */,
+				0DC0E4921F64AEF700DD1B62 /* SpillOverTableCleanWithZerosBioRXivsIMC.txt in Resources */,
 				0D00AC5C1E64D53400887057 /* libopencv_imgcodecs.3.2.dylib in Resources */,
 				0D00AC5D1E64D53400887057 /* scatter.txt in Resources */,
 				0D00AC5E1E64D53400887057 /* libopencv_imgcodecs.dylib in Resources */,
@@ -2114,6 +2130,7 @@
 				0D00AC7E1E64D53400887057 /* libopencv_xfeatures2d.3.2.0.dylib in Resources */,
 				0D00AC7F1E64D53400887057 /* libopencv_xfeatures2d.3.2.dylib in Resources */,
 				0D00AC801E64D53400887057 /* libopencv_xfeatures2d.dylib in Resources */,
+				0DC0E48E1F64944C00DD1B62 /* SpillOverTableCleanWithZerosBioRXivs.txt in Resources */,
 				0D00AC811E64D53400887057 /* miCAT3D_16.png in Resources */,
 				0D00AC821E64D53400887057 /* IMCBrushTools.xib in Resources */,
 				0D00AC831E64D53400887057 /* IMCPreferencesController.xib in Resources */,
@@ -2121,6 +2138,7 @@
 				0D00AC841E64D53400887057 /* README in Resources */,
 				0D00AC851E64D53400887057 /* IMCCellSegmentation.xib in Resources */,
 				0D00AC861E64D53400887057 /* miCAT3D_128.png in Resources */,
+				0DC0E48A1F63F2C500DD1B62 /* SpillOverTableCleanWithZeros.txt in Resources */,
 				0D00AC871E64D53400887057 /* miCAT3D_256.png in Resources */,
 				0D00AC881E64D53400887057 /* miCAT3D.png in Resources */,
 				0D00AC891E64D53400887057 /* miCAT3D_32.png in Resources */,
@@ -2171,6 +2189,7 @@
 				0D9F31161EF909CF00E1E083 /* libopencv_highgui.3.2.dylib in Resources */,
 				0D9F31171EF909CF00E1E083 /* libopencv_highgui.dylib in Resources */,
 				0D9F31181EF909CF00E1E083 /* libopencv_imgcodecs.3.2.0.dylib in Resources */,
+				0DC0E4931F64AEF700DD1B62 /* SpillOverTableCleanWithZerosBioRXivsIMC.txt in Resources */,
 				0D9F31191EF909CF00E1E083 /* libopencv_imgcodecs.3.2.dylib in Resources */,
 				0D9F311A1EF909CF00E1E083 /* scatter.txt in Resources */,
 				0D9F311B1EF909CF00E1E083 /* libopencv_imgcodecs.dylib in Resources */,
@@ -2213,6 +2232,7 @@
 				0D9F31401EF909CF00E1E083 /* libopencv_xfeatures2d.3.2.0.dylib in Resources */,
 				0D9F31411EF909CF00E1E083 /* libopencv_xfeatures2d.3.2.dylib in Resources */,
 				0D9F31421EF909CF00E1E083 /* libopencv_xfeatures2d.dylib in Resources */,
+				0DC0E48F1F64944C00DD1B62 /* SpillOverTableCleanWithZerosBioRXivs.txt in Resources */,
 				0D9F31431EF909CF00E1E083 /* miCAT3D_16.png in Resources */,
 				0D9F31441EF909CF00E1E083 /* IMCBrushTools.xib in Resources */,
 				0D9F31451EF909CF00E1E083 /* IMCPreferencesController.xib in Resources */,
@@ -2220,6 +2240,7 @@
 				0D9F31471EF909CF00E1E083 /* README in Resources */,
 				0D9F31481EF909CF00E1E083 /* IMCCellSegmentation.xib in Resources */,
 				0D9F31491EF909CF00E1E083 /* miCAT3D_128.png in Resources */,
+				0DC0E48B1F63F2C500DD1B62 /* SpillOverTableCleanWithZeros.txt in Resources */,
 				0D9F314A1EF909CF00E1E083 /* miCAT3D_256.png in Resources */,
 				0D9F314B1EF909CF00E1E083 /* miCAT3D.png in Resources */,
 				0D9F314C1EF909CF00E1E083 /* miCAT3D_32.png in Resources */,
@@ -2270,6 +2291,7 @@
 				0D15574C1E5D876900C27064 /* libopencv_highgui.3.2.dylib in Resources */,
 				0D99BFCE1E82E34800E337A2 /* IMCThresholdBatch.xib in Resources */,
 				0D15574D1E5D876900C27064 /* libopencv_highgui.dylib in Resources */,
+				0DC0E4911F64AEF700DD1B62 /* SpillOverTableCleanWithZerosBioRXivsIMC.txt in Resources */,
 				0D15574E1E5D876900C27064 /* libopencv_imgcodecs.3.2.0.dylib in Resources */,
 				0D15574F1E5D876900C27064 /* libopencv_imgcodecs.3.2.dylib in Resources */,
 				0D00ABBF1E620CE400887057 /* scatter.txt in Resources */,
@@ -2312,6 +2334,7 @@
 				0D1557701E5D876900C27064 /* libopencv_xfeatures2d.3.2.dylib in Resources */,
 				0D1557711E5D876900C27064 /* libopencv_xfeatures2d.dylib in Resources */,
 				0DFB2EDE1E4B64160065AC61 /* miCAT3D_16.png in Resources */,
+				0DC0E48D1F64944C00DD1B62 /* SpillOverTableCleanWithZerosBioRXivs.txt in Resources */,
 				0DB400471E530B3E00179ECB /* IMCBrushTools.xib in Resources */,
 				0DAA1EF11E55F45700579003 /* IMCPreferencesController.xib in Resources */,
 				0DA268961E512F39007E6EDD /* README in Resources */,
@@ -2319,6 +2342,7 @@
 				0DFB2EE11E4B64160065AC61 /* miCAT3D_128.png in Resources */,
 				0DFB2EE21E4B64160065AC61 /* miCAT3D_256.png in Resources */,
 				0DFB2EDD1E4B64160065AC61 /* miCAT3D.png in Resources */,
+				0DC0E4891F63F2C500DD1B62 /* SpillOverTableCleanWithZeros.txt in Resources */,
 				0DFB2EDF1E4B64160065AC61 /* miCAT3D_32.png in Resources */,
 				0DFB2EE01E4B64160065AC61 /* miCAT3D_64.png in Resources */,
 				0D6720551E3FF3E400C19663 /* IMCTransformDictController.xib in Resources */,
@@ -2474,7 +2498,6 @@
 				0DC508D51F5F4F6B00C1E9D8 /* AAPLMathUtilities.m in Sources */,
 				0D9F306C1EF909CF00E1E083 /* NSColor+Utilities.m in Sources */,
 				0D9F306D1EF909CF00E1E083 /* IMCWorkspaceSelector.m in Sources */,
-				0DA630541F5EE7D20032E102 /* shaders.metal in Sources */,
 				0D9F306E1EF909CF00E1E083 /* IMCMasks.m in Sources */,
 				0D9F306F1EF909CF00E1E083 /* IMCFileWrapper.m in Sources */,
 				0D9F30701EF909CF00E1E083 /* IMCRegistrationOCV.mm in Sources */,
@@ -2536,6 +2559,7 @@
 				0D9F30A51EF909CF00E1E083 /* IMCDropView.m in Sources */,
 				0D9F30A61EF909CF00E1E083 /* NSData+MD5.m in Sources */,
 				0D9F30A71EF909CF00E1E083 /* NSImage+OpenCV.mm in Sources */,
+				0DC0E4871F6343A700DD1B62 /* shaders.metal in Sources */,
 				0D9F30A81EF909CF00E1E083 /* memusage.m in Sources */,
 				0D9F30A91EF909CF00E1E083 /* IMCPixelClassificationTool.mm in Sources */,
 				0D9F30AA1EF909CF00E1E083 /* IMCPixelClassification.m in Sources */,
@@ -3100,7 +3124,7 @@
 					"$(PROJECT_DIR)/3DIMC",
 				);
 				LINK_WITH_STANDARD_LIBRARIES = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				OTHER_LDFLAGS = (
 					"-lz",
 					"-lopencv_core",
@@ -3165,7 +3189,7 @@
 					"$(PROJECT_DIR)/3DIMC",
 				);
 				LINK_WITH_STANDARD_LIBRARIES = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				OTHER_LDFLAGS = (
 					"-lz",
 					"-lopencv_core",

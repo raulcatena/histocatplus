@@ -19,6 +19,11 @@
 #import "NSImage+OpenCV.h"
 #import "IMCRegistration.h"
 
+@interface IMCWorkSpaceRefresher(){
+    BOOL refreshing;
+}
+@end
+
 @implementation IMCWorkSpaceRefresher
 
 -(void)calculateMemory{
@@ -42,7 +47,9 @@
 }
 
 -(void)refresh{
-    
+    if(refreshing == YES)
+        return;
+    refreshing = YES;
     self.parent.scrollViewBlends.imageView.stacks = 0;
     
     //If mask is selected directly
@@ -117,6 +124,7 @@
     
     self.parent.channelsTag.stringValue = [NSString stringWithFormat:@"Channels (%li/%li)", self.parent.channels.selectedRowIndexes.count, [self.parent.channels numberOfRows ]];
     self.parent.objectsTag.stringValue = [NSString stringWithFormat:@"Files/Stacks/Masks (%li/%li)", self.parent.filesTree.selectedRowIndexes.count, [self.parent.filesTree numberOfChildrenOfItem:nil]];
+    refreshing = NO;
 }
 -(MaskType)maskType{
     MaskType type;

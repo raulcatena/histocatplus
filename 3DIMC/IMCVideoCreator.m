@@ -114,6 +114,7 @@
     CVPixelBufferRef buffer = NULL;
     
     CGImageRef ref = (__bridge CGImageRef)[array objectAtIndex:0];
+    
     buffer = [IMCVideoCreator pixelBufferFromCGImage:ref];
     CVPixelBufferPoolCreatePixelBuffer (NULL, adaptor.pixelBufferPool, &buffer);
     

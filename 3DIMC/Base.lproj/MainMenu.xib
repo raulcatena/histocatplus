@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="12120" systemVersion="16G29" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
+        <deployment identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="12120"/>
     </dependencies>
     <objects>
@@ -11,8 +12,8 @@
         </customObject>
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
         <customObject id="-3" userLabel="Application" customClass="NSObject"/>
-        <customObject id="Voe-Tx-rLC" customClass="AppDelegate"/>
         <customObject id="YLy-65-1bz" customClass="NSFontManager"/>
+        <customObject id="Voe-Tx-rLC" customClass="AppDelegate"/>
         <menu title="Main Menu" systemMenu="main" id="AYu-sK-qS6">
             <items>
                 <menuItem title="3DIMC" id="1Xt-HY-uBw">
@@ -192,6 +193,12 @@
                                 </connections>
                             </menuItem>
                             <menuItem isSeparatorItem="YES" id="uyl-h8-XO2"/>
+                            <menuItem title="Clean up channel names with Airlab..." id="dkQ-mJ-lqa" userLabel="AirlabClean">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="cleanUpNamesWithAirlab:" target="-1" id="qnP-sX-4Wb"/>
+                                </connections>
+                            </menuItem>
                             <menuItem title="Find" id="4EN-yA-p0u">
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <menu key="submenu" title="Find" id="1b7-l0-nxx">
@@ -641,7 +648,7 @@
                                     <action selector="saveMultiPageTIFFsWithSelected:" target="-1" id="rlZ-in-QBh"/>
                                 </connections>
                             </menuItem>
-                            <menuItem title="Save TIFF stack in folder (for miCAT neighbors)..." id="ZW9-st-FQW" userLabel="Save TIFF stack in folder (for miCAT neighbors)">
+                            <menuItem title="Save TIFF stack in folder (for histoCAT neighbors)..." id="ZW9-st-FQW" userLabel="Save TIFF stack in folder (for miCAT neighbors)">
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <connections>
                                     <action selector="saveTIFFStackInFolder:" target="-1" id="3Mt-fs-9oz"/>
@@ -743,19 +750,13 @@
                                 </connections>
                             </menuItem>
                             <menuItem isSeparatorItem="YES" id="FR7-5v-Icd"/>
-                            <menuItem title="Clean up channel names with Airlab..." id="dkQ-mJ-lqa" userLabel="Pixel Classification Batch...">
-                                <modifierMask key="keyEquivalentModifierMask"/>
-                                <connections>
-                                    <action selector="cleanUpNamesWithAirlab:" target="-1" id="qnP-sX-4Wb"/>
-                                </connections>
-                            </menuItem>
-                            <menuItem title="Copy pixel classification training settings..." id="fB5-1D-LFJ" userLabel="Pixel Classification Batch...">
+                            <menuItem title="Copy pixel classification training settings..." id="fB5-1D-LFJ" userLabel="CopyPixelTrainingSettings">
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <connections>
                                     <action selector="copyTrainingSettings:" target="-1" id="mYT-ha-Zy2"/>
                                 </connections>
                             </menuItem>
-                            <menuItem title="Paste pixel classification training settings..." id="x81-Lv-zMr" userLabel="Pixel Classification Batch...">
+                            <menuItem title="Paste pixel classification training settings..." id="x81-Lv-zMr" userLabel="PastePixelTrainingSettings">
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <connections>
                                     <action selector="pasteTrainingSettings:" target="-1" id="HdU-IK-Wpx"/>

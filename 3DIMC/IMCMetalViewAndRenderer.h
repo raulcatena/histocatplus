@@ -13,4 +13,5 @@
 @interface IMCMetalViewAndRenderer : NSObject <MTKViewDelegate, Get3DData>
 @property(nonatomic, strong) id<MTLDevice> device;
 @property(nonatomic, weak) id<Get3DData> delegate;
+@property(nonatomic, assign) BOOL forceColorBufferRecalculation;
 @end

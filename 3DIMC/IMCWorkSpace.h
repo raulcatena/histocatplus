@@ -155,6 +155,9 @@
 @property (nonatomic, weak) IBOutlet NSButton *exportCSVButton;
 @property (nonatomic, weak) IBOutlet NSButton *exportFCSButton;
 
+//Compensation button
+@property (nonatomic, weak) IBOutlet NSButton *compensationSwitch;
+
 //TableMetadata
 @property (nonatomic, weak) IBOutlet NSTableView *metadataTable;
 
@@ -188,6 +191,8 @@
 -(IBAction)changedWhiteBackground:(NSButton *)sender;
 -(IBAction)refresh:(id)sender;
 -(IBAction)updateTableView:(id)sender;
+//Compensation
+-(IBAction)flipCompensation:(NSButton *)sender;
 //Registration
 -(IBAction)alignSelected:(NSButton *)sender;
 //3D

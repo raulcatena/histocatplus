@@ -246,18 +246,27 @@
     if(VIEWER_ONLY || VIEWER_HISTO)
         return;
     
-    NSString *pos = NSStringFromPoint(self.openGlViewPort->position);
-    if(pos)self.dataCoordinator.position = pos;
-    
-    NSString *zoom = [NSString stringWithFormat:@"%f", self.openGlViewPort->zoom];
-    if(zoom)self.dataCoordinator.zoom = zoom;
-    
+    if(self.openGlViewPort){
+        NSString *pos = NSStringFromPoint(self.openGlViewPort->position);
+        if(pos)self.dataCoordinator.position = pos;
+        
+        NSString *zoom = [NSString stringWithFormat:@"%f", self.openGlViewPort->zoom];
+        if(zoom)self.dataCoordinator.zoom = zoom;
+        
+        NSString *rotation = NSStringFromPoint(self.openGlViewPort->rotation);
+        if(rotation)self.dataCoordinator.rotation = rotation;
+    }else if(self.metalView){
+        NSString *pos = NSStringFromPoint(self.metalView.position);
+        if(pos)self.dataCoordinator.position = pos;
+        
+        NSString *zoom = [NSString stringWithFormat:@"%f", self.metalView.zoom];
+        if(zoom)self.dataCoordinator.zoom = zoom;
+        
+        NSString *rotation = NSStringFromPoint(self.metalView.rotation);
+        if(rotation)self.dataCoordinator.rotation = rotation;
+    }
     NSString *selArea = NSStringFromRect([self.scrollViewBlends.imageView selectedArea]);
     if(selArea)self.dataCoordinator.selectedRectString = selArea;
-    
-    NSString *rotation = NSStringFromPoint(self.openGlViewPort->rotation);
-    if(rotation)self.dataCoordinator.rotation = rotation;
-
 }
 
 - (NSData *)dataOfType:(NSString *)typeName error:(NSError **)outError {
@@ -977,6 +986,7 @@
             [node loadLayerDataWithBlock:^{counter--;}];
         }
         [self refresh];
+
     });
 }
 -(void)closeNodes:(NSMenuItem *)sender{
@@ -1212,7 +1222,11 @@
 }
 
 -(void)refresh{
-    [self.workSpaceRefresher refresh];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.workSpaceRefresher refresh];
+        if([self.tabs.selectedTabViewItem.label isEqualToString:TAB_ID_THREED])
+            self.metalViewDelegate.forceColorBufferRecalculation = YES;
+    });
 }
 
 -(void)refreshBlend{
@@ -1482,7 +1496,7 @@
     return self.background3D.color;
 }
 -(CGRect)rectToRender{
-    return self.threeDHandler.interestProportions;
+    return self.scrollViewBlends.imageView.selectedRectProportions;
 }
 -(NSUInteger)witdhModel{
     return self.threeDHandler.width;
@@ -1534,12 +1548,16 @@
 }
 -(IBAction)refresh3D:(id)sender{
     [self.openGlViewPort refresh];
+    self.metalViewDelegate.forceColorBufferRecalculation = YES;
 }
 #pragma mark record video
 #define STEPS 120
 
 -(CGImageRef)imageForVideo{
     NSImage *someImage = [self.openGlViewPort imageFromViewOld];
+    if(someImage == nil && self.metalView)
+        return [self.metalView captureImageRef];
+    
     NSGraphicsContext *context = [NSGraphicsContext currentContext];
     CGRect imageCGRect = CGRectMake(0, 0, someImage.size.width, someImage.size.height);
     NSRect imageRect = NSRectFromCGRect(imageCGRect);
@@ -1547,12 +1565,24 @@
     return imageRef;
 }
 
+-(NSSize)sizeFrame{
+    NSSize size;
+    if(self.openGlViewPort)
+        size = self.openGlViewPort.bounds.size;
+    if(self.metalView)
+        size = NSMakeSize(self.metalView.currentDrawable.texture.width, self.metalView.currentDrawable.texture.height);
+    return size;
+}
+
 -(NSArray *)arrayOfCGImageRefsForRotationAroundZ{//arrayOfCGImageRefsForRotationAroundZ
     NSMutableArray *allImages = [NSMutableArray arrayWithCapacity:STEPS];
     for (int i = 0; i<STEPS; i++) {
         [self.openGlViewPort rotateX:0 Y:2*M_PI/STEPS Z:0];
+        [self.metalView rotateX:0 Y:2*M_PI/STEPS Z:0];
+        [self.openGlViewPort refresh];
+        self.metalViewDelegate.forceColorBufferRecalculation = YES;
         [allImages addObject:(id)[self imageForVideo]];//Careful, we are passing a CF type to NSArray. Cast to avoid warning. Handle with care
-        [NSThread sleepForTimeInterval:0.1f];
+//        [NSThread sleepForTimeInterval:0.1f];
     }
     
     return [NSArray arrayWithArray:allImages];
@@ -1561,7 +1591,7 @@
 -(void)recordZVideo:(NSButton *)sender{
     NSArray *allImagesForVideo = [self arrayOfCGImageRefsForRotationAroundZ];
     NSString *fullPath = [NSString stringWithFormat:@"%@%@.mp4", self.fileURL.path, [NSDate date].description];
-    [IMCVideoCreator writeImagesAsMovie:allImagesForVideo toPath:fullPath size:_openGlViewPort.bounds.size duration:16];
+    [IMCVideoCreator writeImagesAsMovie:allImagesForVideo toPath:fullPath size:[self sizeFrame] duration:16];
 }
 
 -(NSArray *)arrayOfCGImageRefsForStackVideo:(NSIndexSet *)indexes{//arrayOfCGImageRefsForStackVideo
@@ -1573,6 +1603,7 @@
         [cursorSet addIndex:index];
         [self.filesTree selectRowIndexes:cursorSet byExtendingSelection:NO];
         [self.openGlViewPort refresh];
+        self.metalViewDelegate.forceColorBufferRecalculation = YES;
         [allImages addObject:(id)[self imageForVideo]];//Careful, we are passing a CF type to NSArray. Cast to avoid warning. Handle with care
         [NSThread sleepForTimeInterval:0.1f];
     }];
@@ -1583,7 +1614,7 @@
     NSIndexSet *indexes = self.filesTree.selectedRowIndexes.copy;
     NSArray *allImagesForVideo = [self arrayOfCGImageRefsForStackVideo:indexes];
     NSString *fullPath = [NSString stringWithFormat:@"%@%@.mp4", self.fileURL.path, [NSDate date].description];
-    [IMCVideoCreator writeImagesAsMovie:allImagesForVideo toPath:fullPath size:_openGlViewPort.bounds.size duration:4];
+    [IMCVideoCreator writeImagesAsMovie:allImagesForVideo toPath:fullPath size:[self sizeFrame] duration:4];
 }
 
 -(NSArray *)arrayOfCGImageRefsForSliceVideo:(NSIndexSet *)indexes{//arrayOfCGImageRefsForStackVideo    
@@ -1595,6 +1626,7 @@
         [cursorSet addIndex:index];
         [self.filesTree selectRowIndexes:[NSIndexSet indexSetWithIndex:index] byExtendingSelection:NO];
         [self.openGlViewPort refresh];
+        self.metalViewDelegate.forceColorBufferRecalculation = YES;
         [allImages addObject:(id)[self imageForVideo]];//Careful, we are passing a CF type to NSArray. Cast to avoid warning. Handle with care
         [NSThread sleepForTimeInterval:0.1f];
     }];
@@ -1605,7 +1637,7 @@
     NSIndexSet *indexes = self.filesTree.selectedRowIndexes.copy;
     NSArray *allImagesForVideo = [self arrayOfCGImageRefsForSliceVideo:indexes];
     NSString *fullPath = [NSString stringWithFormat:@"%@%@.mp4", self.fileURL.path, [NSDate date].description];
-    [IMCVideoCreator writeImagesAsMovie:allImagesForVideo toPath:fullPath size:_openGlViewPort.bounds.size duration:4];
+    [IMCVideoCreator writeImagesAsMovie:allImagesForVideo toPath:fullPath size:[self sizeFrame] duration:4];
 }
 
 #pragma mark Segment Cells and pixel classification
@@ -1820,6 +1852,13 @@
 }
 -(IBAction)removeMetric:(id)sender{
     [self.metricsController removeMetric];
+}
+
+#pragma mark flip compensation
+-(IBAction)flipCompensation:(NSButton *)sender{
+    for (IMCImageStack *stack in self.dataCoordinator.inOrderImageWrappers)
+        stack.usingCompensated = (BOOL)sender.state;
+    [self refresh];
 }
 
 #pragma mark

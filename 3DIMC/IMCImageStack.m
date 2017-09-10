@@ -247,7 +247,7 @@
 
 -(NSInteger)valueAtMilenile:(int)milenile_index forChannel:(NSInteger)channel{
     //TODO if image is very big this function crashes. Probably too much space to load in the stack
-    float *data = self.stackData[channel];
+    float *data = self.usingCompensated ? self.compensatedData[channel] : self.stackData[channel];
     NSInteger * stack = calloc(self.numberOfPixels, sizeof(NSInteger));
     for (NSInteger i = 0; i < self.numberOfPixels; i++) {
         stack[i] = (NSInteger)data[i];
@@ -302,14 +302,26 @@
     if(cachedSettings)
         if (cachedSettings[index])
             return cachedSettings[index][5];
-    if(self.stackData[index])
-        return [self maxInBuffer:self.stackData[index]];
+    float ** data = self.usingCompensated ? self.compensatedData : self.stackData;
+    if(data)
+        if(data[index])
+            return [self maxInBuffer:self.stackData[index]];
     return 255.0f;
 }
 
 -(void)recalculateChannelAtIndex:(NSInteger)index{
+    
+    float ** data = self.usingCompensated == YES? self.compensatedData : self.stackData;
+    
+    if(data == NULL && self.usingCompensated){
+        [self compensateTheData];
+        data = self.compensatedData;
+    }else if(data == NULL){
+        return;
+    }
+    
     float * settings = cachedSettings[index];
-    float * vals = self.stackData[index];
+    float * vals = data[index];
     
     if(!vals || !settings)return;
     
@@ -336,10 +348,15 @@
         NSUInteger cached = 0;
         NSInteger pixs = self.numberOfPixels;
         
-        if(cachedValues != NULL){
-            for (int i = 0; i < self.channels.count; i++) {
+        for (int i = 0; i < self.channels.count; i++) {
+            if(cachedValues != NULL){
                 if(cachedValues[i] != NULL){
                     cached += pixs * sizeof(UInt8);
+                }
+            }
+            if(self.compensatedData != NULL){
+                if(self.compensatedData[i] != NULL){
+                    cached += pixs * sizeof(float);
                 }
             }
         }
@@ -358,11 +375,13 @@
 -(UInt8 *)getCachedBufferForIndex:(NSInteger)index{
     if(cachedValues == NULL || cachedSettings == NULL)
         [self allocateCacheBufferContainers];
+    
     if(cachedValues[index] == NULL || cachedSettings[index] == NULL)
         [self allocateCacheBuffersForIndex:index withPixels:self.numberOfPixels];
-    if([self compareCachedSettingsWithCurrentForIndex:index] == YES){
+    
+    if([self compareCachedSettingsWithCurrentForIndex:index] == YES)
         [self recalculateChannelAtIndex:index];
-    }
+
     return cachedValues[index];
 }
 
@@ -605,6 +624,132 @@
     return mask.jsonDictionary;
 }
 
+#pragma mark compensation
+
+-(NSString *)compMatrix{
+    NSError *error;
+    NSString *path = [[NSBundle mainBundle]pathForResource:@"SpillOverTableCleanWithZerosBioRXivsIMC" ofType:@"txt"];
+    NSString *matrix = [[NSString alloc]initWithContentsOfFile:path encoding:NSUTF8StringEncoding error:&error];
+    if(error)NSLog(@"Error %@", error.description);
+    return matrix;
+}
+
+-(float *)matrixNumbers:(NSString *)matrix{
+    NSArray *lines = [matrix componentsSeparatedByString:@"\r"];
+    float * numbers = malloc(pow(lines.count - 1, 2) * sizeof(float));
+    
+    NSInteger counter = 0;
+    for (NSString *line in lines) {
+        if(counter > 0){
+            NSArray *comps = [line componentsSeparatedByString:@"\t"];
+            for (NSInteger i = 1; i < comps.count; i++) {
+                float value = [[comps objectAtIndex:i]floatValue];
+                numbers[(counter - 1) * (lines.count - 1) + (i - 1)] = value;
+            }
+        }
+        counter++;
+    }
+    return numbers;
+}
+
+-(NSArray *)isotopesList:(NSString *)matrix{
+    NSArray *arrayLines = [matrix componentsSeparatedByString:@"\r"];
+    if(arrayLines.count > 0){
+        NSString *firstLine = arrayLines.firstObject;
+        NSArray *list = [firstLine componentsSeparatedByString:@"\t"];
+        return [list subarrayWithRange:NSMakeRange(1, list.count - 1)];
+    }
+    return nil;
+}
+
+-(NSInteger)indexOfChannel:(NSString *)chan inIsotopesList:(NSArray *)list{
+    for (NSString *isot in list) {
+        if ([chan rangeOfString:isot].length > 0) {
+            return [list indexOfObject:isot];
+        }
+    }
+    return -1;
+}
+
+-(void)compensateTheData{
+    //[self getMetalForConjugates];
+    if(self.compensatedData){
+        for (NSInteger i = 0; i < self.channels.count; i++)
+            if(self.compensatedData[i])
+                free(self.compensatedData[i]);
+    }
+    self.compensatedData = (float **)calloc(self.channels.count, sizeof(float *));
+    for (NSInteger i = 0; i < self.channels.count; i++)
+        self.compensatedData[i] = calloc(self.numberOfPixels, sizeof(float));
+    
+    NSString *matrix = [self compMatrix];
+    NSArray *listIsotopes = [self isotopesList:matrix];
+    NSInteger countIsotopes = listIsotopes.count;
+    float * matrixNumbers = [self matrixNumbers:matrix];
+    
+    NSInteger *indexes = calloc(self.channels.count, sizeof(NSInteger));
+    NSInteger *reverseIndexes = calloc(countIsotopes, sizeof(NSInteger));
+    for (int i = 0; i < countIsotopes; i++)
+        reverseIndexes[i] = -1;
+    
+    for (NSString *chan in self.origChannels) {
+        NSInteger i = [self indexOfChannel:chan inIsotopesList:listIsotopes];
+        if(i<0)
+            i = [self indexOfChannel:[self.channels objectAtIndex:[self.origChannels indexOfObject:chan]] inIsotopesList:listIsotopes];
+        indexes[[self.origChannels indexOfObject:chan]] = i;
+        if(i >= 0)
+            reverseIndexes[i] = [self.origChannels indexOfObject:chan];
+    }
+//    
+//    for (int i = 0; i < self.origChannels.count; i++)
+//        printf("%i: %li\n", i, indexes[i]);
+//    printf("\n\n");
+//    for (int i = 0; i < countIsotopes; i++)
+//        printf("%i: %li\n", i, reverseIndexes[i]);
+    
+    NSInteger channelsCount = self.channels.count;
+    NSInteger pixelsCount = self.numberOfPixels;
+    
+    float * factors = calloc(countIsotopes, sizeof(float));
+    NSLog(@"A");
+    for (NSInteger j = 0; j < channelsCount; j++) {
+        
+        NSInteger index = indexes[j];
+        NSInteger stride = index * countIsotopes;
+        
+        for (NSInteger n = 0; n < countIsotopes; n++) {
+            if(index == n || reverseIndexes[n] < 0 || reverseIndexes[n] == j)
+                factors[n] = .0f;
+            factors[n] = matrixNumbers[stride + indexes[n]];
+        }
+        
+        if(index < 0)
+            memcpy(self.compensatedData[j], self.stackData[j], sizeof(float) * pixelsCount);
+        else
+            for (NSInteger i = 0; i < pixelsCount; i++) {
+                float val = self.stackData[j][i];
+                for (NSInteger n = 0; n < countIsotopes; n++){
+                    if(reverseIndexes[n] >= 0)
+                        val -= self.stackData[reverseIndexes[n]][i] * factors[n];
+                    if(val <= 0)
+                        break;
+                }
+                self.compensatedData[j][i] = MAX(0, val);
+            }
+    }
+    NSLog(@"C");
+    free(indexes);
+    free(reverseIndexes);
+    free(factors);
+}
+
+-(void)setUsingCompensated:(BOOL)usingCompensated{
+    _usingCompensated = usingCompensated;
+    [self clearCacheBuffers];
+}
+
+#pragma mark load unload
+
 -(void)loadLayerDataWithBlock:(void (^)())block{
     [self.fileWrapper loadLayerDataWithBlock:block];
 }
@@ -644,6 +789,16 @@
         }
         free(self.stackData);
         self.stackData = NULL;
+    }
+    if(self.compensatedData != NULL){
+        for (int i = 0; i < self.channels.count; i++) {
+            if(self.compensatedData[i] != NULL){
+                free(self.compensatedData[i]);
+                self.compensatedData[i] = NULL;
+            }
+        }
+        free(self.compensatedData);
+        self.compensatedData = NULL;
     }
     [self clearCacheBuffers];
 }
