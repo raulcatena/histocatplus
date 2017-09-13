@@ -61,6 +61,7 @@
 }
 
 -(id)tableView:(NSTableView *)tableView objectValueForTableColumn:(nullable NSTableColumn *)tableColumn row:(NSInteger)row{
+    NSLog(@"AAAA");
     IMCImageStack *stack = [self.delegate.involvedStacksForMetadata objectAtIndex:row];
     switch ([tableView columnWithIdentifier:tableColumn.identifier]) {
         case 0:
@@ -76,6 +77,8 @@
             break;
     }
     IMCLoader *loader = [self.delegate dataCoordinator];
+    if(!tableColumn.identifier)
+        return @"";
     NSString *key = loader.metadata[JSON_METADATA_KEYS][[tableView columnWithIdentifier:tableColumn.identifier] - METADATA_GIVEN_COLUMNS_OFFSET];
     if([stack isMemberOfClass:[IMCPixelMap class]])
         stack = [(IMCPixelMap *)stack imageStack];

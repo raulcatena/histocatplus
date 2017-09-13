@@ -626,14 +626,6 @@
 
 #pragma mark compensation
 
--(NSString *)compMatrix{
-    NSError *error;
-    NSString *path = [[NSBundle mainBundle]pathForResource:@"SpillOverTableCleanWithZerosBioRXivsIMC" ofType:@"txt"];
-    NSString *matrix = [[NSString alloc]initWithContentsOfFile:path encoding:NSUTF8StringEncoding error:&error];
-    if(error)NSLog(@"Error %@", error.description);
-    return matrix;
-}
-
 -(float *)matrixNumbers:(NSString *)matrix{
     NSArray *lines = [matrix componentsSeparatedByString:@"\r"];
     float * numbers = malloc(pow(lines.count - 1, 2) * sizeof(float));
@@ -682,7 +674,7 @@
     for (NSInteger i = 0; i < self.channels.count; i++)
         self.compensatedData[i] = calloc(self.numberOfPixels, sizeof(float));
     
-    NSString *matrix = [self compMatrix];
+    NSString *matrix = [self.fileWrapper.coordinator compMatrix];
     NSArray *listIsotopes = [self isotopesList:matrix];
     NSInteger countIsotopes = listIsotopes.count;
     float * matrixNumbers = [self matrixNumbers:matrix];
@@ -711,33 +703,38 @@
     NSInteger pixelsCount = self.numberOfPixels;
     
     float * factors = calloc(countIsotopes, sizeof(float));
-    NSLog(@"A");
+    NSLog(@"Start comp");
     for (NSInteger j = 0; j < channelsCount; j++) {
         
         NSInteger index = indexes[j];
         NSInteger stride = index * countIsotopes;
         
-        for (NSInteger n = 0; n < countIsotopes; n++) {
+        for (NSInteger n = 0; n < countIsotopes; n++)
             if(index == n || reverseIndexes[n] < 0 || reverseIndexes[n] == j)
                 factors[n] = .0f;
-            factors[n] = matrixNumbers[stride + indexes[n]];
-        }
+            else
+                factors[n] = matrixNumbers[stride + indexes[n]];
         
         if(index < 0)
-            memcpy(self.compensatedData[j], self.stackData[j], sizeof(float) * pixelsCount);
+            memcpy(_compensatedData[j], _stackData[j], sizeof(float) * pixelsCount);
+        
         else
             for (NSInteger i = 0; i < pixelsCount; i++) {
-                float val = self.stackData[j][i];
-                for (NSInteger n = 0; n < countIsotopes; n++){
-                    if(reverseIndexes[n] >= 0)
-                        val -= self.stackData[reverseIndexes[n]][i] * factors[n];
-                    if(val <= 0)
-                        break;
+                float val = _stackData[j][i];
+                if(val > 0){
+                    for (NSInteger n = 0; n < countIsotopes; n++){
+                        if(factors[n] > 0)
+                            val -= _stackData[reverseIndexes[n]][i] * factors[n];
+                        if(val <= 0){
+                            val = 0;
+                            break;
+                        }
+                    }
                 }
-                self.compensatedData[j][i] = MAX(0, val);
+                _compensatedData[j][i] = val;
             }
     }
-    NSLog(@"C");
+    NSLog(@"Finished comp");
     free(indexes);
     free(reverseIndexes);
     free(factors);

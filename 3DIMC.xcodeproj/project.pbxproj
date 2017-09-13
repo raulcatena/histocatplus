@@ -708,6 +708,15 @@
 		0DC0E4911F64AEF700DD1B62 /* SpillOverTableCleanWithZerosBioRXivsIMC.txt in Resources */ = {isa = PBXBuildFile; fileRef = 0DC0E4901F64AEF700DD1B62 /* SpillOverTableCleanWithZerosBioRXivsIMC.txt */; };
 		0DC0E4921F64AEF700DD1B62 /* SpillOverTableCleanWithZerosBioRXivsIMC.txt in Resources */ = {isa = PBXBuildFile; fileRef = 0DC0E4901F64AEF700DD1B62 /* SpillOverTableCleanWithZerosBioRXivsIMC.txt */; };
 		0DC0E4931F64AEF700DD1B62 /* SpillOverTableCleanWithZerosBioRXivsIMC.txt in Resources */ = {isa = PBXBuildFile; fileRef = 0DC0E4901F64AEF700DD1B62 /* SpillOverTableCleanWithZerosBioRXivsIMC.txt */; };
+		0DC0E4981F65336100DD1B62 /* IMCCompensation.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DC0E4961F65336100DD1B62 /* IMCCompensation.m */; };
+		0DC0E4991F65336100DD1B62 /* IMCCompensation.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DC0E4961F65336100DD1B62 /* IMCCompensation.m */; };
+		0DC0E49A1F65336100DD1B62 /* IMCCompensation.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DC0E4961F65336100DD1B62 /* IMCCompensation.m */; };
+		0DC0E49B1F65336100DD1B62 /* IMCCompensation.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0DC0E4971F65336100DD1B62 /* IMCCompensation.xib */; };
+		0DC0E49C1F65336100DD1B62 /* IMCCompensation.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0DC0E4971F65336100DD1B62 /* IMCCompensation.xib */; };
+		0DC0E49D1F65336100DD1B62 /* IMCCompensation.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0DC0E4971F65336100DD1B62 /* IMCCompensation.xib */; };
+		0DC0E4A31F66D18B00DD1B62 /* 201806_spillmat.txt in Resources */ = {isa = PBXBuildFile; fileRef = 0DC0E4A21F66D18B00DD1B62 /* 201806_spillmat.txt */; };
+		0DC0E4A41F66D18B00DD1B62 /* 201806_spillmat.txt in Resources */ = {isa = PBXBuildFile; fileRef = 0DC0E4A21F66D18B00DD1B62 /* 201806_spillmat.txt */; };
+		0DC0E4A51F66D18B00DD1B62 /* 201806_spillmat.txt in Resources */ = {isa = PBXBuildFile; fileRef = 0DC0E4A21F66D18B00DD1B62 /* 201806_spillmat.txt */; };
 		0DC508CE1F5F3B3400C1E9D8 /* IMCMtkView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DC508CD1F5F3B3400C1E9D8 /* IMCMtkView.m */; };
 		0DC508CF1F5F3B3400C1E9D8 /* IMCMtkView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DC508CD1F5F3B3400C1E9D8 /* IMCMtkView.m */; };
 		0DC508D01F5F3B3400C1E9D8 /* IMCMtkView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DC508CD1F5F3B3400C1E9D8 /* IMCMtkView.m */; };
@@ -1047,6 +1056,10 @@
 		0DC0E4881F63F2C500DD1B62 /* SpillOverTableCleanWithZeros.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = SpillOverTableCleanWithZeros.txt; sourceTree = "<group>"; };
 		0DC0E48C1F64944C00DD1B62 /* SpillOverTableCleanWithZerosBioRXivs.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = SpillOverTableCleanWithZerosBioRXivs.txt; sourceTree = "<group>"; };
 		0DC0E4901F64AEF700DD1B62 /* SpillOverTableCleanWithZerosBioRXivsIMC.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = SpillOverTableCleanWithZerosBioRXivsIMC.txt; sourceTree = "<group>"; };
+		0DC0E4951F65336100DD1B62 /* IMCCompensation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IMCCompensation.h; sourceTree = "<group>"; };
+		0DC0E4961F65336100DD1B62 /* IMCCompensation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IMCCompensation.m; sourceTree = "<group>"; };
+		0DC0E4971F65336100DD1B62 /* IMCCompensation.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = IMCCompensation.xib; sourceTree = "<group>"; };
+		0DC0E4A21F66D18B00DD1B62 /* 201806_spillmat.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = 201806_spillmat.txt; sourceTree = "<group>"; };
 		0DC508BA1F5F35C400C1E9D8 /* histoCAT++-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "histoCAT++-Bridging-Header.h"; sourceTree = "<group>"; };
 		0DC508BB1F5F35C400C1E9D8 /* histoCAT++3D-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "histoCAT++3D-Bridging-Header.h"; sourceTree = "<group>"; };
 		0DC508BC1F5F35C500C1E9D8 /* Node.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Node.swift; sourceTree = "<group>"; };
@@ -1319,7 +1332,6 @@
 		0D00ACA71E65D6B800887057 /* ClassifyPixels */ = {
 			isa = PBXGroup;
 			children = (
-				0DDB4BE61EFB0EEF000C1656 /* New Group */,
 				0D04DBEE1EEABA4500B16BAB /* Metrics */,
 				0DB4004B1E534CA700179ECB /* RRFF */,
 				0DB400421E53072500179ECB /* CellSegmentation */,
@@ -1696,6 +1708,7 @@
 				0DA2B8281E70A30100EAA438 /* CombineMasks */,
 				0DA2B8301E72E13E00EAA438 /* ClassifyCells */,
 				0DA8ACF91E40AE07008194C6 /* 3D */,
+				0DDB4BE61EFB0EEF000C1656 /* Compensation */,
 				0D00ACA71E65D6B800887057 /* ClassifyPixels */,
 				0DB37CDE1E304D25002975E2 /* AppDelegate.h */,
 				0DB37CDF1E304D25002975E2 /* AppDelegate.mm */,
@@ -1732,6 +1745,7 @@
 		0DB37CF51E304D2E002975E2 /* Loading */ = {
 			isa = PBXGroup;
 			children = (
+				0DC0E4A21F66D18B00DD1B62 /* 201806_spillmat.txt */,
 				0DC0E4881F63F2C500DD1B62 /* SpillOverTableCleanWithZeros.txt */,
 				0DC0E48C1F64944C00DD1B62 /* SpillOverTableCleanWithZerosBioRXivs.txt */,
 				0DC0E4901F64AEF700DD1B62 /* SpillOverTableCleanWithZerosBioRXivsIMC.txt */,
@@ -1955,11 +1969,14 @@
 			name = RRFF;
 			sourceTree = "<group>";
 		};
-		0DDB4BE61EFB0EEF000C1656 /* New Group */ = {
+		0DDB4BE61EFB0EEF000C1656 /* Compensation */ = {
 			isa = PBXGroup;
 			children = (
+				0DC0E4951F65336100DD1B62 /* IMCCompensation.h */,
+				0DC0E4961F65336100DD1B62 /* IMCCompensation.m */,
+				0DC0E4971F65336100DD1B62 /* IMCCompensation.xib */,
 			);
-			name = "New Group";
+			name = Compensation;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -2080,6 +2097,7 @@
 				0D00AC521E64D53400887057 /* libopencv_features2d.3.2.0.dylib in Resources */,
 				0D00AC531E64D53400887057 /* libopencv_features2d.3.2.dylib in Resources */,
 				0D00AC541E64D53400887057 /* libopencv_features2d.dylib in Resources */,
+				0DC0E49C1F65336100DD1B62 /* IMCCompensation.xib in Resources */,
 				0D00AC551E64D53400887057 /* libopencv_flann.3.2.0.dylib in Resources */,
 				0D00AC561E64D53400887057 /* libopencv_flann.3.2.dylib in Resources */,
 				0D00AC571E64D53400887057 /* libopencv_flann.dylib in Resources */,
@@ -2157,6 +2175,7 @@
 				0DA2B8261E70033E00EAA438 /* IMCPaintMask.xib in Resources */,
 				0D00ACC11E678E4300887057 /* cp_pmaps_only_mask_temp in Resources */,
 				0D00AC951E64D53400887057 /* 32.jpg in Resources */,
+				0DC0E4A41F66D18B00DD1B62 /* 201806_spillmat.txt in Resources */,
 				0D00AC961E64D53400887057 /* 64.jpg in Resources */,
 				0D00AC971E64D53400887057 /* 1024.jpg in Resources */,
 				0D00AC981E64D53400887057 /* MainMenu.xib in Resources */,
@@ -2182,6 +2201,7 @@
 				0D9F310F1EF909CF00E1E083 /* libopencv_features2d.3.2.0.dylib in Resources */,
 				0D9F31101EF909CF00E1E083 /* libopencv_features2d.3.2.dylib in Resources */,
 				0D9F31111EF909CF00E1E083 /* libopencv_features2d.dylib in Resources */,
+				0DC0E49D1F65336100DD1B62 /* IMCCompensation.xib in Resources */,
 				0D9F31121EF909CF00E1E083 /* libopencv_flann.3.2.0.dylib in Resources */,
 				0D9F31131EF909CF00E1E083 /* libopencv_flann.3.2.dylib in Resources */,
 				0D9F31141EF909CF00E1E083 /* libopencv_flann.dylib in Resources */,
@@ -2259,6 +2279,7 @@
 				0D9F31591EF909CF00E1E083 /* IMCPaintMask.xib in Resources */,
 				0D9F315A1EF909CF00E1E083 /* cp_pmaps_only_mask_temp in Resources */,
 				0D9F315B1EF909CF00E1E083 /* 32.jpg in Resources */,
+				0DC0E4A51F66D18B00DD1B62 /* 201806_spillmat.txt in Resources */,
 				0D9F315C1EF909CF00E1E083 /* 64.jpg in Resources */,
 				0D9F315D1EF909CF00E1E083 /* 1024.jpg in Resources */,
 				0D9F315E1EF909CF00E1E083 /* MainMenu.xib in Resources */,
@@ -2284,6 +2305,7 @@
 				0D6627371E69A82800BC2C92 /* IMCPixelClassificationBatch.xib in Resources */,
 				0D1557461E5D876900C27064 /* libopencv_features2d.3.2.dylib in Resources */,
 				0D1557471E5D876900C27064 /* libopencv_features2d.dylib in Resources */,
+				0DC0E49B1F65336100DD1B62 /* IMCCompensation.xib in Resources */,
 				0D1557481E5D876900C27064 /* libopencv_flann.3.2.0.dylib in Resources */,
 				0D1557491E5D876900C27064 /* libopencv_flann.3.2.dylib in Resources */,
 				0D15574A1E5D876900C27064 /* libopencv_flann.dylib in Resources */,
@@ -2361,6 +2383,7 @@
 				0DA2B8251E70033E00EAA438 /* IMCPaintMask.xib in Resources */,
 				0D00ACC01E678E4300887057 /* cp_pmaps_only_mask_temp in Resources */,
 				0DB37D4C1E36615C002975E2 /* 32.jpg in Resources */,
+				0DC0E4A31F66D18B00DD1B62 /* 201806_spillmat.txt in Resources */,
 				0DB37D4D1E36615C002975E2 /* 64.jpg in Resources */,
 				0DB37D511E36615C002975E2 /* 1024.jpg in Resources */,
 				0DB37CEE1E304D25002975E2 /* MainMenu.xib in Resources */,
@@ -2383,6 +2406,7 @@
 				0D00ABC71E64D53400887057 /* IMCMathOperation.m in Sources */,
 				0DA2B8271E7043A900EAA438 /* IMCPaintMask.m in Sources */,
 				0DC508D41F5F4F6B00C1E9D8 /* AAPLMathUtilities.m in Sources */,
+				0DC0E4991F65336100DD1B62 /* IMCCompensation.m in Sources */,
 				0D00ABC81E64D53400887057 /* NSColor+Utilities.m in Sources */,
 				0D00ABC91E64D53400887057 /* IMCWorkspaceSelector.m in Sources */,
 				0DA630531F5EE7D20032E102 /* shaders.metal in Sources */,
@@ -2496,6 +2520,7 @@
 				0D9F306A1EF909CF00E1E083 /* IMCMathOperation.m in Sources */,
 				0D9F306B1EF909CF00E1E083 /* IMCPaintMask.m in Sources */,
 				0DC508D51F5F4F6B00C1E9D8 /* AAPLMathUtilities.m in Sources */,
+				0DC0E49A1F65336100DD1B62 /* IMCCompensation.m in Sources */,
 				0D9F306C1EF909CF00E1E083 /* NSColor+Utilities.m in Sources */,
 				0D9F306D1EF909CF00E1E083 /* IMCWorkspaceSelector.m in Sources */,
 				0D9F306E1EF909CF00E1E083 /* IMCMasks.m in Sources */,
@@ -2609,6 +2634,7 @@
 				0DB400571E534CCF00179ECB /* IMCMathOperation.m in Sources */,
 				0DA2B8231E70033E00EAA438 /* IMCPaintMask.m in Sources */,
 				0DC508D31F5F4F6B00C1E9D8 /* AAPLMathUtilities.m in Sources */,
+				0DC0E4981F65336100DD1B62 /* IMCCompensation.m in Sources */,
 				0DB37D411E360D31002975E2 /* NSColor+Utilities.m in Sources */,
 				0DAA1EFE1E57AECD00579003 /* IMCWorkspaceSelector.m in Sources */,
 				0DA630521F5EE7D20032E102 /* shaders.metal in Sources */,

@@ -36,6 +36,6 @@
 -(float *)zValues;
 -(float *)thicknesses;
 -(float)totalThickness;
--(void)meanBlurModelWithKernel:(NSInteger)kernel mode:(NSInteger)mode;
+-(void)meanBlurModelWithKernel:(NSInteger)kernel forChannels:(NSIndexSet *)channels mode:(NSInteger)mode;
 
 @end

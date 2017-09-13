@@ -158,6 +158,10 @@
 #define THREE_D_POS @"3DPOS"
 #define THREE_D_ROT @"3DROT"
 
+//COMPENSTION MATRIX
+#define COMP_MATRIX @"COMP_MATRIX"
+
+
 //TypeDefs
 typedef enum
 {

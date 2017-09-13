@@ -1141,7 +1141,8 @@
         float sumSqAll = [IMCUtils sumOfSquareDistancesPointArray:array.firstObject] + [IMCUtils sumOfSquareDistancesPointArray:array.lastObject];
         //        float a = [IMCUtils nomeacuerdolocambiare:array.firstObject array2:array.lastObject];
         //        float b = [IMCUtils nomeacuerdolocambiareWeighter:array.firstObject array2:array.lastObject];
-        [str appendString:[NSString stringWithFormat:@"Ward: %f\nMIV: %f\nSumSq %f\n", ward, mIV, sumSqAll]];
+        if(!VIEWER_ONLY && !VIEWER_HISTO)
+            [str appendString:[NSString stringWithFormat:@"Ward: %f\nMIV: %f\nSumSq %f\n", ward, mIV, sumSqAll]];
         
     }
     if(indexSet.count > 1){

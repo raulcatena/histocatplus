@@ -151,8 +151,8 @@
 
 #pragma mark blur
 
--(void)meanBlurModelWithKernel:(NSInteger)kernel mode:(NSInteger)mode{
-    threeDMeanBlur(self.allBuffer, self.width, self.height, self.images, self.channels, mode, self.showMask);
+-(void)meanBlurModelWithKernel:(NSInteger)kernel forChannels:(NSIndexSet *)channels  mode:(NSInteger)mode{
+    threeDMeanBlur(self.allBuffer, self.width, self.height, self.images, channels, mode, self.showMask);
 }
 
 #pragma mark Z handling

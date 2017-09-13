@@ -291,14 +291,14 @@
                                                     [NSString stringWithFormat:@"Convert file%@ to TIFF...", rows.count > 1?@"s":@""],
                                                     @"Add channels from TSV file (TSV or TXT)...",
                                                     ]];
-                if(!VIEWER_ONLY)[addingTitles addObject:@"Add to 3D render..."];
+                if(!VIEWER_ONLY && !VIEWER_HISTO)[addingTitles addObject:@"Add to 3D render..."];
                 [addingSelectors addObjectsFromArray:@[
                                                        @"removeFiles:",
                                                        @"saveFiles:",
                                                        @"tiffConvert:",
                                                        @"addChannelsFromTSV:",
                                                        ]];
-                if(!VIEWER_ONLY)[addingSelectors addObject:@"addBuffersForStackImages:"];
+                if(!VIEWER_ONLY && !VIEWER_HISTO)[addingSelectors addObject:@"addBuffersForStackImages:"];
                 
                 generFuncs = YES;
             }else{
@@ -403,12 +403,12 @@
                             @"Add Metric to Metadata...",
                             ].mutableCopy;
         
-        if(!VIEWER_ONLY)[titles addObject:@"Add to 3D render..."];
+        if(!VIEWER_ONLY && !VIEWER_HISTO)[titles addObject:@"Add to 3D render..."];
         
         NSMutableArray *selectors = @[@"deleteChannels:", @"addChannelsInline:", @"addChannelsBeggining:", @"addChannelsEnd:", @"multiplyChannelsInline:", @"multiplyChannelsBeggining:", @"multiplyChannelsEnd:", @"applySettings:", @"applySettingsWithMax:", @"applyColors:", @"addChannelsFromTSV:", @"calcToMetadata:"
                                ].mutableCopy;
         
-        if(!VIEWER_ONLY)[selectors addObject:@"addBuffersForStackImages:"];
+        if(!VIEWER_ONLY && !VIEWER_HISTO)[selectors addObject:@"addBuffersForStackImages:"];
         
         for (NSString *title in titles) {
             NSMenuItem *menuItem = [[NSMenuItem alloc] initWithTitle:title

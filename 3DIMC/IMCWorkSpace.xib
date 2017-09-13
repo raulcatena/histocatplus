@@ -533,7 +533,7 @@
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <clipView key="contentView" id="wdH-q7-jKc">
                                                 <rect key="frame" x="1" y="0.0" width="599" height="612"/>
-                                                <autoresizingMask key="autoresizingMask"/>
+                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" autosaveColumns="NO" headerView="1r2-Np-gjj" id="Xsa-VE-4EH">
                                                         <rect key="frame" x="0.0" y="0.0" width="599" height="589"/>
@@ -1038,7 +1038,7 @@
                                             </textFieldCell>
                                         </textField>
                                         <button verticalHuggingPriority="750" misplaced="YES" id="Njm-ud-Yvc">
-                                            <rect key="frame" x="507" y="49" width="121" height="32"/>
+                                            <rect key="frame" x="474" y="49" width="121" height="32"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxY="YES"/>
                                             <buttonCell key="cell" type="push" title="Record Y" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="NUg-GY-5F3">
                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -1049,7 +1049,7 @@
                                             </connections>
                                         </button>
                                         <button verticalHuggingPriority="750" misplaced="YES" id="UEj-m5-qc6">
-                                            <rect key="frame" x="507" y="-5" width="121" height="32"/>
+                                            <rect key="frame" x="474" y="-5" width="121" height="32"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxY="YES"/>
                                             <buttonCell key="cell" type="push" title="Record Stack" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="3HO-ME-t1o">
                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -1060,7 +1060,7 @@
                                             </connections>
                                         </button>
                                         <button verticalHuggingPriority="750" misplaced="YES" id="dRh-UU-VUH">
-                                            <rect key="frame" x="507" y="23" width="121" height="32"/>
+                                            <rect key="frame" x="474" y="23" width="121" height="32"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxY="YES"/>
                                             <buttonCell key="cell" type="push" title="Record Slices" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="VRc-dN-ciy">
                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -1120,7 +1120,7 @@
                                         </button>
                                         <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" misplaced="YES" id="api-7p-VaR">
                                             <rect key="frame" x="166" y="1" width="19" height="27"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <stepperCell key="cell" continuous="YES" alignment="left" increment="0.10000000000000001" maxValue="10" doubleValue="2" id="J2R-iM-3z5"/>
                                             <connections>
                                                 <action selector="stepperZChanged:" target="-2" id="dOO-Zj-XVW"/>
@@ -1128,7 +1128,7 @@
                                         </stepper>
                                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" misplaced="YES" allowsCharacterPickerTouchBarItem="NO" id="8o3-IC-z9L">
                                             <rect key="frame" x="188" y="6" width="39" height="17"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="2.0" id="ckN-eT-Nb1">
                                                 <font key="font" metaFont="system"/>
                                                 <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -1163,6 +1163,17 @@
                                                 </segments>
                                             </segmentedCell>
                                         </segmentedControl>
+                                        <button verticalHuggingPriority="750" misplaced="YES" id="C9L-QZ-WjP">
+                                            <rect key="frame" x="586" y="49" width="72" height="32"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxY="YES"/>
+                                            <buttonCell key="cell" type="push" title="Copy" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="HK3-80-qhM">
+                                                <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                <font key="font" metaFont="system"/>
+                                            </buttonCell>
+                                            <connections>
+                                                <action selector="copy3Dpic:" target="-2" id="eYG-bx-TNZ"/>
+                                            </connections>
+                                        </button>
                                     </subviews>
                                 </view>
                             </tabViewItem>

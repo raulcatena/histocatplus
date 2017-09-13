@@ -199,6 +199,13 @@
                                     <action selector="cleanUpNamesWithAirlab:" target="-1" id="qnP-sX-4Wb"/>
                                 </connections>
                             </menuItem>
+                            <menuItem title="Compensation Matrix..." id="A01-Vz-uED" userLabel="Compensation">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="compensationMatrix:" target="-1" id="PpZ-Af-cMZ"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem isSeparatorItem="YES" id="0LH-pR-0NT"/>
                             <menuItem title="Find" id="4EN-yA-p0u">
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <menu key="submenu" title="Find" id="1b7-l0-nxx">
@@ -683,7 +690,7 @@
                         </items>
                     </menu>
                 </menuItem>
-                <menuItem title="Analysis" id="Xfh-ot-dQ7" userLabel="Analysis">
+                <menuItem title="Analysis" hidden="YES" id="Xfh-ot-dQ7" userLabel="Analysis">
                     <modifierMask key="keyEquivalentModifierMask"/>
                     <menu key="submenu" title="Analysis" id="LsA-79-Ha9">
                         <items>
@@ -760,6 +767,76 @@
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <connections>
                                     <action selector="pasteTrainingSettings:" target="-1" id="HdU-IK-Wpx"/>
+                                </connections>
+                            </menuItem>
+                        </items>
+                    </menu>
+                </menuItem>
+                <menuItem title="Analysis" id="ent-Jf-hqe" userLabel="Analysis">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <menu key="submenu" title="Analysis" id="lFX-wf-QeE">
+                        <items>
+                            <menuItem title="New Mask (ML)..." id="hkf-sx-j4t" userLabel="Pixel Classification...">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="pixelClassify:" target="-1" id="vhf-15-snR"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="New Mask by Thresholding..." id="YsM-j6-We2" userLabel="Pixel Classification...">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="thresholdMask:" target="-1" id="BkW-tM-33r"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="New Manual Mask..." id="hmE-xS-cbC" userLabel="Pixel Classification...">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="manualMask:" target="-1" id="JoQ-jV-c3O"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="New Cell Classification..." id="aWS-yk-k6f" userLabel="Pixel Classification...">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="cellClassification:" target="-1" id="bFh-ZQ-7ff"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem isSeparatorItem="YES" id="TRa-el-eSZ"/>
+                            <menuItem title="Mask (ML) Batch..." id="ckp-Y9-2Q7" userLabel="Pixel Classification Batch...">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="pixelClassificatonBatch:" target="-1" id="S3g-BQ-yg7"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Threshold Masks Batch..." id="Yna-Lr-zTA" userLabel="Pixel Classification Batch...">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="thresholdMaskBatch:" target="-1" id="Ir2-tl-MTf"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Cell Classification Batch..." id="dYp-N1-g4R" userLabel="Pixel Classification Batch...">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="cellClassificationBatch:" target="-1" id="eVC-Pe-khb"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem isSeparatorItem="YES" id="4Sg-Ys-XYn"/>
+                            <menuItem title="Combine Masks..." id="0wm-9z-kF3" userLabel="Pixel Classification Batch...">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="combineMasks:" target="-1" id="dxz-7g-pvz"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem isSeparatorItem="YES" id="xAw-3R-rsc"/>
+                            <menuItem title="Copy training settings..." id="sFq-vb-htQ" userLabel="CopyPixelTrainingSettings">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="copyTrainingSettings:" target="-1" id="RwO-gZ-Arb"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Paste training settings..." id="g8z-eu-cGo" userLabel="PastePixelTrainingSettings">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="pasteTrainingSettings:" target="-1" id="IzS-cw-vZj"/>
                                 </connections>
                             </menuItem>
                         </items>

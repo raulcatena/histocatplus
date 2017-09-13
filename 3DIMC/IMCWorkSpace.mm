@@ -45,12 +45,15 @@
 #import "IMCMiniRConsole.h"
 #import "IMCGGPlot.h"
 
+//Utils
 #import "NSString+MD5.h"
-
 #import "NSArray+Statistics.h"
 
 //Airlab
 #import "IMCAirLabClient.h"
+//Compensation
+#import "IMCCompensation.h"
+
 
 @interface IMCWorkSpace (){
     dispatch_queue_t threadPainting;
@@ -62,6 +65,8 @@
 @property (nonatomic, strong) NSMutableArray *batchWindows;
 @property (nonatomic, strong) IMCMiniRConsole *rMiniConsole;
 @property (nonatomic, strong) IMCMetalViewAndRenderer *metalViewDelegate;
+@property (nonatomic, assign) NSModalSession compensationSession;
+@property (nonatomic, strong) IMCCompensation * compensationHandler;
 
 @end
 
@@ -629,6 +634,16 @@
 -(IBAction)copy:(id)sender{
     [IMCFileExporter copyToClipBoardFromScroll:[self inViewScrollView] allOrZoomed:NO];
 }
+-(IBAction)copy3Dpic:(id)sender{
+    if(self.openGlViewPort){
+        NSImage *im = [self.openGlViewPort imageFromViewOld];
+        NSPasteboard *pasteboard = [NSPasteboard generalPasteboard];
+        [pasteboard clearContents];
+        [pasteboard writeObjects:@[im]];
+    }else{
+        //TODO
+    }
+}
 -(IBAction)copyCurrentVisible:(NSButton *)sender{
     [IMCFileExporter copyToClipBoardFromScroll:[self inViewScrollView] allOrZoomed:YES];
 }
@@ -769,7 +784,15 @@
                     [metrics addObject:METRIC_PROPORTION];
                     
                 default:
-                    [metrics addObjectsFromArray:@[METRIC_SHANNON, METRIC_SIMPSON, METRIC_AVERAGED_SOSQ]];
+                {
+                    if(!VIEWER_HISTO && !VIEWER_ONLY)
+                    [metrics addObjectsFromArray:@[
+                                                   METRIC_SHANNON,
+                                                   METRIC_SIMPSON,
+                                                   ]];
+                    
+                    [metrics addObject:METRIC_AVERAGED_SOSQ];
+                }
                     break;
             }
         }
@@ -1222,6 +1245,10 @@
 }
 
 -(void)refresh{
+    if(self.compensationSession)
+        [NSApp endModalSession:self.compensationSession];
+    self.compensationSession = nil;
+    
     dispatch_async(dispatch_get_main_queue(), ^{
         [self.workSpaceRefresher refresh];
         if([self.tabs.selectedTabViewItem.label isEqualToString:TAB_ID_THREED])
@@ -1470,10 +1497,10 @@
                     self.threeDProcessesIndicator.doubleValue += 100.f/total;
                 });
             }];
-            
+            [self.threeDHandler meanBlurModelWithKernel:3 forChannels:channs mode:self.cleanUpMode.selectedSegment];
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self calculateMemory];
-                [self.threeDHandler meanBlurModelWithKernel:3 mode:self.cleanUpMode.selectedSegment];
+                self.threeDProcessesIndicator.doubleValue = 0.0f;
                 [self.openGlViewPort setNeedsDisplay:YES];
                 sender.enabled = YES;
             });
@@ -1854,16 +1881,34 @@
     [self.metricsController removeMetric];
 }
 
-#pragma mark flip compensation
+#pragma mark compensation
 -(IBAction)flipCompensation:(NSButton *)sender{
     for (IMCImageStack *stack in self.dataCoordinator.inOrderImageWrappers)
         stack.usingCompensated = (BOOL)sender.state;
     [self refresh];
 }
 
+-(IBAction)compensationMatrix:(id)sender{
+    if(!self.compensationSession){
+        self.compensationHandler = [[IMCCompensation alloc]initWithDataCoordinator:self.dataCoordinator];
+        self.compensationHandler.window.delegate = self;
+        self.compensationSession = [NSApp beginModalSessionForWindow:self.compensationHandler.window];
+    }
+}
+-(BOOL)windowShouldClose:(id)sender{
+    [NSApp endModalSession:self.compensationSession];
+    self.compensationHandler = nil;
+    self.compensationSession = nil;
+    return YES;
+}
+
 #pragma mark
 -(void)cleanUpNamesWithAirlab:(id)sender{
     [IMCAirLabClient getInfoClones:self.inScopeImages];
+}
+
+-(void)close{
+    [super close];
 }
 
 #pragma mark close things properly
@@ -1873,5 +1918,6 @@
             [wrapp unLoadLayerDataWithBlock:nil];
     }
 }
+
 
 @end

@@ -264,8 +264,8 @@ bool heightDescriptor[] = {
                                 buff[cursor + internalStride + 1] += chanData[pix] * colors[idx * 3];
                                 buff[cursor + internalStride + 2] += chanData[pix] * colors[idx * 3 + 1];
                                 buff[cursor + internalStride + 3] += chanData[pix] * colors[idx * 3 + 2];
-                                buff[cursor + internalStride + 4] = (float)(internalCursor % _renderWidth);
-                                buff[cursor + internalStride + 5] = (float)(internalCursor /_renderWidth);
+                                buff[cursor + internalStride + 4] = internalCursor % _renderWidth;
+                                buff[cursor + internalStride + 5] = internalCursor /_renderWidth;
                                 buff[cursor + internalStride + 6] = z;
                                 
                                 //Filters

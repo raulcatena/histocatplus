@@ -235,6 +235,7 @@
         }
         if (foundWrapper == NO) {
             IMCFileWrapper *wrapperNew = [[IMCFileWrapper alloc]init];
+            wrapperNew.coordinator = self;
             wrapperNew.pathMainDoc = [[self.delegate fileURL]path];
             wrapperNew.fileHash = fileHash;
             wrapperNew.jsonDictionary = [self.filesJSONDictionary valueForKey:fileHash];
@@ -481,6 +482,19 @@
 }
 -(NSString *)rotation{
     return _jsonDescription[THREE_D_ROT];
+}
+
+#pragma mark comp matrix
+
+-(NSString *)compMatrix{
+    if(self.jsonDescription[COMP_MATRIX])
+        return self.jsonDescription[COMP_MATRIX];
+    
+    NSError *error;
+    NSString *path = [[NSBundle mainBundle]pathForResource:@"201806_spillmat" ofType:@"txt"];
+    NSString *matrix = [[NSString alloc]initWithContentsOfFile:path encoding:NSUTF8StringEncoding error:&error];
+    if(error)NSLog(@"Error %@", error.description);
+    return matrix;
 }
 
 

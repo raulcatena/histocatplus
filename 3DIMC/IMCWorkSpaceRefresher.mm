@@ -19,9 +19,12 @@
 #import "NSImage+OpenCV.h"
 #import "IMCRegistration.h"
 
+
 @interface IMCWorkSpaceRefresher(){
-    BOOL refreshing;
+    BOOL overrideRefresh;
 }
+
+
 @end
 
 @implementation IMCWorkSpaceRefresher
@@ -47,9 +50,8 @@
 }
 
 -(void)refresh{
-    if(refreshing == YES)
-        return;
-    refreshing = YES;
+    overrideRefresh = YES;
+    
     self.parent.scrollViewBlends.imageView.stacks = 0;
     
     //If mask is selected directly
@@ -124,7 +126,6 @@
     
     self.parent.channelsTag.stringValue = [NSString stringWithFormat:@"Channels (%li/%li)", self.parent.channels.selectedRowIndexes.count, [self.parent.channels numberOfRows ]];
     self.parent.objectsTag.stringValue = [NSString stringWithFormat:@"Files/Stacks/Masks (%li/%li)", self.parent.filesTree.selectedRowIndexes.count, [self.parent.filesTree numberOfChildrenOfItem:nil]];
-    refreshing = NO;
 }
 -(MaskType)maskType{
     MaskType type;
@@ -145,10 +146,13 @@
     return type;
 }
 -(void)refreshBlend{
+    overrideRefresh = NO;
+    
     if(self.parent.autoRefreshLock.state == NSOffState)
         return;
     
     if(self.parent.inScopeImages.count > 0 || self.parent.inScopeMasks > 0){
+        
         NSInteger maxW = 0, maxH = 0;
         for (IMCImageStack *stk in self.parent.inScopeImages.copy) {
             if(stk.width > maxW)maxW = stk.width;
@@ -193,6 +197,10 @@
         
         if(self.parent.blur.selectedSegment == 1)
             image = [image gaussianBlurred:(unsigned)self.parent.gaussianBlur.integerValue];
+        
+        if(overrideRefresh)
+            return;
+        
         self.parent.scrollViewBlends.imageView.image = image;
         [self scaleAndLegendChannelsBlend];
         [self intensityLegend];
@@ -210,11 +218,11 @@
 }
 
 -(void)refreshTiles{
+    overrideRefresh = NO;
+    
     if(self.parent.autoRefreshLock.state == NSOffState)
         return;
     
-    
-
     dispatch_queue_t  threadPainting = dispatch_queue_create("aQ", NULL);
     dispatch_async(threadPainting, ^{
         NSMutableArray *images = @[].mutableCopy;
@@ -236,6 +244,9 @@
             IMCImageStack *stack = (IMCImageStack *)involvedStacks.firstObject;
             NSMutableArray *ioi = self.parent.inOrderIndexes.copy;
             for (NSNumber * num in ioi) {
+                
+                if (overrideRefresh)
+                    return;
                 
                 NSColor *col = [self.parent.customChannelsDelegate collectColors][cursor];//Is like case 4 later
                 if(self.parent.colorSpaceSelector.selectedSegment == 0)col = [NSColor whiteColor];
@@ -275,6 +286,10 @@
                 [arrayAll addObject:@{@"stack":stack}];
             
             for (NSDictionary *dict in arrayAll) {
+                
+                if (overrideRefresh)
+                    return;
+                
                 NSArray *keys = @[@"comp",@"mask",@"stack"];
                 IMCImageStack *stck;
                 id obj;
@@ -309,6 +324,8 @@
         
         if(images.count > 0)
             dispatch_async(dispatch_get_main_queue(), ^{
+                if (overrideRefresh)
+                    return;
                 [self.parent.scrollViewTiles assembleTiledWithImages:images];
             });
     });

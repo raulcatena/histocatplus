@@ -22,6 +22,7 @@
 @property (nonatomic, assign) BOOL hasChanges;
 @property (nonatomic, assign) BOOL isLoaded;
 
+
 //File handling
 @property (nonatomic, readonly) NSString * workingFolder;
 @property (nonatomic, readonly) NSString * workingFolderRealative;

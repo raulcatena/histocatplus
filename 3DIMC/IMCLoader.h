@@ -69,5 +69,8 @@
 //Metrics
 -(NSMutableArray *)metrics;
 
+//Comp matrix
+-(NSString *)compMatrix;
+
 
 @end

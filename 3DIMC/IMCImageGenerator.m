@@ -84,24 +84,23 @@ BOOL doesJumpLineTest(NSInteger index, NSInteger indexTest, NSInteger width, NSI
     return NO;
 }
 
-void threeDMeanBlur(float *** data, NSInteger width, NSInteger height, NSInteger stackCount, NSInteger channelCount, NSInteger mode, bool *mask){
+void threeDMeanBlur(float *** data, NSInteger width, NSInteger height, NSInteger stackCount, NSIndexSet * channels, NSInteger mode, bool *mask){
     
     if(data == NULL || mode == 0)
         return;
     
     NSInteger planePixels = width * height;
     
-    float* temp1Buffer[2];
-    for (int i = 0; i < 2; i++) {
-        temp1Buffer[i] = malloc(sizeof(float) * planePixels);
-    }
-    
-    NSInteger blurCounter = 0;
-    float sum = 0;
-    NSInteger tempBufferUse = 0;
-    
-    
-    for (NSInteger chann = 0; chann < channelCount; chann++) {
+    [channels enumerateIndexesUsingBlock:^(NSUInteger chann, BOOL *stop){
+        
+        float* temp1Buffer[2];
+        for (int i = 0; i < 2; i++) {
+            temp1Buffer[i] = malloc(sizeof(float) * planePixels);
+        }
+        
+        NSInteger blurCounter = 0;
+        float sum = 0;
+        NSInteger tempBufferUse = 0;
         
         for (NSInteger stack = 0; stack < stackCount; stack++) {
             //Probably never the case
@@ -150,7 +149,7 @@ void threeDMeanBlur(float *** data, NSInteger width, NSInteger height, NSInteger
                     //Mean filter
                     if(mode == 2)
                         temp1Buffer[tempBufferUse][pix] = sum/blurCounter;
-
+                    
                 }
                 //Gaussian
                 if(mode == 3){
@@ -191,7 +190,7 @@ void threeDMeanBlur(float *** data, NSInteger width, NSInteger height, NSInteger
                     
                     //Gaussian filter
                     if(mode == 3)
-                    temp1Buffer[tempBufferUse][pix] = sum/(blurCounter/2);
+                        temp1Buffer[tempBufferUse][pix] = sum/(blurCounter/2);
                     
                 }
             }
@@ -200,16 +199,16 @@ void threeDMeanBlur(float *** data, NSInteger width, NSInteger height, NSInteger
             if(prevLayer)
                 for (NSInteger pix = 0; pix < planePixels; pix++)
                     prevLayer[pix] = temp1Buffer[tempBufferUse][pix];
-
+            
             if(postLayer == NULL){
                 tempBufferUse = (NSInteger)!tempBufferUse;
                 for (NSInteger pix = 0; pix < planePixels; pix++)
                     layer[pix] = temp1Buffer[tempBufferUse][pix];
             }
         }
-    }
-    free(temp1Buffer[0]);
-    free(temp1Buffer[1]);
+        free(temp1Buffer[0]);
+        free(temp1Buffer[1]);
+    }];
 }
 
 #pragma mark canonical calling for a multicolor stack

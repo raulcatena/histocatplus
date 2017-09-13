@@ -8,12 +8,15 @@
 
 #import <Foundation/Foundation.h>
 #import "IMCNodeWrapper.h"
+#import "IMCLoader.h"
+
+@class IMCLoader;
 
 @interface IMCFileWrapper : IMCNodeWrapper
 
-
 @property (nonatomic, strong) NSString *fileHash;
 @property (nonatomic, strong) NSString *pathMainDoc;
+@property (nonatomic, weak) IMCLoader *coordinator;
 
 -(NSMutableArray *)containers;
 -(NSString *)backStoreTIFFPath;

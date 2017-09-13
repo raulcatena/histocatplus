@@ -34,7 +34,7 @@
 @class IMCComputationOnMask;
 @class IMC3DHandler;
 
-@interface IMCWorkSpace : NSDocument<DataCoordinator, CustomChannelsTableController, ColorLegend, NSOutlineViewDataSource, NSOutlineViewDelegate, NSTableViewDelegate, NSTableViewDataSource, NSTabViewDelegate, NSTextFieldDelegate, IMCScrollViewDelegate, IMCScrollViewRotationDelegate, TransformDelegate, Get3DData, DroppedURL, TableDelegate, MetadataTableDelegate, PlotHandler, IMCPixelClassificationBatch, IMCCellSegmenationBatch, MaskCombiner, IMCCellClassificationBatch, IMCThresholdBatch>
+@interface IMCWorkSpace : NSDocument<DataCoordinator, CustomChannelsTableController, ColorLegend, NSOutlineViewDataSource, NSOutlineViewDelegate, NSTableViewDelegate, NSTableViewDataSource, NSTabViewDelegate, NSTextFieldDelegate, IMCScrollViewDelegate, IMCScrollViewRotationDelegate, TransformDelegate, Get3DData, DroppedURL, TableDelegate, MetadataTableDelegate, PlotHandler, IMCPixelClassificationBatch, IMCCellSegmenationBatch, MaskCombiner, IMCCellClassificationBatch, IMCThresholdBatch, NSWindowDelegate>
 
 
 //Common
@@ -185,6 +185,7 @@
 //Override copy for copy to clipboard the whole image
 -(IBAction)copyCurrentVisible:(NSButton *)sender;
 -(IBAction)copyLegend:(NSButton *)sender;
+-(IBAction)copy3Dpic:(id)sender;
 //Order images
 -(IBAction)pushImagesUpOrDown:(id)sender;
 //Refresh
@@ -238,6 +239,8 @@
 -(IBAction)removeMetric:(id)sender;
 //Airlab
 -(IBAction)cleanUpNamesWithAirlab:(id)sender;
+//Compensation
+-(IBAction)compensationMatrix:(id)sender;
 
 @end
 
