@@ -61,7 +61,7 @@
 }
 
 -(id)tableView:(NSTableView *)tableView objectValueForTableColumn:(nullable NSTableColumn *)tableColumn row:(NSInteger)row{
-    NSLog(@"AAAA");
+    
     IMCImageStack *stack = [self.delegate.involvedStacksForMetadata objectAtIndex:row];
     switch ([tableView columnWithIdentifier:tableColumn.identifier]) {
         case 0:
