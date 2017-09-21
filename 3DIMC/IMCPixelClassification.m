@@ -38,18 +38,17 @@
     }
     [super setParent:parent];
 }
--(void)removeChild:(IMCNodeWrapper *)childNode{
-    
-        for (NSMutableDictionary *trainJson in [self.jsonDictionary[JSON_DICT_PIXEL_MASK_COMPUTATIONS]copy])
-            if(childNode.jsonDictionary == trainJson){
-                [self.jsonDictionary[JSON_DICT_PIXEL_MASK_COMPUTATIONS]removeObject:trainJson];
-                NSFileManager *man = [NSFileManager defaultManager];
-                if([man fileExistsAtPath:childNode.absolutePath])
-                    [man removeItemAtPath:childNode.absolutePath error:NULL];
-                if([[NSFileManager defaultManager]fileExistsAtPath:childNode.secondAbsolutePath])
-                    [[NSFileManager defaultManager]removeItemAtPath:childNode.secondAbsolutePath error:NULL];
-                childNode.parent = nil;
-            }
+-(void)removeChild:(IMCNodeWrapper *)childNode{    
+    for (NSMutableDictionary *trainJson in [self.jsonDictionary[JSON_DICT_PIXEL_MASK_COMPUTATIONS]copy])
+        if(childNode.jsonDictionary == trainJson){
+            [self.jsonDictionary[JSON_DICT_PIXEL_MASK_COMPUTATIONS]removeObject:trainJson];
+            NSFileManager *man = [NSFileManager defaultManager];
+            if([man fileExistsAtPath:childNode.absolutePath])
+                [man removeItemAtPath:childNode.absolutePath error:NULL];
+            if([[NSFileManager defaultManager]fileExistsAtPath:childNode.secondAbsolutePath])
+                [[NSFileManager defaultManager]removeItemAtPath:childNode.secondAbsolutePath error:NULL];
+            childNode.parent = nil;
+        }
 }
 -(NSString *)itemSubName{
     return self.imageStack.itemName;

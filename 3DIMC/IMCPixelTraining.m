@@ -93,13 +93,16 @@
 }
 
 -(void)unLoadLayerDataWithBlock:(void (^)())block{
-    if(self.trainingBuffer)free(self.trainingBuffer);
+    if(_trainingBuffer){
+        free(_trainingBuffer);
+        _trainingBuffer = NULL;
+    }
     [super unLoadLayerDataWithBlock:block];
 }
 
 -(void)dealloc{
-    if(self.trainingBuffer)
-        free(self.trainingBuffer);
+    if(_trainingBuffer)
+        free(_trainingBuffer);
 }
 
 @end

@@ -62,7 +62,7 @@
 -(void)mouseDragged:(NSEvent *)theEvent{
     
     if (theEvent.modifierFlags & NSEventModifierFlagCommand) {
-        [self.baseModelMatrix translate:theEvent.deltaX * 0.05 y:-theEvent.deltaY * 0.05 z:0];
+        [self.baseModelMatrix translate:theEvent.deltaX * 0.15 y:-theEvent.deltaY * 0.15 z:0];
     }else{
         _rotation.x = theEvent.deltaX;
         _rotation.y = theEvent.deltaY;
@@ -93,7 +93,7 @@
     self.refresh = YES;
 }
 -(BOOL)scrollWithWheel:(NSEvent *)theEvent{
-    float factor = theEvent.deltaX * .01f;
+    float factor = theEvent.deltaX * .05f;
     if (theEvent.modifierFlags & NSEventModifierFlagShift){
         if (theEvent.modifierFlags & NSEventModifierFlagControl)
         [self rotateX:factor Y:.0f Z:.0f];

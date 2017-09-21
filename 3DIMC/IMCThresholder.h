@@ -19,6 +19,7 @@
 @property (nonatomic, strong) NSString *thresholdingInfo;
 
 @property (nonatomic, assign) NSInteger channelIndex;
+@property (nonatomic, assign) NSInteger framerIndex;
 @property (nonatomic, assign) NSInteger blur;
 @property (nonatomic, assign) NSInteger thresholdValue;
 @property (nonatomic, assign) BOOL flatten;

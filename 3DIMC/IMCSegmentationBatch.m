@@ -38,7 +38,7 @@
 -(void)refreshTabless:(id)sender{
     [self.mapsTableView reloadData];
 }
--(void)startBatch:(NSButton *)sender{
+-(void)startBatchOld:(NSButton *)sender{
     
     NSInteger howmanymaps = self.mapsTableView.selectedRowIndexes.count;
     __block NSInteger counter = 0;
@@ -76,7 +76,7 @@
     });
 }
 
--(void)startBatchNew:(NSButton *)sender{
+-(void)startBatch:(NSButton *)sender{
     sender.enabled = NO;
     
     NSInteger howmanymaps = self.mapsTableView.selectedRowIndexes.count;

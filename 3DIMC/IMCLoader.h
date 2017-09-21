@@ -40,6 +40,7 @@
 -(void)openImagesFromURL:(NSArray<NSURL *>*)url;
 -(void)tryMasksFromURL:(NSURL *)url;
 +(BOOL)validFile:(NSString *)path;
++(NSArray *)filesInDirectory:(NSURL *)directoryURL;
 
 -(NSArray<IMCFileWrapper *> *)fileWrappers;
 -(NSArray<IMCPixelTraining *> *)pixelTrainings;

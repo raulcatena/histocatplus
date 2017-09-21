@@ -49,6 +49,8 @@
     NSError *error;
     NSFileManager *fileManager = [NSFileManager defaultManager];
     NSArray *contents = [fileManager contentsOfDirectoryAtPath:directoryURL.path error:&error];
+    if(error)
+        NSLog(@"Error %@", error);
     return contents;
 //    NSArray *contents = [fileManager contentsOfDirectoryAtURL:directoryURL
 //                                   includingPropertiesForKeys:@[]

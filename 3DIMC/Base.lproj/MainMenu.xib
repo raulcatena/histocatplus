@@ -199,7 +199,7 @@
                                     <action selector="cleanUpNamesWithAirlab:" target="-1" id="qnP-sX-4Wb"/>
                                 </connections>
                             </menuItem>
-                            <menuItem title="Compensation Matrix..." id="A01-Vz-uED" userLabel="Compensation">
+                            <menuItem title="Compensation Matrix..." hidden="YES" id="A01-Vz-uED" userLabel="Compensation">
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <connections>
                                     <action selector="compensationMatrix:" target="-1" id="PpZ-Af-cMZ"/>
@@ -690,7 +690,7 @@
                         </items>
                     </menu>
                 </menuItem>
-                <menuItem title="Analysis" hidden="YES" id="Xfh-ot-dQ7" userLabel="Analysis">
+                <menuItem title="Analysis" id="Xfh-ot-dQ7" userLabel="Analysis">
                     <modifierMask key="keyEquivalentModifierMask"/>
                     <menu key="submenu" title="Analysis" id="LsA-79-Ha9">
                         <items>
@@ -772,7 +772,7 @@
                         </items>
                     </menu>
                 </menuItem>
-                <menuItem title="Analysis" id="ent-Jf-hqe" userLabel="Analysis">
+                <menuItem title="Analysis" hidden="YES" id="ent-Jf-hqe" userLabel="Analysis">
                     <modifierMask key="keyEquivalentModifierMask"/>
                     <menu key="submenu" title="Analysis" id="lFX-wf-QeE">
                         <items>

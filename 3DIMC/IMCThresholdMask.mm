@@ -48,6 +48,7 @@
         
     });
     [self initGUIRelatedOptions];
+    [self.tableViewChannels setDoubleAction:@selector(doubleClickTable:)];
     
 }
 - (void)windowWillClose:(NSNotification *)notification
@@ -61,7 +62,16 @@
 -(id)tableView:(NSTableView *)tableView objectValueForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row{
     return self.thresholder.stack.channels[row];
 }
-
+-(void)tableView:(NSTableView *)tableView willDisplayCell:(id)cell forTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row{
+    if(self.thresholder.framerIndex == row)
+        [(NSTextFieldCell *)cell setTextColor:[NSColor colorWithRed:0 green:1 blue:0 alpha:1.0f]];
+    else
+        [(NSTextFieldCell *)cell setTextColor:[NSColor blackColor]];
+}
+-(void)doubleClickTable:(NSTableView *)table{
+    self.thresholder.framerIndex = [table selectedRow] == self.thresholder.framerIndex? -1 : [table selectedRow];
+    [self.tableViewChannels reloadData];
+}
 -(void)updateSliders{
     NSMutableDictionary *settingsChannel = self.settingsDictionary[self.tableViewChannels.selectedRow];
     

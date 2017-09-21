@@ -53,6 +53,19 @@
                     [man removeItemAtPath:childNode.absolutePath error:NULL];
                 if([[NSFileManager defaultManager]fileExistsAtPath:childNode.secondAbsolutePath])
                     [[NSFileManager defaultManager]removeItemAtPath:childNode.secondAbsolutePath error:NULL];
+                
+                //Clean up all the Cell profiler generated files
+                if([key isEqualToString:JSON_DICT_PIXEL_MASKS]){
+                    NSString *pref = trainJson[JSON_DICT_PIXEL_MASK_WHICH_MAP];
+                    if(pref){
+                        NSArray *filesInDir = [IMCLoader filesInDirectory:[NSURL fileURLWithPath:childNode.workingFolder]];
+                        for (NSString *path in filesInDir) {
+                            if([path hasPrefix:pref] && ![path hasSuffix:@".pmap"])
+                                [[NSFileManager defaultManager]removeItemAtPath:[childNode.workingFolder stringByAppendingPathComponent:path] error:NULL];
+                        }
+                    }
+                }
+                
                 childNode.parent = nil;
             }
 }
@@ -679,7 +692,7 @@
     NSInteger countIsotopes = listIsotopes.count;
     float * matrixNumbers = [self matrixNumbers:matrix];
     
-    NSInteger *indexes = calloc(self.channels.count, sizeof(NSInteger));
+    NSInteger *indexes = calloc(countIsotopes, sizeof(NSInteger));
     NSInteger *reverseIndexes = calloc(countIsotopes, sizeof(NSInteger));
     for (int i = 0; i < countIsotopes; i++)
         reverseIndexes[i] = -1;

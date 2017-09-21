@@ -1292,7 +1292,7 @@
             NSInteger firstSelected = self.channels.selectedRowIndexes.lastIndex;
             NSMutableIndexSet *is = [[NSMutableIndexSet alloc]init];
             for (NSInteger i = 0; i < channels.count; i++) {
-                if([[channels[i]lowercaseString] rangeOfString:needle].location != NSNotFound ||
+                if([[channels[i]lowercaseString] rangeOfString:needle.lowercaseString].location != NSNotFound ||
                    [[origChannels[i]lowercaseString] rangeOfString:needle].location != NSNotFound)
                     [is addIndex:i];
             }

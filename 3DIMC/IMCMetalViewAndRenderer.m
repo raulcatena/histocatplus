@@ -22,7 +22,7 @@
 @property (nonatomic, strong) id<MTLBuffer> uniformsBuffer;
 @property (nonatomic, strong) id<MTLBuffer> positionalBuffer;
 @property (nonatomic, strong) id<MTLBuffer> maskBuffer;
-@property (nonatomic, strong) id<MTLBuffer> layerIndexesBuffer;
+//@property (nonatomic, strong) id<MTLBuffer> layerIndexesBuffer;
 @property (nonatomic, strong) id<MTLBuffer> colorBuffer;
 @property (nonatomic, strong) id<MTLBuffer> heightDescriptor;
 @property (nonatomic, strong) id<MTLRenderPipelineState> pipelineState;
@@ -203,8 +203,9 @@ bool heightDescriptor[] = {
     
     float *** data = [self.delegate threeDData];
     float * zPositions = [self.delegate zValues];
+    float * zThicknesses = [self.delegate thicknesses];
     
-    if(data && zPositions){
+    if(data && zPositions && zThicknesses){
         NSInteger area = width * height;
         CGRect rectToRender = [self.delegate rectToRender];
         AlphaMode alphaMode = [self.delegate alphaMode];
@@ -214,12 +215,13 @@ bool heightDescriptor[] = {
         self.slices = slices.count;
         NSInteger renderableArea = self.renderHeight * self.renderHeight;
         
-        int stride = 7;
+        int stride = 8;
         
         float * buff = calloc(renderableArea * slices.count * stride, sizeof(float));//Color components and positions
         if(buff){
             
-            __block NSInteger x , y, z = 0, cursor = 0;
+            __block NSInteger x , y, cursor = 0;
+            __block float  z = 0.0f, thickness = 0.0f;
             
             self.colorsObtained = [self.delegate colors];
             self.indexesObtained = [self.delegate inOrderIndexes].copy;
@@ -243,6 +245,7 @@ bool heightDescriptor[] = {
                     x = 0;
                     y = 0;
                     z = zPositions[slice];
+                    thickness = zThicknesses[slice];
                     
                     for (NSInteger idx = 0; idx < self.indexesObtained.count; idx++) {
                         
@@ -256,8 +259,9 @@ bool heightDescriptor[] = {
                             for (NSInteger pix = 0; pix < area; pix++) {
                                 if(mask[pix] == false)
                                     continue;
-                                if(internalCursor >= renderableArea)
+                                if(internalCursor >= renderableArea){
                                     break;
+                                }
                                 
                                 NSInteger internalStride = internalCursor * stride;
                                 
@@ -267,25 +271,30 @@ bool heightDescriptor[] = {
                                 buff[cursor + internalStride + 4] = internalCursor % _renderWidth;
                                 buff[cursor + internalStride + 5] = internalCursor /_renderWidth;
                                 buff[cursor + internalStride + 6] = z;
+                                buff[cursor + internalStride + 7] = thickness;
                                 
                                 //Filters
                                 float max = .0f;
                                 float sum = .0f;
                                 for (int i = 1; i < 4; i++){
-                                    float val = buff[cursor + internalCursor * stride + i];
+                                    float val = buff[cursor + internalStride + i];
                                     if(val > max)
                                         max = val;
-                                    if(val > 1.0f)
-                                        buff[cursor + internalCursor * stride + i] = 1.0f;
+//                                    if(val > 1.0f)
+//                                        buff[cursor + internalStride + i] = 1.0f;
                                     sum += val;
+                                    if(sum > 1.0f){
+                                        sum = 1.0f;
+                                        break;
+                                    }
                                 }
                                 
                                 if(alphaMode == ALPHA_MODE_OPAQUE)
-                                    buff[cursor + internalCursor * stride] = max < minThresholdForAlpha ? 0.0f : 1.0f;
+                                    buff[cursor + internalStride] = max < minThresholdForAlpha ? 0.0f : 1.0f;
                                 if(alphaMode == ALPHA_MODE_FIXED)
-                                    buff[cursor + internalCursor * stride] = max < minThresholdForAlpha ? 0.0f : minThresholdForAlpha;//Alpha
+                                    buff[cursor + internalStride] = max < minThresholdForAlpha ? 0.0f : minThresholdForAlpha;//Alpha
                                 if(alphaMode == ALPHA_MODE_ADAPTIVE)
-                                    buff[cursor + internalCursor * stride] = max < minThresholdForAlpha ? 0.0f : MIN(1.0f, sum);//Alpha
+                                    buff[cursor + internalStride] = max < minThresholdForAlpha ? 0.0f : sum;//MIN(1.0f, sum);//Alpha
                                                                 
                                 internalCursor++;
                             }
@@ -295,12 +304,8 @@ bool heightDescriptor[] = {
                 cursor += renderableArea * stride;
             }];
             
-//            for (NSInteger slice = 0; slice < slices.count; slice++) {
-//                
-//                
-//            }
-            if(self.renderWidth * self.renderHeight * slices.count * 6 * sizeof(float) < 1024000000)
-                self.colorBuffer = [self.device newBufferWithBytes:buff length:self.renderWidth * self.renderHeight * slices.count * 6 * sizeof(float) options:MTLResourceOptionCPUCacheModeDefault];
+            if(self.renderWidth * self.renderHeight * slices.count * stride * sizeof(float) < 1024000000)
+                self.colorBuffer = [self.device newBufferWithBytes:buff length:self.renderWidth * self.renderHeight * slices.count * stride * sizeof(float) options:MTLResourceOptionCPUCacheModeDefault];
             else
                 self.colorBuffer = nil;
             free(buff);
@@ -339,10 +344,11 @@ bool heightDescriptor[] = {
     NSInteger width = [self.delegate witdhModel];
     NSInteger height = [self.delegate heightModel];
     NSInteger areaModel = width * height;
+
+    
+    
+    /*//Slice handling
     NSInteger slices = [self.delegate stacksIndexSet].count;
-    
-    //Slice handling
-    
     float * zThicknesses = [self.delegate thicknesses];
     if(zThicknesses == NULL)
         return;
@@ -353,6 +359,7 @@ bool heightDescriptor[] = {
     }];
     self.layerIndexesBuffer = [self.device newBufferWithBytes:collatedZ length:slices * sizeof(float) * 2 options:MTLResourceOptionCPUCacheModeDefault];
     free(collatedZ);
+     */
     
     //Positional Data
     
@@ -412,9 +419,9 @@ bool heightDescriptor[] = {
     [renderEncoder setVertexBuffer:self.uniformsBuffer offset:0 atIndex:1];
     [renderEncoder setVertexBuffer:self.positionalBuffer offset:0 atIndex:2];
     [renderEncoder setVertexBuffer:self.maskBuffer offset:0 atIndex:3];
-    [renderEncoder setVertexBuffer:self.layerIndexesBuffer offset:0 atIndex:4];
-    [renderEncoder setVertexBuffer:self.colorBuffer offset:0 atIndex:5];
-    [renderEncoder setVertexBuffer:self.heightDescriptor offset:0 atIndex:6];
+    //[renderEncoder setVertexBuffer:self.layerIndexesBuffer offset:0 atIndex:4];
+    [renderEncoder setVertexBuffer:self.colorBuffer offset:0 atIndex:4];
+    [renderEncoder setVertexBuffer:self.heightDescriptor offset:0 atIndex:5];
 
     [renderEncoder setDepthStencilState:self.stencilState];
     [renderEncoder setFrontFacingWinding:MTLWindingCounterClockwise];
@@ -431,7 +438,9 @@ bool heightDescriptor[] = {
     
     //Commit
     [comBuffer presentDrawable:drawable];
+    
     [comBuffer commit];
+    NSLog(@"I->");
 }
 -(void)mtkView:(MTKView *)view drawableSizeWillChange:(CGSize)size{
     [self projectionMatrixSetup:view];

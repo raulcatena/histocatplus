@@ -74,26 +74,26 @@ vertex VertexOut oldvertexShader(
     //return float4(vertex_array[vid], 1.0);
 }
 
+#define STRIDE_COLOR_ARRAY 8
+
 vertex VertexOut vertexShader(
                               const device packed_float3* vertex_array [[ buffer(0) ]],
                               constant Constants & uniforms [[ buffer(1) ]],
                               constant PositionalData & positional [[ buffer(2) ]],
                               const device bool * mask [[ buffer(3) ]],
-                              const device float * zValues [[ buffer(4) ]],
-                              const device float * colors [[ buffer(5) ]],
-                              const device bool * heightDescriptor [[ buffer(6) ]],
+                              //const device float * zValues [[ buffer(4) ]],
+                              const device float * colors [[ buffer(4) ]],
+                              const device bool * heightDescriptor [[ buffer(5) ]],
                               unsigned int vid [[ vertex_id ]],
                               unsigned int iid [[ instance_id ]]) {
 
     VertexOut out;
     
-    unsigned int baseIndex = iid * 7;
+    unsigned int baseIndex = iid * STRIDE_COLOR_ARRAY;
     if(colors[baseIndex] == 0.0f)//Precalculated 0 alpha if zero do not process further (optimization)
         return out;
     
-    uint indexZ = iid/positional.areaModel * 2;
-    
-    float down = heightDescriptor[vid] == true? zValues[indexZ + 1] - 1.0f : 0;
+    float down = heightDescriptor[vid] == true? colors[baseIndex + 7] - 1.0f : 0;
     
     float3 pos = float3(vertex_array[vid][0] + colors[baseIndex + 4] - positional.widthModel/2,
                         vertex_array[vid][1] + colors[baseIndex + 5] - positional.heightModel/2,

@@ -464,7 +464,7 @@
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <view id="bEC-dY-lh0">
-                                                        <rect key="frame" x="0.0" y="-15" width="672" height="539"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="672" height="539"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                     </view>
                                                 </subviews>
@@ -533,7 +533,7 @@
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <clipView key="contentView" id="wdH-q7-jKc">
                                                 <rect key="frame" x="1" y="0.0" width="599" height="612"/>
-                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                <autoresizingMask key="autoresizingMask"/>
                                                 <subviews>
                                                     <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" autosaveColumns="NO" headerView="1r2-Np-gjj" id="Xsa-VE-4EH">
                                                         <rect key="frame" x="0.0" y="0.0" width="599" height="589"/>
@@ -1454,7 +1454,7 @@
                                     <menuItem title="File Explorer" state="on" id="6WM-TE-0cn" userLabel="FileExplorer">
                                         <modifierMask key="keyEquivalentModifierMask"/>
                                     </menuItem>
-                                    <menuItem title="Image Stacks (for 3D)" id="bbX-rZ-14B" userLabel="Image Stacks">
+                                    <menuItem title="Image Stacks" id="bbX-rZ-14B" userLabel="Image Stacks">
                                         <modifierMask key="keyEquivalentModifierMask"/>
                                     </menuItem>
                                     <menuItem title="Pixel Trainings" id="r0g-er-xTc" userLabel="Pixel Trainings">

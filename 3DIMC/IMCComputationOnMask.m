@@ -365,12 +365,12 @@
     for (NSString *str in chans) {
         for(int i = 0; i < 4; i++)
             if([computations containsIndex:i])
-                [arr addObject:[strs2[i] stringByAppendingString:str]];
+                [arr addObject:[strs1[0] stringByAppendingString:[strs2[i] stringByAppendingString:str]]];
         
         if([self.mask isDual]){
             for(int i = 4; i < 16; i++){
                 if([computations containsIndex:i]){
-                    [arr addObject:[[strs1[(i - 4)/4] stringByAppendingString:strs2[i % 4]]stringByAppendingString:str]];
+                    [arr addObject:[[strs1[i/4] stringByAppendingString:strs2[i % 4]]stringByAppendingString:str]];
                 }
             }
         }
@@ -543,9 +543,11 @@
     for (NSInteger i = 0; i < segments; i++) {
         free(chelperArray[i]);
         free(chelperArrayNuc[i]);
+        free(chelperArrayCyt[i]);
     }
     free(chelperArray);
     free(chelperArrayNuc);
+    free(chelperArrayCyt);
     
     //Average X/Y to have centroids if Necessary
     for (int i = 0; i < segments; i++) {

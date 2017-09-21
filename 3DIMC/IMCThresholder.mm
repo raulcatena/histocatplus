@@ -36,6 +36,7 @@
 }
 -(NSMutableDictionary *)jsonForNewThresholdMask{
     return @{JSON_DICT_PIXEL_MASK_THRESHOLD_SETTINGS_CHANNEL: @(self.channelIndex),
+             JSON_DICT_PIXEL_MASK_THRESHOLD_SETTINGS_FRAMER: @(self.framerIndex),
            JSON_DICT_PIXEL_MASK_THRESHOLD_SETTINGS_THRESHOLD: @(self.thresholdValue),
              JSON_DICT_PIXEL_MASK_THRESHOLD_SETTINGS_FLATTEN: @(self.flatten),
             JSON_DICT_PIXEL_MASK_THRESHOLD_SETTINGS_GAUSSIAN: @(self.blur),
@@ -57,6 +58,8 @@
     if(options){
         self.channelIndex = options[JSON_DICT_PIXEL_MASK_THRESHOLD_SETTINGS_CHANNEL]?
         [options[JSON_DICT_PIXEL_MASK_THRESHOLD_SETTINGS_CHANNEL]integerValue]:0;
+        self.framerIndex = options[JSON_DICT_PIXEL_MASK_THRESHOLD_SETTINGS_FRAMER]?
+        [options[JSON_DICT_PIXEL_MASK_THRESHOLD_SETTINGS_FRAMER]integerValue]:0;
         self.thresholdValue = options[JSON_DICT_PIXEL_MASK_THRESHOLD_SETTINGS_THRESHOLD]?
         [options[JSON_DICT_PIXEL_MASK_THRESHOLD_SETTINGS_THRESHOLD]integerValue]:30;
         self.flatten = options[JSON_DICT_PIXEL_MASK_THRESHOLD_SETTINGS_FLATTEN]?
@@ -87,7 +90,7 @@
     self.mask.parent = self.stack;
     [self.mask saveFileWithBuffer:sBit];
     
-    if(self.saveInverse){
+    if(self.saveInverse == YES){
         self.inv = [[IMCPixelClassification alloc]init];
         self.inv.parent = self.mask.parent;
         [self configureNewMask:self.inv];
@@ -132,8 +135,48 @@
                                             maskSingleColor:0
                                             isAlignmentPair:NO
                                                 brightField:NO];
+    
     if(self.blur > 1)
         image = [image gaussianBlurred:(unsigned)self.blur];
+    
+    if(self.framerIndex > 0){
+        CGImageRef ref = image.CGImage;
+        NSImage *framerImage = [IMCImageGenerator imageForImageStacks:@[self.stack].mutableCopy
+                                                        indexes:@[[NSNumber numberWithInteger:self.framerIndex]]
+                                               withColoringType:0
+                                                   customColors:@[[NSColor whiteColor]]
+                                              minNumberOfColors:1
+                                                          width:self.stack.width
+                                                         height:self.stack.height
+                                                 withTransforms:NO
+                                                          blend:kCGBlendModeScreen
+                                                       andMasks:nil
+                                                andComputations:nil
+                                                     maskOption:0
+                                                       maskType:MASK_ALL_CELL
+                                                maskSingleColor:0
+                                                isAlignmentPair:NO
+                                                    brightField:NO];
+        
+        if(self.blur > 1)
+            framerImage = [framerImage gaussianBlurred:(unsigned)self.blur];
+        
+        CGImageRef framer = framerImage.CGImage;
+        
+        UInt8 *refData = [IMCImageGenerator bufferForImageRef:ref];
+        UInt8 *framerRefData = [IMCImageGenerator bufferForImageRef:framer];
+        
+        NSInteger length = self.stack.numberOfPixels * 4;
+        UInt8 *newImageBuffer = (UInt8 *)malloc(length/4 * sizeof(UInt8));
+        
+        for (NSInteger i = 0; i < length; i+=4)
+            newImageBuffer[i/4] = (UInt8)((NSInteger)refData[i] * ABS(framerRefData[i] - 255)/255);
+        
+        ref = [IMCImageGenerator whiteImageFromCArrayOfValues:newImageBuffer width:self.stack.width height:self.stack.height];
+        image = [[NSImage alloc]initWithCGImage:ref size:self.stack.size];
+    }
+    
+    
     
     return image.CGImage;
 }
