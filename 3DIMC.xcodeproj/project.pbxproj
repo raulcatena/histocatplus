@@ -328,6 +328,18 @@
 		0D9B5C401E8A9285007E960C /* IMCCombineMasksBatch.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0D9B5C3D1E8A91CA007E960C /* IMCCombineMasksBatch.xib */; };
 		0D9B5C411E8A9285007E960C /* IMCCombineMasksBatch.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0D9B5C3D1E8A91CA007E960C /* IMCCombineMasksBatch.xib */; };
 		0D9B5C421E8A9288007E960C /* IMCCombineMasksBatch.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D9B5C3C1E8A91CA007E960C /* IMCCombineMasksBatch.m */; };
+		0D9BA3741F744DC800C02457 /* IMC3dMasking.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0D9BA3721F744DC800C02457 /* IMC3dMasking.mm */; };
+		0D9BA3751F744DC800C02457 /* IMC3dMasking.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0D9BA3721F744DC800C02457 /* IMC3dMasking.mm */; };
+		0D9BA3761F744DC800C02457 /* IMC3dMasking.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0D9BA3721F744DC800C02457 /* IMC3dMasking.mm */; };
+		0D9BA3771F744DC800C02457 /* IMC3dMasking.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0D9BA3731F744DC800C02457 /* IMC3dMasking.xib */; };
+		0D9BA3781F744DC800C02457 /* IMC3dMasking.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0D9BA3731F744DC800C02457 /* IMC3dMasking.xib */; };
+		0D9BA3791F744DC800C02457 /* IMC3dMasking.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0D9BA3731F744DC800C02457 /* IMC3dMasking.xib */; };
+		0D9BA37C1F74CECB00C02457 /* IMCVoxelMaskRenderer.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D9BA37B1F74CECB00C02457 /* IMCVoxelMaskRenderer.m */; };
+		0D9BA37D1F74CECB00C02457 /* IMCVoxelMaskRenderer.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D9BA37B1F74CECB00C02457 /* IMCVoxelMaskRenderer.m */; };
+		0D9BA37E1F74CECB00C02457 /* IMCVoxelMaskRenderer.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D9BA37B1F74CECB00C02457 /* IMCVoxelMaskRenderer.m */; };
+		0D9BA3811F7A10AF00C02457 /* IMC3DMask.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D9BA3801F7A10AF00C02457 /* IMC3DMask.m */; };
+		0D9BA3821F7A10AF00C02457 /* IMC3DMask.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D9BA3801F7A10AF00C02457 /* IMC3DMask.m */; };
+		0D9BA3831F7A10AF00C02457 /* IMC3DMask.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D9BA3801F7A10AF00C02457 /* IMC3DMask.m */; };
 		0D9F30661EF909CF00E1E083 /* IMCButtonLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D00ACBC1E663A8900887057 /* IMCButtonLayer.m */; };
 		0D9F30671EF909CF00E1E083 /* IMCTiledScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DB37D5C1E36BC6E002975E2 /* IMCTiledScrollView.m */; };
 		0D9F30681EF909CF00E1E083 /* IMCMiniRConsole.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DA17B821E79360100B3CF5C /* IMCMiniRConsole.m */; };
@@ -876,6 +888,13 @@
 		0D9B5C3B1E8A91CA007E960C /* IMCCombineMasksBatch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IMCCombineMasksBatch.h; sourceTree = "<group>"; };
 		0D9B5C3C1E8A91CA007E960C /* IMCCombineMasksBatch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IMCCombineMasksBatch.m; sourceTree = "<group>"; };
 		0D9B5C3D1E8A91CA007E960C /* IMCCombineMasksBatch.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = IMCCombineMasksBatch.xib; sourceTree = "<group>"; };
+		0D9BA3711F744DC800C02457 /* IMC3dMasking.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IMC3dMasking.h; sourceTree = "<group>"; };
+		0D9BA3721F744DC800C02457 /* IMC3dMasking.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = IMC3dMasking.mm; sourceTree = "<group>"; };
+		0D9BA3731F744DC800C02457 /* IMC3dMasking.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = IMC3dMasking.xib; sourceTree = "<group>"; };
+		0D9BA37A1F74CECB00C02457 /* IMCVoxelMaskRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IMCVoxelMaskRenderer.h; sourceTree = "<group>"; };
+		0D9BA37B1F74CECB00C02457 /* IMCVoxelMaskRenderer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IMCVoxelMaskRenderer.m; sourceTree = "<group>"; };
+		0D9BA37F1F7A10AF00C02457 /* IMC3DMask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IMC3DMask.h; sourceTree = "<group>"; };
+		0D9BA3801F7A10AF00C02457 /* IMC3DMask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IMC3DMask.m; sourceTree = "<group>"; };
 		0D9F31641EF909CF00E1E083 /* histoCAT++3D.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "histoCAT++3D.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		0D9F31651EF909CF00E1E083 /* miCAT Histo copy-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "miCAT Histo copy-Info.plist"; path = "/Users/raulcatena/Documents/AppsOngoing/3DIMC/miCAT Histo copy-Info.plist"; sourceTree = "<absolute>"; };
 		0D9F31661EF91E3A00E1E083 /* NSIndexSet+Utilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSIndexSet+Utilities.h"; sourceTree = "<group>"; };
@@ -1338,6 +1357,7 @@
 				0D00ACA81E65D75F00887057 /* GeneralPixClassification */,
 				0DA2B81A1E7001E000EAA438 /* ThresholdMask */,
 				0DA2B81F1E70025D00EAA438 /* PaintMask */,
+				0D9BA3701F744D9600C02457 /* 3D_mask */,
 			);
 			name = ClassifyPixels;
 			sourceTree = "<group>";
@@ -1431,6 +1451,18 @@
 				0D9AEECE1E465FDE00F76590 /* libtiffxx.a */,
 			);
 			path = lib;
+			sourceTree = "<group>";
+		};
+		0D9BA3701F744D9600C02457 /* 3D_mask */ = {
+			isa = PBXGroup;
+			children = (
+				0D9BA3711F744DC800C02457 /* IMC3dMasking.h */,
+				0D9BA3721F744DC800C02457 /* IMC3dMasking.mm */,
+				0D9BA3731F744DC800C02457 /* IMC3dMasking.xib */,
+				0D9BA37A1F74CECB00C02457 /* IMCVoxelMaskRenderer.h */,
+				0D9BA37B1F74CECB00C02457 /* IMCVoxelMaskRenderer.m */,
+			);
+			name = 3D_mask;
 			sourceTree = "<group>";
 		};
 		0DA2687E1E5126F8007E6EDD /* Matlab */ = {
@@ -1829,6 +1861,8 @@
 				0DAA1F051E59072000579003 /* IMCComputationOnMask.m */,
 				0D00AC9F1E656E9300887057 /* IMCMaskTraining.h */,
 				0D00ACA01E656E9300887057 /* IMCMaskTraining.m */,
+				0D9BA37F1F7A10AF00C02457 /* IMC3DMask.h */,
+				0D9BA3801F7A10AF00C02457 /* IMC3DMask.m */,
 				0DA17B7D1E792E5500B3CF5C /* IMCChannelWrapper.h */,
 				0DA17B7E1E792E5500B3CF5C /* IMCChannelWrapper.m */,
 				0D21D9451F5696D7003EF354 /* IMCAirLabClient.h */,
@@ -2085,6 +2119,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				0D00AC4B1E64D53400887057 /* template.txt in Resources */,
+				0D9BA3781F744DC800C02457 /* IMC3dMasking.xib in Resources */,
 				0DA17B871E79360100B3CF5C /* IMCMiniRConsole.xib in Resources */,
 				0D00AC4C1E64D53400887057 /* libopencv_calib3d.3.2.0.dylib in Resources */,
 				0D00AC4D1E64D53400887057 /* libopencv_calib3d.3.2.dylib in Resources */,
@@ -2189,6 +2224,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				0D9F31041EF909CF00E1E083 /* template.txt in Resources */,
+				0D9BA3791F744DC800C02457 /* IMC3dMasking.xib in Resources */,
 				0D9F31061EF909CF00E1E083 /* IMCMiniRConsole.xib in Resources */,
 				0D9F31071EF909CF00E1E083 /* libopencv_calib3d.3.2.0.dylib in Resources */,
 				0D9F31081EF909CF00E1E083 /* libopencv_calib3d.3.2.dylib in Resources */,
@@ -2293,6 +2329,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				0D00ABBD1E61B30900887057 /* template.txt in Resources */,
+				0D9BA3771F744DC800C02457 /* IMC3dMasking.xib in Resources */,
 				0DA17B861E79360100B3CF5C /* IMCMiniRConsole.xib in Resources */,
 				0D15573F1E5D876900C27064 /* libopencv_calib3d.3.2.0.dylib in Resources */,
 				0D1557401E5D876900C27064 /* libopencv_calib3d.3.2.dylib in Resources */,
@@ -2418,6 +2455,7 @@
 				0D00ABCF1E64D53400887057 /* IMCBlendModes.m in Sources */,
 				0D00ABD01E64D53400887057 /* IMCTransformDictController.m in Sources */,
 				0D00ABD11E64D53400887057 /* IMCBrushBullet.m in Sources */,
+				0D9BA3751F744DC800C02457 /* IMC3dMasking.mm in Sources */,
 				0DA2B8341E72E16600EAA438 /* IMCCellTrainer.m in Sources */,
 				0D00ABD21E64D53400887057 /* IMCComputationOnMask.m in Sources */,
 				0DEA0B3E1EE976FF004E80C9 /* IMCMetadataTableDelegate.m in Sources */,
@@ -2450,6 +2488,7 @@
 				0D00ABE91E64D53400887057 /* IMCChannelSettingsDelegate.m in Sources */,
 				0DA2B82D1E70A32900EAA438 /* IMCCombineMasks.mm in Sources */,
 				0D00ACA61E65C2CC00887057 /* IMCPixelMap.mm in Sources */,
+				0D9BA37D1F74CECB00C02457 /* IMCVoxelMaskRenderer.m in Sources */,
 				0D6627321E69A72600BC2C92 /* IMCPixelTrainer.mm in Sources */,
 				0D00ABEA1E64D53400887057 /* NSUnarchiverGZipAdditions.m in Sources */,
 				0D00ABEB1E64D53400887057 /* IMCRandomForests.mm in Sources */,
@@ -2467,6 +2506,7 @@
 				0D00ABF31E64D53400887057 /* IMCColorLegend.m in Sources */,
 				0D00ABF41E64D53400887057 /* IMCImageStack.m in Sources */,
 				0D00ABF51E64D53400887057 /* bhsne.cpp in Sources */,
+				0D9BA3821F7A10AF00C02457 /* IMC3DMask.m in Sources */,
 				0D00ABF61E64D53400887057 /* IMCImprovedRegistration.m in Sources */,
 				0D00ABF71E64D53400887057 /* IMCDropView.m in Sources */,
 				0D00ABF81E64D53400887057 /* NSData+MD5.m in Sources */,
@@ -2532,6 +2572,7 @@
 				0D9F30741EF909CF00E1E083 /* IMCTransformDictController.m in Sources */,
 				0D9F30751EF909CF00E1E083 /* IMCBrushBullet.m in Sources */,
 				0D9F30761EF909CF00E1E083 /* IMCCellTrainer.m in Sources */,
+				0D9BA3761F744DC800C02457 /* IMC3dMasking.mm in Sources */,
 				0D9F30771EF909CF00E1E083 /* IMCComputationOnMask.m in Sources */,
 				0D9F30781EF909CF00E1E083 /* IMCMetadataTableDelegate.m in Sources */,
 				0D9F30791EF909CF00E1E083 /* IMCImageGenerator.m in Sources */,
@@ -2564,6 +2605,7 @@
 				0D9F30931EF909CF00E1E083 /* IMCCombineMasks.mm in Sources */,
 				0D9F30941EF909CF00E1E083 /* IMCPixelMap.mm in Sources */,
 				0D9F30951EF909CF00E1E083 /* IMCPixelTrainer.mm in Sources */,
+				0D9BA37E1F74CECB00C02457 /* IMCVoxelMaskRenderer.m in Sources */,
 				0D9F30961EF909CF00E1E083 /* NSUnarchiverGZipAdditions.m in Sources */,
 				0D9F30971EF909CF00E1E083 /* IMCRandomForests.mm in Sources */,
 				0D21D9491F569724003EF354 /* IMCAirLabClient.m in Sources */,
@@ -2581,6 +2623,7 @@
 				0D9F30A21EF909CF00E1E083 /* IMCImageStack.m in Sources */,
 				0D9F30A31EF909CF00E1E083 /* bhsne.cpp in Sources */,
 				0D9F30A41EF909CF00E1E083 /* IMCImprovedRegistration.m in Sources */,
+				0D9BA3831F7A10AF00C02457 /* IMC3DMask.m in Sources */,
 				0D9F30A51EF909CF00E1E083 /* IMCDropView.m in Sources */,
 				0D9F30A61EF909CF00E1E083 /* NSData+MD5.m in Sources */,
 				0D9F30A71EF909CF00E1E083 /* NSImage+OpenCV.mm in Sources */,
@@ -2646,6 +2689,7 @@
 				0DB37D571E36A1E2002975E2 /* IMCBlendModes.m in Sources */,
 				0D6720531E3FF3C800C19663 /* IMCTransformDictController.m in Sources */,
 				0DB4004A1E530BB600179ECB /* IMCBrushBullet.m in Sources */,
+				0D9BA3741F744DC800C02457 /* IMC3dMasking.mm in Sources */,
 				0DA2B8331E72E16600EAA438 /* IMCCellTrainer.m in Sources */,
 				0DAA1F061E59072000579003 /* IMCComputationOnMask.m in Sources */,
 				0DEA0B3D1EE976FF004E80C9 /* IMCMetadataTableDelegate.m in Sources */,
@@ -2678,6 +2722,7 @@
 				0DB37D3E1E355C94002975E2 /* IMCChannelSettingsDelegate.m in Sources */,
 				0DA2B82C1E70A32900EAA438 /* IMCCombineMasks.mm in Sources */,
 				0D00ACA51E65C2CC00887057 /* IMCPixelMap.mm in Sources */,
+				0D9BA37C1F74CECB00C02457 /* IMCVoxelMaskRenderer.m in Sources */,
 				0DA2689D1E512F39007E6EDD /* NSUnarchiverGZipAdditions.m in Sources */,
 				0DB400521E534CB700179ECB /* IMCRandomForests.mm in Sources */,
 				0DB37CFB1E30B98F002975E2 /* IMCNodeWrapper.m in Sources */,
@@ -2695,6 +2740,7 @@
 				0DB37D011E30BA48002975E2 /* IMCImageStack.m in Sources */,
 				0DB400631E534D7D00179ECB /* bhsne.cpp in Sources */,
 				0D8171251E4229FC0058084C /* IMCImprovedRegistration.m in Sources */,
+				0D9BA3811F7A10AF00C02457 /* IMC3DMask.m in Sources */,
 				0DB4003C1E52795000179ECB /* IMCDropView.m in Sources */,
 				0DB37D131E30C9AB002975E2 /* NSData+MD5.m in Sources */,
 				0DFB2EB81E4791AA0065AC61 /* NSImage+OpenCV.mm in Sources */,

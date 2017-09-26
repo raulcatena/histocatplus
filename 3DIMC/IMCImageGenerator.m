@@ -224,7 +224,7 @@ void threeDMeanBlur(float *** data, NSInteger width, NSInteger height, NSInteger
                           blend:(CGBlendMode)blend
                        andMasks:(NSArray<IMCPixelClassification *> *)masks
                 andComputations:(NSArray<IMCComputationOnMask *>*)computations
-                     maskOption:(NSInteger)maskOption
+                     maskOption:(MaskOption)maskOption
                        maskType:(MaskType)maskType
                 maskSingleColor:(NSColor *)maskSingleColor
                 isAlignmentPair:(BOOL)isAlignmentPair
@@ -287,7 +287,6 @@ void threeDMeanBlur(float *** data, NSInteger width, NSInteger height, NSInteger
         }
     }
     for (IMCComputationOnMask *comp in computations) {
-        NSLog(@"C");
         if(!comp.isLoaded)continue;
         
         CGImageRef ref = [IMCImageGenerator refForMaskComputation:comp indexes:indexArray coloringType:coloringType customColors:customColors minNumberOfColors:minAmountColors width:width height:height withTransforms:applyTransforms blendMode:blend maskOption:maskOption maskType:maskType maskSingleColor:maskSingleColor brightField:brightField];
@@ -364,7 +363,7 @@ void threeDMeanBlur(float *** data, NSInteger width, NSInteger height, NSInteger
     return ref;
 }
 
-+(CGImageRef)refMask:(IMCPixelClassification *)mask coloringType:(NSInteger)coloringType width:(NSInteger)width height:(NSInteger)height withTransforms:(BOOL)applyTransforms blendMode:(CGBlendMode)blend maskOption:(NSInteger)maskOption maskType:(MaskType)maskType maskSingleColor:(NSColor *)maskSingleColor{
++(CGImageRef)refMask:(IMCPixelClassification *)mask coloringType:(NSInteger)coloringType width:(NSInteger)width height:(NSInteger)height withTransforms:(BOOL)applyTransforms blendMode:(CGBlendMode)blend maskOption:(MaskOption)maskOption maskType:(MaskType)maskType maskSingleColor:(NSColor *)maskSingleColor{
     
     NSInteger bitsPerComponent = 8;
     NSInteger bytesPerPixel = 4;
@@ -403,7 +402,7 @@ void threeDMeanBlur(float *** data, NSInteger width, NSInteger height, NSInteger
                             height:(NSInteger)height
                     withTransforms:(BOOL)applyTransforms
                          blendMode:(CGBlendMode)blend
-                        maskOption:(NSInteger)maskOption
+                        maskOption:(MaskOption)maskOption
                           maskType:(MaskType)maskType
                    maskSingleColor:(NSColor *)maskSingleColor
                        brightField:(BOOL)brightField{

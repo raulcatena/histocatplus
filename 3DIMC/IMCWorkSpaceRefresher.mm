@@ -189,7 +189,7 @@
                                                  blend:[IMCBlendModes blendModeForValue:self.parent.multiImageFilters.indexOfSelectedItem]
                                               andMasks:self.parent.inScopeMasks
                                        andComputations:self.parent.inScopeComputations
-                                            maskOption:self.parent.maskVisualizeSelector.selectedSegment
+                                            maskOption:(MaskOption)self.parent.maskVisualizeSelector.selectedSegment
                                               maskType:[self maskType]
                                        maskSingleColor:self.parent.scaleBarColor.color
                                        isAlignmentPair:isAlignment
@@ -264,7 +264,7 @@
                                                                    blend:[IMCBlendModes blendModeForValue:self.parent.multiImageFilters.indexOfSelectedItem]
                                                                 andMasks:self.parent.inScopeMasks
                                                          andComputations:self.parent.inScopeComputations
-                                                              maskOption:self.parent.maskVisualizeSelector.selectedSegment
+                                                              maskOption:(MaskOption)self.parent.maskVisualizeSelector.selectedSegment
                                                                 maskType:[self maskType]
                                                          maskSingleColor:self.parent.scaleBarColor.color
                                                          isAlignmentPair:NO
@@ -312,7 +312,7 @@
                                                                    blend:[IMCBlendModes blendModeForValue:self.parent.multiImageFilters.indexOfSelectedItem]
                                                                 andMasks:dict[@"mask"]?@[dict[@"mask"]]:nil
                                                          andComputations:dict[@"comp"]?@[dict[@"comp"]]:nil
-                                                              maskOption:self.parent.maskVisualizeSelector.selectedSegment
+                                                              maskOption:(MaskOption)self.parent.maskVisualizeSelector.selectedSegment
                                                                 maskType:[self maskType]
                                                          maskSingleColor:self.parent.scaleBarColor.color
                                                          isAlignmentPair:NO
@@ -480,12 +480,18 @@
                           [(IMCImageStack *)pair.firstObject height]),
                       [(IMCImageStack *)pair.lastObject width]),
                   [(IMCImageStack *)pair.lastObject height]);
+    
     if([pair.lastObject isMemberOfClass:[IMCComputationOnMask class]])
         min = MAX(MAX(MAX([[[(IMCComputationOnMask *)pair.firstObject mask]imageStack]width],
                           [[[(IMCComputationOnMask *)pair.firstObject mask]imageStack] height]),
                       [[[(IMCComputationOnMask *)pair.lastObject mask]imageStack] width]),
                   [[[(IMCComputationOnMask *)pair.lastObject mask]imageStack] height]);
     
+    if([pair.lastObject isMemberOfClass:[IMCPixelClassification class]])
+        min = MAX(MAX(MAX([[(IMCPixelClassification *)pair.firstObject imageStack]width],
+                          [[(IMCPixelClassification *)pair.firstObject imageStack] height]),
+                      [[(IMCPixelClassification *)pair.lastObject imageStack] width]),
+                  [[(IMCPixelClassification *)pair.lastObject imageStack] height]);
     
     
     CGImageRef imageA = NULL;
@@ -517,7 +523,25 @@
                                                blend:kCGBlendModeScreen
                                             andMasks:nil
                                      andComputations:@[(IMCComputationOnMask *)pair.firstObject]
-                                          maskOption:self.parent.maskVisualizeSelector.selectedSegment
+                                          maskOption:(MaskOption)self.parent.maskVisualizeSelector.selectedSegment
+                                            maskType:[self maskType]
+                                     maskSingleColor:self.parent.scaleBarColor.color
+                                     isAlignmentPair:NO
+                                         brightField:NO];
+    
+    if([pair.firstObject isMemberOfClass:[IMCPixelClassification class]])
+        im1 = [IMCImageGenerator imageForImageStacks:nil
+                                             indexes:@[@(0)]
+                                    withColoringType:0
+                                        customColors:@[[NSColor whiteColor]]
+                                   minNumberOfColors:1
+                                               width:min
+                                              height:min
+                                      withTransforms:YES
+                                               blend:kCGBlendModeScreen
+                                            andMasks:@[(IMCPixelClassification *)pair.firstObject]
+                                     andComputations:nil
+                                          maskOption:(MaskOption)self.parent.maskVisualizeSelector.selectedSegment
                                             maskType:[self maskType]
                                      maskSingleColor:self.parent.scaleBarColor.color
                                      isAlignmentPair:NO
@@ -538,7 +562,25 @@
                                                blend:kCGBlendModeScreen
                                             andMasks:nil
                                      andComputations:@[(IMCComputationOnMask *)pair.lastObject]
-                                          maskOption:self.parent.maskVisualizeSelector.selectedSegment
+                                          maskOption:(MaskOption)self.parent.maskVisualizeSelector.selectedSegment
+                                            maskType:[self maskType]
+                                     maskSingleColor:self.parent.scaleBarColor.color
+                                     isAlignmentPair:NO
+                                         brightField:NO];
+    
+    if([pair.lastObject isMemberOfClass:[IMCPixelClassification class]])
+        im1 = [IMCImageGenerator imageForImageStacks:nil
+                                             indexes:@[@(0)]
+                                    withColoringType:0
+                                        customColors:@[[NSColor whiteColor]]
+                                   minNumberOfColors:1
+                                               width:min
+                                              height:min
+                                      withTransforms:YES
+                                               blend:kCGBlendModeScreen
+                                            andMasks:@[(IMCPixelClassification *)pair.lastObject]
+                                     andComputations:nil
+                                          maskOption:(MaskOption)self.parent.maskVisualizeSelector.selectedSegment
                                             maskType:[self maskType]
                                      maskSingleColor:self.parent.scaleBarColor.color
                                      isAlignmentPair:NO
@@ -589,10 +631,10 @@
         
     NSIndexSet *iSet = self.parent.filesTree.selectedRowIndexes;
     __block IMCNodeWrapper *firstStack = [self.parent.filesTree itemAtRow:iSet.firstIndex];
-    if([firstStack isMemberOfClass:[IMCImageStack class]] || [firstStack isMemberOfClass:[IMCComputationOnMask class]])
+    if([firstStack isMemberOfClass:[IMCImageStack class]] || [firstStack isMemberOfClass:[IMCComputationOnMask class]] || [firstStack isMemberOfClass:[IMCPixelClassification class]])
         [iSet enumerateIndexesUsingBlock:^(NSUInteger index, BOOL *stop){
             IMCImageStack *stack = [self.parent.filesTree itemAtRow:index];
-            if([stack isMemberOfClass:[IMCImageStack class]] || [firstStack isMemberOfClass:[IMCComputationOnMask class]])
+            if([stack isMemberOfClass:[IMCImageStack class]] || [firstStack isMemberOfClass:[IMCComputationOnMask class]] || [firstStack isMemberOfClass:[IMCPixelClassification class]])
                 if(stack != firstStack){
                     [self alignPair:@[firstStack, stack]];
                     firstStack = stack;
@@ -602,6 +644,8 @@
         self.parent.transformDictController.transformDict = [(IMCImageStack *)firstStack transform];
     if([firstStack isMemberOfClass:[IMCComputationOnMask class]])
         self.parent.transformDictController.transformDict = [[[(IMCComputationOnMask *)firstStack mask]imageStack] transform];
+    if([firstStack isMemberOfClass:[IMCPixelClassification class]])
+        self.parent.transformDictController.transformDict = [[(IMCPixelClassification *)firstStack imageStack] transform];
         
 }
 

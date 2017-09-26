@@ -27,6 +27,7 @@
 #import "IMCMetricsController.h"
 #import "IMCMetalViewAndRenderer.h"
 #import "IMCMtkView.h"
+#import "IMC3dMasking.h"
 
 
 @class IMCImageStack;
@@ -34,7 +35,7 @@
 @class IMCComputationOnMask;
 @class IMC3DHandler;
 
-@interface IMCWorkSpace : NSDocument<DataCoordinator, CustomChannelsTableController, ColorLegend, NSOutlineViewDataSource, NSOutlineViewDelegate, NSTableViewDelegate, NSTableViewDataSource, NSTabViewDelegate, NSTextFieldDelegate, IMCScrollViewDelegate, IMCScrollViewRotationDelegate, TransformDelegate, Get3DData, DroppedURL, TableDelegate, MetadataTableDelegate, PlotHandler, IMCPixelClassificationBatch, IMCCellSegmenationBatch, MaskCombiner, IMCCellClassificationBatch, IMCThresholdBatch, NSWindowDelegate>
+@interface IMCWorkSpace : NSDocument<DataCoordinator, CustomChannelsTableController, ColorLegend, NSOutlineViewDataSource, NSOutlineViewDelegate, NSTableViewDelegate, NSTableViewDataSource, NSTabViewDelegate, NSTextFieldDelegate, IMCScrollViewDelegate, IMCScrollViewRotationDelegate, TransformDelegate, Get3DData, DroppedURL, TableDelegate, MetadataTableDelegate, PlotHandler, IMCPixelClassificationBatch, IMCCellSegmenationBatch, MaskCombiner, IMCCellClassificationBatch, IMCThresholdBatch, NSWindowDelegate, IMC3DMasker>
 
 
 //Common
@@ -241,6 +242,9 @@
 -(IBAction)cleanUpNamesWithAirlab:(id)sender;
 //Compensation
 -(IBAction)compensationMatrix:(id)sender;
+//Masker
+-(IBAction)showMasker:(id)sender;
+-(IBAction)create3DMaskFromCurrent:(id)sender;
 
 @end
 

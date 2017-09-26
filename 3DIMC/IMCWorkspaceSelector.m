@@ -48,6 +48,8 @@
             return self.parent.dataCoordinator.computations.count;
         if(self.parent.whichTableCoordinator.indexOfSelectedItem == 6)
             return self.parent.dataCoordinator.maskTrainings.count;
+        if(self.parent.whichTableCoordinator.indexOfSelectedItem == 7)
+            return self.parent.dataCoordinator.threeDNodes.count;
     }
     return [[(IMCFileWrapper *)item children]count];
 }
@@ -69,6 +71,8 @@
             return [self.parent.dataCoordinator.computations objectAtIndex:index];
         if(self.parent.whichTableCoordinator.indexOfSelectedItem == 6)
             return [self.parent.dataCoordinator.maskTrainings objectAtIndex:index];
+        if(self.parent.whichTableCoordinator.indexOfSelectedItem == 7)
+            return [self.parent.dataCoordinator.threeDNodes objectAtIndex:index];
     }
     if ([item isKindOfClass:[IMCNodeWrapper class]])
         return [[(IMCNodeWrapper *)item children]objectAtIndex:index];

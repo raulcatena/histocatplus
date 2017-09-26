@@ -37,12 +37,29 @@ void applySmoothingFilterToPixelData(UInt8 * pixelData, NSInteger width, NSInteg
 void threeDMeanBlur(float *** data, NSInteger width, NSInteger height, NSInteger stackCount, NSIndexSet * channels, NSInteger mode, bool *mask);
 
 //Main image assembly function
-+(NSImage *)imageForImageStacks:(NSMutableArray<IMCImageStack*>*)setStacks indexes:(NSArray *)indexArray withColoringType:(NSInteger)coloringType customColors:(NSArray *)customColors minNumberOfColors:(NSInteger)minAmountColors width:(NSInteger)width height:(NSInteger)height withTransforms:(BOOL)applyTransforms blend:(CGBlendMode)blend andMasks:(NSArray<IMCPixelClassification *> *)masks andComputations:(NSArray<IMCComputationOnMask *>*)computations maskOption:(NSInteger)maskOption maskType:(MaskType)maskType maskSingleColor:(NSColor *)maskSingleColor isAlignmentPair:(BOOL)isAlignmentPair brightField:(BOOL)brightField;
++(NSImage *)imageForImageStacks:(NSMutableArray<IMCImageStack*>*)setStacks indexes:(NSArray *)indexArray withColoringType:(NSInteger)coloringType customColors:(NSArray *)customColors minNumberOfColors:(NSInteger)minAmountColors width:(NSInteger)width height:(NSInteger)height withTransforms:(BOOL)applyTransforms blend:(CGBlendMode)blend andMasks:(NSArray<IMCPixelClassification *> *)masks andComputations:(NSArray<IMCComputationOnMask *>*)computations maskOption:(MaskOption)maskOption maskType:(MaskType)maskType maskSingleColor:(NSColor *)maskSingleColor isAlignmentPair:(BOOL)isAlignmentPair brightField:(BOOL)brightField;
 
 //Helper for exporting
 +(CGImageRef)rawImageFromImage:(IMCImageStack *)imageStack index:(NSInteger)imageIndex numberOfBits:(int)bits;
 //Helper for registration
 +(CGImageRef)whiteRotatedBufferForImage:(IMCImageStack *)stack atIndex:(NSInteger)index superCanvasW:(NSInteger)widthSuper superCanvasH:(NSInteger)heightSuper;
+
++(CGImageRef)refForMaskComputation:(IMCComputationOnMask *)computation
+                           indexes:(NSArray *)indexArray
+                      coloringType:(NSInteger)coloringType
+                      customColors:(NSArray *)colors
+                 minNumberOfColors:(NSInteger)minAmountColors
+                             width:(NSInteger)width
+                            height:(NSInteger)height
+                    withTransforms:(BOOL)applyTransforms
+                         blendMode:(CGBlendMode)blend
+                        maskOption:(MaskOption)maskOption
+                          maskType:(MaskType)maskType
+                   maskSingleColor:(NSColor *)maskSingleColor
+                       brightField:(BOOL)brightField;
+
++(CGImageRef)refMask:(IMCPixelClassification *)mask coloringType:(NSInteger)coloringType width:(NSInteger)width height:(NSInteger)height withTransforms:(BOOL)applyTransforms blendMode:(CGBlendMode)blend maskOption:(MaskOption)maskOption maskType:(MaskType)maskType maskSingleColor:(NSColor *)maskSingleColor;
+
 +(NSImage *)imageWithArrayOfCGImages:(NSArray *)array width:(NSInteger)width height:(NSInteger)height blendMode:(CGBlendMode)blend;
 //Other functions
 +(CGImageRef)imageFromCArrayOfValues:(UInt8 *)array color:(NSColor *)color width:(NSInteger)width height:(NSInteger)height startingHueScale:(int)startHue hueAmplitude:(int)amplitude direction:(BOOL)positive ecuatorial:(BOOL)ecHueTraverse brightField:(BOOL)brightField;

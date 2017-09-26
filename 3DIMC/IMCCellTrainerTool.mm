@@ -179,7 +179,7 @@
 -(void)refresh:(id)sender{
     [self refresh];
 }
--(UInt8 *)createImageForTrainingWithmaskOption:(NSInteger)option maskType:(MaskType)maskType maskSingleColor:(NSColor *)maskSingleColor{
+-(UInt8 *)createImageForTrainingWithmaskOption:(MaskOption)option maskType:(MaskType)maskType maskSingleColor:(NSColor *)maskSingleColor{
     
     NSInteger size = self.trainer.computation.mask.imageStack.numberOfPixels;
     int * copy = (int *)calloc(size, sizeof(int));
@@ -214,7 +214,7 @@
     free(copy);
     return img;
 }
--(UInt8 *)createImageForClassificationWithmaskOption:(NSInteger)option maskType:(MaskType)maskType maskSingleColor:(NSColor *)maskSingleColor{
+-(UInt8 *)createImageForClassificationWithmaskOption:(MaskOption)option maskType:(MaskType)maskType maskSingleColor:(NSColor *)maskSingleColor{
     
     if(!self.trainer.randomFResults)
         return NULL;
@@ -279,12 +279,12 @@
     
     
     if(self.showTraining.state == NSOnState){
-        UInt8 * tempMask = [self createImageForTrainingWithmaskOption:2 maskType:MASK_ALL_CELL maskSingleColor:nil];
+        UInt8 * tempMask = [self createImageForTrainingWithmaskOption:MASK_NO_BORDERS maskType:MASK_ALL_CELL maskSingleColor:nil];
         [self addUint8Buffer:tempMask toStack:refs direction:YES];
     }
     
     if(self.showPMap.state == NSOnState){
-        UInt8 * tempMask = [self createImageForClassificationWithmaskOption:2 maskType:MASK_ALL_CELL maskSingleColor:nil];
+        UInt8 * tempMask = [self createImageForClassificationWithmaskOption:MASK_NO_BORDERS maskType:MASK_ALL_CELL maskSingleColor:nil];
         [self addUint8Buffer:tempMask toStack:refs direction:YES];
     }
     
@@ -292,7 +292,7 @@
         //TODO enable pixel data here
         CGImageRef ref = NULL;
         if(self.showPixelData.state == NSOffState)
-            ref = [self.trainer.computation coloredMaskForChannel:self.channelTableView.selectedRow color:[NSColor whiteColor] maskOption:1 maskType:MASK_ALL_CELL maskSingleColor:[NSColor whiteColor] brightField:NO];
+            ref = [self.trainer.computation coloredMaskForChannel:self.channelTableView.selectedRow color:[NSColor whiteColor] maskOption:MASK_FULL maskType:MASK_ALL_CELL maskSingleColor:[NSColor whiteColor] brightField:NO];
         if(self.showPixelData.state == NSOnState){
             IMCImageStack *stack = self.trainer.computation.mask.imageStack;
             NSMutableArray *foundChannels = @[].mutableCopy;
@@ -323,7 +323,7 @@
                                                     blend:kCGBlendModeScreen
                                                  andMasks:self.showMaskBorder.state == NSOnState?@[self.trainer.computation.mask]:nil
                                           andComputations:nil
-                                               maskOption:3
+                                               maskOption:MASK_ONE_COLOR_BORDER
                                                  maskType:MASK_ALL_CELL
                                           maskSingleColor:[NSColor whiteColor]
                                           isAlignmentPair:NO

@@ -15,6 +15,7 @@
 @class IMCMaskTraining;
 @class IMCPixelMap;
 @class IMCImageStack;
+@class IMC3DMask;
 
 @protocol DataCoordinator <NSObject>
 
@@ -48,6 +49,7 @@
 -(NSArray<IMCComputationOnMask *> *)computations;
 -(NSArray<IMCMaskTraining *> *)maskTrainings;
 -(NSArray<IMCPixelMap *> *)pixelMaps;
+-(NSArray<IMC3DMask *> *)threeDNodes;
 
 -(void)updateFileWrappers;
 -(void)removeFileWrapper:(IMCFileWrapper *)wrapper;
@@ -63,6 +65,9 @@
 -(NSInteger)maxChannels;
 -(NSInteger)maxChannelsComputations;
 
+//Naming
+-(void)giveNameToNode:(IMCNodeWrapper *)node inGroup:(NSArray *)group;
+
 //Metadata
 -(NSMutableDictionary *)metadata;
 -(NSMutableDictionary *)metadataForImageStack:(IMCImageStack *)stack;
@@ -72,6 +77,9 @@
 
 //Comp matrix
 -(NSString *)compMatrix;
+
+//3D
+-(void)add3DNode:(IMC3DMask *)mask3d;
 
 
 @end

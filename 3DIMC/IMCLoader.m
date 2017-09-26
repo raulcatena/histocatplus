@@ -17,9 +17,11 @@
 #import "IMCComputationOnMask.h"
 #import "IMCMaskTraining.h"
 #import "IMCPixelMap.h"
+#import "IMC3DMask.h"
 
 @interface IMCLoader()
 @property (nonatomic, strong) NSMutableArray *fileWrappersContainer;
+@property (nonatomic, strong) NSMutableArray *threeDNodesRaw;
 @property (nonatomic, readonly) NSMutableArray * inOrderImageHashes;
 @property (nonatomic, strong) NSMutableArray *unwrappedPixelTrainings;
 @property (nonatomic, strong) NSMutableArray *unwrappedMasks;
@@ -428,6 +430,24 @@
     return [self.jsonDescription valueForKey:JSON_DICT_FILES];
 }
 
+#pragma mark namimg
+
+-(void)giveNameToNode:(IMCNodeWrapper *)node inGroup:(NSArray *)group{
+    BOOL found = NO;
+    int counter = 0;
+    do{
+        found = NO;
+        node.itemName = @"Untitled";
+        if(counter > 0)
+            node.itemName = [node.itemName stringByAppendingFormat:@"_%i", counter];
+        for (IMCNodeWrapper *otherNode in group)
+            if([otherNode.itemName isEqualToString:node.itemName])
+                found = YES;
+        counter++;
+        
+    }while (found);
+}
+
 #pragma mark metadata
 -(NSMutableDictionary *)metadata{
     NSMutableDictionary * metadata = self.jsonDescription[JSON_METADATA];
@@ -499,5 +519,31 @@
     return matrix;
 }
 
+#pragma mark 3ds
+-(NSMutableArray *)threeDs{
+    if(!self.jsonDescription[JSON_DICT_3DS])
+        self.jsonDescription[JSON_DICT_3DS] = @[].mutableCopy;
+    return self.jsonDescription[JSON_DICT_3DS];
+}
+-(NSArray<IMC3DMask *> *)threeDNodes{
+    if(!_threeDNodesRaw)
+        _threeDNodesRaw = @[].mutableCopy;
+    for (NSMutableDictionary *dic in self.threeDs) {
+        BOOL found = NO;
+        for (IMC3DMask *mask3d in _threeDNodesRaw)
+            if(mask3d.jsonDictionary == dic)
+                found = YES;
+        if(found == NO){
+            IMC3DMask *newMask = [[IMC3DMask alloc]initWithLoader:self];
+            newMask.jsonDictionary = dic;
+            [_threeDNodesRaw addObject:newMask];
+        }
+    }
+    return _threeDNodesRaw;
+}
+-(void)add3DNode:(IMC3DMask *)mask3d{
+    if(![self.threeDs containsObject:mask3d.jsonDictionary])
+       [self.threeDs addObject:mask3d.jsonDictionary];
+}
 
 @end

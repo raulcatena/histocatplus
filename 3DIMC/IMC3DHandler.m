@@ -48,6 +48,8 @@
 
 -(void)startBufferForImages:(NSInteger)images channels:(NSInteger)channels width:(NSInteger)width height:(NSInteger)height{
     
+    [self cleanMemory];
+    
     self.images = images;
     self.channels = channels;
     self.width = width;
@@ -55,7 +57,6 @@
     
     //if([self memoryTest])return;
     
-    [self cleanMemory];
     self.allBuffer = (float ***)malloc(images * sizeof(float **));
     
     for (NSInteger i = 0; i < images; i++) {
@@ -117,36 +118,58 @@
     self.allBuffer[indexStack][channel] = (float *)calloc(self.width * self.height, sizeof(float));
     
     for(int i=0; i<length; i++)
-    {
         self.allBuffer[indexStack][channel][i] = buf[i]/255.0f;
-    }
+    
     CFRelease(rawData);
     CFRelease(image);
 }
--(void)addComputation:(IMCComputationOnMask *)comp atIndexOfStack:(NSInteger)indexStack channel:(NSInteger)channel{
-//    CGImageRef image = [IMCImageGenerator whiteRotatedBufferForImage:stack
-//                                                             atIndex:channel
-//                                                        superCanvasW:self.width superCanvasH:self.height];
-//    NSLog(@"Adding");
-//    CFDataRef rawData = CGDataProviderCopyData(CGImageGetDataProvider(image));
-//    
-//    UInt8 * buf = (UInt8 *) CFDataGetBytePtr(rawData);
-//    NSInteger length = CFDataGetLength(rawData);
-//    
-//    if(self.allBuffer[indexStack][channel])
-//    {
-//        free(self.allBuffer[indexStack][channel]);
-//        self.allBuffer[indexStack][channel] = NULL;
-//    }
-//    
-//    self.allBuffer[indexStack][channel] = (float *)calloc(self.width * self.height, sizeof(float));
-//    
-//    for(int i=0; i<length; i++)
-//    {
-//        self.allBuffer[indexStack][channel][i] = buf[i]/255.0f;
-//    }
-//    CFRelease(rawData);
-//    CFRelease(image);
+-(void)addComputation:(IMCComputationOnMask *)comp atIndexOfStack:(NSInteger)indexStack channel:(NSInteger)channel maskOption:(MaskOption)option maskType:(MaskType)type{
+    
+    CGImageRef ref = [IMCImageGenerator refForMaskComputation:comp indexes:@[@(channel)] coloringType:1 customColors:@[[NSColor whiteColor]] minNumberOfColors:1 width:self.width height:self.height withTransforms:YES blendMode:kCGBlendModeScreen maskOption:option maskType:type maskSingleColor:[NSColor whiteColor] brightField:NO];
+    
+    UInt8 *buf = [IMCImageGenerator bufferForImageRef:ref];
+    
+    NSInteger length = self.width * self.height;//CFDataGetLength(rawData);
+    
+    if(self.allBuffer[indexStack][channel])
+    {
+        free(self.allBuffer[indexStack][channel]);
+        self.allBuffer[indexStack][channel] = NULL;
+    }
+    
+    self.allBuffer[indexStack][channel] = (float *)calloc(self.width * self.height, sizeof(float));
+    
+    for(int i=0, k=0; i<length; i++, k+=4)
+        self.allBuffer[indexStack][channel][i] = buf[k]/255.0f;
+    
+    if(buf)
+        free(buf);
+    if(ref)
+        CFRelease(ref);
+}
+-(void)addMask:(IMCPixelClassification *)mask atIndexOfStack:(NSInteger)indexStack maskOption:(MaskOption)option maskType:(MaskType)type{
+    
+    CGImageRef ref = [IMCImageGenerator refMask:mask coloringType:1 width:self.width height:self.height withTransforms:YES blendMode:kCGBlendModeScreen maskOption:option maskType:type maskSingleColor:[NSColor whiteColor]];
+    
+    UInt8 *buf = [IMCImageGenerator bufferForImageRef:ref];
+    
+    NSInteger length = self.width * self.height;//CFDataGetLength(rawData);
+    
+    if(self.allBuffer[indexStack][0])
+    {
+        free(self.allBuffer[indexStack][0]);
+        self.allBuffer[indexStack][0] = NULL;
+    }
+    
+    self.allBuffer[indexStack][0] = (float *)calloc(self.width * self.height, sizeof(float));
+    
+    for(int i=0, k=0; i<length; i++, k+=4)
+        self.allBuffer[indexStack][0][i] = buf[k] != 0? 1:0;
+    
+    if(buf)
+        free(buf);
+    if(ref)
+        CFRelease(ref);
 }
 
 #pragma mark blur

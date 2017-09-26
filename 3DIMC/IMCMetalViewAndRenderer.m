@@ -344,22 +344,6 @@ bool heightDescriptor[] = {
     NSInteger width = [self.delegate witdhModel];
     NSInteger height = [self.delegate heightModel];
     NSInteger areaModel = width * height;
-
-    
-    
-    /*//Slice handling
-    NSInteger slices = [self.delegate stacksIndexSet].count;
-    float * zThicknesses = [self.delegate thicknesses];
-    if(zThicknesses == NULL)
-        return;
-    float * collatedZ = calloc(slices * 2, sizeof(float));
-    [[self.delegate stacksIndexSet] enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop){
-        collatedZ[idx * 2 + 0] = 1.0f;
-        collatedZ[idx * 2 + 1] = zThicknesses[idx];
-    }];
-    self.layerIndexesBuffer = [self.device newBufferWithBytes:collatedZ length:slices * sizeof(float) * 2 options:MTLResourceOptionCPUCacheModeDefault];
-    free(collatedZ);
-     */
     
     //Positional Data
     
@@ -440,7 +424,6 @@ bool heightDescriptor[] = {
     [comBuffer presentDrawable:drawable];
     
     [comBuffer commit];
-    NSLog(@"I->");
 }
 -(void)mtkView:(MTKView *)view drawableSizeWillChange:(CGSize)size{
     [self projectionMatrixSetup:view];

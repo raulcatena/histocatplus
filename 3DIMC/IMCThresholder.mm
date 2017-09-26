@@ -130,7 +130,7 @@
                                                       blend:kCGBlendModeScreen
                                                    andMasks:nil
                                             andComputations:nil
-                                                 maskOption:0
+                                                 maskOption:MASK_NO_BORDERS
                                                    maskType:MASK_ALL_CELL
                                             maskSingleColor:0
                                             isAlignmentPair:NO
@@ -152,7 +152,7 @@
                                                           blend:kCGBlendModeScreen
                                                        andMasks:nil
                                                 andComputations:nil
-                                                     maskOption:0
+                                                     maskOption:MASK_NO_BORDERS
                                                        maskType:MASK_ALL_CELL
                                                 maskSingleColor:0
                                                 isAlignmentPair:NO

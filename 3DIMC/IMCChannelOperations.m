@@ -160,6 +160,26 @@
     });
 }
 
++(void)applySettingsFromComputation:(IMCComputationOnMask *)computation stacks:(NSArray <IMCComputationOnMask *>*)computations withIndexSetChannels:(NSIndexSet *)indexSet block:(void(^)())block{
+    
+    NSInteger sure = [General runAlertModalAreYouSure];if (sure == NSAlertSecondButtonReturn)return;
+    
+    dispatch_queue_t aQ = dispatch_queue_create("aaQ", NULL);
+    dispatch_async(aQ, ^{
+        for (IMCComputationOnMask *comp in computations) {
+            //Check the file has been loaded at least once
+            
+            if(comp == computation)continue;
+            
+            [indexSet enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop){
+                if(comp.channelSettings.count > idx)
+                    [comp.channelSettings replaceObjectAtIndex:idx withObject:[computation.channelSettings[idx]mutableCopy]];
+            }];
+        }
+        if(block)dispatch_async(dispatch_get_main_queue(), ^{block();});
+    });
+}
+
 +(void)applyColors:(IMCImageStack *)stack stacks:(NSArray <IMCFileWrapper *>*)stacks withIndexSetChannels:(NSIndexSet *)indexSet block:(void(^)())block{
     
     NSInteger sure = [General runAlertModalAreYouSure];if (sure == NSAlertSecondButtonReturn)return;

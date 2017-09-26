@@ -460,7 +460,7 @@
                                             <rect key="frame" x="-3" y="105" width="646" height="541"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <clipView key="contentView" id="G0P-xh-7z1">
-                                                <rect key="frame" x="1" y="1" width="629" height="524"/>
+                                                <rect key="frame" x="1" y="1" width="644" height="539"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <view id="bEC-dY-lh0">
@@ -470,10 +470,10 @@
                                                 </subviews>
                                             </clipView>
                                             <scroller key="horizontalScroller" verticalHuggingPriority="750" horizontal="YES" id="wde-Z5-Q5f">
-                                                <rect key="frame" x="1" y="525" width="629" height="15"/>
+                                                <rect key="frame" x="1" y="524" width="644" height="16"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                             </scroller>
-                                            <scroller key="verticalScroller" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="o3j-AT-rhz">
+                                            <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="o3j-AT-rhz">
                                                 <rect key="frame" x="630" y="1" width="15" height="524"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                             </scroller>
@@ -498,7 +498,7 @@
                                             <rect key="frame" x="-3" y="100" width="725" height="541"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <clipView key="contentView" id="mVh-zm-F3q">
-                                                <rect key="frame" x="1" y="1" width="723" height="524"/>
+                                                <rect key="frame" x="1" y="1" width="723" height="539"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                                 <subviews>
                                                     <view id="5lJ-K7-OS1">
@@ -762,7 +762,7 @@
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <clipView key="contentView" id="JWP-aq-tfn">
                                                 <rect key="frame" x="1" y="1" width="676" height="522"/>
-                                                <autoresizingMask key="autoresizingMask"/>
+                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <view id="R1f-P8-62a">
                                                         <rect key="frame" x="0.0" y="0.0" width="676" height="522"/>
@@ -1208,7 +1208,7 @@
                                             <rect key="frame" x="505" y="397" width="209" height="205"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                             <clipView key="contentView" id="vjV-ev-Trj">
-                                                <rect key="frame" x="1" y="1" width="192" height="188"/>
+                                                <rect key="frame" x="1" y="1" width="207" height="203"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                                 <subviews>
                                                     <view id="s0h-HM-uaO">
@@ -1230,7 +1230,7 @@
                                             <rect key="frame" x="505" y="184" width="209" height="205"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                             <clipView key="contentView" id="4kB-pH-Vfs">
-                                                <rect key="frame" x="1" y="1" width="192" height="188"/>
+                                                <rect key="frame" x="1" y="1" width="207" height="203"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                                 <subviews>
                                                     <view id="wdS-J5-DxB">
@@ -1470,6 +1470,9 @@
                                         <modifierMask key="keyEquivalentModifierMask"/>
                                     </menuItem>
                                     <menuItem title="Mask Trainings" id="i6s-Uy-cff" userLabel="Mask Trainings">
+                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                    </menuItem>
+                                    <menuItem title="3D Masks" id="VMc-O5-f42" userLabel="3D Masks">
                                         <modifierMask key="keyEquivalentModifierMask"/>
                                     </menuItem>
                                 </items>

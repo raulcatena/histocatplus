@@ -823,7 +823,7 @@
 
 #pragma mark Image Generation for mask
 
--(UInt8 *)getCachedBufferForIndex:(NSInteger)index maskOption:(NSInteger)option maskType:(MaskType)maskType maskSingleColor:(NSColor *)maskSingleColor{
+-(UInt8 *)getCachedBufferForIndex:(NSInteger)index maskOption:(MaskOption)option maskType:(MaskType)maskType maskSingleColor:(NSColor *)maskSingleColor{
     if(cachedValues == NULL || cachedSettings == NULL)
         [self allocateCacheBufferContainers];
     if(cachedValues[index] == NULL || cachedSettings[index] == NULL)
@@ -876,7 +876,7 @@
     return 255.0f;
 }
 
--(void)recalculateChannelAtIndex:(NSInteger)index maskOption:(NSInteger)option maskType:(MaskType)maskType maskSingleColor:(NSColor *)maskSingleColor{
+-(void)recalculateChannelAtIndex:(NSInteger)index maskOption:(MaskOption)option maskType:(MaskType)maskType maskSingleColor:(NSColor *)maskSingleColor{
     float * settings = cachedSettings[index];
     if(!self.computedData)
         return;
@@ -942,7 +942,7 @@
     }
 }
 
--(float *)createImageForMaskWithCellData:(float *)data maskOption:(NSInteger)option maskType:(MaskType)maskType maskSingleColor:(NSColor *)maskSingleColor{
+-(float *)createImageForMaskWithCellData:(float *)data maskOption:(MaskOption)option maskType:(MaskType)maskType maskSingleColor:(NSColor *)maskSingleColor{
     
     int * copy = copyMask(self.mask.mask, self.mask.imageStack.width, self.mask.imageStack.height);
     
@@ -985,7 +985,7 @@
     return img;
 }
 
--(CGImageRef)coloredMaskForChannel:(NSInteger)channel color:(NSColor *)color maskOption:(NSInteger)option maskType:(MaskType)maskType maskSingleColor:(NSColor *)maskSingleColor brightField:(BOOL)brightField{
+-(CGImageRef)coloredMaskForChannel:(NSInteger)channel color:(NSColor *)color maskOption:(MaskOption)option maskType:(MaskType)maskType maskSingleColor:(NSColor *)maskSingleColor brightField:(BOOL)brightField{
     if(channel == NSNotFound)
         return NULL;
     UInt8 * ints = [self getCachedBufferForIndex:channel maskOption:option maskType:maskType maskSingleColor:maskSingleColor];
@@ -993,6 +993,7 @@
     CGImageRef ref = [IMCImageGenerator imageFromCArrayOfValues:ints color:color width:self.mask.imageStack.width height:self.mask.imageStack.height startingHueScale:170 hueAmplitude:170 direction:NO ecuatorial:NO brightField:brightField];
     return ref;
 }
+
 
 #pragma mark Calculations
 

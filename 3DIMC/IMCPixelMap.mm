@@ -51,7 +51,9 @@
 //        return self.jsonDictionary[JSON_DICT_ITEM_NAME];
 //    return self.jsonDictionary[JSON_DICT_ITEM_NAME];
 }
-
+-(NSMutableDictionary *)transform{
+    return [(IMCImageStack *)self.parent transform];
+}
 -(BOOL)isSegmentation{
     return [self.jsonDictionary[JSON_DICT_PIXEL_MAP_FOR_SEGMENTATION]boolValue];
 }

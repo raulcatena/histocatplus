@@ -214,7 +214,7 @@
                                                        blend:kCGBlendModeScreen
                                                     andMasks:nil
                                              andComputations:nil
-                                                  maskOption:NULL
+                                                  maskOption:MASK_BORDER
                                                     maskType:MASK_ALL_CELL
                                              maskSingleColor:[NSColor whiteColor]
                                              isAlignmentPair:NO

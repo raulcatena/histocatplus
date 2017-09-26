@@ -769,6 +769,19 @@
                                     <action selector="pasteTrainingSettings:" target="-1" id="HdU-IK-Wpx"/>
                                 </connections>
                             </menuItem>
+                            <menuItem isSeparatorItem="YES" id="WoB-ub-F7D"/>
+                            <menuItem title="3D Mask..." id="t2z-KL-5Mk" userLabel="3D Mask">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="showMasker:" target="-1" id="M8b-dd-P8r"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="3D Mask From current..." id="Dm7-VC-ouQ" userLabel="3D Mask">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="create3DMaskFromCurrent:" target="-1" id="DnW-Zs-sCE"/>
+                                </connections>
+                            </menuItem>
                         </items>
                     </menu>
                 </menuItem>

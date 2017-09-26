@@ -142,7 +142,7 @@
                                                   withTransforms:NO blend:kCGBlendModeScreen
                                                         andMasks:maskOrMap == stack ? @[]:@[(IMCPixelClassification *)maskOrMap]
                                                  andComputations:nil
-                                                      maskOption:1
+                                                      maskOption:MASK_FULL
                                                         maskType:MASK_ALL_CELL
                                                  maskSingleColor:0
                                                  isAlignmentPair:NO
@@ -294,7 +294,7 @@
     if(self.calculation.indexOfSelectedItem == 1)
         [IMCMasks invertToProximity:results cells:compOr.mask.numberOfSegments];
     
-    float * piz = [compOr createImageForMaskWithCellData:results maskOption:2 maskType:MASK_ALL_CELL maskSingleColor:nil];
+    float * piz = [compOr createImageForMaskWithCellData:results maskOption:MASK_NO_BORDERS maskType:MASK_ALL_CELL maskSingleColor:nil];
     
     float max = .0f;
     for (NSInteger i = 0; i < compOr.mask.numberOfSegments; i++)

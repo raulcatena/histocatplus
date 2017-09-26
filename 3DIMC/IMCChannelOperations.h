@@ -23,6 +23,7 @@ typedef enum{
 +(void)operationOnImages:(NSArray <IMCImageStack *>*)images operation:(kOperation)operation withIndexSetChannels:(NSIndexSet *)indexSet toIndex:(NSInteger)index block:(void(^)())block;
 +(void)applySettingsFromStack:(IMCImageStack *)stack stacks:(NSArray <IMCImageStack *>*)stacks withIndexSetChannels:(NSIndexSet *)indexSet block:(void(^)())block;
 +(void)applySettingsAdjustToMaxFromStack:(IMCImageStack *)stack stacks:(NSArray <IMCImageStack *>*)stacks withIndexSetChannels:(NSIndexSet *)indexSet block:(void(^)())block;
++(void)applySettingsFromComputation:(IMCComputationOnMask *)computation stacks:(NSArray <IMCComputationOnMask *>*)computations withIndexSetChannels:(NSIndexSet *)indexSet block:(void(^)())block;
 +(void)applyColors:(IMCImageStack *)stack stacks:(NSArray <IMCFileWrapper *>*)stacks withIndexSetChannels:(NSIndexSet *)indexSet block:(void(^)())block;
 
 //On computations

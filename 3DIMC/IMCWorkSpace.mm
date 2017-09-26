@@ -53,7 +53,8 @@
 #import "IMCAirLabClient.h"
 //Compensation
 #import "IMCCompensation.h"
-
+//3DMask
+#import "IMC3DMask.h"
 
 @interface IMCWorkSpace (){
     dispatch_queue_t threadPainting;
@@ -1079,9 +1080,14 @@
 }
 -(void)applySettings:(NSMenuItem *)sender{
     NSIndexSet *selectedChannels = self.channels.selectedRowIndexes.copy;
-    [IMCChannelOperations applySettingsFromStack:self.inScopeImage stacks:self.inScopeImages.copy withIndexSetChannels:selectedChannels block:^{
-        [self refresh];
-    }];
+    if(self.inScopeImage)
+        [IMCChannelOperations applySettingsFromStack:self.inScopeImage stacks:self.inScopeImages.copy withIndexSetChannels:selectedChannels block:^{
+            [self refresh];
+        }];
+    if(self.inScopeComputation)
+        [IMCChannelOperations applySettingsFromComputation:self.inScopeComputation stacks:self.inScopeComputations withIndexSetChannels:selectedChannels block:^{
+            [self refresh];
+        }];
 }
 -(void)applySettingsWithMax:(NSMenuItem *)sender{
     NSIndexSet *selectedChannels = self.channels.selectedRowIndexes.copy;
@@ -1415,8 +1421,8 @@
 #pragma mark 3D reconstruction
 -(BOOL)canRender{
     NSInteger tab = self.whichTableCoordinator.indexOfSelectedItem;
-    if(tab != 1 && tab !=5){
-        [General runAlertModalWithMessage:@"You can render only from the stacks or measurement views"];
+    if(tab != 1 && tab !=5 && tab !=7){
+        [General runAlertModalWithMessage:@"You can render only from the stacks, measurements, or 3d Masks views"];
         return NO;
     }
     return YES;
@@ -1434,6 +1440,9 @@
             [self.threeDHandler startBufferForImages:self.dataCoordinator.inOrderImageWrappers.count channels:[self.dataCoordinator maxChannels] width:maxWidth height:maxWidth];
         }else if(self.whichTableCoordinator.indexOfSelectedItem == 5){
             [self.threeDHandler startBufferForImages:self.dataCoordinator.computations.count channels:[self.dataCoordinator maxChannelsComputations] width:maxWidth height:maxWidth];
+        }else if(self.whichTableCoordinator.indexOfSelectedItem == 7){
+            //TODO
+            //Render 3D Mask
         }
         
         self.openGlViewPort.delegate = self;
@@ -1462,6 +1471,7 @@
                 
                 IMCImageStack *stack;
                 IMCComputationOnMask *comp;
+                IMCPixelClassification *mask;
                 
                 if([anobj isMemberOfClass:[IMCImageStack class]])
                     stack = (IMCImageStack *)anobj;
@@ -1473,8 +1483,10 @@
                     comp = (IMCComputationOnMask *)anobj;
                     stack = comp.mask.imageStack;
                 }
+                if([anobj isMemberOfClass:[IMCPixelClassification class]])
+                    mask = (IMCPixelClassification *)anobj;
                 
-                if(stack){
+                if(stack && !comp){
                     BOOL stackWasLoaded = stack.isLoaded;
                     if(!stackWasLoaded)
                         [stack loadLayerDataWithBlock:nil];
@@ -1484,13 +1496,21 @@
                     }];
                     if(stackWasLoaded == NO)
                     [stack unLoadLayerDataWithBlock:nil];
+                }else if(mask){
+                    BOOL wasLoaded = mask.isLoaded;
+                    if(!wasLoaded)
+                        [mask loadLayerDataWithBlock:nil];
+                    while(!mask.isLoaded);
+                    
+                    [self.threeDHandler addMask:mask atIndexOfStack:fileIdx maskOption:(MaskOption)self.maskVisualizeSelector.selectedSegment maskType:(MaskType)self.maskPartsSelector.selectedSegment];
+                    
                 }else if(comp){
                     BOOL wasLoaded = comp.isLoaded;
                     if(!wasLoaded)
                         [comp loadLayerDataWithBlock:nil];
                     while(!comp.isLoaded);
                     [channs enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop){
-                        [self.threeDHandler addComputation:comp atIndexOfStack:fileIdx channel:idx];
+                        [self.threeDHandler addComputation:comp atIndexOfStack:fileIdx channel:idx maskOption:(MaskOption)self.maskVisualizeSelector.selectedSegment maskType:(MaskType)self.maskPartsSelector.selectedSegment];
                     }];
                 }
                 dispatch_async(dispatch_get_main_queue(), ^{
@@ -1870,6 +1890,30 @@
 }
 -(NSInteger)colorScaleChoice{
     return self.colorScale.indexOfSelectedItem;
+}
+
+#pragma mark 3D masks
+-(void)showMasker:(id)sender{
+    IMC3dMasking *seg = [[IMC3dMasking alloc]init];
+    seg.delegate = self;
+    [[seg window] makeKeyAndOrderFront:seg];
+}
+-(void)create3DMaskFromCurrent:(id)sender{
+    IMC3DMask *mask3d = [[IMC3DMask alloc]initWithLoader:self.dataCoordinator];
+    NSMutableArray *array = @[].mutableCopy;
+    for (IMCComputationOnMask *comp in self.dataCoordinator.inOrderComputations)
+        [array addObject:comp.itemHash];
+    [mask3d setTheComponents:array];
+    mask3d.channel = self.channels.selectedRow;
+    mask3d.expansion = 4;
+    mask3d.minKernel = 7;
+    mask3d.threshold = self.thresholdToRender.floatValue;
+    mask3d.sheepShaver = (BOOL)mask3d.minKernel;
+    [self.dataCoordinator giveNameToNode:mask3d inGroup:self.dataCoordinator.threeDNodes];
+    [self.dataCoordinator add3DNode:mask3d];
+}
+-(NSArray *)masks{
+    return [self.dataCoordinator masks];
 }
 
 #pragma mark analytics

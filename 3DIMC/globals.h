@@ -110,6 +110,19 @@
 #define JSON_DICT_IMAGE_TRANSFORM_COMPRESS_X @"json_dict_channel_transform_compress_x"
 #define JSON_DICT_IMAGE_TRANSFORM_COMPRESS_Y @"json_dict_channel_transform_compress_y"
 
+#define JSON_DICT_3DS @"json_dict_3ds"
+#define JSON_DICT_3DS_COMPONENTS @"json_dict_3ds_comps"
+#define JSON_DICT_3DS_METADATA @"json_dict_3ds_metadata"
+#define JSON_DICT_3DS_METADATA_TYPE @"json_dict_3ds_met_type"
+#define JSON_DICT_3DS_METADATA_CHANNEL @"json_dict_3ds_met_chan"
+#define JSON_DICT_3DS_METADATA_THRESHOLD @"json_dict_3ds_met_thres"
+#define JSON_DICT_3DS_METADATA_EXPANSION @"json_dict_3ds_met_exp"
+#define JSON_DICT_3DS_METADATA_MIN_KERNEL @"json_dict_3ds_minker"
+#define JSON_DICT_3DS_METADATA_WIDTH @"json_dict_3ds_width"
+#define JSON_DICT_3DS_METADATA_HEIGHT @"json_dict_3ds_height"
+#define JSON_DICT_3DS_METADATA_THICK @"json_dict_3ds_thick"
+#define JSON_DICT_3DS_METADATA_SHEEP_SHAVER @"json_dict_3ds_sheep"
+
 
 //METADATA
 #define JSON_METADATA @"json_metadata"
@@ -171,5 +184,12 @@ typedef enum
     MASK_NUC,
     MASK_CYT
 } MaskType;
+typedef enum
+{
+    MASK_BORDER,
+    MASK_FULL,
+    MASK_NO_BORDERS,
+    MASK_ONE_COLOR_BORDER
+} MaskOption;
 
 #endif /* globals_h */
