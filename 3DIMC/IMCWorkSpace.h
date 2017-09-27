@@ -132,7 +132,7 @@
 @property (nonatomic, weak) IBOutlet NSStepper *stepperDefaultZ;
 @property (nonatomic, weak) IBOutlet NSTextField *labelStepperDefaultZ;
 @property (nonatomic, weak) IBOutlet NSProgressIndicator *threeDProcessesIndicator;
-@property (nonatomic, weak) IBOutlet NSSegmentedControl *cleanUpMode;
+@property (nonatomic, weak) IBOutlet NSPopUpButton *cleanUpMode;
 
 //TabPlotsTab
 @property (nonatomic, weak) IBOutlet IMCScrollView *plotResult;

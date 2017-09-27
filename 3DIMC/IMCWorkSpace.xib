@@ -28,7 +28,7 @@
                 <outlet property="channelsCustomSV" destination="K0E-6C-gmg" id="z3D-Tp-miV"/>
                 <outlet property="channelsSV" destination="QRE-YS-2Ta" id="cMp-TA-Joa"/>
                 <outlet property="channelsTag" destination="1oL-fC-s8W" id="9u2-ab-Ovj"/>
-                <outlet property="cleanUpMode" destination="rKi-lN-v6S" id="eSX-0w-1tK"/>
+                <outlet property="cleanUpMode" destination="Lu1-38-Lnl" id="0Mf-xk-rlq"/>
                 <outlet property="colorLegend" destination="2w6-i3-rT2" id="mJg-XX-LHw"/>
                 <outlet property="colorPoints" destination="Ps2-R5-EP4" id="gRl-BE-oPG"/>
                 <outlet property="colorSpaceSelector" destination="Y6Z-6G-YdS" id="yse-pw-7Eb"/>
@@ -460,7 +460,7 @@
                                             <rect key="frame" x="-3" y="105" width="646" height="541"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <clipView key="contentView" id="G0P-xh-7z1">
-                                                <rect key="frame" x="1" y="1" width="644" height="539"/>
+                                                <rect key="frame" x="1" y="1" width="629" height="524"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <view id="bEC-dY-lh0">
@@ -470,10 +470,10 @@
                                                 </subviews>
                                             </clipView>
                                             <scroller key="horizontalScroller" verticalHuggingPriority="750" horizontal="YES" id="wde-Z5-Q5f">
-                                                <rect key="frame" x="1" y="524" width="644" height="16"/>
+                                                <rect key="frame" x="1" y="525" width="629" height="15"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                             </scroller>
-                                            <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="o3j-AT-rhz">
+                                            <scroller key="verticalScroller" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="o3j-AT-rhz">
                                                 <rect key="frame" x="630" y="1" width="15" height="524"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                             </scroller>
@@ -498,7 +498,7 @@
                                             <rect key="frame" x="-3" y="100" width="725" height="541"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <clipView key="contentView" id="mVh-zm-F3q">
-                                                <rect key="frame" x="1" y="1" width="723" height="539"/>
+                                                <rect key="frame" x="1" y="1" width="723" height="524"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                                 <subviews>
                                                     <view id="5lJ-K7-OS1">
@@ -762,7 +762,7 @@
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <clipView key="contentView" id="JWP-aq-tfn">
                                                 <rect key="frame" x="1" y="1" width="676" height="522"/>
-                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                <autoresizingMask key="autoresizingMask"/>
                                                 <subviews>
                                                     <view id="R1f-P8-62a">
                                                         <rect key="frame" x="0.0" y="0.0" width="676" height="522"/>
@@ -1150,19 +1150,6 @@
                                                 <action selector="redoZ:" target="-2" id="a4o-vC-no4"/>
                                             </connections>
                                         </button>
-                                        <segmentedControl verticalHuggingPriority="750" misplaced="YES" id="rKi-lN-v6S">
-                                            <rect key="frame" x="1" y="54" width="244" height="24"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                            <segmentedCell key="cell" borderStyle="border" alignment="left" style="rounded" trackingMode="selectOne" id="QB9-AR-D69">
-                                                <font key="font" metaFont="system"/>
-                                                <segments>
-                                                    <segment label="None" selected="YES"/>
-                                                    <segment label="Denoise" tag="1"/>
-                                                    <segment label="Mean"/>
-                                                    <segment label="Gauss"/>
-                                                </segments>
-                                            </segmentedCell>
-                                        </segmentedControl>
                                         <button verticalHuggingPriority="750" misplaced="YES" id="C9L-QZ-WjP">
                                             <rect key="frame" x="586" y="49" width="72" height="32"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxY="YES"/>
@@ -1174,6 +1161,36 @@
                                                 <action selector="copy3Dpic:" target="-2" id="eYG-bx-TNZ"/>
                                             </connections>
                                         </button>
+                                        <popUpButton verticalHuggingPriority="750" misplaced="YES" id="Lu1-38-Lnl">
+                                            <rect key="frame" x="1" y="49" width="155" height="26"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <popUpButtonCell key="cell" type="push" title="No filter" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="ANx-MC-pr9" id="QLA-we-kcL">
+                                                <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
+                                                <font key="font" metaFont="menu"/>
+                                                <menu key="menu" id="mIR-LV-IsX">
+                                                    <items>
+                                                        <menuItem title="No filter" state="on" id="ANx-MC-pr9" userLabel="NoFilter">
+                                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                                        </menuItem>
+                                                        <menuItem title="Denoise" id="0Ah-vO-P8j">
+                                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                                        </menuItem>
+                                                        <menuItem title="Mean" id="YlV-TJ-FRJ">
+                                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                                        </menuItem>
+                                                        <menuItem title="Gauss" id="OB0-Fy-Bkw">
+                                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                                        </menuItem>
+                                                        <menuItem title="Sharpen" id="Oes-ia-ErW">
+                                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                                        </menuItem>
+                                                        <menuItem title="Sharpen + Gauss" id="1Zl-JL-qV4">
+                                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                                        </menuItem>
+                                                    </items>
+                                                </menu>
+                                            </popUpButtonCell>
+                                        </popUpButton>
                                     </subviews>
                                 </view>
                             </tabViewItem>
@@ -1208,7 +1225,7 @@
                                             <rect key="frame" x="505" y="397" width="209" height="205"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                             <clipView key="contentView" id="vjV-ev-Trj">
-                                                <rect key="frame" x="1" y="1" width="207" height="203"/>
+                                                <rect key="frame" x="1" y="1" width="192" height="188"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                                 <subviews>
                                                     <view id="s0h-HM-uaO">
@@ -1230,7 +1247,7 @@
                                             <rect key="frame" x="505" y="184" width="209" height="205"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                             <clipView key="contentView" id="4kB-pH-Vfs">
-                                                <rect key="frame" x="1" y="1" width="207" height="203"/>
+                                                <rect key="frame" x="1" y="1" width="192" height="188"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                                 <subviews>
                                                     <view id="wdS-J5-DxB">
@@ -1851,5 +1868,19 @@
             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
             <font key="font" metaFont="smallSystem"/>
         </buttonCell>
+        <segmentedControl verticalHuggingPriority="750" id="rKi-lN-v6S">
+            <rect key="frame" x="0.0" y="0.0" width="244" height="24"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <segmentedCell key="cell" borderStyle="border" alignment="left" style="rounded" trackingMode="selectOne" id="QB9-AR-D69">
+                <font key="font" metaFont="system"/>
+                <segments>
+                    <segment label="None" selected="YES"/>
+                    <segment label="Denoise" tag="1"/>
+                    <segment label="Mean"/>
+                    <segment label="Gauss"/>
+                </segments>
+            </segmentedCell>
+            <point key="canvasLocation" x="681" y="826"/>
+        </segmentedControl>
     </objects>
 </document>

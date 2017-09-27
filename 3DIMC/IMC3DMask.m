@@ -124,9 +124,9 @@
     }
     if(dic.allKeys.count == 1)
         return [dic.allKeys.firstObject intValue];
-    if(dic.allKeys.count > 1)
+    if(dic.allKeys.count > 1){
         return 0;
-//    if(dic.allKeys.count > 0){
+
 //        NSInteger max = 0;
 //        NSNumber *key;
 //        for (NSNumber *num in dic.allKeys) {
@@ -136,7 +136,7 @@
 //            }
 //        }
 //        return key.intValue;
-//    }
+    }
     
     return -1;
 }
@@ -204,9 +204,11 @@
     maskIds = calloc(fullMask, sizeof(int));
     
     int cellId = 1;
-    for (float analyze = 1.0f; analyze > final; analyze -= 0.005) {
+    for (float analyze = 1.0f; analyze > final; analyze -= 0.02) {
         //Add Values
         float analyzeAdded = analyze;
+        NSLog(@"%f step", analyzeAdded);
+        NSInteger candidates = 0;
 //        if(schannel > 0)
 //            analyzeAdded *= (1 - analyze);
         for (NSInteger i = 0; i <handler.images; i++){
@@ -214,16 +216,19 @@
             if(handler.allBuffer[i])
                 if(handler.allBuffer[i][channel])
                     for (NSInteger j = 0; j < allLength; j++){
-                        float val = handler.allBuffer[i][channel][j];
-                        if(schannel > 0 && handler.allBuffer[i][schannel])
-                            val *= (1.0f - handler.allBuffer[i][schannel][j]);
-                        if(val >= analyzeAdded)
-                            if(maskIds[offset + j] == 0)
+                        if(maskIds[offset + j] == 0){
+                            float val = handler.allBuffer[i][channel][j];
+                            if(schannel > 0 && handler.allBuffer[i][schannel])
+                                val *= (1.0f - handler.allBuffer[i][schannel][j]);
+                            if(val >= analyzeAdded){
                                 maskIds[offset + j] = [self touchesId:offset + j fullMaskLength:fullMask planLength:allLength];
+                                candidates++;
+                            }
+                        }
                     }
 
         }
-        
+        NSLog(@"Candidates %li", candidates);
         for (NSInteger i = 0; i <handler.images; i++){
             NSInteger offset = allLength * i;
             if(handler.allBuffer[i])
@@ -256,11 +261,8 @@
                     if(self.threeDHandler.allBuffer[i][0] != NULL)
                         free(self.threeDHandler.allBuffer[i][0]);
                     self.threeDHandler.allBuffer[i][0] = calloc(allLength, sizeof(float));
-                    for (NSInteger j = 0; j < allLength; j++){
-                        if(maskIds[offSet + j] > 0)
-                            printf("%i ", maskIds[offSet + j]);
-                        self.threeDHandler.allBuffer[i][0][j] = maskIds[offSet + j] > 0 ? 0.25f + 0.15f*(maskIds[offSet + j]%5) : 0;
-                    }
+                    for (NSInteger j = 0; j < allLength; j++)
+                        self.threeDHandler.allBuffer[i][0][j] = maskIds[offSet + j] > 0 ? 0.2f + 0.1f*(maskIds[offSet + j]%7) : 0;
                 }
             }
     }

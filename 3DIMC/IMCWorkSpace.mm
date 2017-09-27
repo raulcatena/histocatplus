@@ -1517,7 +1517,7 @@
                     self.threeDProcessesIndicator.doubleValue += 100.f/total;
                 });
             }];
-            [self.threeDHandler meanBlurModelWithKernel:3 forChannels:channs mode:self.cleanUpMode.selectedSegment];
+            [self.threeDHandler meanBlurModelWithKernel:3 forChannels:channs mode:self.cleanUpMode.indexOfSelectedItem];
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self calculateMemory];
                 self.threeDProcessesIndicator.doubleValue = 0.0f;
