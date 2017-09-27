@@ -534,7 +534,7 @@
             if(mask3d.jsonDictionary == dic)
                 found = YES;
         if(found == NO){
-            IMC3DMask *newMask = [[IMC3DMask alloc]initWithLoader:self];
+            IMC3DMask *newMask = [[IMC3DMask alloc]initWithLoader:self andHandler:[(IMCWorkSpace *)self.delegate threeDHandler]];
             newMask.jsonDictionary = dic;
             [_threeDNodesRaw addObject:newMask];
         }

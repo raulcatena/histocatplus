@@ -199,7 +199,7 @@
                                     <action selector="cleanUpNamesWithAirlab:" target="-1" id="qnP-sX-4Wb"/>
                                 </connections>
                             </menuItem>
-                            <menuItem title="Compensation Matrix..." hidden="YES" id="A01-Vz-uED" userLabel="Compensation">
+                            <menuItem title="Compensation Matrix..." id="A01-Vz-uED" userLabel="Compensation">
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <connections>
                                     <action selector="compensationMatrix:" target="-1" id="PpZ-Af-cMZ"/>

@@ -206,7 +206,6 @@
 }
 
 -(CGRect)selectedRect{
-    NSLog(@"SelectedProp %@", NSStringFromRect(selectedArea));
     float oriX = fabs(selectedArea.origin.x);
     float oriY = fabs(selectedArea.origin.y);
     float width = fabs(selectedArea.size.width);
@@ -222,13 +221,11 @@
     selectedArea = area;
 }
 -(CGRect)proportionedRect:(CGRect)rect{
-    NSLog(@"PreProp %@", NSStringFromRect(rect));
     NSRect propRect =NSMakeRect(rect.origin.x/self.bounds.size.width,
                                 rect.origin.y/self.bounds.size.height,
                                 rect.size.width/self.bounds.size.width,
                                 rect.size.height/self.bounds.size.height
                                 );
-    NSLog(@"PostProp %@", NSStringFromRect(propRect));
     return propRect;
 }
 -(CGRect)selectedRectProportions{

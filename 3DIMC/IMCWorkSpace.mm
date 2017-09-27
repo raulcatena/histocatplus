@@ -1899,18 +1899,35 @@
     [[seg window] makeKeyAndOrderFront:seg];
 }
 -(void)create3DMaskFromCurrent:(id)sender{
-    IMC3DMask *mask3d = [[IMC3DMask alloc]initWithLoader:self.dataCoordinator];
-    NSMutableArray *array = @[].mutableCopy;
-    for (IMCComputationOnMask *comp in self.dataCoordinator.inOrderComputations)
-        [array addObject:comp.itemHash];
-    [mask3d setTheComponents:array];
-    mask3d.channel = self.channels.selectedRow;
-    mask3d.expansion = 4;
-    mask3d.minKernel = 7;
-    mask3d.threshold = self.thresholdToRender.floatValue;
-    mask3d.sheepShaver = (BOOL)mask3d.minKernel;
-    [self.dataCoordinator giveNameToNode:mask3d inGroup:self.dataCoordinator.threeDNodes];
-    [self.dataCoordinator add3DNode:mask3d];
+    if(self.inOrderIndexes.count == 1 || self.inOrderIndexes.count == 2){
+        IMC3DMask *mask3d = [[IMC3DMask alloc]initWithLoader:self.dataCoordinator andHandler:self.threeDHandler];
+        NSMutableArray *array = @[].mutableCopy;
+        NSArray *add;
+        if(self.whichTableCoordinator.indexOfSelectedItem == 1)
+            add = self.dataCoordinator.inOrderImageWrappers.copy;
+        if(self.whichTableCoordinator.indexOfSelectedItem == 5)
+            add = self.dataCoordinator.inOrderComputations.copy;
+        
+        if(!add && ![self canRender])return;
+        
+        for (IMCNodeWrapper *node in add)
+            [array addObject:node.itemHash];
+        
+        [mask3d setTheComponents:array];
+        mask3d.channel = [self.inOrderIndexes.firstObject integerValue];//self.channels.selectedRow;
+        if(self.inOrderIndexes.count == 2)
+            mask3d.substractChannel = [self.inOrderIndexes.lastObject integerValue];//self.channels.selectedRow;
+            
+        mask3d.origin = self.whichTableCoordinator.indexOfSelectedItem == 1? MASK3D_VOXELS : MASK3D_2D_MASKS;
+        mask3d.expansion = 4;
+        mask3d.minKernel = 7;
+        mask3d.threshold = self.thresholdToRender.floatValue;
+        mask3d.sheepShaver = (BOOL)mask3d.minKernel;
+        [self.dataCoordinator giveNameToNode:mask3d inGroup:self.dataCoordinator.threeDNodes];
+        [self.dataCoordinator add3DNode:mask3d];
+        
+        [mask3d loadLayerDataWithBlock:nil];
+    }
 }
 -(NSArray *)masks{
     return [self.dataCoordinator masks];
