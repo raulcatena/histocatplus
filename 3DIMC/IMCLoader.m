@@ -542,8 +542,16 @@
     return _threeDNodesRaw;
 }
 -(void)add3DNode:(IMC3DMask *)mask3d{
+    if(![self.threeDNodes containsObject:mask3d])
+        [_threeDNodesRaw addObject:mask3d];
     if(![self.threeDs containsObject:mask3d.jsonDictionary])
        [self.threeDs addObject:mask3d.jsonDictionary];
+}
+-(void)remove3DNode:(IMC3DMask *)mask3d{
+    if([self.threeDs containsObject:mask3d.jsonDictionary])
+        [self.threeDs removeObject:mask3d.jsonDictionary];
+    if([_threeDNodesRaw containsObject:mask3d])
+        [_threeDNodesRaw removeObject:mask3d];
 }
 
 @end

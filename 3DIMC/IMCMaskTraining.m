@@ -48,9 +48,7 @@
 }
 -(void)loadBuffer{
     if(!self.computation.isLoaded){
-        NSLog(@"Load comp first");
         [self.computation loadLayerDataWithBlock:^{
-            NSLog(@"Done with comp");
             [self loadBufferAction];
         }];
     }else

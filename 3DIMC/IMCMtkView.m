@@ -62,7 +62,7 @@
 -(void)mouseDragged:(NSEvent *)theEvent{
     
     if (theEvent.modifierFlags & NSEventModifierFlagCommand) {
-        [self.baseModelMatrix translate:theEvent.deltaX * 0.15 y:-theEvent.deltaY * 0.15 z:0];
+        [self.baseModelMatrix translate:theEvent.deltaX y:-theEvent.deltaY z:0];
     }else{
         _rotation.x = theEvent.deltaX;
         _rotation.y = theEvent.deltaY;
@@ -76,7 +76,7 @@
     
     //if(![self computeOffSets:theEvent]){
     if(![self scrollWithWheel:theEvent]){
-        float value = theEvent.deltaY;
+        float value = theEvent.deltaY * 5.0f;
         _zoom += value;
         _zoom = MIN(MAX_ALLOWED_ZOOM, MAX(-MAX_ALLOWED_ZOOM, _zoom));
         if(_zoom > MAX_ALLOWED_ZOOM){

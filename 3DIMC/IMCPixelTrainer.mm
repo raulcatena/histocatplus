@@ -120,7 +120,7 @@
         self.stack = stack;
         self.trainingNodes = trainings;
     }
-    
+    NSLog(@"T count %li", trainings.count);
     return success;
 }
 
@@ -323,7 +323,6 @@
         NSLog(@"Trained %li", counter);
     }
     
-    
     if(chanCount == 0 || labelsCount == 0){
         dispatch_async(dispatch_get_main_queue(), ^{
             [General runAlertModalWithMessage:@"Can't continue. No features or labels defined"];
@@ -394,7 +393,7 @@
         CGImageRef ref = (__bridge CGImageRef)[scopeProbando objectAtIndex:i];
         UInt8 * data = [IMCImageGenerator bufferForImageRef:ref];
         allDataProbando[i] = data;
-        CFRelease(ref);
+        if(ref)CFRelease(ref);
     }
     float * filteredChannelsAndClassProbando = (float *)calloc((chanCount + 1) * pixels, sizeof(float));
     for(NSInteger i = 0; i < pixels; i++)

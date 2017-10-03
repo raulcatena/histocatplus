@@ -10,11 +10,13 @@
 
 @class IMCLoader;
 @class IMC3DHandler;
+@class IMC3DMaskComputations;
 
 typedef enum{
     MASK3D_THRESHOLD,
     MASK3D_THRESHOLD_SEGMENT,
-    MASK3D_PCML
+    MASK3D_PCML,
+    MASK3D_WATERSHED
 }Mask3D_Type;
 
 typedef enum{
@@ -32,10 +34,14 @@ typedef enum{
 @property (nonatomic, readonly) NSInteger substractChannel;
 @property (nonatomic, readonly) NSInteger expansion;
 @property (nonatomic, readonly) float threshold;
+@property (nonatomic, readonly) float stepWatershed;
 @property (nonatomic, readonly) NSInteger minKernel;
 @property (nonatomic, readonly) BOOL sheepShaver;
 @property (nonatomic, weak) IMCLoader *coordinator;
 @property (nonatomic, weak) IMC3DHandler *threeDHandler;
+@property (nonatomic, assign) NSInteger blurMode;
+
+@property (nonatomic, strong) NSMutableArray<IMC3DMaskComputations *> *computationNodes;
 
 -(void)setType:(Mask3D_Type)type;
 -(void)setOrigin:(Mask3D_Origin)origin;
@@ -43,10 +49,15 @@ typedef enum{
 -(void)setSubstractChannel:(NSInteger)substractChannel;
 -(void)setExpansion:(NSInteger)expansion;
 -(void)setThreshold:(float)threshold;
+-(void)setStepWatershed:(float)stepWatershed;
 -(void)setMinKernel:(NSInteger)minKernel;
 -(void)setTheComponents:(NSArray *)components;
 -(void)setSheepShaver:(BOOL)sheepShaver;
 
 -(instancetype)initWithLoader:(IMCLoader *)loader andHandler:(IMC3DHandler *)handler;
+
+-(void)extractMaskFromRender;
+-(void)passToHandler;
+-(void)deleteSelf;
 
 @end

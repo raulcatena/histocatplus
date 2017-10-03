@@ -90,8 +90,8 @@ vertex VertexOut vertexShader(
     VertexOut out;
     
     unsigned int baseIndex = iid * STRIDE_COLOR_ARRAY;
-    if(colors[baseIndex] == 0.0f)//Precalculated 0 alpha if zero do not process further (optimization)
-        return out;
+//    if(colors[baseIndex] == 0.0f)//Precalculated 0 alpha if zero do not process further (optimization)
+//        return out;
     
     float down = heightDescriptor[vid] == true? colors[baseIndex + 7] - 1.0f : 0;
     

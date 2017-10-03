@@ -63,7 +63,6 @@
             while (!training.imageStack.isLoaded);
         }
     }];
-
     
     NSInteger howmanystacks = self.stacksTableView.selectedRowIndexes.count;
     __block NSInteger counter = 0;
@@ -71,9 +70,11 @@
     dispatch_async(aQ, ^{
         __block IMCPixelTrainer * trainer;
         
+        NSArray *allStacks = [self.delegate allStacks].copy;
+        
         [self.stacksTableView.selectedRowIndexes.copy enumerateIndexesUsingBlock:^(NSUInteger index, BOOL *stop){
             
-            IMCImageStack *stack = [self.delegate allStacks][index];
+            IMCImageStack *stack = allStacks[index];
             BOOL wasLoaded = stack.isLoaded;
             
             if(!trainer){

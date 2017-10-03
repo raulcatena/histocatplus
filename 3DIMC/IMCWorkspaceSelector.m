@@ -17,6 +17,7 @@
 #import "IMCComputationOnMask.h"
 #import "IMCWorkSpace.h"
 #import "IMC3DHandler.h"
+#import "IMC3dMask.h"
 
 
 @implementation IMCWorkspaceSelector
@@ -100,6 +101,7 @@
     self.parent.inScopeImage = nil;
     self.parent.inScopeMask = nil;
     self.parent.inScopeComputation = nil;
+    self.parent.inScope3DMask = nil;
     
     //Test for panoramas and masks first
     NSMutableArray *array = @[].mutableCopy;
@@ -122,6 +124,10 @@
             [self.parent.inScopeComputations addObject:anobj];
             if(idx == self.parent.filesTree.selectedRow)
                 self.parent.inScopeComputation = anobj;
+        }
+        if([anobj isMemberOfClass:[IMC3DMask class]]){
+            if(idx == self.parent.filesTree.selectedRow)
+                self.parent.inScope3DMask = anobj;
         }
         
         //Now Imagestacks

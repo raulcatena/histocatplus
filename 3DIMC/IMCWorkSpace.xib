@@ -1187,6 +1187,9 @@
                                                         <menuItem title="Sharpen + Gauss" id="1Zl-JL-qV4">
                                                             <modifierMask key="keyEquivalentModifierMask"/>
                                                         </menuItem>
+                                                        <menuItem title="Gauss + Sharpen" id="6dy-JT-LWF">
+                                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                                        </menuItem>
                                                     </items>
                                                 </menu>
                                             </popUpButtonCell>

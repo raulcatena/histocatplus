@@ -72,5 +72,8 @@ void threeDMeanBlur(float *** data, NSInteger width, NSInteger height, NSInteger
 +(UInt8 *)mapMaskTo255:(UInt8 *)mask length:(NSInteger)length toMax:(float)max;//Utility to turn training masks in colorable with HUE
 +(CGImageRef)colorMask:(int *)mask numberOfColors:(NSInteger)colors singleColor:(NSColor *)color width:(NSInteger)width height:(NSInteger)height;
 
+RgbColor HsvToRgb(HsvColor hsv);
+RgbColor RgbFromFloatUnit(float unit);
+
 
 @end

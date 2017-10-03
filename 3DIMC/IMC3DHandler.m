@@ -75,7 +75,10 @@
         self.showMask = NULL;
     }
 }
-
+-(void)setInterestProportions:(NSRect)interestProportions{
+    _interestProportions = interestProportions;
+    [self allocateMask];
+}
 -(void)allocateMask{
     [self cleanMaskMemory];
     self.showMask = (bool *)calloc(self.width * self.height, sizeof(bool));

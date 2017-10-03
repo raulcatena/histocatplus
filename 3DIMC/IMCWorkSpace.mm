@@ -241,6 +241,15 @@
     [self.workSpaceRefresher updateForWithStack:inScopeComputation.mask.imageStack];
     self.customChannelsDelegate.settingsJsonArray = inScopeComputation.channelSettings;
 }
+-(void)setInScope3DMask:(IMC3DMask *)inScope3DMask{
+    _inScope3DMask = inScope3DMask;
+    if(inScope3DMask.isLoaded)
+        [inScope3DMask passToHandler];
+    if(inScope3DMask){
+        self.inOrderIndexes = @[@(0)].mutableCopy;
+        //inScope3DMask.blurMode = self.cleanUpMode.indexOfSelectedItem;
+    }
+}
 
 #pragma mark File Handling
 
@@ -986,6 +995,7 @@
 #pragma mark NSTabView
 
 -(void)tabView:(NSTabView *)tabView didSelectTabViewItem:(NSTabViewItem *)tabViewItem{
+    self.threeDHandler.interestProportions = self.scrollViewBlends.imageView.selectedRectProportions;
     [self refresh];
 }
 
@@ -1162,6 +1172,10 @@
 //            IMCPixelTraining *train = item;//I use train
 //            [train.imageStack removeChild:train];
 //        }
+        if([item isMemberOfClass:[IMC3DMask class]]){
+            IMC3DMask *comp = item;//I use train
+            [comp deleteSelf];
+        }
     }];
     [self refresh];
 }
@@ -1257,8 +1271,9 @@
     
     dispatch_async(dispatch_get_main_queue(), ^{
         [self.workSpaceRefresher refresh];
-        if([self.tabs.selectedTabViewItem.label isEqualToString:TAB_ID_THREED])
+        if([self.tabs.selectedTabViewItem.label isEqualToString:TAB_ID_THREED]){
             self.metalViewDelegate.forceColorBufferRecalculation = YES;
+        }
     });
 }
 
@@ -1434,7 +1449,7 @@
 -(void)start3Dreconstruction:(NSButton *)sender{
     if([self canRender]){
         sender.enabled = NO;
-        self.threeDHandler.interestProportions = self.scrollViewBlends.imageView.selectedRectProportions;
+        
         NSInteger maxWidth = [self.dataCoordinator maxWidth] * 1.5;
         if(self.whichTableCoordinator.indexOfSelectedItem == 1){
             [self.threeDHandler startBufferForImages:self.dataCoordinator.inOrderImageWrappers.count channels:[self.dataCoordinator maxChannels] width:maxWidth height:maxWidth];
@@ -1444,7 +1459,7 @@
             //TODO
             //Render 3D Mask
         }
-        
+        self.threeDHandler.interestProportions = self.scrollViewBlends.imageView.selectedRectProportions;
         self.openGlViewPort.delegate = self;
         [self addBuffersForStackImages:sender];
     }
@@ -1528,7 +1543,7 @@
     }
 }
 
-#pragma mark OpenGL delegate
+#pragma mark OpenGL and Metal delegate
 
 -(float ***)threeDData{
     return self.threeDHandler.allBuffer;
@@ -1537,6 +1552,8 @@
     return self.threeDHandler.showMask;
 }
 -(NSArray *)colors{
+    if(self.colorSpaceSelector.selectedSegment == 3 && self.metalView)
+        return nil;
     return [self.customChannelsDelegate collectColors];
 }
 -(NSColor *)backgroundColor{
@@ -1555,9 +1572,13 @@
     return self.threeDHandler.channels;
 }
 -(NSUInteger)numberOfStacks{
+    if(self.inScope3DMask)
+        return self.dataCoordinator.inOrderImageWrappers.count;
     return self.threeDHandler.images;
 }
 -(NSIndexSet *)stacksIndexSet{
+    if(self.inScope3DMask)
+        return [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, self.dataCoordinator.inOrderImageWrappers.count)];
     return self.filesTree.selectedRowIndexes;
 }
 -(NSArray *)zOffSets{
@@ -1898,7 +1919,7 @@
     seg.delegate = self;
     [[seg window] makeKeyAndOrderFront:seg];
 }
--(void)create3DMaskFromCurrent:(id)sender{
+-(void)threeDMasking:(Mask3D_Type)type{
     if(self.inOrderIndexes.count == 1 || self.inOrderIndexes.count == 2){
         IMC3DMask *mask3d = [[IMC3DMask alloc]initWithLoader:self.dataCoordinator andHandler:self.threeDHandler];
         NSMutableArray *array = @[].mutableCopy;
@@ -1917,17 +1938,47 @@
         mask3d.channel = [self.inOrderIndexes.firstObject integerValue];//self.channels.selectedRow;
         if(self.inOrderIndexes.count == 2)
             mask3d.substractChannel = [self.inOrderIndexes.lastObject integerValue];//self.channels.selectedRow;
-            
+        
         mask3d.origin = self.whichTableCoordinator.indexOfSelectedItem == 1? MASK3D_VOXELS : MASK3D_2D_MASKS;
-        mask3d.expansion = 4;
-        mask3d.minKernel = 7;
+        
+        
+        NSString *input;
+        do{
+            input = [IMCUtils input:@"Minimum number of voxels per kernel (e.g.: 12-10000)" defaultValue:@"20"];
+        }while (input.integerValue <= 0);
+        mask3d.minKernel = input.integerValue;
+        
+        if(type == MASK3D_WATERSHED){
+            do{
+                input = [IMCUtils input:@"Step for watershed gradient (e.g.: 0.005-0.1)" defaultValue:@"0.02"];
+            }while (input.floatValue <= 0);
+            mask3d.stepWatershed = input.floatValue;
+        }
+        
+        do{
+            input = [IMCUtils input:@"Do you want to add expansion layer? (e.g.: 0-100)" defaultValue:@"2"];
+        }while (input.integerValue <= 0);
+        mask3d.expansion = input.integerValue;
+        
         mask3d.threshold = self.thresholdToRender.floatValue;
         mask3d.sheepShaver = (BOOL)mask3d.minKernel;
+        mask3d.type = type;
+        
         [self.dataCoordinator giveNameToNode:mask3d inGroup:self.dataCoordinator.threeDNodes];
         [self.dataCoordinator add3DNode:mask3d];
         
-        [mask3d loadLayerDataWithBlock:nil];
+        [mask3d extractMaskFromRender];
     }
+}
+
+-(void)create3DMaskFromCurrent:(id)sender{
+    [self threeDMasking:MASK3D_WATERSHED];
+}
+-(void)create3DMaskByThresholding:(id)sender{
+    [self threeDMasking:MASK3D_THRESHOLD];
+}
+-(void)create3DMaskByThresholdingKeepId:(id)sender{
+    [self threeDMasking:MASK3D_THRESHOLD_SEGMENT];
 }
 -(NSArray *)masks{
     return [self.dataCoordinator masks];

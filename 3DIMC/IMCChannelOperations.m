@@ -30,7 +30,7 @@
     dispatch_queue_t aQ = dispatch_queue_create("aaQ", NULL);
     dispatch_async(aQ, ^{
         NSString *str = [[NSString alloc]initWithData:[NSData dataWithContentsOfFile:url.path] encoding:NSUTF8StringEncoding];
-        NSArray *arr = [str componentsSeparatedByString:@"\t"];
+        NSArray *arr = [str componentsSeparatedByString:@"\t"];NSLog(@"%@", arr);
         if(arr.count > 1)
         for (IMCImageStack *stack in stacks){
             NSInteger preLength = stack.channels.count;

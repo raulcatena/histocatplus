@@ -710,6 +710,9 @@
 		0DB400631E534D7D00179ECB /* bhsne.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0DB4005E1E534D7D00179ECB /* bhsne.cpp */; };
 		0DB400641E534D7D00179ECB /* sptree.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0DB400601E534D7D00179ECB /* sptree.cpp */; };
 		0DB4006A1E5359F700179ECB /* RandomForests.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0DB400681E5359F700179ECB /* RandomForests.cpp */; };
+		0DBC28AC1F818549001F24E0 /* IMC3DMaskComputations.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DBC28AB1F818549001F24E0 /* IMC3DMaskComputations.m */; };
+		0DBC28AD1F822A87001F24E0 /* IMC3DMaskComputations.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DBC28AB1F818549001F24E0 /* IMC3DMaskComputations.m */; };
+		0DBC28AE1F822A88001F24E0 /* IMC3DMaskComputations.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DBC28AB1F818549001F24E0 /* IMC3DMaskComputations.m */; };
 		0DC0E4871F6343A700DD1B62 /* shaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = 0DA630511F5EE7D20032E102 /* shaders.metal */; };
 		0DC0E4891F63F2C500DD1B62 /* SpillOverTableCleanWithZeros.txt in Resources */ = {isa = PBXBuildFile; fileRef = 0DC0E4881F63F2C500DD1B62 /* SpillOverTableCleanWithZeros.txt */; };
 		0DC0E48A1F63F2C500DD1B62 /* SpillOverTableCleanWithZeros.txt in Resources */ = {isa = PBXBuildFile; fileRef = 0DC0E4881F63F2C500DD1B62 /* SpillOverTableCleanWithZeros.txt */; };
@@ -1072,6 +1075,8 @@
 		0DB400621E534D7D00179ECB /* vptree.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vptree.h; sourceTree = "<group>"; };
 		0DB400671E5359F700179ECB /* RandomForests.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = RandomForests.hpp; sourceTree = "<group>"; };
 		0DB400681E5359F700179ECB /* RandomForests.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RandomForests.cpp; sourceTree = "<group>"; };
+		0DBC28AA1F818549001F24E0 /* IMC3DMaskComputations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IMC3DMaskComputations.h; sourceTree = "<group>"; };
+		0DBC28AB1F818549001F24E0 /* IMC3DMaskComputations.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IMC3DMaskComputations.m; sourceTree = "<group>"; };
 		0DC0E4881F63F2C500DD1B62 /* SpillOverTableCleanWithZeros.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = SpillOverTableCleanWithZeros.txt; sourceTree = "<group>"; };
 		0DC0E48C1F64944C00DD1B62 /* SpillOverTableCleanWithZerosBioRXivs.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = SpillOverTableCleanWithZerosBioRXivs.txt; sourceTree = "<group>"; };
 		0DC0E4901F64AEF700DD1B62 /* SpillOverTableCleanWithZerosBioRXivsIMC.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = SpillOverTableCleanWithZerosBioRXivsIMC.txt; sourceTree = "<group>"; };
@@ -1863,6 +1868,8 @@
 				0D00ACA01E656E9300887057 /* IMCMaskTraining.m */,
 				0D9BA37F1F7A10AF00C02457 /* IMC3DMask.h */,
 				0D9BA3801F7A10AF00C02457 /* IMC3DMask.m */,
+				0DBC28AA1F818549001F24E0 /* IMC3DMaskComputations.h */,
+				0DBC28AB1F818549001F24E0 /* IMC3DMaskComputations.m */,
 				0DA17B7D1E792E5500B3CF5C /* IMCChannelWrapper.h */,
 				0DA17B7E1E792E5500B3CF5C /* IMCChannelWrapper.m */,
 				0D21D9451F5696D7003EF354 /* IMCAirLabClient.h */,
@@ -2503,6 +2510,7 @@
 				0D00ABF11E64D53400887057 /* IMCChannelOperations.m in Sources */,
 				0DA17B7B1E76D13B00B3CF5C /* IMCCellClassificationBatch.m in Sources */,
 				0D00ABF21E64D53400887057 /* IMC_TxtLoader.m in Sources */,
+				0DBC28AD1F822A87001F24E0 /* IMC3DMaskComputations.m in Sources */,
 				0D00ABF31E64D53400887057 /* IMCColorLegend.m in Sources */,
 				0D00ABF41E64D53400887057 /* IMCImageStack.m in Sources */,
 				0D00ABF51E64D53400887057 /* bhsne.cpp in Sources */,
@@ -2620,6 +2628,7 @@
 				0D9F309F1EF909CF00E1E083 /* IMCCellClassificationBatch.m in Sources */,
 				0D9F30A01EF909CF00E1E083 /* IMC_TxtLoader.m in Sources */,
 				0D9F30A11EF909CF00E1E083 /* IMCColorLegend.m in Sources */,
+				0DBC28AE1F822A88001F24E0 /* IMC3DMaskComputations.m in Sources */,
 				0D9F30A21EF909CF00E1E083 /* IMCImageStack.m in Sources */,
 				0D9F30A31EF909CF00E1E083 /* bhsne.cpp in Sources */,
 				0D9F30A41EF909CF00E1E083 /* IMCImprovedRegistration.m in Sources */,
@@ -2737,6 +2746,7 @@
 				0DB37D201E32ADFC002975E2 /* IMC_TxtLoader.m in Sources */,
 				0DA17B791E76D06A00B3CF5C /* IMCCellClassificationBatch.m in Sources */,
 				0DB37D5A1E36A4E4002975E2 /* IMCColorLegend.m in Sources */,
+				0DBC28AC1F818549001F24E0 /* IMC3DMaskComputations.m in Sources */,
 				0DB37D011E30BA48002975E2 /* IMCImageStack.m in Sources */,
 				0DB400631E534D7D00179ECB /* bhsne.cpp in Sources */,
 				0D8171251E4229FC0058084C /* IMCImprovedRegistration.m in Sources */,

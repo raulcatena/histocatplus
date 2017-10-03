@@ -770,16 +770,28 @@
                                 </connections>
                             </menuItem>
                             <menuItem isSeparatorItem="YES" id="WoB-ub-F7D"/>
-                            <menuItem title="3D Mask..." id="t2z-KL-5Mk" userLabel="3D Mask">
+                            <menuItem title="3D Mask..." hidden="YES" id="t2z-KL-5Mk" userLabel="3D Mask">
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <connections>
                                     <action selector="showMasker:" target="-1" id="M8b-dd-P8r"/>
                                 </connections>
                             </menuItem>
-                            <menuItem title="3D Mask From current..." id="Dm7-VC-ouQ" userLabel="3D Mask">
+                            <menuItem title="3D Watershed Mask From current..." id="Dm7-VC-ouQ" userLabel="3D Watershed">
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <connections>
                                     <action selector="create3DMaskFromCurrent:" target="-1" id="DnW-Zs-sCE"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="3D Threshold Mask From current..." id="TFo-8e-5jv" userLabel="3D Threshold">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="create3DMaskByThresholding:" target="-1" id="dZ0-uV-uPJ"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="3D Threshold Mask From current with IDs..." id="i0B-YF-qDk" userLabel="3D ThresholdIds">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="create3DMaskByThresholdingKeepId:" target="-1" id="atO-XO-oGD"/>
                                 </connections>
                             </menuItem>
                         </items>

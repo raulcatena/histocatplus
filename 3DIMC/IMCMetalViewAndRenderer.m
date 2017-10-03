@@ -11,10 +11,12 @@
 #import <QuartzCore/QuartzCore.h>
 #import "Matrix4.h"
 #import "IMCMtkView.h"
+#import "IMCImageGenerator.h"
 
 @interface IMCMetalViewAndRenderer(){
     Matrix4 * projectionMatrix;
     float zoom;
+    NSInteger voxelsToRenderCounter;
 }
 
 @property (nonatomic, strong) CAMetalLayer* metalLayer;
@@ -130,8 +132,17 @@ bool heightDescriptor[] = {
 -(BOOL)checkNeedsUpdate{
     __block BOOL update = NO;
     
-    //Check colors
+    //Check Indexes
+    NSArray *currentIndexes = [self.delegate inOrderIndexes].copy;
+    if(self.indexesObtained.count != currentIndexes.count)
+        update = YES;
     
+    else
+        for (NSInteger i = 0; i < self.indexesObtained.count; i++)
+            if([self.indexesObtained[i] integerValue] != [currentIndexes[i] integerValue])
+                update = YES;
+    
+    //Check colors
     NSArray * currentColors = [self.delegate colors];
     
     if(self.colorsObtained.count != currentColors.count)
@@ -150,15 +161,7 @@ bool heightDescriptor[] = {
     
         }
     
-    //Check Indexes
-    NSArray *currentIndexes = [self.delegate inOrderIndexes].copy;
-    if(self.indexesObtained.count != currentIndexes.count)
-        update = YES;
     
-    else
-        for (NSInteger i = 0; i < self.indexesObtained.count; i++)
-            if([self.indexesObtained[i] integerValue] != [currentIndexes[i] integerValue])
-                update = YES;
     
     //Layers
     NSIndexSet *currentStacks = [self.delegate stacksIndexSet].copy;
@@ -174,7 +177,7 @@ bool heightDescriptor[] = {
     if(update == YES){
         self.colorsObtained = currentColors;
         self.indexesObtained = currentIndexes;
-        //self.slicesObtained = currentStacks;
+        self.slicesObtained = currentStacks;
     }
     
     return update;
@@ -200,6 +203,7 @@ bool heightDescriptor[] = {
     
 //    [self syntheticCubes];
 //    return;
+    voxelsToRenderCounter = 0;
     
     float *** data = [self.delegate threeDData];
     float * zPositions = [self.delegate zValues];
@@ -219,12 +223,10 @@ bool heightDescriptor[] = {
         
         float * buff = calloc(renderableArea * slices.count * stride, sizeof(float));//Color components and positions
         if(buff){
-            
             __block NSInteger x , y, cursor = 0;
             __block float  z = 0.0f, thickness = 0.0f;
             
             self.colorsObtained = [self.delegate colors];
-            self.indexesObtained = [self.delegate inOrderIndexes].copy;
             float minThresholdForAlpha = [self.delegate combinedAlpha];
             
             bool * mask = [self.delegate showMask];
@@ -237,7 +239,6 @@ bool heightDescriptor[] = {
                 colors[i * 3 + 1] = colorObj.greenComponent;;
                 colors[i * 3 + 2] = colorObj.blueComponent;
             }
-            
             [slices enumerateIndexesUsingBlock:^(NSUInteger slice, BOOL *stop){
                 float ** sliceData = data[slice];
                 if(sliceData){
@@ -251,23 +252,30 @@ bool heightDescriptor[] = {
                         
                         NSInteger realIndex = [self.indexesObtained[idx]integerValue];
                         
-                        
                         float *chanData = sliceData[realIndex];
                         if(chanData){
                             
                             NSInteger internalCursor = 0;
                             for (NSInteger pix = 0; pix < area; pix++) {
-                                if(mask[pix] == false)
+                                if(mask[pix] == false){
                                     continue;
+                                }
                                 if(internalCursor >= renderableArea){
                                     break;
                                 }
                                 
                                 NSInteger internalStride = internalCursor * stride;
-                                
-                                buff[cursor + internalStride + 1] += chanData[pix] * colors[idx * 3];
-                                buff[cursor + internalStride + 2] += chanData[pix] * colors[idx * 3 + 1];
-                                buff[cursor + internalStride + 3] += chanData[pix] * colors[idx * 3 + 2];
+
+                                if(self.colorsObtained.count > 0){
+                                    buff[cursor + internalStride + 1] += chanData[pix] * colors[idx * 3];
+                                    buff[cursor + internalStride + 2] += chanData[pix] * colors[idx * 3 + 1];
+                                    buff[cursor + internalStride + 3] += chanData[pix] * colors[idx * 3 + 2];
+                                }else{
+                                    RgbColor rgb = RgbFromFloatUnit(chanData[pix]);
+                                    buff[cursor + internalStride + 1] += rgb.r/255.0f;
+                                    buff[cursor + internalStride + 2] += rgb.g/255.0f;
+                                    buff[cursor + internalStride + 3] += rgb.b/255.0f;
+                                }
                                 buff[cursor + internalStride + 4] = internalCursor % _renderWidth;
                                 buff[cursor + internalStride + 5] = internalCursor /_renderWidth;
                                 buff[cursor + internalStride + 6] = z;
@@ -280,8 +288,6 @@ bool heightDescriptor[] = {
                                     float val = buff[cursor + internalStride + i];
                                     if(val > max)
                                         max = val;
-//                                    if(val > 1.0f)
-//                                        buff[cursor + internalStride + i] = 1.0f;
                                     sum += val;
                                     if(sum > 1.0f){
                                         sum = 1.0f;
@@ -295,7 +301,7 @@ bool heightDescriptor[] = {
                                     buff[cursor + internalStride] = max < minThresholdForAlpha ? 0.0f : minThresholdForAlpha;//Alpha
                                 if(alphaMode == ALPHA_MODE_ADAPTIVE)
                                     buff[cursor + internalStride] = max < minThresholdForAlpha ? 0.0f : sum;//MIN(1.0f, sum);//Alpha
-                                                                
+
                                 internalCursor++;
                             }
                         }
@@ -304,15 +310,32 @@ bool heightDescriptor[] = {
                 cursor += renderableArea * stride;
             }];
             
-            if(self.renderWidth * self.renderHeight * slices.count * stride * sizeof(float) < 1024000000)
-                self.colorBuffer = [self.device newBufferWithBytes:buff length:self.renderWidth * self.renderHeight * slices.count * stride * sizeof(float) options:MTLResourceOptionCPUCacheModeDefault];
+            NSInteger bufferSize = renderableArea * slices.count * stride;
+            float * cleanBuffer = malloc(bufferSize * sizeof(float));
+            NSInteger cleanIndex = 0;
+            for (NSInteger m = 0; m < bufferSize; m+=stride) {
+                if(buff[m] > 0){
+                    for (NSInteger n = 0; n < stride; n++) {
+                        cleanBuffer[cleanIndex + n] = buff[m + n];
+                    }
+                    cleanIndex += stride;
+                }
+            }
+            voxelsToRenderCounter = cleanIndex/stride;
+            if(cleanIndex * sizeof(float) < 1024000000)
+                self.colorBuffer = [self.device newBufferWithBytes:cleanBuffer length:cleanIndex * sizeof(float) options:MTLResourceOptionCPUCacheModeDefault];
             else
                 self.colorBuffer = nil;
+            
+            NSLog(@"-%li", voxelsToRenderCounter);
+            
             free(buff);
+            free(cleanBuffer);
             free(colors);
         }
     }
 }
+
 
 -(void)drawInMTKView:(IMCMtkView *)view{
     
@@ -412,7 +435,9 @@ bool heightDescriptor[] = {
     [renderEncoder setCullMode:  MTLCullModeNone ];
     
     //[renderEncoder drawPrimitives:MTLPrimitiveTypeTriangle vertexStart:0 vertexCount:sizeof(cubeVertexData)];
-    [renderEncoder drawPrimitives:MTLPrimitiveTypeTriangle vertexStart:0 vertexCount:36 instanceCount:self.renderWidth * self.renderHeight * self.slices];//8 for synthetic
+    //[renderEncoder drawPrimitives:MTLPrimitiveTypeTriangle vertexStart:0 vertexCount:36 instanceCount:self.renderWidth * self.renderHeight * self.slices];//8 for synthetic
+    if(voxelsToRenderCounter > 0)
+        [renderEncoder drawPrimitives:MTLPrimitiveTypeTriangle vertexStart:0 vertexCount:36 instanceCount:voxelsToRenderCounter];//8 for synthetic
     
     [renderEncoder endEncoding];
     

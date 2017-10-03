@@ -80,6 +80,7 @@
 
 //3D
 -(void)add3DNode:(IMC3DMask *)mask3d;
+-(void)remove3DNode:(IMC3DMask *)mask3d;
 
 
 @end

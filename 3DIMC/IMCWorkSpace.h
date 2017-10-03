@@ -44,6 +44,7 @@
 @property (nonatomic, strong) IMCImageStack *inScopeImage;
 @property (nonatomic, strong) IMCPixelClassification *inScopeMask;
 @property (nonatomic, strong) IMCComputationOnMask *inScopeComputation;
+@property (nonatomic, strong) IMC3DMask *inScope3DMask;
 @property (nonatomic, strong) NSMutableArray<IMCImageStack *> *inScopeImages;
 @property (nonatomic, strong) NSMutableArray<IMCFileWrapper *> *inScopeFiles;
 @property (nonatomic, strong) NSMutableArray<IMCPixelClassification *> *inScopeMasks;
@@ -245,6 +246,8 @@
 //Masker
 -(IBAction)showMasker:(id)sender;
 -(IBAction)create3DMaskFromCurrent:(id)sender;
+-(IBAction)create3DMaskByThresholding:(id)sender;
+-(IBAction)create3DMaskByThresholdingKeepId:(id)sender;
 
 @end
 
