@@ -746,7 +746,8 @@
     NSArray *metadataTableSelectedItems = [self.metadataTableDelegate selectedStacks];
     //[self.filesTree deselectAll:nil];
     NSMutableIndexSet *is = [[NSMutableIndexSet alloc]init];
-    [self.filesTree.selectedRowIndexes enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop){
+    NSLog(@"+");
+    [self.filesTree.selectedRowIndexes.copy enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop){
         IMCNodeWrapper *node  = [self.filesTree itemAtRow:idx];
         while(node.parent){
             if([metadataTableSelectedItems containsObject:node]){
@@ -756,7 +757,9 @@
             node = node.parent;
         }
     }];
-    [self.filesTree selectRowIndexes:is byExtendingSelection:NO];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.filesTree selectRowIndexes:is byExtendingSelection:NO];
+    });
     [self.metadataTable selectAll:nil];
 }
 -(void)exportMetadataTSV:(id)sender{

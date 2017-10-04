@@ -90,7 +90,6 @@
     NSArray *stacks = [self.delegate involvedStacksForMetadata].copy;
     NSIndexSet *indexes = self.delegate.metadataTable.selectedRowIndexes.copy;
     [stacks enumerateObjectsAtIndexes:indexes options:NSEnumerationConcurrent usingBlock:^(IMCImageStack *stack, NSUInteger idx, BOOL *stop){
-        printf(". ");
         [arr addObject:stack];
     }];
     return arr;
