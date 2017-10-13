@@ -157,7 +157,7 @@
        }
    lastOption = option;
    lastType = maskType;
-   int * copy = copyMask(self.mask, self.imageStack.width, self.imageStack.height);
+   int * copy = copyMask(self.mask, (int)self.imageStack.width, (int)self.imageStack.height);
 
    NSInteger pix = self.imageStack.numberOfPixels;
    for (NSInteger i = 0; i < pix; i++) {

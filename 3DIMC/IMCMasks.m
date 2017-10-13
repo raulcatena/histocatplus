@@ -107,75 +107,40 @@ void transformImageSegmentationResultTo0and255(int * buffer, NSInteger width, NS
 //    return newMask;
 //}
 
-+(int *)produceIDedMask:(int *)mask width:(NSInteger)width height:(NSInteger)height destroyOrigin:(BOOL)destroy{
++(int *)produceIDedMask:(int *)mask width:(NSInteger)width height:(NSInteger)height destroyOrigin:(BOOL)destroy{//Slow algorithm
+    
     NSInteger totalPixels = width * height;
     int * newMask = calloc(totalPixels, sizeof(int));
     transformImageSegmentationResultTo0and255(mask, width, height);//from imageJ comes this funny
     for (int i = 0; i < totalPixels; i++) {
-        newMask[i] = mask[i];
+        newMask[i] = -mask[i];
     }
     
-    int counter = 2;
-    for (int i = 0;i < totalPixels; i++) {//I will run through all pixels of image
+    int counter = 1;
+    for (int i = 0; i < totalPixels; i++) {//I will run through all pixels of image
         
-        if (newMask[i] == 1) {//Non-reindexed pixel
-            
+        if (newMask[i] == -1) {//Non-reindexed pixel
             newMask[i] = counter;//Asign seed to this pixel
-            
-            BOOL found = YES;//To limit looping
-            int l = 1;
-            while (found) {
-                found = NO;
-                for (int j = -l; j< l+1; j++) {// X Loop
-                    
-                    for (int k = -l; k<l+1; k++) {//Y Loop
-                        
-                        NSInteger ind = i - j * width + k;//Grab de index of analyzed pixel
-                        
-                        if(ind >=0 && ind < width * height && ind != i){//Index in bounds of image
-                            
-                            if(newMask[ind] == 1){//Potential neighbour not modified yet
-                                NSInteger upInd = ind - width;
-                                NSInteger downInd = ind + width;
-                                NSInteger leftInd = ind - 1;
-                                NSInteger rightInd = ind +1;
-                                
-                                if(upInd > 0 && upInd < width * height && rightInd != ind){
-                                    if(newMask[upInd] == counter){
-                                        found = YES;
-                                        newMask[ind] = counter;
-                                        continue;
-                                    }
-                                }
-                                if(downInd > 0 && downInd < width * height && rightInd != ind){
-                                    if(newMask[downInd] == counter){
-                                        found = YES;
-                                        newMask[ind] = counter;
-                                        continue;
-                                    }
-                                }
-                                if(leftInd > 0 && leftInd < width * height && rightInd != ind){
-                                    if(newMask[leftInd] == counter){
-                                        found = YES;
-                                        newMask[ind] = counter;
-                                        continue;
-                                    }
-                                }
-                                if(rightInd > 0 && rightInd < width * height && rightInd != ind){
-                                    if(newMask[rightInd] == counter){
-                                        found = YES;
-                                        newMask[ind] = counter;
-                                        continue;
-                                    }
-                                }
-                            }
+            NSMutableArray *arr = @[].mutableCopy;
+            NSNumber *inScopeNumber = @(i);
+            do{
+                NSInteger candidates[4] = {inScopeNumber.integerValue - width,
+                                            inScopeNumber.integerValue + width,
+                                            inScopeNumber.integerValue - 1,
+                                            inScopeNumber.integerValue + 1,
+                                            };
+                for (int m = 0; m < 4;  m++){
+                    if(candidates[m] > 0 && candidates[m] < totalPixels)
+                        if(newMask[candidates[m]] == -1){
+                            newMask[candidates[m]] = counter;
+                            [arr addObject:@(candidates[m])];
                         }
-                    }
                 }
-                l++;
+                
+                inScopeNumber = [arr lastObject];
+                [arr removeLastObject];
             }
-            
-            
+            while (inScopeNumber);
             counter++;//Prepare next seed to this pixel
         }
     }
@@ -185,7 +150,6 @@ void transformImageSegmentationResultTo0and255(int * buffer, NSInteger width, NS
     
     return newMask;
 }
-
 
 
 void increaseMaskBoundsBy(int layer, int *mask, int width, int height){
@@ -239,7 +203,7 @@ void increaseMaskBoundsNegBy(int layer, int *mask, int width, int height){
     }
 }
 
-int * copyMask(int *mask, NSInteger width, NSInteger height){
+int * copyMask(int *mask, int width, int height){
     int * copy = calloc(width * height, sizeof(int));
     NSInteger size = width * height;
     for (int i = 0; i < size; i++)
@@ -457,7 +421,7 @@ float distanceFromPointAToXAndYWidhWidth(NSInteger indexA, float x, float y, NSI
 +(int *)maskFromFile:(NSURL *)url forImageStack:(IMCImageStack *)stack{
     
     NSInteger totalSize = [stack numberOfPixels];
-    if ([[url.absoluteString pathExtension]isEqualToString:@"tiff"] || [[url.absoluteString pathExtension]isEqualToString:@"tif"]) {
+    if ([[url.absoluteString pathExtension]isEqualToString:EXTENSION_TIFF] || [[url.absoluteString pathExtension]isEqualToString:EXTENSION_TIF]) {
 
         NSImage *image = [[NSImage alloc]initWithData:[NSData dataWithContentsOfFile:url.path]];
         if(image){
@@ -505,7 +469,7 @@ float distanceFromPointAToXAndYWidhWidth(NSInteger indexA, float x, float y, NSI
     }
     
     NSLog(@"URL is %@", url);
-    if ([[url.absoluteString pathExtension]isEqualToString:@"mat"]) {
+    if ([[url.absoluteString pathExtension]isEqualToString:EXTENSION_MAT]) {
         
         NSData *data = [NSData dataWithContentsOfURL:url];
         IMCMatLabParser *parser = [[IMCMatLabParser alloc]init];
@@ -517,19 +481,43 @@ float distanceFromPointAToXAndYWidhWidth(NSInteger indexA, float x, float y, NSI
             NSInteger height = [parser heightMatrix];
             
             if(width == stack.width && height == stack.height){
+                
                 int * res = calloc(stack.numberOfPixels, sizeof(int));
                 NSInteger row = 0, column = 0;
-                
-                int * buff = [parser intBuffer];
                 NSInteger total = stack.numberOfPixels;
+                size_t byteType = round((float)data.length/total);
                 
-                for (NSInteger i = 0; i < total; i++) {
-                    
-                    res[row * width + column] = buff[i];
-                    row++;
-                    if(row == height){
-                        row = 0;
-                        column++;
+                if(byteType == 1){
+                    char * buff = [parser charBuffer];
+                    for (NSInteger i = 0; i < total; i++) {
+                        res[row * width + column] = buff[i];
+                        row++;
+                        if(row == height){
+                            row = 0;
+                            column++;
+                        }
+                    }
+                }
+                if(byteType == 2){
+                    short * buff = [parser shortBuffer];
+                    for (NSInteger i = 0; i < total; i++) {
+                        res[row * width + column] = buff[i];
+                        row++;
+                        if(row == height){
+                            row = 0;
+                            column++;
+                        }
+                    }
+                }
+                if(byteType == 4){
+                    int * buff = [parser intBuffer];
+                    for (NSInteger i = 0; i < total; i++) {
+                        res[row * width + column] = buff[i];
+                        row++;
+                        if(row == height){
+                            row = 0;
+                            column++;
+                        }
                     }
                 }
                 return res;

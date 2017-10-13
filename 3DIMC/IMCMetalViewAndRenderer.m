@@ -214,10 +214,10 @@ bool heightDescriptor[] = {
         CGRect rectToRender = [self.delegate rectToRender];
         AlphaMode alphaMode = [self.delegate alphaMode];
 
-        self.renderWidth = (NSInteger)(rectToRender.size.width * width);
-        self.renderHeight = (NSInteger)(rectToRender.size.height * height);
+        self.renderWidth = (NSInteger)round((rectToRender.size.width * width));
+        self.renderHeight = (NSInteger)round((rectToRender.size.height * height));
         self.slices = slices.count;
-        NSInteger renderableArea = self.renderHeight * self.renderHeight;
+        NSInteger renderableArea = self.renderWidth * self.renderHeight;
         
         int stride = 8;
         
@@ -240,6 +240,7 @@ bool heightDescriptor[] = {
                 colors[i * 3 + 2] = colorObj.blueComponent;
             }
             [slices enumerateIndexesUsingBlock:^(NSUInteger slice, BOOL *stop){
+                
                 float ** sliceData = data[slice];
                 if(sliceData){
                     

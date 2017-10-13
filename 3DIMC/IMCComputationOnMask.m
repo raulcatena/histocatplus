@@ -731,7 +731,7 @@
 -(int *)calculateNeighboursTouchingForMask:(int *)mask width:(NSInteger)width height:(NSInteger)height{
     NSInteger max = [self.mask numberOfSegments];
     
-    int * bordersMask = copyMask(mask, width, height);
+    int * bordersMask = copyMask(mask, (int)width, (int)height);
     bordersOnlyMask(bordersMask, width, height);
     NSInteger total = width * height;
     
@@ -944,7 +944,7 @@
 
 -(float *)createImageForMaskWithCellData:(float *)data maskOption:(MaskOption)option maskType:(MaskType)maskType maskSingleColor:(NSColor *)maskSingleColor{
     
-    int * copy = copyMask(self.mask.mask, self.mask.imageStack.width, self.mask.imageStack.height);
+    int * copy = copyMask(self.mask.mask, (int)self.mask.imageStack.width, (int)self.mask.imageStack.height);
     
     float * img = calloc(self.mask.imageStack.numberOfPixels, sizeof(float));
     if(data == NULL)return NULL;

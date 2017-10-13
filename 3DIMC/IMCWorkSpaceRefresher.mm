@@ -151,6 +151,19 @@
     if(self.parent.autoRefreshLock.state == NSOffState)
         return;
     
+//    bool *mask = self.parent.threeDHandler.showMask;
+//    NSInteger totla = self.parent.threeDHandler.width * self.parent.threeDHandler.height;
+//    UInt8 *a = (UInt8 *)calloc(totla, sizeof(UInt8));
+//    for (NSInteger i = 0; i < totla; i++) {
+//        a[i] = mask[i] == true ? 255 : 0;
+//    }
+//    CGImageRef im = [IMCImageGenerator imageFromCArrayOfValues:a color:[NSColor whiteColor] width:self.parent.threeDHandler.width height:self.parent.threeDHandler.height startingHueScale:255 hueAmplitude:180 direction:YES ecuatorial:NO brightField:NO];
+//    
+//    NSImage *imi = [[NSImage alloc]initWithCGImage:im size:NSMakeSize(self.parent.threeDHandler.width, self.parent.threeDHandler.height)];
+//    
+//    self.parent.scrollViewBlends.imageView.image = imi;
+//    return;
+    
     if(self.parent.inScopeImages.count > 0 || self.parent.inScopeMasks > 0){
         
         NSInteger maxW = 0, maxH = 0;
@@ -460,7 +473,7 @@
 }
 
 #pragma mark align selected
--(void)alignPair:(NSArray<IMCNodeWrapper *>*)pair{
+-(void)alignPair:(NSArray<IMCNodeWrapper *>*)pair passDownstream:(BOOL)pegged nextIndex:(NSInteger)nextIndex{
     if(pair.count != 2)
         return;
     BOOL wasLoadedFirst = pair.firstObject.isLoaded;
@@ -601,6 +614,8 @@
     if([pair.firstObject isMemberOfClass:[IMCComputationOnMask class]] && [pair.lastObject isMemberOfClass:[IMCComputationOnMask class]])
         exact = YES;
     
+    NSDictionary *transB = trans.copy;
+    
     CGImageRef im = [IMCRegistration startRegistration:i
                                            sourceImage:im1.CGImage
                                            targetImage:im2.CGImage
@@ -610,7 +625,6 @@
                                         inelasticBrush:1
                                           elasticBrush:self.parent.elasticTransform.selectedSegment
                      exactMatches:exact];
-    
     
     if(im)
         CFRelease(im);
@@ -623,12 +637,23 @@
     if(!wasLoadedFirst)
         [pair.firstObject unLoadLayerDataWithBlock:nil];
     
+    float deltaX = [trans[JSON_DICT_IMAGE_TRANSFORM_OFFSET_X]floatValue] - [transB[JSON_DICT_IMAGE_TRANSFORM_OFFSET_X]floatValue];
+    float deltaY = [trans[JSON_DICT_IMAGE_TRANSFORM_OFFSET_Y]floatValue] - [transB[JSON_DICT_IMAGE_TRANSFORM_OFFSET_Y]floatValue];
+    float deltaRotation = [trans[JSON_DICT_IMAGE_TRANSFORM_ROTATION]floatValue] - [transB[JSON_DICT_IMAGE_TRANSFORM_ROTATION]floatValue];
+    
+    if(pegged)
+        for (NSInteger i = nextIndex; i < self.parent.dataCoordinator.inOrderImageWrappers.count; i++) {
+            IMCImageStack *stack = self.parent.dataCoordinator.inOrderImageWrappers[i];
+            [stack rotate:deltaRotation andTranslate:deltaX y:-deltaY];
+        }
+    
     dispatch_async(dispatch_get_main_queue(), ^{
         [self refreshBlend];
     });
 }
 -(void)alignSelected{
-        
+    BOOL pegged = (BOOL)self.parent.pegAligns.state;
+    
     NSIndexSet *iSet = self.parent.filesTree.selectedRowIndexes;
     __block IMCNodeWrapper *firstStack = [self.parent.filesTree itemAtRow:iSet.firstIndex];
     if([firstStack isMemberOfClass:[IMCImageStack class]] || [firstStack isMemberOfClass:[IMCComputationOnMask class]] || [firstStack isMemberOfClass:[IMCPixelClassification class]])
@@ -636,7 +661,7 @@
             IMCImageStack *stack = [self.parent.filesTree itemAtRow:index];
             if([stack isMemberOfClass:[IMCImageStack class]] || [firstStack isMemberOfClass:[IMCComputationOnMask class]] || [firstStack isMemberOfClass:[IMCPixelClassification class]])
                 if(stack != firstStack){
-                    [self alignPair:@[firstStack, stack]];
+                    [self alignPair:@[firstStack, stack] passDownstream:pegged nextIndex:index + 1];
                     firstStack = stack;
                 }
         }];

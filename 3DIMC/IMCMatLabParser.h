@@ -19,6 +19,8 @@
 -(NSInteger)channels;
 -(NSInteger)numberOfBytes;
 -(int *)intBuffer;
+-(char *)charBuffer;
+-(short *)shortBuffer;
 -(float *)floatBuffer;
 -(double *)doubleBuffer;
 @end

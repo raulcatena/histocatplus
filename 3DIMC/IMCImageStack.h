@@ -63,4 +63,7 @@
 //Channel communication
 -(NSInteger)ascertainIndexInStackForComputationChannel:(NSString *)channelName;
 
+//Rotate
+-(void)rotate:(float)rotation andTranslate:(float)x y:(float)y;
+
 @end

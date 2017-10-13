@@ -135,6 +135,16 @@
     return &theData[DATA_HEADER_SIZE/sizeof(int)];
 }
 
+-(short *)shortBuffer{
+    short * theData = (short *)[self firstDataBeggining];
+    return &theData[DATA_HEADER_SIZE/sizeof(short)];
+}
+
+-(char *)charBuffer{
+    char * theData = (char *)[self firstDataBeggining];
+    return &theData[DATA_HEADER_SIZE/sizeof(char)];
+}
+
 -(float *)floatBuffer{
     float * theData = (float *)[self firstDataBeggining];
     return &theData[DATA_HEADER_SIZE/sizeof(float)];

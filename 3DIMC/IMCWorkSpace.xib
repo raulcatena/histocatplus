@@ -57,6 +57,7 @@
                 <outlet property="multiImageMode" destination="L3h-G2-xLf" id="Knr-iP-xJb"/>
                 <outlet property="objectsTag" destination="xE7-Rb-2hP" id="95l-g6-ga3"/>
                 <outlet property="openGlViewPort" destination="OhM-Pw-e5r" id="RTP-AL-QDF"/>
+                <outlet property="pegAligns" destination="RaC-Ii-FYd" id="sAD-hu-m6u"/>
                 <outlet property="plotResult" destination="soP-2z-7IT" id="Gyc-oM-Mi2"/>
                 <outlet property="plotType" destination="GHI-2K-VzK" id="Gdq-rN-OPi"/>
                 <outlet property="pushItemDown" destination="V7l-GT-nnj" id="jzm-qz-obt"/>
@@ -460,20 +461,20 @@
                                             <rect key="frame" x="-3" y="105" width="646" height="541"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <clipView key="contentView" id="G0P-xh-7z1">
-                                                <rect key="frame" x="1" y="1" width="629" height="524"/>
+                                                <rect key="frame" x="1" y="1" width="644" height="539"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <view id="bEC-dY-lh0">
-                                                        <rect key="frame" x="0.0" y="0.0" width="672" height="539"/>
+                                                        <rect key="frame" x="0.0" y="15" width="672" height="539"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                     </view>
                                                 </subviews>
                                             </clipView>
                                             <scroller key="horizontalScroller" verticalHuggingPriority="750" horizontal="YES" id="wde-Z5-Q5f">
-                                                <rect key="frame" x="1" y="525" width="629" height="15"/>
+                                                <rect key="frame" x="1" y="524" width="644" height="16"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                             </scroller>
-                                            <scroller key="verticalScroller" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="o3j-AT-rhz">
+                                            <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="o3j-AT-rhz">
                                                 <rect key="frame" x="630" y="1" width="15" height="524"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                             </scroller>
@@ -1823,7 +1824,7 @@
                     </connections>
                 </button>
             </subviews>
-            <point key="canvasLocation" x="834.5" y="-73"/>
+            <point key="canvasLocation" x="829" y="-133"/>
         </customView>
         <customView id="SHc-Lg-FDp">
             <rect key="frame" x="0.0" y="0.0" width="725" height="106"/>
@@ -1864,6 +1865,14 @@
                         </segments>
                     </segmentedCell>
                 </segmentedControl>
+                <button misplaced="YES" id="RaC-Ii-FYd">
+                    <rect key="frame" x="221" y="80" width="124" height="18"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    <buttonCell key="cell" type="check" title="Peg downstream" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="a7u-ux-kMR">
+                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                        <font key="font" metaFont="system"/>
+                    </buttonCell>
+                </button>
             </subviews>
             <point key="canvasLocation" x="731.5" y="905"/>
         </customView>

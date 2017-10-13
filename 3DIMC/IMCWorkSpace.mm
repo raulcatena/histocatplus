@@ -247,7 +247,7 @@
         [inScope3DMask passToHandler];
     if(inScope3DMask){
         self.inOrderIndexes = @[@(0)].mutableCopy;
-        //inScope3DMask.blurMode = self.cleanUpMode.indexOfSelectedItem;
+        inScope3DMask.blurMode = self.cleanUpMode.indexOfSelectedItem;
     }
 }
 
@@ -1402,19 +1402,34 @@
             stack = self.inScopeComputation.mask.imageStack;
         if(!stack)
             return;
-        float prevRot = [stack.transform[JSON_DICT_IMAGE_TRANSFORM_ROTATION]floatValue];
-        float prevX = [stack.transform[JSON_DICT_IMAGE_TRANSFORM_OFFSET_X]floatValue];
-        float prevY = [stack.transform[JSON_DICT_IMAGE_TRANSFORM_OFFSET_Y]floatValue];
         
-        [stack.transform setValue:
-         [NSNumber numberWithFloat:prevRot + rotation * .003f * pow(10, self.transformDictController.coarseValue.selectedSegment)]
-                           forKey:JSON_DICT_IMAGE_TRANSFORM_ROTATION];
-        [stack.transform setValue:
-         [NSNumber numberWithFloat:prevX + x * .01f * pow(10, self.transformDictController.coarseValue.selectedSegment)]
-                           forKey:JSON_DICT_IMAGE_TRANSFORM_OFFSET_X];
-        [stack.transform setValue:
-         [NSNumber numberWithFloat:prevY - y * .01f * pow(10, self.transformDictController.coarseValue.selectedSegment)]
-                           forKey:JSON_DICT_IMAGE_TRANSFORM_OFFSET_Y];
+        float rotateCalc = rotation * .003f * pow(10, self.transformDictController.coarseValue.selectedSegment);
+        float xCalc = x * .01f * pow(10, self.transformDictController.coarseValue.selectedSegment);
+        float yCalc = y * .01f * pow(10, self.transformDictController.coarseValue.selectedSegment);
+        
+        [stack rotate:rotateCalc andTranslate:xCalc y:yCalc];
+        if(self.pegAligns.state == NSOnState){
+            NSArray *arr = [self.dataCoordinator inOrderImageWrappers];
+            NSInteger thisIndex = [arr indexOfObject:stack];
+            for (NSInteger i = thisIndex + 1; i < arr.count; i++) {
+                IMCImageStack *next = arr[i];
+                [next rotate:rotateCalc andTranslate:xCalc y:yCalc];
+            }
+        }
+        
+//        float prevRot = [stack.transform[JSON_DICT_IMAGE_TRANSFORM_ROTATION]floatValue];
+//        float prevX = [stack.transform[JSON_DICT_IMAGE_TRANSFORM_OFFSET_X]floatValue];
+//        float prevY = [stack.transform[JSON_DICT_IMAGE_TRANSFORM_OFFSET_Y]floatValue];
+//        
+//        [stack.transform setValue:
+//         [NSNumber numberWithFloat:prevRot + rotation * .003f * pow(10, self.transformDictController.coarseValue.selectedSegment)]
+//                           forKey:JSON_DICT_IMAGE_TRANSFORM_ROTATION];
+//        [stack.transform setValue:
+//         [NSNumber numberWithFloat:prevX + x * .01f * pow(10, self.transformDictController.coarseValue.selectedSegment)]
+//                           forKey:JSON_DICT_IMAGE_TRANSFORM_OFFSET_X];
+//        [stack.transform setValue:
+//         [NSNumber numberWithFloat:prevY - y * .01f * pow(10, self.transformDictController.coarseValue.selectedSegment)]
+//                           forKey:JSON_DICT_IMAGE_TRANSFORM_OFFSET_Y];
         
         [self.transformDictController updateFromDict];
         [self refresh];
@@ -1948,19 +1963,25 @@
         NSString *input;
         do{
             input = [IMCUtils input:@"Minimum number of voxels per kernel (e.g.: 12-10000)" defaultValue:@"20"];
+            if(!input)
+                return;
         }while (input.integerValue <= 0);
         mask3d.minKernel = input.integerValue;
         
         if(type == MASK3D_WATERSHED){
             do{
                 input = [IMCUtils input:@"Step for watershed gradient (e.g.: 0.005-0.1)" defaultValue:@"0.02"];
+                if(!input)
+                    return;
             }while (input.floatValue <= 0);
             mask3d.stepWatershed = input.floatValue;
         }
         
         do{
             input = [IMCUtils input:@"Do you want to add expansion layer? (e.g.: 0-100)" defaultValue:@"2"];
-        }while (input.integerValue <= 0);
+            if(!input)
+                return;
+        }while (input.integerValue < 0);
         mask3d.expansion = input.integerValue;
         
         mask3d.threshold = self.thresholdToRender.floatValue;

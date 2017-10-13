@@ -175,6 +175,24 @@
     [self.jsonDictionary setValue:channelSettings forKey:JSON_DICT_IMAGE_CHANNEL_SETTINGS];
 }
 
+#pragma mark transforms
+
+-(void)rotate:(float)rotation andTranslate:(float)x y:(float)y{
+    float prevRot = [self.transform[JSON_DICT_IMAGE_TRANSFORM_ROTATION]floatValue];
+    float prevX = [self.transform[JSON_DICT_IMAGE_TRANSFORM_OFFSET_X]floatValue];
+    float prevY = [self.transform[JSON_DICT_IMAGE_TRANSFORM_OFFSET_Y]floatValue];
+    
+    [self.transform setValue:
+     [NSNumber numberWithFloat:prevRot + rotation]
+                       forKey:JSON_DICT_IMAGE_TRANSFORM_ROTATION];
+    [self.transform setValue:
+     [NSNumber numberWithFloat:prevX + x]
+                       forKey:JSON_DICT_IMAGE_TRANSFORM_OFFSET_X];
+    [self.transform setValue:
+     [NSNumber numberWithFloat:prevY - y]
+                       forKey:JSON_DICT_IMAGE_TRANSFORM_OFFSET_Y];
+}
+
 -(NSMutableDictionary *)transform{
     if(![self.jsonDictionary valueForKey:JSON_DICT_IMAGE_TRANSFORM]){
         NSMutableDictionary *dict = @{
@@ -200,7 +218,7 @@
     [self initAllChildrenOfStack];
 }
 
--(void)setTransform:(NSMutableArray *)transform{
+-(void)setTransform:(NSMutableDictionary *)transform{
     [self.jsonDictionary setValue:transform forKey:JSON_DICT_IMAGE_TRANSFORM];
 }
 

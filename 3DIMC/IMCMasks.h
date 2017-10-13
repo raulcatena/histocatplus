@@ -21,7 +21,7 @@ void bordersOnlyMask(int * mask, NSInteger width, NSInteger height);
 void transformImageSegmentationResultTo0and255(int * buffer, NSInteger width, NSInteger height);
 void increaseMaskBoundsBy(int layer, int *mask, int width, int height);
 void increaseMaskBoundsNegBy(int layer, int *mask, int width, int height);
-int * copyMask(int *mask, NSInteger width, NSInteger height);
+int * copyMask(int *mask, int width, int height);
 UInt8 * copyMask8bit(UInt8 *mask, NSInteger width, NSInteger height);
 int * createECMMask(int *mask, int width, int height);
 int * createWithTheresholMask(int *mask, int width, int height, int threshold);

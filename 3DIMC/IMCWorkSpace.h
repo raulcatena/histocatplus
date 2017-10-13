@@ -121,6 +121,7 @@
 @property (nonatomic, weak) IBOutlet NSView *tilesToolsSubContainerTransformDict;
 @property (nonatomic, weak) IMCTransformDictController *transformDictController;
 @property (nonatomic, weak) IBOutlet NSSegmentedControl *elasticTransform;
+@property (nonatomic, weak) IBOutlet NSButton *pegAligns;
 //@property (nonatomic, weak) IBOutlet NSButton *alignTwo;
 //@property (nonatomic, weak) IBOutlet NSButton *alignAll;
 @property (nonatomic, weak) IBOutlet NSView *threeDContainerView;
