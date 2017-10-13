@@ -237,14 +237,28 @@ void applyFilterToChannel(NSInteger chann, NSInteger stackCount, NSInteger plane
     
     reorderLayers(chann, stackCount, planePixels, data, width, height, mask, mode, deltas_z);
     
+    float *prevLayer = NULL;
+    float *layer = NULL;
+    float *postLayer = NULL;
+    
     for (NSInteger stack = 0; stack < stackCount; stack++) {
         //Probably never the case
         if(data[stack] == NULL)
             continue;
         
-        float *prevLayer = stack > 0 ? data[stack - 1][chann] : NULL;
-        float *layer = data[stack][chann];
-        float *postLayer = stack < stackCount - 1 ? data[stack + 1][chann] : NULL;
+        if(layer)
+            prevLayer = layer;
+        if(postLayer)
+            layer = postLayer;
+        else
+            layer = data[stack][chann];
+        
+        float currZ = deltas_z[stack];
+        if(stack < stackCount - 1)
+            while (deltas_z[stack + 1] == currZ)
+                stack++;
+            
+        postLayer = stack < stackCount - 1 ? data[stack + 1][chann] : NULL;
         
         
         //Channel was not loaded. Break channel and go to next
@@ -276,21 +290,6 @@ void applyFilterToChannel(NSInteger chann, NSInteger stackCount, NSInteger plane
             for (NSInteger pix = 0; pix < planePixels; pix++)
                 layer[pix] = temp1Buffer[tempBufferUse][pix];
         }
-        
-        //Equalize redundant layers (for optimal visualization
-//        if(postLayer){
-//            float thisZ = deltas_z[stack];
-//            while (deltas_z[stack + 1] == thisZ) {
-//                stack++;
-//                if(stack >= stackCount)
-//                    break;
-//                float * otherPost = data[stack + 1][chann];
-//                if(otherPost)
-//                    for (NSInteger i = 0; i < planePixels; i++)
-//                        otherPost[i] = 0;
-//                
-//            }
-//        }
     }
     free(temp1Buffer[0]);
     free(temp1Buffer[1]);

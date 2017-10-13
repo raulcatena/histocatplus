@@ -400,8 +400,10 @@
             //Add Values
             float analyzeAdded = analyze;
             NSLog(@"%f step", analyzeAdded);
+            
             //        if(schannel > 0)
             //            analyzeAdded *= (1 - analyze);
+            
             for (NSInteger i = 0; i <handler.images; i++){
                 NSInteger offset = allLength * i;
                 if(handler.allBuffer[i]){

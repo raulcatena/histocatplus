@@ -249,11 +249,13 @@ bool heightDescriptor[] = {
                     z = zPositions[slice];
                     thickness = zThicknesses[slice];
                     
+                    float *chanData = NULL;
+                    
                     for (NSInteger idx = 0; idx < self.indexesObtained.count; idx++) {
                         
                         NSInteger realIndex = [self.indexesObtained[idx]integerValue];
                         
-                        float *chanData = sliceData[realIndex];
+                        chanData = sliceData[realIndex];
                         if(chanData){
                             
                             NSInteger internalCursor = 0;
@@ -313,6 +315,45 @@ bool heightDescriptor[] = {
             
             NSInteger bufferSize = renderableArea * slices.count * stride;
             float * cleanBuffer = malloc(bufferSize * sizeof(float));
+            
+            //Inspect buried voxels
+            NSInteger rws = _renderWidth * stride;
+            NSInteger ras = renderableArea * stride;
+            NSInteger removed = 0;
+            NSInteger from = 0;
+            for (NSInteger m = 0; m < bufferSize; m+=stride) {
+                if(buff[m] > 0){
+                    NSInteger mod = (m/stride)%_renderWidth;
+                    NSInteger modB = ((m/stride)%renderableArea)/_renderWidth;
+                    if(mod == 0 ||
+                       mod == _renderWidth - 1 ||
+                       modB == 0 ||
+                       modB == _renderHeight - 1
+                       ){
+                        cleanBuffer[m] = 1.0f;
+                        from++;
+                        continue;
+                    }
+                    NSInteger count = 0;
+                    for (int z = -1; z < 2; z++)
+                        for (int a = -1; a < 2; a++)
+                            for (int b = -1; b < 2; b++) {
+                                NSInteger idx = m + z * ras + a * rws + b * stride;
+                                if(idx >= 0 && idx < bufferSize && idx != m)
+                                    if(buff[idx] > 0)
+                                        count++;
+                            }
+                    cleanBuffer[m] = count == 26 ? .0f : 1.0f;
+                    if(count == 26)removed++;
+                    from++;
+                }
+            }
+            for (NSInteger m = 0; m < bufferSize; m+=stride)
+                if(cleanBuffer[m] == .0f)
+                    buff[m] = .0f;
+            NSLog(@"Removed %li from %li", removed, from);
+            
+            //Remove all Zeroes
             NSInteger cleanIndex = 0;
             for (NSInteger m = 0; m < bufferSize; m+=stride) {
                 if(buff[m] > 0){
