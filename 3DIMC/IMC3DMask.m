@@ -382,10 +382,10 @@
     
     self.width = handler.width;
     self.height = handler.height;
-    self.slices = handler.images;
+    self.slices = handler.imagesArranged;
     
     NSInteger allLength = self.width * self.height;
-    NSInteger fullMask = allLength *  handler.images;
+    NSInteger fullMask = allLength *  handler.imagesArranged;
     NSInteger channel = self.channel;
     NSInteger schannel = self.substractChannel;
     
@@ -404,8 +404,9 @@
             //        if(schannel > 0)
             //            analyzeAdded *= (1 - analyze);
             
-            for (NSInteger i = 0; i <handler.images; i++){
-                NSInteger offset = allLength * i;
+            for (NSInteger a = 0; a < handler.imagesArranged; a++) {
+                NSInteger i = [handler internalSliceIndexForExternal:a];
+                NSInteger offset = allLength * a;
                 if(handler.allBuffer[i]){
                     if(handler.allBuffer[i][channel]){
                         for (NSInteger j = 0; j < allLength; j++){
@@ -421,9 +422,9 @@
                     }
                 }
             }
-            
-            for (NSInteger i = 0; i <handler.images; i++){
-                NSInteger offset = allLength * i;
+            for (NSInteger a = 0; a < handler.imagesArranged; a++) {
+                NSInteger i = [handler internalSliceIndexForExternal:a];
+                NSInteger offset = allLength * a;
                 if(handler.allBuffer[i])
                     if(handler.allBuffer[i][channel])
                         for (NSInteger j = 0; j < allLength; j++){
@@ -435,14 +436,17 @@
                                 }
                             }
                         }
+
             }
         }
         NSLog(@"Assigned %i", cellId);
     }
     if(self.type == MASK3D_THRESHOLD || self.type == MASK3D_THRESHOLD_SEGMENT){
         float analyze = self.threshold;
-        for (NSInteger i = 0; i <handler.images; i++){
-            NSInteger offset = allLength * i;
+        
+        for (NSInteger a = 0; a < handler.imagesArranged; a++) {
+            NSInteger i = [handler internalSliceIndexForExternal:a];
+            NSInteger offset = allLength * a;
             if(handler.allBuffer[i])
                 if(handler.allBuffer[i][channel])
                     for (NSInteger j = 0; j < allLength; j++)
@@ -455,8 +459,9 @@
                         }
         }
         int cellId = 1;
-        for (NSInteger i = 0; i <handler.images; i++){NSLog(@"IM");
-            NSInteger offset = allLength * i;
+        for (NSInteger a = 0; a < handler.imagesArranged; a++) {
+            NSInteger i = [handler internalSliceIndexForExternal:a];
+            NSInteger offset = allLength * a;
             if(handler.allBuffer[i])
                 if(handler.allBuffer[i][channel])
                     for (NSInteger j = 0; j < allLength; j++)
@@ -467,8 +472,36 @@
                                 cellId++;
                             }
                         }
-            
         }
+        
+//        for (NSInteger i = 0; i <handler.images; i++){
+//            NSInteger offset = allLength * i;
+//            if(handler.allBuffer[i])
+//                if(handler.allBuffer[i][channel])
+//                    for (NSInteger j = 0; j < allLength; j++)
+//                        if(maskIds[offset + j] == 0){
+//                            float val = handler.allBuffer[i][channel][j];
+//                            if(schannel > 0 && handler.allBuffer[i][schannel])
+//                                val -= handler.allBuffer[i][schannel][j];
+//                            if(val >= analyze)
+//                                maskIds[offset + j] = -1;
+//                        }
+//        }
+//        
+//        for (NSInteger i = 0; i <handler.images; i++){NSLog(@"IM");
+//            NSInteger offset = allLength * i;
+//            if(handler.allBuffer[i])
+//                if(handler.allBuffer[i][channel])
+//                    for (NSInteger j = 0; j < allLength; j++)
+//                        if(maskIds[offset + j] == -1){
+//                            int qual = [self checkCandidates:offset + j fullMaskLength:fullMask planLength:allLength width:self.width];
+//                            if(qual >= self.minKernel){//Promote all
+//                                [self assignId:self.type == MASK3D_THRESHOLD_SEGMENT?cellId:1 toIndex:offset + j fullMaskLength:fullMask planLength:allLength width:self.width];
+//                                cellId++;
+//                            }
+//                        }
+//            
+//        }
         NSLog(@"Assigned %i", cellId);
     }
     //Reset negative values
@@ -492,7 +525,7 @@
     IMC3DHandler *handler = self.threeDHandler;
     
     NSInteger allLength = self.width * self.height;
-    NSInteger fullMask = allLength *  handler.images;
+    NSInteger fullMask = allLength *  handler.imagesArranged;
     NSInteger width = self.width;
     
     for (NSInteger i = 0; i < self.expansion; i++) {

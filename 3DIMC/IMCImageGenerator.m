@@ -198,25 +198,19 @@ void sharpenFilter(NSInteger pix, NSInteger width, NSInteger planePixels, float 
     temp1Buffer[tempBufferUse][pix] = sum/blurCounter;
 }
 
-void reorderLayers(NSInteger chann, NSInteger stackCount, NSInteger planePixels, float *** data, NSInteger width, NSInteger height, bool *mask, NSInteger mode, float * deltas_z){
+void reorderLayers(NSInteger chann, NSArray * indexesArranged, NSInteger planePixels, float *** data, NSInteger width, NSInteger height, bool *mask, NSInteger mode, float * deltas_z){
     if(data){
-        if(stackCount > 0){
-            for (NSInteger stack = 0; stack < stackCount - 1; stack++) {
-                if(data[stack]){
-                    float *layer = data[stack][chann];
-                    if(layer){
-                        float prev_z = deltas_z[stack];
-                        while (deltas_z[stack + 1] == prev_z){
-                            stack++;
-                            float *nextLayer = data[stack][chann];
-                            if(nextLayer){
-                                for (NSInteger i = 0; i < planePixels; i++)
-                                    layer[i] += nextLayer[i];
-                                for (NSInteger i = 0; i < planePixels; i++)
-                                    nextLayer[i] = layer[i];
-                                if(stack >= stackCount)
-                                    break;
-                            }
+        
+        for (NSArray *arr in indexesArranged) {
+            if(arr.count > 1){
+                NSInteger indexFirst = [arr.firstObject integerValue];
+                float *layer = data[indexFirst][chann];
+                if(layer){
+                    for (NSInteger i = 1; i < arr.count; i++) {
+                        float *nextLayer = data[[arr[i]integerValue]][chann];
+                        if(nextLayer){
+                            for (NSInteger i = 0; i < planePixels; i++)
+                                layer[i] += nextLayer[i];
                         }
                     }
                 }
@@ -225,7 +219,7 @@ void reorderLayers(NSInteger chann, NSInteger stackCount, NSInteger planePixels,
     }
 }
 
-void applyFilterToChannel(NSInteger chann, NSInteger stackCount, NSInteger planePixels, float *** data, NSInteger width, NSInteger height, bool *mask, NSInteger mode, float * deltas_z){
+void applyFilterToChannel(NSInteger chann, NSArray * indexesArranged, NSInteger planePixels, float *** data, NSInteger width, NSInteger height, bool *mask, NSInteger mode, float * deltas_z){
     
     float* temp1Buffer[2];
     for (int i = 0; i < 2; i++)
@@ -235,13 +229,15 @@ void applyFilterToChannel(NSInteger chann, NSInteger stackCount, NSInteger plane
     float sum = 0;
     NSInteger tempBufferUse = 0;
     
-    reorderLayers(chann, stackCount, planePixels, data, width, height, mask, mode, deltas_z);
+    reorderLayers(chann, indexesArranged, planePixels, data, width, height, mask, mode, deltas_z);
     
     float *prevLayer = NULL;
     float *layer = NULL;
     float *postLayer = NULL;
-    
-    for (NSInteger stack = 0; stack < stackCount; stack++) {
+    NSLog(@"%@", indexesArranged);
+    for (NSArray *indxs in indexesArranged) {
+        NSInteger stack = [indxs.firstObject integerValue];
+        NSLog(@"%li", stack);
         //Probably never the case
         if(data[stack] == NULL)
             continue;
@@ -253,12 +249,11 @@ void applyFilterToChannel(NSInteger chann, NSInteger stackCount, NSInteger plane
         else
             layer = data[stack][chann];
         
-        float currZ = deltas_z[stack];
-        if(stack < stackCount - 1)
-            while (deltas_z[stack + 1] == currZ)
-                stack++;
-            
-        postLayer = stack < stackCount - 1 ? data[stack + 1][chann] : NULL;
+        if(indxs != indexesArranged.lastObject){
+            NSInteger idxx = [[indexesArranged[[indexesArranged indexOfObject:indxs] + 1] firstObject] integerValue];
+            postLayer = data[idxx][chann];
+        }else
+            postLayer = NULL;
         
         
         //Channel was not loaded. Break channel and go to next
@@ -295,7 +290,7 @@ void applyFilterToChannel(NSInteger chann, NSInteger stackCount, NSInteger plane
     free(temp1Buffer[1]);
 }
 
-void threeDMeanBlur(float *** data, NSInteger width, NSInteger height, NSInteger stackCount, NSIndexSet * channels, NSInteger mode, bool *mask, float * deltas_z){
+void threeDMeanBlur(float *** data, NSInteger width, NSInteger height, NSArray * indexesArranged, NSIndexSet * channels, NSInteger mode, bool *mask, float * deltas_z){
     
     if(data == NULL || mode == 0)
         return;
@@ -304,14 +299,14 @@ void threeDMeanBlur(float *** data, NSInteger width, NSInteger height, NSInteger
     
     [channels enumerateIndexesUsingBlock:^(NSUInteger chann, BOOL *stop){
         if(mode < 5)
-            applyFilterToChannel(chann, stackCount, planePixels, data, width, height, mask, mode, deltas_z);
+            applyFilterToChannel(chann, indexesArranged, planePixels, data, width, height, mask, mode, deltas_z);
         if(mode == 5){
-            applyFilterToChannel(chann, stackCount, planePixels, data, width, height, mask, 4, deltas_z);
-            applyFilterToChannel(chann, stackCount, planePixels, data, width, height, mask, 3, deltas_z);
+            applyFilterToChannel(chann, indexesArranged, planePixels, data, width, height, mask, 4, deltas_z);
+            applyFilterToChannel(chann, indexesArranged, planePixels, data, width, height, mask, 3, deltas_z);
         }
         if(mode == 6){
-            applyFilterToChannel(chann, stackCount, planePixels, data, width, height, mask, 3, deltas_z);
-            applyFilterToChannel(chann, stackCount, planePixels, data, width, height, mask, 4, deltas_z);
+            applyFilterToChannel(chann, indexesArranged, planePixels, data, width, height, mask, 3, deltas_z);
+            applyFilterToChannel(chann, indexesArranged, planePixels, data, width, height, mask, 4, deltas_z);
         }
     }];
 }

@@ -118,11 +118,6 @@
     self.applyTransfomrs.hidden = YES;
     self.applyTransfomrs = nil;
     self.multiImageFilters.hidden = YES;
-    
-//    NSMenu *appMenu = [[mainMenu itemAtIndex:7] submenu];
-//    for (NSMenuItem *item in [appMenu itemArray].copy) {
-//        [appMenu removeItem:item];
-//    }
 }
 -(void)noThreeD{
     while (self.tabs.tabViewItems.count > 5) {
@@ -205,6 +200,8 @@
         [self viewerOnly];
     if(VIEWER_HISTO)
         [self noThreeD];
+    if(VIEWER_ONLY || VIEWER_HISTO)
+        self.compensationSwitch.hidden = YES;
     
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     
@@ -1616,6 +1613,9 @@
     }
     return ALPHA_MODE_OPAQUE;
 }
+-(NSInteger)boostModeCode{
+    return self.boostMode.indexOfSelectedItem;
+}
 -(ColoringType)coloringType{
     return self.lightModeSelector.selectedSegment == 0 ? COLORING_TYPE_DIFFUSE_LIGHT_0 : COLORING_TYPE_DIFFUSE_EMISSIVE;
     //return COLORING_TYPE_DIFFUSE_EMISSIVE;
@@ -1635,6 +1635,9 @@
 -(IBAction)refresh3D:(id)sender{
     [self.openGlViewPort refresh];
     self.metalViewDelegate.forceColorBufferRecalculation = YES;
+}
+-(NSArray *)inOrderIndexesArranged{
+    return self.threeDHandler.indexesArranged;
 }
 #pragma mark record video
 #define STEPS 120

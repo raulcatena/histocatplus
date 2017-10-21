@@ -692,7 +692,7 @@
                 </menuItem>
                 <menuItem title="Analysis" id="Xfh-ot-dQ7" userLabel="Analysis">
                     <modifierMask key="keyEquivalentModifierMask"/>
-                    <menu key="submenu" title="Analysis" id="LsA-79-Ha9">
+                    <menu key="submenu" title="Analysis" identifier="full" id="LsA-79-Ha9">
                         <items>
                             <menuItem title="New Pixel Classification..." id="slM-NC-pJF" userLabel="Pixel Classification...">
                                 <modifierMask key="keyEquivalentModifierMask"/>
@@ -797,9 +797,9 @@
                         </items>
                     </menu>
                 </menuItem>
-                <menuItem title="Analysis" hidden="YES" id="ent-Jf-hqe" userLabel="Analysis">
+                <menuItem title="Analysis" id="ent-Jf-hqe" userLabel="Analysis">
                     <modifierMask key="keyEquivalentModifierMask"/>
-                    <menu key="submenu" title="Analysis" id="lFX-wf-QeE">
+                    <menu key="submenu" title="Analysis" identifier="part" id="lFX-wf-QeE">
                         <items>
                             <menuItem title="New Mask (ML)..." id="hkf-sx-j4t" userLabel="Pixel Classification...">
                                 <modifierMask key="keyEquivalentModifierMask"/>

@@ -79,8 +79,9 @@ typedef struct{
 #define T 0.5, -0.5, -0.5
 
 float cubeVertexData[] = {
+    
     A,B,C ,A,C,D,   //Front
-    R,T,S ,Q,R,S,   //Back
+    R,T,S ,R,S,Q,   //Back
     
     Q,S,B ,Q,B,A,   //Left
     D,C,T ,D,T,R,   //Right
@@ -199,6 +200,14 @@ bool heightDescriptor[] = {
     self.colorBuffer = [self.device newBufferWithBytes:vals length: 8 * 7 * sizeof(float) options:MTLResourceOptionCPUCacheModeDefault];
 }
 
+-(NSInteger)externalSliceIndexForInternal:(NSInteger)internal inArrangedArray:(NSArray *)idx{
+    for (NSArray *arr in idx) {
+        if([[arr firstObject]  isEqual: @(internal)])
+            return [idx indexOfObject:arr];
+    }
+    return NSNotFound;
+}
+
 -(void)updateColorBufferWithWidth:(NSInteger)width height:(NSInteger)height slices:(NSIndexSet *)slices{
     
 //    [self syntheticCubes];
@@ -213,7 +222,8 @@ bool heightDescriptor[] = {
         NSInteger area = width * height;
         CGRect rectToRender = [self.delegate rectToRender];
         AlphaMode alphaMode = [self.delegate alphaMode];
-
+        
+        
         self.renderWidth = (NSInteger)round((rectToRender.size.width * width));
         self.renderHeight = (NSInteger)round((rectToRender.size.height * height));
         self.slices = slices.count;
@@ -239,73 +249,82 @@ bool heightDescriptor[] = {
                 colors[i * 3 + 1] = colorObj.greenComponent;;
                 colors[i * 3 + 2] = colorObj.blueComponent;
             }
+            NSArray *arranged = [self.delegate inOrderIndexesArranged];
+            __block NSUInteger prevVisited = 0;
+            
             [slices enumerateIndexesUsingBlock:^(NSUInteger slice, BOOL *stop){
-                
-                float ** sliceData = data[slice];
-                if(sliceData){
-                    
-                    x = 0;
-                    y = 0;
-                    z = zPositions[slice];
-                    thickness = zThicknesses[slice];
-                    
-                    float *chanData = NULL;
-                    
-                    for (NSInteger idx = 0; idx < self.indexesObtained.count; idx++) {
-                        
-                        NSInteger realIndex = [self.indexesObtained[idx]integerValue];
-                        
-                        chanData = sliceData[realIndex];
-                        if(chanData){
+                NSInteger corresp = [self externalSliceIndexForInternal:slice inArrangedArray:arranged];
+                if(corresp != NSNotFound){
+                    NSInteger corresponding = [[arranged[corresp]firstObject]integerValue];
+                    if(corresponding != prevVisited){
+                        prevVisited = corresponding;
+                        float ** sliceData = data[corresponding];
+                        if(sliceData){
                             
-                            NSInteger internalCursor = 0;
-                            for (NSInteger pix = 0; pix < area; pix++) {
-                                if(mask[pix] == false){
-                                    continue;
-                                }
-                                if(internalCursor >= renderableArea){
-                                    break;
-                                }
+                            x = 0;
+                            y = 0;
+                            z = zPositions[corresponding];
+                            thickness = zThicknesses[corresponding];
+                            
+                            float *chanData = NULL;
+                            
+                            for (NSInteger idx = 0; idx < self.indexesObtained.count; idx++) {
                                 
-                                NSInteger internalStride = internalCursor * stride;
-
-                                if(self.colorsObtained.count > 0){
-                                    buff[cursor + internalStride + 1] += chanData[pix] * colors[idx * 3];
-                                    buff[cursor + internalStride + 2] += chanData[pix] * colors[idx * 3 + 1];
-                                    buff[cursor + internalStride + 3] += chanData[pix] * colors[idx * 3 + 2];
-                                }else{
-                                    RgbColor rgb = RgbFromFloatUnit(chanData[pix]);
-                                    buff[cursor + internalStride + 1] += rgb.r/255.0f;
-                                    buff[cursor + internalStride + 2] += rgb.g/255.0f;
-                                    buff[cursor + internalStride + 3] += rgb.b/255.0f;
-                                }
-                                buff[cursor + internalStride + 4] = internalCursor % _renderWidth;
-                                buff[cursor + internalStride + 5] = internalCursor /_renderWidth;
-                                buff[cursor + internalStride + 6] = z;
-                                buff[cursor + internalStride + 7] = thickness;
+                                NSInteger realIndex = [self.indexesObtained[idx]integerValue];
                                 
-                                //Filters
-                                float max = .0f;
-                                float sum = .0f;
-                                for (int i = 1; i < 4; i++){
-                                    float val = buff[cursor + internalStride + i];
-                                    if(val > max)
-                                        max = val;
-                                    sum += val;
-                                    if(sum > 1.0f){
-                                        sum = 1.0f;
-                                        break;
+                                chanData = sliceData[realIndex];
+                                if(chanData){
+                                    
+                                    NSInteger internalCursor = 0;
+                                    for (NSInteger pix = 0; pix < area; pix++) {
+                                        if(mask[pix] == false){
+                                            continue;
+                                        }
+                                        if(internalCursor >= renderableArea){
+                                            break;
+                                        }
+                                        
+                                        NSInteger internalStride = internalCursor * stride;
+                                        
+                                        if(self.colorsObtained.count > 0){
+                                            buff[cursor + internalStride + 1] += chanData[pix] * colors[idx * 3];
+                                            buff[cursor + internalStride + 2] += chanData[pix] * colors[idx * 3 + 1];
+                                            buff[cursor + internalStride + 3] += chanData[pix] * colors[idx * 3 + 2];
+                                        }else{
+                                            RgbColor rgb = RgbFromFloatUnit(chanData[pix]);
+                                            buff[cursor + internalStride + 1] += rgb.r/255.0f;
+                                            buff[cursor + internalStride + 2] += rgb.g/255.0f;
+                                            buff[cursor + internalStride + 3] += rgb.b/255.0f;
+                                        }
+                                        buff[cursor + internalStride + 4] = internalCursor % _renderWidth;
+                                        buff[cursor + internalStride + 5] = internalCursor /_renderWidth;
+                                        buff[cursor + internalStride + 6] = z;
+                                        buff[cursor + internalStride + 7] = thickness;
+                                        
+                                        //Filters
+                                        float max = .0f;
+                                        float sum = .0f;
+                                        for (int i = 1; i < 4; i++){
+                                            float val = buff[cursor + internalStride + i];
+                                            if(val > max)
+                                                max = val;
+                                            sum += val;
+                                            if(sum > 1.0f){
+                                                sum = 1.0f;
+                                                break;
+                                            }
+                                        }
+                                        
+                                        if(alphaMode == ALPHA_MODE_OPAQUE)
+                                            buff[cursor + internalStride] = max < minThresholdForAlpha ? 0.0f : 1.0f;
+                                        if(alphaMode == ALPHA_MODE_FIXED)
+                                            buff[cursor + internalStride] = max < minThresholdForAlpha ? 0.0f : minThresholdForAlpha;//Alpha
+                                        if(alphaMode == ALPHA_MODE_ADAPTIVE)
+                                            buff[cursor + internalStride] = max < minThresholdForAlpha ? 0.0f : sum;//MIN(1.0f, sum);//Alpha
+                                        
+                                        internalCursor++;
                                     }
                                 }
-                                
-                                if(alphaMode == ALPHA_MODE_OPAQUE)
-                                    buff[cursor + internalStride] = max < minThresholdForAlpha ? 0.0f : 1.0f;
-                                if(alphaMode == ALPHA_MODE_FIXED)
-                                    buff[cursor + internalStride] = max < minThresholdForAlpha ? 0.0f : minThresholdForAlpha;//Alpha
-                                if(alphaMode == ALPHA_MODE_ADAPTIVE)
-                                    buff[cursor + internalStride] = max < minThresholdForAlpha ? 0.0f : sum;//MIN(1.0f, sum);//Alpha
-
-                                internalCursor++;
                             }
                         }
                     }
@@ -317,41 +336,7 @@ bool heightDescriptor[] = {
             float * cleanBuffer = malloc(bufferSize * sizeof(float));
             
             //Inspect buried voxels
-            NSInteger rws = _renderWidth * stride;
-            NSInteger ras = renderableArea * stride;
-            NSInteger removed = 0;
-            NSInteger from = 0;
-            for (NSInteger m = 0; m < bufferSize; m+=stride) {
-                if(buff[m] > 0){
-                    NSInteger mod = (m/stride)%_renderWidth;
-                    NSInteger modB = ((m/stride)%renderableArea)/_renderWidth;
-                    if(mod == 0 ||
-                       mod == _renderWidth - 1 ||
-                       modB == 0 ||
-                       modB == _renderHeight - 1
-                       ){
-                        cleanBuffer[m] = 1.0f;
-                        from++;
-                        continue;
-                    }
-                    NSInteger count = 0;
-                    for (int z = -1; z < 2; z++)
-                        for (int a = -1; a < 2; a++)
-                            for (int b = -1; b < 2; b++) {
-                                NSInteger idx = m + z * ras + a * rws + b * stride;
-                                if(idx >= 0 && idx < bufferSize && idx != m)
-                                    if(buff[idx] > 0)
-                                        count++;
-                            }
-                    cleanBuffer[m] = count == 26 ? .0f : 1.0f;
-                    if(count == 26)removed++;
-                    from++;
-                }
-            }
-            for (NSInteger m = 0; m < bufferSize; m+=stride)
-                if(cleanBuffer[m] == .0f)
-                    buff[m] = .0f;
-            NSLog(@"Removed %li from %li", removed, from);
+            [self applyBoost:renderableArea width:_renderWidth buffer:buff auxBuffer:cleanBuffer stride:stride bufferSize:bufferSize];
             
             //Remove all Zeroes
             NSInteger cleanIndex = 0;
@@ -376,6 +361,111 @@ bool heightDescriptor[] = {
             free(colors);
         }
     }
+}
+
+-(void)applyBoost:(NSInteger)renderableArea width:(NSInteger)width buffer:(float *)buff auxBuffer:(float *)cleanBuffer stride:(int)stride bufferSize:(NSInteger)bufferSize{
+    NSInteger rws = _renderWidth * stride;
+    NSInteger ras = renderableArea * stride;
+    NSInteger removed = 0;
+    NSInteger from = 0;
+    NSInteger boost = [self.delegate boostModeCode];
+    if(boost > 0){
+        if(boost > 1)
+            boost += 13;//Index 2 is 15 kernel
+        else if(boost == 1)
+            boost = 6;
+        
+        for (NSInteger m = 0; m < bufferSize; m+=stride) {
+            if(buff[m] > 0){
+                NSInteger mod = (m/stride)%_renderWidth;
+                NSInteger modB = ((m/stride)%renderableArea)/_renderWidth;
+                NSInteger modC = m / (renderableArea * stride);
+                
+                if(mod == 0 ||
+                   mod == _renderWidth - 1 ||
+                   modB == 0 ||
+                   modB == _renderHeight - 1 ||
+                   modC == 0 ||
+                   m < ras ||
+                   m > bufferSize - ras
+                   ){
+                    cleanBuffer[m] = 1.0f;
+                    from++;
+                    continue;
+                }
+                
+                NSInteger count = 0;
+                if(boost > 6){
+                    
+                    for (int z = -1; z < 2; z++){
+                        if(count >= boost)
+                            break;
+                        for (int a = -1; a < 2; a++)
+                            for (int b = -1; b < 2; b++) {
+                                NSInteger idx = m + z * ras + a * rws + b * stride;
+                                if(idx >= 0 && idx < bufferSize && idx != m)
+                                    if(buff[idx] > 0)
+                                        count++;
+                                
+                            }
+                    }
+                    
+                    cleanBuffer[m] = count >= boost ? .0f : 1.0f;
+                    if(count >= boost)removed++;
+                    from++;
+                    
+                }else{
+                    BOOL include = NO;
+                    for (int z = 0; z < 6; z++) {
+                        int notHit = 0;
+                        for (int r = 1; r < 4; r++) {
+                            NSInteger idx = m;
+                            switch (z) {
+                                case 0:
+                                    idx += r * ras;
+                                    break;
+                                case 1:
+                                    idx -= r * ras;
+                                    break;
+                                case 2:
+                                    idx += r * rws;
+                                    break;
+                                case 3:
+                                    idx -= r * rws;
+                                    break;
+                                case 4:
+                                    idx += r * stride;
+                                    break;
+                                case 5:
+                                    idx -= r * stride;
+                                    break;
+                                default:
+                                    break;
+                            }
+                            if(idx >= 0 && idx < bufferSize && idx != m)
+                                if(buff[idx] == 0)
+                                    notHit++;
+                            if(idx < 0 && idx > bufferSize)
+                                notHit++;
+                        }
+                        if(notHit == 3){
+                            include = YES;
+                            break;
+                        }
+                    }
+                    cleanBuffer[m] = include ? 1.0f : 0.0f;
+                    if(!include)removed++;
+                    from++;
+                }
+            }
+        }
+
+        for (NSInteger m = 0; m < bufferSize; m+=stride)
+            if(cleanBuffer[m] == .0f)
+                buff[m] = .0f;
+        NSLog(@"Removed %li from %li", removed, from);
+    }
+    
 }
 
 
@@ -472,7 +562,9 @@ bool heightDescriptor[] = {
     [renderEncoder setVertexBuffer:self.colorBuffer offset:0 atIndex:4];
     [renderEncoder setVertexBuffer:self.heightDescriptor offset:0 atIndex:5];
 
-    [renderEncoder setDepthStencilState:self.stencilState];
+    AlphaMode alphaMode = [self.delegate alphaMode];
+    if(alphaMode == ALPHA_MODE_OPAQUE)
+        [renderEncoder setDepthStencilState:self.stencilState];
     [renderEncoder setFrontFacingWinding:MTLWindingCounterClockwise];
     [renderEncoder setCullMode:  MTLCullModeNone ];
     
@@ -523,8 +615,8 @@ bool heightDescriptor[] = {
     
     pipelineDescriptor.colorAttachments[0].rgbBlendOperation = MTLBlendOperationAdd;
     pipelineDescriptor.colorAttachments[0].alphaBlendOperation = MTLBlendOperationAdd;
-//    pipelineDescriptor.colorAttachments[0].sourceRGBBlendFactor = MTLBlendFactorSourceAlpha;
-//    pipelineDescriptor.colorAttachments[0].sourceAlphaBlendFactor = MTLBlendFactorSourceAlpha;
+    //pipelineDescriptor.colorAttachments[0].sourceRGBBlendFactor = MTLBlendFactorSourceAlpha;
+    //pipelineDescriptor.colorAttachments[0].sourceAlphaBlendFactor = MTLBlendFactorSourceAlpha;
     pipelineDescriptor.colorAttachments[0].destinationRGBBlendFactor = MTLBlendFactorOneMinusSourceAlpha;
     pipelineDescriptor.colorAttachments[0].destinationAlphaBlendFactor = MTLBlendFactorOneMinusSourceAlpha;
     

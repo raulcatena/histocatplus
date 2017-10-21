@@ -37,6 +37,7 @@ typedef enum
 -(NSIndexSet *)stacksIndexSet;
 -(NSUInteger)numberOfChannels;
 -(NSArray *)inOrderIndexes;
+-(NSArray *)inOrderIndexesArranged;
 -(NSArray *)zOffSets;
 -(float)combinedAlpha;
 -(ColoringType)coloringType;//0 Diffuse light 1 Emissive color
@@ -47,6 +48,7 @@ typedef enum
 -(AlphaMode)alphaMode;
 -(NSArray *)channelsForCell;
 -(NSButton *)legends;
+-(NSInteger)boostModeCode;
 @end
 
 

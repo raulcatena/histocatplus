@@ -20,6 +20,7 @@
                 <outlet property="background3D" destination="KFl-AU-ehL" id="qpB-RS-6Ng"/>
                 <outlet property="blendToolsContainer" destination="E98-GX-MOO" id="8HT-p5-6q6"/>
                 <outlet property="blur" destination="kQD-vm-dvI" id="sSK-p6-9LC"/>
+                <outlet property="boostMode" destination="4xd-hR-FHv" id="rbA-zn-2TR"/>
                 <outlet property="brightFieldEffect" destination="lOe-1G-vpW" id="MgF-C4-5Ew"/>
                 <outlet property="cChannel" destination="2AZ-yh-7tH" id="AT8-If-n2u"/>
                 <outlet property="cLog" destination="I7v-rk-ahT" id="tOH-Er-wvF"/>
@@ -465,7 +466,7 @@
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <view id="bEC-dY-lh0">
-                                                        <rect key="frame" x="0.0" y="15" width="672" height="539"/>
+                                                        <rect key="frame" x="0.0" y="30" width="672" height="539"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                     </view>
                                                 </subviews>
@@ -1072,7 +1073,7 @@
                                             </connections>
                                         </button>
                                         <segmentedControl verticalHuggingPriority="750" misplaced="YES" id="V6o-Va-rVy">
-                                            <rect key="frame" x="258" y="26" width="202" height="24"/>
+                                            <rect key="frame" x="258" y="22" width="202" height="24"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <segmentedCell key="cell" borderStyle="border" alignment="left" style="rounded" trackingMode="selectOne" id="jEL-dE-HH3">
                                                 <font key="font" metaFont="system"/>
@@ -1087,7 +1088,7 @@
                                             </connections>
                                         </segmentedControl>
                                         <segmentedControl verticalHuggingPriority="750" misplaced="YES" id="FZW-dX-zXh">
-                                            <rect key="frame" x="258" y="54" width="154" height="24"/>
+                                            <rect key="frame" x="258" y="50" width="154" height="24"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <segmentedCell key="cell" borderStyle="border" alignment="left" style="rounded" trackingMode="selectOne" id="iKV-o4-pZQ">
                                                 <font key="font" metaFont="system"/>
@@ -1101,7 +1102,7 @@
                                             </connections>
                                         </segmentedControl>
                                         <slider verticalHuggingPriority="750" misplaced="YES" id="XJD-Nh-PDj">
-                                            <rect key="frame" x="258" y="3" width="202" height="20"/>
+                                            <rect key="frame" x="258" y="-2" width="202" height="20"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <sliderCell key="cell" state="on" alignment="left" maxValue="0.90000000000000002" doubleValue="0.20000000000000001" tickMarkPosition="above" sliderType="linear" id="ttb-Pr-0Z4"/>
                                             <connections>
@@ -1189,6 +1190,60 @@
                                                             <modifierMask key="keyEquivalentModifierMask"/>
                                                         </menuItem>
                                                         <menuItem title="Gauss + Sharpen" id="6dy-JT-LWF">
+                                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                                        </menuItem>
+                                                    </items>
+                                                </menu>
+                                            </popUpButtonCell>
+                                        </popUpButton>
+                                        <popUpButton verticalHuggingPriority="750" misplaced="YES" id="4xd-hR-FHv">
+                                            <rect key="frame" x="159" y="49" width="96" height="26"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <popUpButtonCell key="cell" type="push" title="No boost" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="agb-ws-m3g" id="6hS-4G-8kj">
+                                                <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
+                                                <font key="font" metaFont="menu"/>
+                                                <menu key="menu" id="EKH-lW-PNG">
+                                                    <items>
+                                                        <menuItem title="No boost" state="on" id="agb-ws-m3g" userLabel="NoFilter">
+                                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                                        </menuItem>
+                                                        <menuItem title="Surface" id="gfA-Gv-Ufw" userLabel="NoFilter">
+                                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                                        </menuItem>
+                                                        <menuItem title="15" id="Fa2-Lu-4Eh">
+                                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                                        </menuItem>
+                                                        <menuItem title="16" id="iN2-jJ-P6l">
+                                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                                        </menuItem>
+                                                        <menuItem title="17" id="dcm-cj-qxP">
+                                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                                        </menuItem>
+                                                        <menuItem title="18" id="WJK-4r-FY0">
+                                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                                        </menuItem>
+                                                        <menuItem title="19" id="AAl-4S-IH1">
+                                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                                        </menuItem>
+                                                        <menuItem title="20" id="tYd-fx-ekQ">
+                                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                                        </menuItem>
+                                                        <menuItem title="21" id="HK0-Px-9XW">
+                                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                                        </menuItem>
+                                                        <menuItem title="22" id="nnu-iY-9wH">
+                                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                                        </menuItem>
+                                                        <menuItem title="23" id="Cb6-es-ByA">
+                                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                                        </menuItem>
+                                                        <menuItem title="24" id="nb6-L7-4zH">
+                                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                                        </menuItem>
+                                                        <menuItem title="25" id="9lB-v2-Ovz">
+                                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                                        </menuItem>
+                                                        <menuItem title="26" id="Msv-QX-jjv">
                                                             <modifierMask key="keyEquivalentModifierMask"/>
                                                         </menuItem>
                                                     </items>

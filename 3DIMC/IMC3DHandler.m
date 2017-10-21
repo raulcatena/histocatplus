@@ -178,7 +178,7 @@
 #pragma mark blur
 
 -(void)meanBlurModelWithKernel:(NSInteger)kernel forChannels:(NSIndexSet *)channels  mode:(NSInteger)mode{
-    threeDMeanBlur(self.allBuffer, self.width, self.height, self.images, channels, mode, self.showMask, deltas_z);
+    threeDMeanBlur(self.allBuffer, self.width, self.height, self.indexesArranged, channels, mode, self.showMask, deltas_z);
 }
 
 #pragma mark Z handling
@@ -255,7 +255,44 @@
         return .0f;
     return thicknesses[self.images-1] + deltas_z[self.images - 1];
 }
-
+-(NSArray *)indexesArranged{
+    NSMutableDictionary *dict = @{}.mutableCopy;
+    for (NSInteger i = 0; i < self.images; i++) {
+        float pos = deltas_z[i];
+        NSString *key = [NSString stringWithFormat:@"%.2f", pos];
+        NSMutableArray *found = dict[key];
+        if(!found)
+            found = @[].mutableCopy;
+        [found addObject:@(i)];
+        [dict setValue:found forKey:key];
+    }
+    NSMutableArray *arr = @[].mutableCopy;
+    for (NSInteger i = 0; i < self.images; i++) {
+        float pos = deltas_z[i];
+        NSString *key = [NSString stringWithFormat:@"%.2f", pos];
+        NSMutableArray *found = dict[key];
+        if(![arr containsObject:found])
+            [arr addObject:found];
+    }
+    return arr;
+}
+-(NSUInteger)imagesArranged{
+    return [self indexesArranged].count;
+}
+-(NSInteger)internalSliceIndexForExternal:(NSInteger)external{
+    NSArray *idx = [self indexesArranged];
+    if(external < idx.count)
+        return [[idx[external]firstObject]integerValue];
+    return NSNotFound;
+}
+-(NSInteger)externalSliceIndexForInternal:(NSInteger)internal{
+    NSArray *idx = [self indexesArranged];
+    for (NSArray *arr in idx) {
+        if([[arr firstObject]  isEqual: @(internal)])
+            return [idx indexOfObject:arr];
+    }
+    return NSNotFound;
+}
 -(NSInteger)bytes{
     NSInteger add = 0;
     if (self.allBuffer) {

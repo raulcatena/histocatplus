@@ -42,6 +42,19 @@ struct VertexOut{
 //    return float4(vertexArray[vid], 1.0);
 //}
 
+vertex VertexOut vertexShaderT(const device packed_float3 * vertexArray [[ buffer(4)]],
+                              unsigned int iid [[ instance_id ]],
+                              constant Constants & uniforms [[ buffer(1) ]],
+                              constant PositionalData & positional [[ buffer(2) ]],
+                              unsigned int vid [[ vertex_id ]])
+{
+    VertexOut out;
+    float3 pos = float3(vertexArray[iid * 7]);
+    out.position = uniforms.projectionMatrix * uniforms.baseModelMatrix * uniforms.modelViewMatrix * float4(pos, 1);
+    out.color = float4(1.0f/vid, 1.0f/36 * vid, 0.5, 0.5);
+    return out;
+}
+
 vertex VertexOut oldvertexShader(
                               const device packed_float3* vertex_array [[ buffer(0) ]],
                               constant Constants & uniforms [[ buffer(1) ]],

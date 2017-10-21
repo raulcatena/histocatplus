@@ -20,8 +20,10 @@
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
     // Insert code here to initialize your application
     
-    if(VIEWER_ONLY)
-        [[[NSApplication sharedApplication] mainMenu]removeItemAtIndex:7];
+    if(!VIEWER_ONLY && !VIEWER_HISTO)
+        [[[NSApplication sharedApplication] mainMenu]removeItemAtIndex:6];
+    else
+        [[[NSApplication sharedApplication] mainMenu]removeItemAtIndex:5];
 }
 
 - (void)applicationWillTerminate:(NSNotification *)aNotification {

@@ -19,10 +19,12 @@
 @property (nonatomic, assign) float *** allBuffer;
 @property (nonatomic, assign) bool *showMask;
 @property (nonatomic, assign) NSUInteger images;
+@property (nonatomic, readonly) NSUInteger imagesArranged;
 @property (nonatomic, assign) NSUInteger channels;
 @property (nonatomic, assign) NSRect interestProportions;
 @property (nonatomic, assign) float defaultZ;
 @property (nonatomic, weak) IMCLoader *loader;
+@property (nonatomic, weak) NSArray *indexesArranged;
 
 -(void)startBufferForImages:(NSInteger)images channels:(NSInteger)channels width:(NSInteger)width height:(NSInteger)height;
 -(void)addImageStack:(IMCImageStack *)stack atIndexOfStack:(NSInteger)indexStack channel:(NSInteger)channel;
@@ -39,5 +41,7 @@
 -(float *)thicknesses;
 -(float)totalThickness;
 -(void)meanBlurModelWithKernel:(NSInteger)kernel forChannels:(NSIndexSet *)channels mode:(NSInteger)mode;
+-(NSInteger)internalSliceIndexForExternal:(NSInteger)external;
+-(NSInteger)externalSliceIndexForInternal:(NSInteger)internal;
 
 @end

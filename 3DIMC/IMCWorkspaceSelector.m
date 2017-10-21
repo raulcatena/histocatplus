@@ -177,6 +177,8 @@
             [cell setTextColor:[NSColor colorWithWhite:0.5 alpha:1.0]];
         else
             [cell setTextColor:[NSColor blackColor]];
+        if(item == self.parent.inScopeMask || item == self.parent.inScopeImage || item == self.parent.inScope3DMask || item == self.parent.inScopeComputation)
+            [cell setTextColor:[NSColor orangeColor]];
         return;
     }
     

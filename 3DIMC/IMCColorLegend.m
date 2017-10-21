@@ -84,10 +84,16 @@ void drawHeat(CGContextRef context, CGRect rect)
         for (NSNumber *num in self.maxsForLegend) {
             NSInteger idx = [self.maxsForLegend indexOfObject:num];
             
-            CGRect rect = CGRectMake(idx * dirtyRect.size.width/self.maxsForLegend.count,
-                                     0,
-                                     dirtyRect.size.width/self.maxsForLegend.count,
-                                     dirtyRect.size.height * (1 - upperLowerFreePortions)
+//            CGRect rect = CGRectMake(idx * dirtyRect.size.width/self.maxsForLegend.count,
+//                                     0,
+//                                     dirtyRect.size.width/self.maxsForLegend.count,
+//                                     dirtyRect.size.height * (1 - upperLowerFreePortions)
+//                                     );
+            
+            CGRect rect = CGRectMake(0,
+                                     (dirtyRect.size.height / count) * idx,
+                                     dirtyRect.size.width,
+                                     (dirtyRect.size.height / count) * (1 - upperLowerFreePortions)
                                      );
             
             NSColor * color = nil;
