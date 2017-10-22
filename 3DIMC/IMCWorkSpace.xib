@@ -1696,6 +1696,14 @@
                         <action selector="refresh:" target="-2" id="TQT-SZ-wOE"/>
                     </connections>
                 </colorWell>
+                <colorWell misplaced="YES" id="1GS-Gd-kLX">
+                    <rect key="frame" x="710" y="51" width="44" height="23"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    <color key="color" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    <connections>
+                        <action selector="refresh:" target="-2" id="Su2-si-k8P"/>
+                    </connections>
+                </colorWell>
                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" misplaced="YES" allowsCharacterPickerTouchBarItem="NO" id="iMe-9V-IK6">
                     <rect key="frame" x="503" y="80" width="57" height="17"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
@@ -1776,15 +1784,6 @@
                         <action selector="refresh:" target="-2" id="Ncj-yS-AjR"/>
                     </connections>
                 </button>
-                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" misplaced="YES" allowsCharacterPickerTouchBarItem="NO" id="Urq-KY-Pcv">
-                    <rect key="frame" x="732" y="5" width="220" height="17"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
-                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" id="IrN-6b-kML">
-                        <font key="font" metaFont="system"/>
-                        <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                    </textFieldCell>
-                </textField>
                 <segmentedControl hidden="YES" verticalHuggingPriority="750" misplaced="YES" id="Vii-1E-1In">
                     <rect key="frame" x="0.0" y="27" width="334" height="24"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
@@ -1879,14 +1878,15 @@
                         <action selector="changedWhiteBackground:" target="-2" id="CBK-m8-OMW"/>
                     </connections>
                 </button>
-                <colorWell misplaced="YES" id="1GS-Gd-kLX">
-                    <rect key="frame" x="710" y="51" width="44" height="23"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                    <color key="color" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                    <connections>
-                        <action selector="refresh:" target="-2" id="Su2-si-k8P"/>
-                    </connections>
-                </colorWell>
+                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" misplaced="YES" allowsCharacterPickerTouchBarItem="NO" id="Urq-KY-Pcv">
+                    <rect key="frame" x="622" y="7" width="220" height="17"/>
+                    <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" id="IrN-6b-kML">
+                        <font key="font" metaFont="system"/>
+                        <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                    </textFieldCell>
+                </textField>
             </subviews>
             <point key="canvasLocation" x="1057" y="-132"/>
         </customView>

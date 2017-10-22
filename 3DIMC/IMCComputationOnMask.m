@@ -179,7 +179,7 @@
     self.computedData = malloc(countChannels * sizeof(float*));
     
     for (NSInteger i = 0; i < countChannels; i++)
-        self.computedData[i] = malloc(self.segmentedUnits * sizeof(float));//Old solution
+        self.computedData[i] = i == 0 ? calloc(self.segmentedUnits, sizeof(float)) : malloc(self.segmentedUnits * sizeof(float));//Old solution
     
     self.isLoaded = YES;
 }
@@ -274,7 +274,7 @@
 -(float)sumForArray:(float *)carray{
     if(!carray)
         return .0f;
-    NSInteger counter = (NSInteger)(carray[0] - 1.0f);
+    NSInteger counter = (NSInteger)(carray[0] - 1);
     float sum = .0f;
     for (NSInteger i = 0; i < counter; i++)
         sum += carray[i + 1];
@@ -283,7 +283,7 @@
 -(float)medianForArray:(float *)carray{
     if(!carray)
         return .0f;
-    NSInteger counter = (NSInteger)(carray[0] - 1.0f);
+    NSInteger counter = (NSInteger)(carray[0] - 1);
     float *values = &carray[1];
     qsort (values, counter, sizeof(float), compare);
     return values[counter/2];
@@ -291,7 +291,7 @@
 -(float)standardDeviationForArray:(float *)carray withMean:(float)mean recalcMean:(BOOL)recalc{
     if(!carray)
         return .0f;
-    NSInteger counter = (NSInteger)(carray[0] - 1.0f);
+    NSInteger counter = (NSInteger)(carray[0] - 1);
     float *values = &carray[1];
     
     if(recalc)
@@ -310,49 +310,12 @@
     return sqrt(sumOfDifferencesFromMean / counter);
 }
 
-//-(void)channelsCreateOld:(NSIndexSet *)computations{
-//    NSArray *chans = self.mask.imageStack.channels;
-//    NSMutableArray *arr = [NSMutableArray arrayWithCapacity:chans.count + 2];
-//    [arr addObject:@"CellId"];
-//    
-//    if([self.mask isDual] == NO)
-//        for (NSString *str in chans) {
-//            [arr addObject:[@"tot_" stringByAppendingString:str]];
-//            [arr addObject:[@"avg_" stringByAppendingString:str]];
-//            [arr addObject:[@"med_" stringByAppendingString:str]];
-//            [arr addObject:[@"std_" stringByAppendingString:str]];
-//        }
-//    else{
-//        NSArray *strs1 = @[@"cell_",@"nuc_",@"cyt_", @"ratio_cyt_to_nuc_"];
-//        NSArray *strs2 = @[@"tot_",@"avg_",@"med_",@"std_"];
-//        
-//        for (NSString *str in chans) {
-//            for (NSString *str1 in strs1) {
-//                for (NSString *str2 in strs2) {
-//                    [arr addObject:[[str1 stringByAppendingString:str2]stringByAppendingString:str]];
-//                }
-//                
-//            }
-//        }
-//        [arr addObject:@"size_ratio_cyt_to_nuc"];
-//        [arr addObject:@"Size_nuc"];
-//        [arr addObject:@"Size_cyt"];
-//    }
-//    //Indexes for X and Y
-//    [arr addObject:@"Size"];
-//    [arr addObject:@"X"];
-//    [arr addObject:@"Y"];
-//    [arr addObject:@"Density"];
-//    self.jsonDictionary[JSON_DICT_PIXEL_MASK_COMPUTATION_METADATA_SEGMENTED_CHANNELS] = arr;
-//    self.jsonDictionary[JSON_DICT_PIXEL_MASK_COMPUTATION_METADATA_SEGMENTED_ORIG_CHANNELS] = arr.copy;
-//}
-
 //Tie computations
 -(NSInteger)channelsCreate:(NSIndexSet *)computations{
     NSArray *chans = self.mask.imageStack.channels;
     NSInteger countComps = [computations countOfIndexesInRange:NSMakeRange(0, 4)];
-    if([self.mask isDual])
-        countComps = [computations countOfIndexesInRange:NSMakeRange(4, 16)];
+    
+    countComps = [computations countOfIndexesInRange:NSMakeRange(4, 16)];
     
     NSMutableArray *arr = [NSMutableArray arrayWithCapacity:chans.count + 2];
     
@@ -367,20 +330,17 @@
             if([computations containsIndex:i])
                 [arr addObject:[strs1[0] stringByAppendingString:[strs2[i] stringByAppendingString:str]]];
         
-        if([self.mask isDual]){
-            for(int i = 4; i < 16; i++){
-                if([computations containsIndex:i]){
-                    [arr addObject:[[strs1[i/4] stringByAppendingString:strs2[i % 4]]stringByAppendingString:str]];
-                }
-            }
-        }
+        for(int i = 4; i < 16; i++)
+            if([computations containsIndex:i])
+                [arr addObject:[[strs1[i/4] stringByAppendingString:strs2[i % 4]]stringByAppendingString:str]];
+        
     }
-    if([self.mask isDual]){
-        [arr addObject:@"size_ratio_cyt_to_nuc"];
-        [arr addObject:@"Size_nuc"];
-        [arr addObject:@"Size_cyt"];
-        countComps += 3;
-    }
+    
+    [arr addObject:@"size_ratio_cyt_to_nuc"];
+    [arr addObject:@"Size_nuc"];
+    [arr addObject:@"Size_cyt"];
+    countComps += 3;
+    
 
     //Indexes for X and Y
     [arr addObject:@"Size"];
@@ -393,8 +353,8 @@
     
     return countComps;
 }
+
 -(void)extractDataForMaskOperation:(NSIndexSet *)computations{
-    
     [self channelsCreate:computations];
     //Get the mask
     int * maskC = [self.mask mask];
@@ -404,165 +364,162 @@
     NSArray *imcChannels = self.mask.imageStack.channels;
     
     NSInteger rawChannels = imcChannels.count;
-    NSInteger measuresPerChannel = computations.count;//isDual?16:4;
     NSInteger computedChannels = self.channels.count;
     
     NSInteger sizePicture = self.mask.imageStack.numberOfPixels;
-    NSInteger segments = self.segmentedUnits;
     NSInteger width = self.mask.imageStack.width;
     NSInteger height = self.mask.imageStack.height;
-    BOOL isDual = [self.mask isDual];
     
     [self prepData];
     float ** comp = self.computedData;
+    int * copyOfMask = copyMask(maskC, (int)width, (int)height);
     
-    //Add indexes of cells
-    for (NSInteger i = 0; i < segments; i++)
-        comp[0][i] = i + 1;
+    //Prep DS
+    //Prep array
     
-    //Get pixels for every object and sum of X and Y
+    NSInteger compartmentsExtractedFromChannels = rawChannels * 3;
+    float ** arr = calloc(compartmentsExtractedFromChannels, sizeof(float *));
+    for (int a = 0; a < compartmentsExtractedFromChannels; a++){
+        arr[a] = calloc(sizePicture + 1, sizeof(float));
+    }
+
     for (NSInteger i = 0; i < sizePicture; i++) {
-        int val = maskC[i];
-        int index = abs(val) - 1;
-        if(val !=0){
-            comp[computedChannels - 4][index] += 1.0f;
-            //if(val < 0)_computedData[countNewChannels - 4][abs(val)-1]++;//Will change index
-            if(isDual){
-                if(val>0)comp[computedChannels- 5][index] += 1.0f;
-                if(val<0)comp[computedChannels- 6][index] += 1.0f;
-            }
+        NSInteger theId = abs(copyOfMask[i]);
+        NSInteger index = theId - 1;
+        if(theId != 0 && comp[0][index] == 0){
+            //Get pixels for every object and sum of X and Y
             comp[computedChannels - 3][index] += (float)((i + width)%width);
             comp[computedChannels - 2][index] += (float)(i/width);
-        }
-    }
-    
-    
-    
-    //Generate holder structure
-    float ** chelperArray = calloc(segments, sizeof(float *));
-    float ** chelperArrayCyt = calloc(segments, sizeof(float *));
-    float ** chelperArrayNuc = calloc(segments, sizeof(float *));
-    for (NSInteger i = 0; i < segments; i++) {
-        //Important, +1 because the first position contains a counter
-        chelperArray[i] = calloc(sizePicture + 1, sizeof(float));
-        chelperArrayCyt[i] = calloc(sizePicture + 1, sizeof(float));
-        chelperArrayNuc[i] = calloc(sizePicture + 1, sizeof(float));
-    }
-    
-    
-    for (NSInteger c = 0; c < rawChannels; c++) {
-        //Every cycle, reinitialize counter
-        for (NSInteger i = 0; i < segments; i++) {
-            chelperArray[i][0] = 1.0f;
-            chelperArrayCyt[i][0] = 1.0f;
-            chelperArrayNuc[i][0] = 1.0f;
-        }
-        
-        //Get the channel buffer
-        float * data = allData[c];
-        //Cell the data and dump into object Arrays
-        for (NSInteger i = 0; i < sizePicture; i++) {
-            int cellId = maskC[i];
-            int cellIndex = abs(cellId) - 1;
-            if(cellIndex >= segments)continue;
-            if(cellId != 0){
-                chelperArray[cellIndex][(int)chelperArray[cellIndex][0]] = data[i];
-                chelperArray[cellIndex][0]++;//Increase counter
-            }
-            if(cellId > 0){
-                chelperArrayCyt[cellIndex][(int)chelperArrayCyt[cellIndex][0]] = data[i];//Use previous counter
-                chelperArrayCyt[cellIndex][0]++;//Increase counter
-            }
-            if(cellId < 0){
-                chelperArrayNuc[cellIndex][(int)chelperArrayNuc[cellIndex][0]] = data[i];
-                chelperArrayNuc[cellIndex][0]++;//Increase counter
-            }
-        }
-        //Calculations and add to _computedData buffer and clean buffer all at once
-        for(NSInteger cursor = 0; cursor < segments; cursor++){
             
-            float * channelData = chelperArray[cursor];
-            float * cytChannelData = chelperArrayCyt[cursor];
-            float * nucChannelData = chelperArrayNuc[cursor];
-            
-            float sum = [self sumForArray:channelData];
-            float sumCyt = [self sumForArray:cytChannelData];
-            float sumNuc = [self sumForArray:nucChannelData];
-            
-            NSInteger baseIndex = 1 + c * measuresPerChannel;
-            
-            NSInteger totalCount = channelData[0] -1.0f;
-            NSInteger cytCount = cytChannelData[0] - 1.0f;//Removing the offsets -1.0f
-            NSInteger nucCount = nucChannelData[0] - 1.0f;
-            
-            NSInteger internalCursor = 0;
-            if([computations containsIndex:0]){ comp[baseIndex + internalCursor][cursor] = sum; internalCursor++; }
-            if([computations containsIndex:1]){ comp[baseIndex + internalCursor][cursor] = totalCount == 0?0:sum/totalCount; internalCursor++; }
-            if([computations containsIndex:2]){ comp[baseIndex + internalCursor][cursor] = totalCount == 0?0:[self medianForArray:channelData]; internalCursor++; }
-            if([computations containsIndex:3]){ comp[baseIndex + internalCursor][cursor] = totalCount == 0?0:[self standardDeviationForArray:channelData withMean:sum/totalCount recalcMean:NO]; internalCursor++; }
-            
-            if([computations containsIndex:4]){ comp[baseIndex + internalCursor][cursor] = sumNuc; internalCursor++; }
-            if([computations containsIndex:5]){ comp[baseIndex + internalCursor][cursor] = nucCount == 0?0:sumNuc/nucCount; internalCursor++; }
-            if([computations containsIndex:6]){ comp[baseIndex + internalCursor][cursor] = nucCount == 0?0:[self medianForArray:nucChannelData]; internalCursor++; }
-            if([computations containsIndex:7]){ comp[baseIndex + internalCursor][cursor] = nucCount == 0?0:[self standardDeviationForArray:nucChannelData withMean:sumNuc/nucCount recalcMean:NO]; internalCursor++; }
-            
-            if([computations containsIndex:8]){ comp[baseIndex + internalCursor][cursor] = sumCyt; internalCursor++; }
-            if([computations containsIndex:9]){ comp[baseIndex + internalCursor][cursor] = cytCount == 0?0:sumCyt/cytCount; internalCursor++; }
-            if([computations containsIndex:10]){ comp[baseIndex + internalCursor][cursor] = cytCount == 0?0:[self medianForArray:cytChannelData]; internalCursor++; }
-            if([computations containsIndex:11]){ comp[baseIndex + internalCursor][cursor] = cytCount == 0?0:[self standardDeviationForArray:cytChannelData withMean:sumCyt/cytCount recalcMean:NO]; internalCursor++; }
-            
-            if([computations containsIndex:12]){
-                if(sumNuc != 0)
-                     comp[baseIndex + internalCursor][cursor] = sumCyt/sumNuc;
-                internalCursor++;
-            }
-            if([computations containsIndex:13]){
-                if(cytCount != 0 && sumNuc != 0 && nucCount != 0)
-                    comp[baseIndex + internalCursor][cursor] = (sumCyt/cytCount)/(sumNuc/nucCount);
-                internalCursor++;
-            }
-            if([computations containsIndex:14]){
-                float med = [self medianForArray:nucChannelData];
-                if(med != 0 && cytCount != 0 && nucCount != 0)
-                    comp[baseIndex + internalCursor][cursor] = [self medianForArray:cytChannelData]/med;
-                internalCursor++;
-            }
-            if([computations containsIndex:15]){
-                if(nucCount != 0){
-                    float std = [self standardDeviationForArray:nucChannelData withMean:sumNuc/nucCount recalcMean:NO];
-                    if(std != 0 && cytCount != 0)
-                        comp[baseIndex + internalCursor][cursor] = [self standardDeviationForArray:cytChannelData withMean:sumCyt/cytCount recalcMean:NO]/std;
+            copyOfMask[i] = 0;
+            NSMutableArray *pixels = @[].mutableCopy;
+            NSMutableArray *collected = @[].mutableCopy;
+            NSNumber *anal = @(i);
+            while (anal) {
+                NSInteger analI = anal.integerValue;
+                for (int l = -1; l < 2; l++) {
+                    for (int m = -1; m < 2; m++) {
+                        NSInteger test = analI + l * width + m;
+                        if(test >= 0 && test < sizePicture)
+                            if(abs(copyOfMask[test]) == theId){
+                                [pixels addObject:@(test)];
+                                copyOfMask[test] = 0;
+                            }
+                    }
                 }
-                internalCursor++;
+                [collected addObject:anal];
+                anal = pixels.lastObject;
+                [pixels removeLastObject];
             }
-            if(isDual && comp[computedChannels- 5][cursor] != 0)
-                comp[computedChannels- 7][cursor] = comp[computedChannels- 6][cursor]/comp[computedChannels- 5][cursor];
+            //ID
+            comp[0][index] = theId;
+            //Size
+            comp[computedChannels - 4][index] = collected.count;
+            //Features
+            for (int a = 0; a < compartmentsExtractedFromChannels; a++) {
+                arr[a][0] = 1;
+            }
+            ////Prep data
+            for (NSNumber *idx in collected) {
+                NSInteger idxC = idx.integerValue;
+                BOOL isNuc = (maskC[idxC] < 0);
+                //comp[computedChannels - 4][index]++;
+                if(!isNuc)
+                    comp[computedChannels - 5][index]++;
+                else
+                    comp[computedChannels - 6][index]++;
+                
+                for (int a = 0; a < rawChannels; a++) {
+                    float val = allData[a][idxC];
+                    int baseIndex = a * 3;
+                    arr[baseIndex][(int)arr[baseIndex][0]] = val;
+                    arr[baseIndex][0]++;
+                    baseIndex++;
+                    if(isNuc){
+                        arr[baseIndex][(int)arr[baseIndex][0]] = val;
+                        arr[baseIndex][0]++;
+                    }else{
+                        baseIndex++;
+                        arr[baseIndex][(int)arr[baseIndex][0]] = val;
+                        arr[baseIndex][0]++;
+                    }
+                }
+            }
+            ////Start Adding
+            for (int a = 0; a < rawChannels; a++) {
+                int counter = 0;
+                NSInteger baseIndex = a * computations.count + 1;
+                for (int idx = 0; idx < 16; idx++) {
+                    if([computations containsIndex:idx]){
+                        NSInteger basePlusCounter = baseIndex + counter;
+                        float * arrr = NULL;
+                        if(idx < 4)
+                            arrr = arr[a * 3];
+                        else if(idx < 8)
+                            arrr = arr[a * 3 + 1];
+                        else if(idx < 12)
+                            arrr = arr[a * 3 + 2];
+                        
+                        int compon = idx % 4;
+                        if(idx < 12 && arrr){
+                            float sum = [self sumForArray:arrr];
+                            
+                            if(compon == 0)
+                                comp[basePlusCounter][index] = sum;
+                            
+                            if(compon == 1)
+                                comp[basePlusCounter][index] = arrr[0] > 1 ? sum/(arrr[0]-1) : .0f;
+
+                            if(compon == 2)
+                                comp[basePlusCounter][index] = [self medianForArray:arrr];
+
+                            if(compon == 3)
+                                comp[basePlusCounter][index] = arrr[0] > 1 ? [self standardDeviationForArray:arrr withMean:sum/(arrr[0] - 1) recalcMean:NO] : 0;
+                        }
+                        if(idx >= 12 && !arrr){
+                            float *first = arr[a * 3 + 1];
+                            float *second = arr[a * 3 + 2];
+                            float sumF = [self sumForArray:first];
+                            float sumS = [self sumForArray:second];
+                            if(sumS > 0){
+                                if(compon == 0)
+                                    comp[basePlusCounter][index] = sumF/sumS;
+                                
+                                if(compon == 1)
+                                    comp[basePlusCounter][index] = first[0] > 1 && second[0] > 1 ? (sumF/(first[0] - 1))/(sumS/(second[0] - 1)) : .0f;
+                                
+                                if(compon == 2){
+                                    float medB = [self medianForArray:second];
+                                    comp[basePlusCounter][index] = medB > 0 ? [self medianForArray:first]/medB : 0;
+                                }
+                                if(compon == 3){
+                                    float stdB = [self standardDeviationForArray:second withMean:sumS/(first[0] - 1) recalcMean:NO];
+                                    comp[basePlusCounter][index] = stdB > 0 ? [self standardDeviationForArray:first withMean:sumF/(first[0] - 1) recalcMean:NO]/stdB : 0;
+                                }
+                            }
+                        }
+                        
+                        counter++;
+                    }
+                }
+            }
         }
     }
     
-    for (NSInteger i = 0; i < segments; i++) {
-        free(chelperArray[i]);
-        free(chelperArrayNuc[i]);
-        free(chelperArrayCyt[i]);
-    }
-    free(chelperArray);
-    free(chelperArrayNuc);
-    free(chelperArrayCyt);
-    
-    //Average X/Y to have centroids if Necessary
-    for (int i = 0; i < segments; i++) {
-        if(comp[computedChannels - 4] == 0)//Avoid dividing by 0
-            continue;
-        comp[computedChannels - 3][i] = comp[computedChannels - 3][i]/comp[computedChannels-4][i];
-        comp[computedChannels - 2][i] = comp[computedChannels - 2][i]/comp[computedChannels-4][i];
-    }
+    NSInteger segments = self.segmentedUnits;
     //Neighbours
     int * neighbours = [self calculateNeighboursTouchingForMask:maskC width:width height:height];
     for (NSInteger i = 0; i < segments; i++)
         comp[computedChannels - 1][i] = neighbours[i];
     free(neighbours);
+    for (int a = 0; a < compartmentsExtractedFromChannels; a++){
+        free(arr[a]);
+    }
+    free(arr);
     [self saveData];
 }
+
+
 -(void)extractDataForMask:(NSIndexSet *)computations{
     BOOL wasLoaded = self.mask.imageStack.isLoaded;
     if(!wasLoaded)
@@ -574,159 +531,7 @@
         while(self.mask.imageStack.isLoaded);
     }
 }
-//-(void)extractDataForMaskOperation:(NSIndexSet *)computations{
-//    
-//    [self channelsCreate:computations];
-//    //Get the mask
-//    int * maskC = [self.mask mask];
-//    //Get the IMC data
-//    float ** allData = self.mask.imageStack.stackData;
-//    
-//    NSArray *imcChannels = self.mask.imageStack.channels;
-//    NSInteger countChannels = imcChannels.count;
-//    NSInteger countNewChannels = self.channels.count;
-//    NSInteger sizePicture = self.mask.imageStack.numberOfPixels;
-//    NSInteger segments = self.segmentedUnits;
-//    NSInteger width = self.mask.imageStack.width;
-//    NSInteger height = self.mask.imageStack.height;
-//    BOOL isDual = [self.mask isDual];
-//    
-//    [self prepData];
-//    float ** comp = self.computedData;
-//    
-//    //Add indexes of cells
-//    for (NSInteger i = 0; i < segments; i++)
-//        comp[0][i] = i + 1;
-//    
-//    //Get pixels for every object and sum of X and Y
-//    for (NSInteger i = 0; i < sizePicture; i++) {
-//        int val = maskC[i];
-//        int index = abs(val) - 1;
-//        if(val !=0){
-//            comp[countNewChannels - 4][index] += 1.0f;
-//            //if(val < 0)_computedData[countNewChannels - 4][abs(val)-1]++;//Will change index
-//            if(isDual){
-//                if(val>0)comp[countNewChannels- 5][index] += 1.0f;
-//                if(val<0)comp[countNewChannels- 6][index] += 1.0f;
-//            }
-//            comp[countNewChannels - 3][index] += (float)((i + width)%width);
-//            comp[countNewChannels - 2][index] += (float)(i/width);
-//        }
-//    }
-//    
-//    NSInteger measuresPerChannel = isDual?16:4;
-//    
-//    //Generate holder structure
-//    float ** chelperArray = calloc(segments, sizeof(float *));
-//    float ** chelperArrayCyt = calloc(segments, sizeof(float *));
-//    float ** chelperArrayNuc = calloc(segments, sizeof(float *));
-//    for (NSInteger i = 0; i < segments; i++) {
-//        //Important, +1 because the first position contains a counter
-//        chelperArray[i] = calloc(sizePicture + 1, sizeof(float));
-//        chelperArrayCyt[i] = calloc(sizePicture + 1, sizeof(float));
-//        chelperArrayNuc[i] = calloc(sizePicture + 1, sizeof(float));
-//    }
-//    
-//    
-//    for (NSInteger c = 0; c < countChannels; c++) {
-//        NSLog(@"Channel %li %i", c, (int)isDual);
-//        
-//        //Every cycle, reinitialize counter
-//        for (NSInteger i = 0; i < segments; i++) {
-//            chelperArray[i][0] = 1.0f;
-//            chelperArrayCyt[i][0] = 1.0f;
-//            chelperArrayNuc[i][0] = 1.0f;
-//        }
-//        
-//        //Get the channel buffer
-//        float * data = allData[c];
-//        //Cell the data and dump into object Arrays
-//        for (NSInteger i = 0; i < sizePicture; i++) {
-//            int cellId = maskC[i];
-//            int cellIndex = abs(cellId) - 1;
-//            if(cellIndex >= segments)continue;
-//            if(cellId != 0){
-//                chelperArray[cellIndex][(int)chelperArray[cellIndex][0]] = data[i];
-//                chelperArray[cellIndex][0]++;//Increase counter
-//            }
-//            if(cellId > 0){
-//                chelperArrayCyt[cellIndex][(int)chelperArrayCyt[cellIndex][0]] = data[i];//Use previous counter
-//                chelperArrayCyt[cellIndex][0]++;//Increase counter
-//            }
-//            if(cellId < 0){
-//                chelperArrayNuc[cellIndex][(int)chelperArrayNuc[cellIndex][0]] = data[i];
-//                chelperArrayNuc[cellIndex][0]++;//Increase counter
-//            }
-//        }
-//        //Calculations and add to _computedData buffer and clean buffer all at once
-//        for(NSInteger cursor = 0; cursor < segments; cursor++){
-//            
-//            float * channelData = chelperArray[cursor];
-//            float * cytChannelData = chelperArrayCyt[cursor];
-//            float * nucChannelData = chelperArrayNuc[cursor];
-//            
-//            float sum = [self sumForArray:channelData];
-//            float sumCyt = [self sumForArray:cytChannelData];
-//            float sumNuc = [self sumForArray:nucChannelData];
-//            
-//            NSInteger baseIndex = 1 + c * measuresPerChannel;
-//            
-//            NSInteger totalCount = channelData[0] -1.0f;
-//            NSInteger cytCount = cytChannelData[0] - 1.0f;//Removing the offsets -1.0f
-//            NSInteger nucCount = nucChannelData[0] - 1.0f;
-//            
-//            comp[baseIndex][cursor] = sum;
-//            comp[baseIndex + 1][cursor] = totalCount == 0?0:sum/totalCount;
-//            comp[baseIndex + 2][cursor] = totalCount == 0?0:[self medianForArray:channelData];
-//            comp[baseIndex + 3][cursor] = totalCount == 0?0:[self standardDeviationForArray:channelData withMean:comp[baseIndex + 1][cursor] recalcMean:NO];
-//            
-//            if (isDual) {
-//                comp[baseIndex + 4][cursor] = sumNuc;
-//                comp[baseIndex + 5][cursor] = nucCount == 0?0:sumNuc/nucCount;
-//                comp[baseIndex + 6][cursor] = nucCount == 0?0:[self medianForArray:nucChannelData];
-//                comp[baseIndex + 7][cursor] = nucCount == 0?0:[self standardDeviationForArray:nucChannelData withMean:comp[baseIndex + 4][cursor] recalcMean:NO];
-//                
-//                comp[baseIndex + 8][cursor] = sumCyt;
-//                comp[baseIndex + 9][cursor] = cytCount == 0?0:sumCyt/cytCount;
-//                comp[baseIndex + 10][cursor] = cytCount == 0?0:[self medianForArray:cytChannelData];
-//                comp[baseIndex + 11][cursor] = cytCount == 0?0:[self standardDeviationForArray:cytChannelData withMean:comp[baseIndex + 8][cursor] recalcMean:NO];
-//                
-//                if(comp[baseIndex + 4][cursor] != 0)
-//                    comp[baseIndex + 12][cursor] = comp[baseIndex + 8][cursor]/comp[baseIndex + 4][cursor];
-//                if(comp[baseIndex + 5][cursor] != 0)
-//                    comp[baseIndex + 13][cursor] = comp[baseIndex + 9][cursor]/comp[baseIndex + 5][cursor];
-//                if(comp[baseIndex + 6][cursor] != 0)
-//                    comp[baseIndex + 14][cursor] = comp[baseIndex + 10][cursor]/comp[baseIndex + 6][cursor];
-//                if(comp[baseIndex + 7][cursor] != 0)
-//                    comp[baseIndex + 15][cursor] = comp[baseIndex + 11][cursor]/comp[baseIndex + 7][cursor];
-//            }
-//            
-//            if(isDual && comp[countNewChannels- 5][cursor] != 0)
-//                comp[countNewChannels- 7][cursor] = comp[countNewChannels- 6][cursor]/comp[countNewChannels- 5][cursor];
-//        }
-//    }
-//    
-//    for (NSInteger i = 0; i < segments; i++) {
-//        free(chelperArray[i]);
-//        free(chelperArrayNuc[i]);
-//    }
-//    free(chelperArray);
-//    free(chelperArrayNuc);
-//    
-//    //Average X/Y to have centroids if Necessary
-//    for (int i = 0; i < segments; i++) {
-//        if(comp[countNewChannels - 4] == 0)//Avoid dividing by 0
-//            continue;
-//        comp[countNewChannels - 3][i] = comp[countNewChannels - 3][i]/comp[countNewChannels-4][i];
-//        comp[countNewChannels - 2][i] = comp[countNewChannels - 2][i]/comp[countNewChannels-4][i];
-//    }
-//    //Neighbours
-//    int * neighbours = [self calculateNeighboursTouchingForMask:maskC width:width height:height];
-//    for (NSInteger i = 0; i < segments; i++)
-//        comp[countNewChannels - 1][i] = neighbours[i];
-//    free(neighbours);
-//    [self saveData];
-//}
+
 
 -(int *)calculateNeighboursTouchingForMask:(int *)mask width:(NSInteger)width height:(NSInteger)height{
     NSInteger max = [self.mask numberOfSegments];

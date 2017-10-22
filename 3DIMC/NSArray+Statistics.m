@@ -105,8 +105,11 @@ NSInteger milenile (NSInteger values[], int elements, int milenile)
             median = @([[sortedArray objectAtIndex:sortedArray.count / 2] integerValue]);
         }
     }
-    else {
+    else if(sortedArray.count == 2){
         median = [sortedArray objectAtIndex:MAX(MIN(1, sortedArray.count/2), 0)];
+    }
+    else if(sortedArray.count == 1){
+        median = [sortedArray lastObject];
     }
     return median;
 }
