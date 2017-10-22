@@ -24,6 +24,8 @@
         [[[NSApplication sharedApplication] mainMenu]removeItemAtIndex:6];
     else
         [[[NSApplication sharedApplication] mainMenu]removeItemAtIndex:5];
+    
+    [[NSColorPanel sharedColorPanel]setShowsAlpha:YES];
 }
 
 - (void)applicationWillTerminate:(NSNotification *)aNotification {

@@ -22,6 +22,7 @@
 
 @property (nonatomic, assign) BOOL showLegendChannels;
 @property (nonatomic, strong) NSColor *legendColor;
+@property (nonatomic, strong) NSColor *legendChannelsBackgroundColor;
 @property (nonatomic, strong) NSArray *channels;
 @property (nonatomic, strong) NSArray *imageNames;
 @property (nonatomic, strong) NSArray *colorLegends;

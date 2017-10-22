@@ -116,7 +116,7 @@
         }
         if(self.showLegendChannels){
             //NSColor *color = self.colorLegends[MIN(self.colorLegends.count - 1,idx)];
-            [iv setLabels:all withColors:allColors backGround:[NSColor colorWithWhite:0.1 alpha:0.2] fontSize:self.fontSizeLegends vAlign:YES static:iv.superview?YES:NO];
+            [iv setLabels:all withColors:allColors backGround:self.legendChannelsBackgroundColor fontSize:self.fontSizeLegends vAlign:YES static:iv.superview?YES:NO];
         }
         
         //Scale Bar

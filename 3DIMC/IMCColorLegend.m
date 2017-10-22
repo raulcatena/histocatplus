@@ -81,19 +81,15 @@ void drawHeat(CGContextRef context, CGRect rect)
     
     if(self.minsForLegend.count == count && self.inflexionPointsForLegend.count == count){
         float upperLowerFreePortions = 0.035f;//5% up and down for min and max values
+        float gapForNum = dirtyRect.size.height * upperLowerFreePortions;
         for (NSNumber *num in self.maxsForLegend) {
             NSInteger idx = [self.maxsForLegend indexOfObject:num];
-            
-//            CGRect rect = CGRectMake(idx * dirtyRect.size.width/self.maxsForLegend.count,
-//                                     0,
-//                                     dirtyRect.size.width/self.maxsForLegend.count,
-//                                     dirtyRect.size.height * (1 - upperLowerFreePortions)
-//                                     );
+            float y = (dirtyRect.size.height / count) * idx;
             
             CGRect rect = CGRectMake(0,
-                                     (dirtyRect.size.height / count) * idx,
+                                     y,
                                      dirtyRect.size.width,
-                                     (dirtyRect.size.height / count) * (1 - upperLowerFreePortions)
+                                     (dirtyRect.size.height / count) - gapForNum
                                      );
             
             NSColor * color = nil;
@@ -110,10 +106,10 @@ void drawHeat(CGContextRef context, CGRect rect)
                 drawLinearGradient(context, rect, color.CGColor, startColor.CGColor);
             
             [General drawIntAsString:num.floatValue * [self.maxOffsetsForLegend[[self.maxsForLegend indexOfObject:num]]floatValue] WithFontName:@"Helvetica" size:10.0f rect:
-             CGRectMake(idx * dirtyRect.size.width/self.maxsForLegend.count,
-                        (1 - upperLowerFreePortions) * dirtyRect.size.height,
-                        dirtyRect.size.width/self.maxsForLegend.count,
-                        upperLowerFreePortions * dirtyRect.size.height)];
+             CGRectMake(0,
+                        y + (dirtyRect.size.height / count) - gapForNum,
+                        dirtyRect.size.width,
+                        gapForNum * .75f)];
             
         }
     }

@@ -356,7 +356,7 @@
     else [self.parent.scrollViewBlends.imageView removeScale];
     
     if(self.parent.legends.state == NSOnState)
-        [self.parent.scrollViewBlends.imageView setLabels:[self.parent channelsForCell] withColors:[self.parent.customChannelsDelegate collectColors] backGround:[NSColor colorWithWhite:.1f alpha:.2f] fontSize:self.parent.legendsFontSize.floatValue vAlign:self.parent.legendsVertical.state static:self.parent.legendsStatic.state];
+        [self.parent.scrollViewBlends.imageView setLabels:[self.parent channelsForCell] withColors:[self.parent.customChannelsDelegate collectColors] backGround:self.parent.lengendsBackgroundColor.color fontSize:self.parent.legendsFontSize.floatValue vAlign:self.parent.legendsVertical.state static:self.parent.legendsStatic.state];
     else [self.parent.scrollViewBlends.imageView removeLabels];
 }
 
@@ -372,6 +372,7 @@
     self.parent.scrollViewTiles.showScaleBars = self.parent.scaleBar.state;
     
     self.parent.scrollViewTiles.legendColor = self.parent.scaleBarColor.color;
+    self.parent.scrollViewTiles.legendColor = self.parent.lengendsBackgroundColor.color;
         
     NSMutableArray *arr = @[].mutableCopy;
     NSMutableArray *cols = @[].mutableCopy;
@@ -431,6 +432,10 @@
 #pragma mark control for toolpanels
 
 -(void)checkToolsBlendMode{
+//    self.parent.alignmentToolsContainer.bounds = self.parent.blendToolsContainer.bounds;
+//    self.parent.toolsContainer.bounds = self.parent.blendToolsContainer.bounds;
+//    self.parent.toolsContainer.layer.borderColor = [NSColor blueColor].CGColor;
+//    self.parent.toolsContainer.layer.borderWidth = 2.0f;
     if(self.parent.applyTransfomrs.indexOfSelectedItem == 1){
         self.parent.scrollViewBlends.rotationDelegate = self.parent;
         if(self.parent.toolsContainer.superview)

@@ -48,6 +48,7 @@
                 <outlet property="legendsFontSize" destination="fSO-v9-AqW" id="Oj5-jK-ikb"/>
                 <outlet property="legendsStatic" destination="GER-7q-1Cn" id="oKk-AF-fRD"/>
                 <outlet property="legendsVertical" destination="Bmb-mz-hDG" id="255-OM-rme"/>
+                <outlet property="lengendsBackgroundColor" destination="1GS-Gd-kLX" id="aOV-RN-2lp"/>
                 <outlet property="lightModeSelector" destination="FZW-dX-zXh" id="f6P-12-HAe"/>
                 <outlet property="maskPartsSelector" destination="Vii-1E-1In" id="XeL-Pb-ZQu"/>
                 <outlet property="maskVisualizeSelector" destination="kdj-mq-1hd" id="2wK-a0-MuF"/>
@@ -1609,12 +1610,12 @@
             </connections>
             <point key="canvasLocation" x="589" y="415"/>
         </window>
-        <customView id="PtF-gK-EFq">
-            <rect key="frame" x="0.0" y="0.0" width="725" height="106"/>
+        <customView misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="PtF-gK-EFq">
+            <rect key="frame" x="0.0" y="0.0" width="958" height="106"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
             <subviews>
-                <button id="2hJ-Gc-LfH">
-                    <rect key="frame" x="347" y="51" width="102" height="18"/>
+                <button misplaced="YES" id="2hJ-Gc-LfH">
+                    <rect key="frame" x="338" y="54" width="102" height="18"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <buttonCell key="cell" type="check" title="Show labels" bezelStyle="regularSquare" imagePosition="left" inset="2" id="9ew-8b-l3b">
                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -1624,8 +1625,8 @@
                         <action selector="refresh:" target="-2" id="XlR-8O-s3b"/>
                     </connections>
                 </button>
-                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="NO" id="O5E-6M-D3Q">
-                    <rect key="frame" x="419" y="78" width="29" height="17"/>
+                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" misplaced="YES" allowsCharacterPickerTouchBarItem="NO" id="O5E-6M-D3Q">
+                    <rect key="frame" x="410" y="81" width="29" height="17"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="(1px" id="ihj-Y7-OBe">
                         <font key="font" metaFont="system"/>
@@ -1634,7 +1635,7 @@
                     </textFieldCell>
                 </textField>
                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" misplaced="YES" allowsCharacterPickerTouchBarItem="NO" id="6vX-cK-mPW">
-                    <rect key="frame" x="491" y="77" width="28" height="17"/>
+                    <rect key="frame" x="471" y="80" width="28" height="17"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="uM)" id="8Lv-by-9RU">
                         <font key="font" metaFont="system"/>
@@ -1642,8 +1643,8 @@
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
                 </textField>
-                <button id="V2B-gx-bYe">
-                    <rect key="frame" x="347" y="77" width="89" height="18"/>
+                <button misplaced="YES" id="V2B-gx-bYe">
+                    <rect key="frame" x="338" y="80" width="89" height="18"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <buttonCell key="cell" type="check" title="Scalebar" bezelStyle="regularSquare" imagePosition="left" inset="2" id="PzL-JR-cxb">
                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -1653,8 +1654,8 @@
                         <action selector="refresh:" target="-2" id="tSG-LL-2sw"/>
                     </connections>
                 </button>
-                <button hidden="YES" id="pQh-Nn-DUP">
-                    <rect key="frame" x="605" y="73" width="89" height="18"/>
+                <button hidden="YES" misplaced="YES" id="pQh-Nn-DUP">
+                    <rect key="frame" x="596" y="76" width="89" height="18"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <buttonCell key="cell" type="check" title="Static" bezelStyle="regularSquare" imagePosition="left" inset="2" id="vVk-h2-q1z">
                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -1664,8 +1665,8 @@
                         <action selector="refresh:" target="-2" id="DIx-J5-Xbl"/>
                     </connections>
                 </button>
-                <button id="GER-7q-1Cn">
-                    <rect key="frame" x="347" y="27" width="62" height="18"/>
+                <button misplaced="YES" id="GER-7q-1Cn">
+                    <rect key="frame" x="438" y="54" width="62" height="18"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <buttonCell key="cell" type="check" title="Static" bezelStyle="regularSquare" imagePosition="left" inset="2" id="zkQ-T3-3Oj">
                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -1676,7 +1677,7 @@
                     </connections>
                 </button>
                 <textField verticalHuggingPriority="750" misplaced="YES" allowsCharacterPickerTouchBarItem="NO" id="g8x-a5-NNo">
-                    <rect key="frame" x="459" y="74" width="33" height="22"/>
+                    <rect key="frame" x="439" y="77" width="33" height="22"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="center" title="1.0" drawsBackground="YES" id="ICS-wi-D7a">
                         <font key="font" metaFont="system"/>
@@ -1688,7 +1689,7 @@
                     </connections>
                 </textField>
                 <colorWell misplaced="YES" id="l80-ys-pOg">
-                    <rect key="frame" x="617" y="72" width="44" height="23"/>
+                    <rect key="frame" x="608" y="75" width="44" height="23"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <color key="color" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                     <connections>
@@ -1696,7 +1697,7 @@
                     </connections>
                 </colorWell>
                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" misplaced="YES" allowsCharacterPickerTouchBarItem="NO" id="iMe-9V-IK6">
-                    <rect key="frame" x="523" y="77" width="57" height="17"/>
+                    <rect key="frame" x="503" y="80" width="57" height="17"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Font 5px" id="6wZ-Ve-7BH">
                         <font key="font" metaFont="system"/>
@@ -1705,7 +1706,7 @@
                     </textFieldCell>
                 </textField>
                 <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" misplaced="YES" id="nhT-Gu-JoS">
-                    <rect key="frame" x="580" y="70" width="19" height="27"/>
+                    <rect key="frame" x="571" y="73" width="19" height="27"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <stepperCell key="cell" continuous="YES" alignment="left" minValue="8" maxValue="80" doubleValue="20" id="a0a-2z-K7W"/>
                     <connections>
@@ -1713,15 +1714,15 @@
                     </connections>
                 </stepper>
                 <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" misplaced="YES" id="50f-Tk-WU3">
-                    <rect key="frame" x="596" y="70" width="19" height="27"/>
+                    <rect key="frame" x="587" y="73" width="19" height="27"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <stepperCell key="cell" continuous="YES" alignment="left" maxValue="20" id="S4N-LD-Vjt"/>
                     <connections>
                         <action selector="refresh:" target="-2" id="VwH-o2-jPj"/>
                     </connections>
                 </stepper>
-                <button hidden="YES" id="5ze-7g-JDJ">
-                    <rect key="frame" x="347" y="2" width="81" height="18"/>
+                <button hidden="YES" misplaced="YES" id="5ze-7g-JDJ">
+                    <rect key="frame" x="338" y="30" width="81" height="18"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <buttonCell key="cell" type="check" title="Centroids" bezelStyle="regularSquare" imagePosition="left" inset="2" id="VZg-5Y-XPd">
                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -1731,8 +1732,8 @@
                         <action selector="refresh:" target="-2" id="sjg-x5-2OI"/>
                     </connections>
                 </button>
-                <segmentedControl verticalHuggingPriority="750" id="Y6Z-6G-YdS">
-                    <rect key="frame" x="0.0" y="72" width="334" height="24"/>
+                <segmentedControl verticalHuggingPriority="750" misplaced="YES" id="Y6Z-6G-YdS">
+                    <rect key="frame" x="0.0" y="75" width="334" height="24"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <segmentedCell key="cell" borderStyle="border" alignment="left" style="rounded" trackingMode="selectOne" id="p8u-dW-8Es">
                         <font key="font" metaFont="system"/>
@@ -1748,8 +1749,8 @@
                         <action selector="refresh:" target="-2" id="Qmz-ZQ-Ut8"/>
                     </connections>
                 </segmentedControl>
-                <segmentedControl hidden="YES" verticalHuggingPriority="750" id="kdj-mq-1hd">
-                    <rect key="frame" x="0.0" y="48" width="334" height="24"/>
+                <segmentedControl hidden="YES" verticalHuggingPriority="750" misplaced="YES" id="kdj-mq-1hd">
+                    <rect key="frame" x="0.0" y="51" width="334" height="24"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <segmentedCell key="cell" borderStyle="border" alignment="left" style="rounded" trackingMode="selectOne" id="vgw-fd-Rug">
                         <font key="font" metaFont="system"/>
@@ -1765,9 +1766,9 @@
                     </connections>
                 </segmentedControl>
                 <button misplaced="YES" id="j3k-v9-CoU">
-                    <rect key="frame" x="348" y="2" width="99" height="18"/>
+                    <rect key="frame" x="576" y="54" width="128" height="18"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                    <buttonCell key="cell" type="check" title="Show names" bezelStyle="regularSquare" imagePosition="left" inset="2" id="0gB-9W-JUM">
+                    <buttonCell key="cell" type="check" title="Show names files" bezelStyle="regularSquare" imagePosition="left" inset="2" id="0gB-9W-JUM">
                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                         <font key="font" metaFont="system"/>
                     </buttonCell>
@@ -1775,8 +1776,8 @@
                         <action selector="refresh:" target="-2" id="Ncj-yS-AjR"/>
                     </connections>
                 </button>
-                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="NO" id="Urq-KY-Pcv">
-                    <rect key="frame" x="495" y="4" width="220" height="17"/>
+                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" misplaced="YES" allowsCharacterPickerTouchBarItem="NO" id="Urq-KY-Pcv">
+                    <rect key="frame" x="732" y="5" width="220" height="17"/>
                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" id="IrN-6b-kML">
                         <font key="font" metaFont="system"/>
@@ -1784,8 +1785,8 @@
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
                 </textField>
-                <segmentedControl hidden="YES" verticalHuggingPriority="750" id="Vii-1E-1In">
-                    <rect key="frame" x="0.0" y="24" width="334" height="24"/>
+                <segmentedControl hidden="YES" verticalHuggingPriority="750" misplaced="YES" id="Vii-1E-1In">
+                    <rect key="frame" x="0.0" y="27" width="334" height="24"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <segmentedCell key="cell" borderStyle="border" alignment="left" style="rounded" trackingMode="selectOne" id="eUA-sb-u4t">
                         <font key="font" metaFont="system"/>
@@ -1800,8 +1801,8 @@
                         <action selector="refresh:" target="-2" id="wvK-Ek-sMY"/>
                     </connections>
                 </segmentedControl>
-                <segmentedControl hidden="YES" verticalHuggingPriority="750" id="AFH-vZ-Ng8">
-                    <rect key="frame" x="0.0" y="0.0" width="334" height="24"/>
+                <segmentedControl hidden="YES" verticalHuggingPriority="750" misplaced="YES" id="AFH-vZ-Ng8">
+                    <rect key="frame" x="0.0" y="3" width="334" height="24"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <segmentedCell key="cell" borderStyle="border" alignment="left" style="rounded" trackingMode="selectOne" id="RaS-I8-sMy">
                         <font key="font" metaFont="system"/>
@@ -1818,32 +1819,32 @@
                     </connections>
                 </segmentedControl>
                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" misplaced="YES" allowsCharacterPickerTouchBarItem="NO" id="bai-Ux-oFR">
-                    <rect key="frame" x="475" y="52" width="63" height="17"/>
+                    <rect key="frame" x="357" y="32" width="99" height="17"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Pixel size" id="zfN-Is-fNf">
+                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Pixel size labels" id="zfN-Is-fNf">
                         <font key="font" metaFont="system"/>
                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
                 </textField>
                 <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" misplaced="YES" id="fSO-v9-AqW">
-                    <rect key="frame" x="456" y="46" width="19" height="27"/>
+                    <rect key="frame" x="337" y="26" width="19" height="27"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <stepperCell key="cell" continuous="YES" alignment="left" minValue="8" maxValue="50" doubleValue="20" id="7J2-hh-xcR"/>
                     <connections>
                         <action selector="refresh:" target="-2" id="yld-d3-Su3"/>
                     </connections>
                 </stepper>
-                <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" id="6fX-6m-qDA">
-                    <rect key="frame" x="706" y="27" width="19" height="27"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
+                <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" misplaced="YES" id="6fX-6m-qDA">
+                    <rect key="frame" x="592" y="1" width="19" height="27"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <stepperCell key="cell" continuous="YES" alignment="left" increment="2" minValue="1" maxValue="21" doubleValue="3" id="LcI-QU-tlb"/>
                     <connections>
                         <action selector="changedBlur:" target="-2" id="X5n-3D-NCz"/>
                     </connections>
                 </stepper>
                 <button misplaced="YES" id="Bmb-mz-hDG">
-                    <rect key="frame" x="457" y="27" width="68" height="18"/>
+                    <rect key="frame" x="504" y="54" width="68" height="18"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <buttonCell key="cell" type="check" title="Vertical" bezelStyle="regularSquare" imagePosition="left" inset="2" id="3T6-hc-Fm8">
                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -1853,9 +1854,9 @@
                         <action selector="refresh:" target="-2" id="lfb-HE-eIs"/>
                     </connections>
                 </button>
-                <segmentedControl verticalHuggingPriority="750" id="kQD-vm-dvI">
-                    <rect key="frame" x="578" y="28" width="129" height="24"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
+                <segmentedControl verticalHuggingPriority="750" misplaced="YES" id="kQD-vm-dvI">
+                    <rect key="frame" x="467" y="2" width="129" height="24"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <segmentedCell key="cell" borderStyle="border" alignment="left" style="rounded" trackingMode="selectOne" id="ZUk-ht-cbz">
                         <font key="font" metaFont="system"/>
                         <segments>
@@ -1868,7 +1869,7 @@
                     </connections>
                 </segmentedControl>
                 <button misplaced="YES" id="lOe-1G-vpW">
-                    <rect key="frame" x="457" y="2" width="125" height="18"/>
+                    <rect key="frame" x="338" y="6" width="125" height="18"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <buttonCell key="cell" type="check" title="Brightfield effect" bezelStyle="regularSquare" imagePosition="left" inset="2" id="waF-DG-Aiv">
                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -1878,8 +1879,16 @@
                         <action selector="changedWhiteBackground:" target="-2" id="CBK-m8-OMW"/>
                     </connections>
                 </button>
+                <colorWell misplaced="YES" id="1GS-Gd-kLX">
+                    <rect key="frame" x="710" y="51" width="44" height="23"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    <color key="color" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    <connections>
+                        <action selector="refresh:" target="-2" id="Su2-si-k8P"/>
+                    </connections>
+                </colorWell>
             </subviews>
-            <point key="canvasLocation" x="829" y="-133"/>
+            <point key="canvasLocation" x="1057" y="-132"/>
         </customView>
         <customView id="SHc-Lg-FDp">
             <rect key="frame" x="0.0" y="0.0" width="725" height="106"/>

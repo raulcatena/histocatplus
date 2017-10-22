@@ -91,6 +91,7 @@
 @property (nonatomic, weak) IBOutlet NSButton *scaleBar;
 @property (nonatomic, weak) IBOutlet NSButton *scaleBarStatic;
 @property (nonatomic, weak) IBOutlet NSColorWell *scaleBarColor;
+@property (nonatomic, weak) IBOutlet NSColorWell *lengendsBackgroundColor;
 @property (nonatomic, weak) IBOutlet NSTextField *scaleBarCalibration;
 @property (nonatomic, weak) IBOutlet NSStepper *scaleBarSteps;
 @property (nonatomic, weak) IBOutlet NSStepper *scaleBarFontSize;
