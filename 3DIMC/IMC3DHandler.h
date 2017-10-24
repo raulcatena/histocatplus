@@ -16,7 +16,7 @@
 
 @property (nonatomic, assign) NSInteger width;
 @property (nonatomic, assign) NSInteger height;
-@property (nonatomic, assign) float *** allBuffer;
+@property (nonatomic, assign) UInt8 *** allBuffer;
 @property (nonatomic, assign) bool *showMask;
 @property (nonatomic, assign) NSUInteger images;
 @property (nonatomic, readonly) NSUInteger imagesArranged;

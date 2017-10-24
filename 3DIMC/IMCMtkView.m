@@ -131,31 +131,33 @@
     [self.delegate drawInMTKView:self];
 }
 
+static void ReleaseCVPixelBuffer(void *pixel, const void *data, size_t size)
+{
+    CVPixelBufferRef pixelBuffer = (CVPixelBufferRef)pixel;
+    CVPixelBufferUnlockBaseAddress( pixelBuffer, 0 );
+    CVPixelBufferRelease( pixelBuffer );
+}
 -(CGImageRef)captureImageRef{
     
     self.framebufferOnly = NO;
     
-    id<MTLTexture> texture = self.currentDrawable.texture;
+    id<MTLTexture> texture = self.lastRenderedTexture;
+    
     NSInteger width = texture.width;
     NSInteger height   = texture.height;
-    NSLog(@"W %li H %li", width, height);
+    
     NSInteger rowBytes = width * 4;
     UInt8 * p = malloc(width * height * 4);
     
     [texture getBytes:p bytesPerRow:rowBytes fromRegion:MTLRegionMake2D(0, 0, width, height) mipmapLevel:0];
-    for (NSInteger i = 0; i < rowBytes * height; i++)
-        if(p[i] > 0)
-            printf("%u", p[i]);
-    
+
     CGColorSpaceRef pColorSpace = CGColorSpaceCreateDeviceRGB();
-    
-    CGBitmapInfo bitmapInfo = kCGImageAlphaNoneSkipFirst | kCGBitmapByteOrder32Little;
-    
+    CGBitmapInfo bitmapInfo = kCGImageAlphaFirst | kCGBitmapByteOrder32Little;
     NSInteger selftureSize = width * height * 4;
-    
-    CGDataProviderRef provider = CGDataProviderCreateWithData(nil, p, selftureSize, nil);
+    CGDataProviderRef provider = CGDataProviderCreateWithData(nil, p, selftureSize, ReleaseCVPixelBuffer);
     CGImageRef cgImageRef = CGImageCreate(width, height, 8, 32, rowBytes, pColorSpace, bitmapInfo, provider, nil, YES, kCGRenderingIntentDefault);
-    
+    CFRelease(provider);
+    //free(p);
     return cgImageRef;
 }
 

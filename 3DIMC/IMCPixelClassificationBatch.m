@@ -95,7 +95,9 @@
             [trainer.mapPrediction savePixelMapPredictions];
             
             if(!wasLoaded && ![stacksLoaded containsObject:stack])//Close the stack if it was not opened but making sure it is not one of the stacks involved in the training
-                [stack unLoadLayerDataWithBlock:nil];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [stack unLoadLayerDataWithBlock:nil];
+                });
             
             counter++;
             dispatch_async(dispatch_get_main_queue(), ^{

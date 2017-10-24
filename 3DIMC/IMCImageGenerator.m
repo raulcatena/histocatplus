@@ -84,7 +84,7 @@ BOOL doesJumpLineTest(NSInteger index, NSInteger indexTest, NSInteger width, NSI
     return NO;
 }
 
-void denoiseOrMeanFilter(NSInteger pix, NSInteger width, NSInteger planePixels, float *prevLayer, float *layer, float *postLayer, bool denoiseOrMean, float * temp1Buffer[2], NSInteger tempBufferUse){
+void denoiseOrMeanFilter(NSInteger pix, NSInteger width, NSInteger planePixels, UInt8 *prevLayer, UInt8 *layer, UInt8 *postLayer, bool denoiseOrMean, float * temp1Buffer[2], NSInteger tempBufferUse){
     
     NSInteger blurCounter = 0;
     float sum = 0;
@@ -128,7 +128,7 @@ int gaussian [9][3] = {
     {1, 1, 1}
 };
 
-void gaussianFilter(NSInteger pix, NSInteger width, NSInteger planePixels, float *prevLayer, float *layer, float *postLayer, bool denoiseOrMean, float * temp1Buffer[2], NSInteger tempBufferUse){
+void gaussianFilter(NSInteger pix, NSInteger width, NSInteger planePixels, UInt8 *prevLayer, UInt8 *layer, UInt8 *postLayer, bool denoiseOrMean, float * temp1Buffer[2], NSInteger tempBufferUse){
     
     NSInteger blurCounter = 0;
     float sum = 0;
@@ -169,7 +169,7 @@ int sharpen [9][3] = {
     {1, 1, 0}
 };
 
-void sharpenFilter(NSInteger pix, NSInteger width, NSInteger planePixels, float *prevLayer, float *layer, float *postLayer, bool denoiseOrMean, float * temp1Buffer[2], NSInteger tempBufferUse){
+void sharpenFilter(NSInteger pix, NSInteger width, NSInteger planePixels, UInt8 *prevLayer, UInt8 *layer, UInt8 *postLayer, bool denoiseOrMean, float * temp1Buffer[2], NSInteger tempBufferUse){
     
     NSInteger blurCounter = 0;
     float sum = 0;
@@ -198,16 +198,16 @@ void sharpenFilter(NSInteger pix, NSInteger width, NSInteger planePixels, float 
     temp1Buffer[tempBufferUse][pix] = sum/blurCounter;
 }
 
-void reorderLayers(NSInteger chann, NSArray * indexesArranged, NSInteger planePixels, float *** data, NSInteger width, NSInteger height, bool *mask, NSInteger mode, float * deltas_z){
+void reorderLayers(NSInteger chann, NSArray * indexesArranged, NSInteger planePixels, UInt8 *** data, NSInteger width, NSInteger height, bool *mask, NSInteger mode, float * deltas_z){
     if(data){
         
         for (NSArray *arr in indexesArranged) {
             if(arr.count > 1){
                 NSInteger indexFirst = [arr.firstObject integerValue];
-                float *layer = data[indexFirst][chann];
+                UInt8 *layer = data[indexFirst][chann];
                 if(layer){
                     for (NSInteger i = 1; i < arr.count; i++) {
-                        float *nextLayer = data[[arr[i]integerValue]][chann];
+                        UInt8 *nextLayer = data[[arr[i]integerValue]][chann];
                         if(nextLayer){
                             for (NSInteger i = 0; i < planePixels; i++)
                                 layer[i] += nextLayer[i];
@@ -219,7 +219,7 @@ void reorderLayers(NSInteger chann, NSArray * indexesArranged, NSInteger planePi
     }
 }
 
-void applyFilterToChannel(NSInteger chann, NSArray * indexesArranged, NSInteger planePixels, float *** data, NSInteger width, NSInteger height, bool *mask, NSInteger mode, float * deltas_z){
+void applyFilterToChannel(NSInteger chann, NSArray * indexesArranged, NSInteger planePixels, UInt8 *** data, NSInteger width, NSInteger height, bool *mask, NSInteger mode, float * deltas_z){
     
     float* temp1Buffer[2];
     for (int i = 0; i < 2; i++)
@@ -231,10 +231,10 @@ void applyFilterToChannel(NSInteger chann, NSArray * indexesArranged, NSInteger 
     
     reorderLayers(chann, indexesArranged, planePixels, data, width, height, mask, mode, deltas_z);
     
-    float *prevLayer = NULL;
-    float *layer = NULL;
-    float *postLayer = NULL;
-    NSLog(@"%@", indexesArranged);
+    UInt8 *prevLayer = NULL;
+    UInt8 *layer = NULL;
+    UInt8 *postLayer = NULL;
+    
     for (NSArray *indxs in indexesArranged) {
         NSInteger stack = [indxs.firstObject integerValue];
         NSLog(@"%li", stack);
@@ -290,7 +290,7 @@ void applyFilterToChannel(NSInteger chann, NSArray * indexesArranged, NSInteger 
     free(temp1Buffer[1]);
 }
 
-void threeDMeanBlur(float *** data, NSInteger width, NSInteger height, NSArray * indexesArranged, NSIndexSet * channels, NSInteger mode, bool *mask, float * deltas_z){
+void threeDMeanBlur(UInt8 *** data, NSInteger width, NSInteger height, NSArray * indexesArranged, NSIndexSet * channels, NSInteger mode, bool *mask, float * deltas_z){
     
     if(data == NULL || mode == 0)
         return;

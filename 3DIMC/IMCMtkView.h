@@ -23,6 +23,7 @@
 @property (nonatomic, assign) float upperY;
 @property (nonatomic, assign) float lowerY;
 @property (nonatomic, assign) IBInspectable BOOL refresh;
+@property(nonatomic, strong) id<MTLTexture>lastRenderedTexture;
 
 -(void)rotateX:(float)angleX Y:(float)angleY Z:(float)angleZ;
 

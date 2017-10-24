@@ -572,9 +572,10 @@
     panel.directoryURL = [NSURL fileURLWithPath:[self.fileURL.path stringByDeletingLastPathComponent]];
     [panel beginSheetModalForWindow:self.windowForSheet completionHandler:^(NSInteger result){
         if (result == NSFileHandlingPanelOKButton){
+            NSArray *ims = self.inScopeImages.copy;
             dispatch_queue_t saver = dispatch_queue_create("saver", NULL);
             dispatch_async(saver, ^{
-                for (IMCImageStack *stck in self.inScopeImages.copy) {
+                for (IMCImageStack *stck in ims) {
                     BOOL wasOpen = stck.isLoaded;
                     if(!wasOpen){
                         [stck loadLayerDataWithBlock:nil];
@@ -642,13 +643,16 @@
     [IMCFileExporter copyToClipBoardFromScroll:[self inViewScrollView] allOrZoomed:NO];
 }
 -(IBAction)copy3Dpic:(id)sender{
-    if(self.openGlViewPort){
-        NSImage *im = [self.openGlViewPort imageFromViewOld];
+    NSImage *im;
+    if(self.openGlViewPort)
+        im = [self.openGlViewPort imageFromViewOld];
+    else
+        im = [NSImage imageWithRef:[self.metalView captureImageRef]];
+    
+    if(im){
         NSPasteboard *pasteboard = [NSPasteboard generalPasteboard];
         [pasteboard clearContents];
         [pasteboard writeObjects:@[im]];
-    }else{
-        //TODO
     }
 }
 -(IBAction)copyCurrentVisible:(NSButton *)sender{
@@ -820,10 +824,13 @@
             
         }
         __block float result = -1.0f;
+        
+        NSArray *comps = self.inScopeComputations.copy;
+        
         dispatch_queue_t aQ = dispatch_queue_create("metafeatures", NULL);
         dispatch_async(aQ, ^{
             
-            for (IMCComputationOnMask *comp in self.inScopeComputations.copy) {
+            for (IMCComputationOnMask *comp in comps) {
                 
                 BOOL wasLoaded = comp.isLoaded;
                 while (!comp.isLoaded)
@@ -1020,7 +1027,6 @@
             [node loadLayerDataWithBlock:^{counter--;}];
         }
         [self refresh];
-
     });
 }
 -(void)closeNodes:(NSMenuItem *)sender{
@@ -1201,11 +1207,12 @@
 -(void)extractFeaturesForMask:(NSMenuItem *)sender{
     
     NSIndexSet *computations = [General cellComputations];
-    
     __block NSInteger counter = 0;
+    NSArray *masks = self.inScopeMasks.copy;
+    
     dispatch_queue_t feat = dispatch_queue_create("feat", NULL);
     dispatch_async(feat, ^{
-        for(IMCPixelClassification *mask in self.inScopeMasks.copy){
+        for(IMCPixelClassification *mask in masks){
             while (counter>3);
             counter++;
             [mask extractDataForMask:computations];
@@ -1524,8 +1531,11 @@
                     [channs enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop){
                         [self.threeDHandler addImageStack:stack atIndexOfStack:fileIdx channel:idx];
                     }];
-                    if(stackWasLoaded == NO)
-                    [stack unLoadLayerDataWithBlock:nil];
+                    if(stackWasLoaded == NO){
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            [stack unLoadLayerDataWithBlock:nil];
+                        });
+                    }
                 }else if(mask){
                     BOOL wasLoaded = mask.isLoaded;
                     if(!wasLoaded)
@@ -1560,7 +1570,7 @@
 
 #pragma mark OpenGL and Metal delegate
 
--(float ***)threeDData{
+-(UInt8 ***)threeDData{
     return self.threeDHandler.allBuffer;
 }
 -(bool *)showMask{
@@ -1640,7 +1650,7 @@
     return self.threeDHandler.indexesArranged;
 }
 #pragma mark record video
-#define STEPS 120
+#define STEPS 360
 
 -(CGImageRef)imageForVideo{
     NSImage *someImage = [self.openGlViewPort imageFromViewOld];
@@ -1659,74 +1669,88 @@
     if(self.openGlViewPort)
         size = self.openGlViewPort.bounds.size;
     if(self.metalView)
-        size = NSMakeSize(self.metalView.currentDrawable.texture.width, self.metalView.currentDrawable.texture.height);
+        size = NSMakeSize(self.metalView.lastRenderedTexture.width, self.metalView.lastRenderedTexture.height);
     return size;
 }
 
--(NSArray *)arrayOfCGImageRefsForRotationAroundZ{//arrayOfCGImageRefsForRotationAroundZ
-    NSMutableArray *allImages = [NSMutableArray arrayWithCapacity:STEPS];
-    for (int i = 0; i<STEPS; i++) {
-        [self.openGlViewPort rotateX:0 Y:2*M_PI/STEPS Z:0];
-        [self.metalView rotateX:0 Y:2*M_PI/STEPS Z:0];
-        [self.openGlViewPort refresh];
-        self.metalViewDelegate.forceColorBufferRecalculation = YES;
-        [allImages addObject:(id)[self imageForVideo]];//Careful, we are passing a CF type to NSArray. Cast to avoid warning. Handle with care
-//        [NSThread sleepForTimeInterval:0.1f];
-    }
-    
-    return [NSArray arrayWithArray:allImages];
-}
-
 -(void)recordZVideo:(NSButton *)sender{
-    NSArray *allImagesForVideo = [self arrayOfCGImageRefsForRotationAroundZ];
-    NSString *fullPath = [NSString stringWithFormat:@"%@%@.mp4", self.fileURL.path, [NSDate date].description];
-    [IMCVideoCreator writeImagesAsMovie:allImagesForVideo toPath:fullPath size:[self sizeFrame] duration:16];
+    dispatch_queue_t aQ = dispatch_queue_create("aQQQ", NULL);
+    dispatch_async(aQ, ^{
+        NSMutableArray *allImages = [NSMutableArray arrayWithCapacity:STEPS];
+        for (int i = 0; i<STEPS; i++) {
+            [self.metalView rotateX:0 Y:2*M_PI/STEPS Z:0];
+            self.metalView.refresh = YES;
+            while (self.metalView.refresh);
+            id<MTLTexture> old = self.metalView.lastRenderedTexture;
+            while (old == self.metalView.lastRenderedTexture);
+            [allImages addObject:(id)[self imageForVideo]];//Careful, we are passing a CF type to NSArray. Cast to avoid warning. Handle with care
+        }
+        NSString *fullPath = [NSString stringWithFormat:@"%@%@.mp4", self.fileURL.path, [NSDate date].description];
+        [IMCVideoCreator writeImagesAsMovie:allImages toPath:fullPath size:[self sizeFrame] duration:50];
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            while ([allImages lastObject]) {
+                id obj = [allImages lastObject];
+                [allImages removeLastObject];
+                CGImageRelease((__bridge CGImageRef)obj);
+            }
+            
+            for(id im in allImages){
+                CGImageRef ref = (__bridge CGImageRef)im;
+                if(ref)
+                    NSLog(@"Ref %@", ref);
+                NSLog(@"Ref %@", ref);
+            }
+        });
+        
+        
+        
+    });
 }
-
--(NSArray *)arrayOfCGImageRefsForStackVideo:(NSIndexSet *)indexes{//arrayOfCGImageRefsForStackVideo
-    NSInteger count = indexes.count;
-    NSMutableIndexSet *cursorSet = [NSMutableIndexSet indexSet];
-    NSMutableArray *allImages = [NSMutableArray arrayWithCapacity:count];
-    
-    [indexes enumerateIndexesUsingBlock:^(NSUInteger index, BOOL *stop){
-        [cursorSet addIndex:index];
-        [self.filesTree selectRowIndexes:cursorSet byExtendingSelection:NO];
-        [self.openGlViewPort refresh];
-        self.metalViewDelegate.forceColorBufferRecalculation = YES;
-        [allImages addObject:(id)[self imageForVideo]];//Careful, we are passing a CF type to NSArray. Cast to avoid warning. Handle with care
-        [NSThread sleepForTimeInterval:0.1f];
-    }];
-    return [NSArray arrayWithArray:allImages];
-}
-
 -(void)recordStackVideo:(NSButton *)sender{
     NSIndexSet *indexes = self.filesTree.selectedRowIndexes.copy;
-    NSArray *allImagesForVideo = [self arrayOfCGImageRefsForStackVideo:indexes];
-    NSString *fullPath = [NSString stringWithFormat:@"%@%@.mp4", self.fileURL.path, [NSDate date].description];
-    [IMCVideoCreator writeImagesAsMovie:allImagesForVideo toPath:fullPath size:[self sizeFrame] duration:4];
-}
-
--(NSArray *)arrayOfCGImageRefsForSliceVideo:(NSIndexSet *)indexes{//arrayOfCGImageRefsForStackVideo    
     NSInteger count = indexes.count;
     NSMutableIndexSet *cursorSet = [NSMutableIndexSet indexSet];
     NSMutableArray *allImages = [NSMutableArray arrayWithCapacity:count];
     
-    [indexes enumerateIndexesUsingBlock:^(NSUInteger index, BOOL *stop){
-        [cursorSet addIndex:index];
-        [self.filesTree selectRowIndexes:[NSIndexSet indexSetWithIndex:index] byExtendingSelection:NO];
-        [self.openGlViewPort refresh];
-        self.metalViewDelegate.forceColorBufferRecalculation = YES;
-        [allImages addObject:(id)[self imageForVideo]];//Careful, we are passing a CF type to NSArray. Cast to avoid warning. Handle with care
-        [NSThread sleepForTimeInterval:0.1f];
-    }];
-    return [NSArray arrayWithArray:allImages];
+    dispatch_queue_t aQ = dispatch_queue_create("aQQQ", NULL);
+    dispatch_async(aQ, ^{
+        [indexes enumerateIndexesUsingBlock:^(NSUInteger index, BOOL *stop){
+            id<MTLTexture> old = self.metalView.lastRenderedTexture;
+            [cursorSet addIndex:index];
+            [self.filesTree selectRowIndexes:cursorSet byExtendingSelection:NO];
+            self.metalView.refresh = YES;
+            self.metalViewDelegate.forceColorBufferRecalculation = YES;
+            while (self.metalViewDelegate.forceColorBufferRecalculation);
+            while (old == self.metalView.lastRenderedTexture);
+            [allImages addObject:(id)[self imageForVideo]];//Careful, we are passing a CF type to NSArray. Cast to avoid warning. Handle with care
+        }];
+        NSString *fullPath = [NSString stringWithFormat:@"%@%@.mp4", self.fileURL.path, [NSDate date].description];
+        [IMCVideoCreator writeImagesAsMovie:allImages toPath:fullPath size:[self sizeFrame] duration:16];
+    });
 }
 
 -(void)recordSliceVideo:(NSButton *)sender{
     NSIndexSet *indexes = self.filesTree.selectedRowIndexes.copy;
-    NSArray *allImagesForVideo = [self arrayOfCGImageRefsForSliceVideo:indexes];
-    NSString *fullPath = [NSString stringWithFormat:@"%@%@.mp4", self.fileURL.path, [NSDate date].description];
-    [IMCVideoCreator writeImagesAsMovie:allImagesForVideo toPath:fullPath size:[self sizeFrame] duration:4];
+    NSInteger count = indexes.count;
+    NSMutableIndexSet *cursorSet = [NSMutableIndexSet indexSet];
+    NSMutableArray *allImages = [NSMutableArray arrayWithCapacity:count];
+    
+    dispatch_queue_t aQ = dispatch_queue_create("aQQQ", NULL);
+    dispatch_async(aQ, ^{
+        [indexes enumerateIndexesUsingBlock:^(NSUInteger index, BOOL *stop){
+            id<MTLTexture> old = self.metalView.lastRenderedTexture;
+            [cursorSet addIndex:index];
+            [self.filesTree selectRowIndexes:[NSIndexSet indexSetWithIndex:index] byExtendingSelection:NO];
+            self.metalView.refresh = YES;
+            self.metalViewDelegate.forceColorBufferRecalculation = YES;
+            while (self.metalViewDelegate.forceColorBufferRecalculation);
+            while (old == self.metalView.lastRenderedTexture);
+            [allImages addObject:(id)[self imageForVideo]];//Careful, we are passing a CF type to NSArray. Cast to avoid warning. Handle with care
+        }];
+        NSString *fullPath = [NSString stringWithFormat:@"%@%@.mp4", self.fileURL.path, [NSDate date].description];
+        [IMCVideoCreator writeImagesAsMovie:allImages toPath:fullPath size:[self sizeFrame] duration:16];
+    });
 }
 
 #pragma mark Segment Cells and pixel classification

@@ -119,6 +119,11 @@
     
     if(self.channelIndex == NSNotFound)
         return NULL;
+    
+    NSMutableArray *old = self.stack.channelSettings;
+    if(self.options)
+        self.stack.channelSettings = self.options;
+    
     NSImage *image = [IMCImageGenerator imageForImageStacks:@[self.stack].mutableCopy
                                                     indexes:@[[NSNumber numberWithInteger:self.channelIndex]]
                                            withColoringType:0
@@ -175,7 +180,7 @@
         ref = [IMCImageGenerator whiteImageFromCArrayOfValues:newImageBuffer width:self.stack.width height:self.stack.height];
         image = [[NSImage alloc]initWithCGImage:ref size:self.stack.size];
     }
-    
+    self.stack.channelSettings = old;
     
     
     return image.CGImage;

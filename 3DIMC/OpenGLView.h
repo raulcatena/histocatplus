@@ -26,7 +26,7 @@ typedef enum
 
 @protocol Get3DData <NSObject>
 @optional
--(float ***)threeDData;
+-(UInt8 ***)threeDData;
 -(bool *)showMask;
 -(NSArray *)colors;//Array of Arrays with colors
 -(NSColor *)backgroundColor;

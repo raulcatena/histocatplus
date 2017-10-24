@@ -299,6 +299,21 @@
 		0D4336451E4DEE4E0096371D /* NSOpenGLView+Utilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D4336441E4DEE4E0096371D /* NSOpenGLView+Utilities.m */; };
 		0D4336481E4DEE920096371D /* IMCVideoCreator.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D4336471E4DEE920096371D /* IMCVideoCreator.m */; };
 		0D43364B1E4E7EF30096371D /* IMCImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D43364A1E4E7EF30096371D /* IMCImageView.m */; };
+		0D4748511F9DCBE10090AA78 /* IMCWaterShedSegmenter.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D4748501F9DCBE00090AA78 /* IMCWaterShedSegmenter.m */; };
+		0D4748521F9DCBE10090AA78 /* IMCWaterShedSegmenter.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D4748501F9DCBE00090AA78 /* IMCWaterShedSegmenter.m */; };
+		0D4748531F9DCBE10090AA78 /* IMCWaterShedSegmenter.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D4748501F9DCBE00090AA78 /* IMCWaterShedSegmenter.m */; };
+		0D4748571F9DCBFA0090AA78 /* IMCWaterShedController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D4748551F9DCBFA0090AA78 /* IMCWaterShedController.m */; };
+		0D4748581F9DCBFA0090AA78 /* IMCWaterShedController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D4748551F9DCBFA0090AA78 /* IMCWaterShedController.m */; };
+		0D4748591F9DCBFA0090AA78 /* IMCWaterShedController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D4748551F9DCBFA0090AA78 /* IMCWaterShedController.m */; };
+		0D47485A1F9DCBFA0090AA78 /* IMCWaterShedController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0D4748561F9DCBFA0090AA78 /* IMCWaterShedController.xib */; };
+		0D47485B1F9DCBFA0090AA78 /* IMCWaterShedController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0D4748561F9DCBFA0090AA78 /* IMCWaterShedController.xib */; };
+		0D47485C1F9DCBFA0090AA78 /* IMCWaterShedController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0D4748561F9DCBFA0090AA78 /* IMCWaterShedController.xib */; };
+		0D4748601F9DCC0F0090AA78 /* IMCWaterShedBatch.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D47485E1F9DCC0F0090AA78 /* IMCWaterShedBatch.m */; };
+		0D4748611F9DCC0F0090AA78 /* IMCWaterShedBatch.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D47485E1F9DCC0F0090AA78 /* IMCWaterShedBatch.m */; };
+		0D4748621F9DCC0F0090AA78 /* IMCWaterShedBatch.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D47485E1F9DCC0F0090AA78 /* IMCWaterShedBatch.m */; };
+		0D4748631F9DCC0F0090AA78 /* IMCWaterShedBatch.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0D47485F1F9DCC0F0090AA78 /* IMCWaterShedBatch.xib */; };
+		0D4748641F9DCC0F0090AA78 /* IMCWaterShedBatch.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0D47485F1F9DCC0F0090AA78 /* IMCWaterShedBatch.xib */; };
+		0D4748651F9DCC0F0090AA78 /* IMCWaterShedBatch.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0D47485F1F9DCC0F0090AA78 /* IMCWaterShedBatch.xib */; };
 		0D5C20E71E38022E00DCD346 /* IMCScale.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D5C20E61E38022E00DCD346 /* IMCScale.m */; };
 		0D5C20EA1E38E5F000DCD346 /* NSView+Utilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D5C20E91E38E5F000DCD346 /* NSView+Utilities.m */; };
 		0D6627311E697C0F00BC2C92 /* IMCPixelTrainer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0D6627301E697C0F00BC2C92 /* IMCPixelTrainer.mm */; };
@@ -842,6 +857,14 @@
 		0D4336471E4DEE920096371D /* IMCVideoCreator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IMCVideoCreator.m; sourceTree = "<group>"; };
 		0D4336491E4E7EF30096371D /* IMCImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IMCImageView.h; sourceTree = "<group>"; };
 		0D43364A1E4E7EF30096371D /* IMCImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IMCImageView.m; sourceTree = "<group>"; };
+		0D47484F1F9DCBE00090AA78 /* IMCWaterShedSegmenter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IMCWaterShedSegmenter.h; sourceTree = "<group>"; };
+		0D4748501F9DCBE00090AA78 /* IMCWaterShedSegmenter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IMCWaterShedSegmenter.m; sourceTree = "<group>"; };
+		0D4748541F9DCBFA0090AA78 /* IMCWaterShedController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IMCWaterShedController.h; sourceTree = "<group>"; };
+		0D4748551F9DCBFA0090AA78 /* IMCWaterShedController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IMCWaterShedController.m; sourceTree = "<group>"; };
+		0D4748561F9DCBFA0090AA78 /* IMCWaterShedController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = IMCWaterShedController.xib; sourceTree = "<group>"; };
+		0D47485D1F9DCC0F0090AA78 /* IMCWaterShedBatch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IMCWaterShedBatch.h; sourceTree = "<group>"; };
+		0D47485E1F9DCC0F0090AA78 /* IMCWaterShedBatch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IMCWaterShedBatch.m; sourceTree = "<group>"; };
+		0D47485F1F9DCC0F0090AA78 /* IMCWaterShedBatch.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = IMCWaterShedBatch.xib; sourceTree = "<group>"; };
 		0D5C20E51E38022E00DCD346 /* IMCScale.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IMCScale.h; sourceTree = "<group>"; };
 		0D5C20E61E38022E00DCD346 /* IMCScale.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IMCScale.m; sourceTree = "<group>"; };
 		0D5C20E81E38E5F000DCD346 /* NSView+Utilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSView+Utilities.h"; sourceTree = "<group>"; };
@@ -1984,6 +2007,14 @@
 				0DA2B80C1E6D966A00EAA438 /* IMCSegmentationBatch.h */,
 				0DA2B80D1E6D966A00EAA438 /* IMCSegmentationBatch.m */,
 				0DA2B80E1E6D966A00EAA438 /* IMCSegmentationBatch.xib */,
+				0D47484F1F9DCBE00090AA78 /* IMCWaterShedSegmenter.h */,
+				0D4748501F9DCBE00090AA78 /* IMCWaterShedSegmenter.m */,
+				0D4748541F9DCBFA0090AA78 /* IMCWaterShedController.h */,
+				0D4748551F9DCBFA0090AA78 /* IMCWaterShedController.m */,
+				0D4748561F9DCBFA0090AA78 /* IMCWaterShedController.xib */,
+				0D47485D1F9DCC0F0090AA78 /* IMCWaterShedBatch.h */,
+				0D47485E1F9DCC0F0090AA78 /* IMCWaterShedBatch.m */,
+				0D47485F1F9DCC0F0090AA78 /* IMCWaterShedBatch.xib */,
 			);
 			name = CellSegmentation;
 			sourceTree = "<group>";
@@ -2209,10 +2240,12 @@
 				0D00AC8E1E64D53400887057 /* 16.jpg in Resources */,
 				0D00AC8F1E64D53400887057 /* 128.jpg in Resources */,
 				0D00AC901E64D53400887057 /* Assets.xcassets in Resources */,
+				0D4748641F9DCC0F0090AA78 /* IMCWaterShedBatch.xib in Resources */,
 				0D00AC911E64D53400887057 /* icon.jpg in Resources */,
 				0D00AC921E64D53400887057 /* logo_miCat_icon.png in Resources */,
 				0D00AC931E64D53400887057 /* IMCChannelSettings.xib in Resources */,
 				0DA2B8191E7001D700EAA438 /* IMCThresholdMask.xib in Resources */,
+				0D47485B1F9DCBFA0090AA78 /* IMCWaterShedController.xib in Resources */,
 				0D00AC941E64D53400887057 /* 512.jpg in Resources */,
 				0DA2B8261E70033E00EAA438 /* IMCPaintMask.xib in Resources */,
 				0D00ACC11E678E4300887057 /* cp_pmaps_only_mask_temp in Resources */,
@@ -2314,10 +2347,12 @@
 				0D9F31511EF909CF00E1E083 /* 16.jpg in Resources */,
 				0D9F31521EF909CF00E1E083 /* 128.jpg in Resources */,
 				0D9F31531EF909CF00E1E083 /* Assets.xcassets in Resources */,
+				0D4748651F9DCC0F0090AA78 /* IMCWaterShedBatch.xib in Resources */,
 				0D9F31541EF909CF00E1E083 /* icon.jpg in Resources */,
 				0D9F31551EF909CF00E1E083 /* logo_miCat_icon.png in Resources */,
 				0D9F31561EF909CF00E1E083 /* IMCChannelSettings.xib in Resources */,
 				0D9F31571EF909CF00E1E083 /* IMCThresholdMask.xib in Resources */,
+				0D47485C1F9DCBFA0090AA78 /* IMCWaterShedController.xib in Resources */,
 				0D9F31581EF909CF00E1E083 /* 512.jpg in Resources */,
 				0D9F31591EF909CF00E1E083 /* IMCPaintMask.xib in Resources */,
 				0D9F315A1EF909CF00E1E083 /* cp_pmaps_only_mask_temp in Resources */,
@@ -2419,10 +2454,12 @@
 				0DB37D4E1E36615C002975E2 /* 128.jpg in Resources */,
 				0DB37CEB1E304D25002975E2 /* Assets.xcassets in Resources */,
 				0DB37D521E36615C002975E2 /* icon.jpg in Resources */,
+				0D4748631F9DCC0F0090AA78 /* IMCWaterShedBatch.xib in Resources */,
 				0DFB2EE31E4B64160065AC61 /* logo_miCat_icon.png in Resources */,
 				0DB37D3B1E35547A002975E2 /* IMCChannelSettings.xib in Resources */,
 				0DA2B8181E7001D700EAA438 /* IMCThresholdMask.xib in Resources */,
 				0D9B5C411E8A9285007E960C /* IMCCombineMasksBatch.xib in Resources */,
+				0D47485A1F9DCBFA0090AA78 /* IMCWaterShedController.xib in Resources */,
 				0DB37D501E36615C002975E2 /* 512.jpg in Resources */,
 				0DA2B8251E70033E00EAA438 /* IMCPaintMask.xib in Resources */,
 				0D00ACC01E678E4300887057 /* cp_pmaps_only_mask_temp in Resources */,
@@ -2503,6 +2540,7 @@
 				0D00ABEC1E64D53400887057 /* IMCNodeWrapper.m in Sources */,
 				0D00ABED1E64D53400887057 /* IMCCellSegmentation.mm in Sources */,
 				0D00ABEE1E64D53400887057 /* IMCFileExporter.m in Sources */,
+				0D4748521F9DCBE10090AA78 /* IMCWaterShedSegmenter.m in Sources */,
 				0D00ABEF1E64D53400887057 /* RandomForests.cpp in Sources */,
 				0DA6304A1F5EDE100032E102 /* IMCMetalViewAndRenderer.m in Sources */,
 				0D00ABF01E64D53400887057 /* IMCWorkSpace.mm in Sources */,
@@ -2528,6 +2566,7 @@
 				0D00ABFE1E64D53400887057 /* IMCUtils.m in Sources */,
 				0D9F31691EF91E3A00E1E083 /* NSIndexSet+Utilities.m in Sources */,
 				0D00ABFF1E64D53400887057 /* IMCGGPlot.mm in Sources */,
+				0D4748611F9DCC0F0090AA78 /* IMCWaterShedBatch.m in Sources */,
 				0D00AC001E64D53400887057 /* IMCBrushTools.m in Sources */,
 				0D00AC011E64D53400887057 /* IMCWorkSpaceRefresher.mm in Sources */,
 				0DA17B801E792E5500B3CF5C /* IMCChannelWrapper.m in Sources */,
@@ -2542,6 +2581,7 @@
 				0D00ACA21E656E9300887057 /* IMCMaskTraining.m in Sources */,
 				0D04DBF21EEABA6000B16BAB /* IMCMetricsController.m in Sources */,
 				0D04DBF61EEABA7200B16BAB /* IMCMetricsCalculator.m in Sources */,
+				0D4748581F9DCBFA0090AA78 /* IMCWaterShedController.m in Sources */,
 				0D00AC071E64D53400887057 /* AppDelegate.mm in Sources */,
 				0DC508CF1F5F3B3400C1E9D8 /* IMCMtkView.m in Sources */,
 				0D00AC081E64D53400887057 /* IMC3DHandler.m in Sources */,
@@ -2621,6 +2661,7 @@
 				0D9F30991EF909CF00E1E083 /* IMCCellSegmentation.mm in Sources */,
 				0D9F309A1EF909CF00E1E083 /* IMCFileExporter.m in Sources */,
 				0D9F309B1EF909CF00E1E083 /* RandomForests.cpp in Sources */,
+				0D4748531F9DCBE10090AA78 /* IMCWaterShedSegmenter.m in Sources */,
 				0DA6304B1F5EDE100032E102 /* IMCMetalViewAndRenderer.m in Sources */,
 				0D9F309C1EF909CF00E1E083 /* IMCWorkSpace.mm in Sources */,
 				0D9F309D1EF909CF00E1E083 /* IMCCombineMasksBatch.m in Sources */,
@@ -2646,6 +2687,7 @@
 				0D9F30AE1EF909CF00E1E083 /* IMCUtils.m in Sources */,
 				0D9F316A1EF91E3A00E1E083 /* NSIndexSet+Utilities.m in Sources */,
 				0D9F30AF1EF909CF00E1E083 /* IMCGGPlot.mm in Sources */,
+				0D4748621F9DCC0F0090AA78 /* IMCWaterShedBatch.m in Sources */,
 				0D9F30B01EF909CF00E1E083 /* IMCBrushTools.m in Sources */,
 				0D9F30B11EF909CF00E1E083 /* IMCWorkSpaceRefresher.mm in Sources */,
 				0D9F30B21EF909CF00E1E083 /* IMCChannelWrapper.m in Sources */,
@@ -2660,6 +2702,7 @@
 				0D9F30BB1EF909CF00E1E083 /* IMCMaskTraining.m in Sources */,
 				0D9F30BC1EF909CF00E1E083 /* IMCMetricsController.m in Sources */,
 				0D9F30BD1EF909CF00E1E083 /* IMCMetricsCalculator.m in Sources */,
+				0D4748591F9DCBFA0090AA78 /* IMCWaterShedController.m in Sources */,
 				0D9F30BE1EF909CF00E1E083 /* AppDelegate.mm in Sources */,
 				0DC508D01F5F3B3400C1E9D8 /* IMCMtkView.m in Sources */,
 				0D9F30BF1EF909CF00E1E083 /* IMC3DHandler.m in Sources */,
@@ -2739,6 +2782,7 @@
 				0DB400401E53071C00179ECB /* IMCCellSegmentation.mm in Sources */,
 				0D6720491E3CA57900C19663 /* IMCFileExporter.m in Sources */,
 				0DB4006A1E5359F700179ECB /* RandomForests.cpp in Sources */,
+				0D4748511F9DCBE10090AA78 /* IMCWaterShedSegmenter.m in Sources */,
 				0D00ABB91E61014800887057 /* IMCWorkSpace.mm in Sources */,
 				0DA630491F5EDE100032E102 /* IMCMetalViewAndRenderer.m in Sources */,
 				0D67204D1E3EA79500C19663 /* IMCChannelOperations.m in Sources */,
@@ -2764,6 +2808,7 @@
 				0DA884FB1E60842A00B9EC84 /* IMCGGPlot.mm in Sources */,
 				0D9F31681EF91E3A00E1E083 /* NSIndexSet+Utilities.m in Sources */,
 				0DB400451E530B2600179ECB /* IMCBrushTools.m in Sources */,
+				0D4748601F9DCC0F0090AA78 /* IMCWaterShedBatch.m in Sources */,
 				0DAA1F011E57B7AC00579003 /* IMCWorkSpaceRefresher.mm in Sources */,
 				0DA268981E512F39007E6EDD /* NSArchiverGZipAdditions.m in Sources */,
 				0DA17B7F1E792E5500B3CF5C /* IMCChannelWrapper.m in Sources */,
@@ -2778,6 +2823,7 @@
 				0DB37CE01E304D25002975E2 /* AppDelegate.mm in Sources */,
 				0D04DBF11EEABA6000B16BAB /* IMCMetricsController.m in Sources */,
 				0D04DBF51EEABA7200B16BAB /* IMCMetricsCalculator.m in Sources */,
+				0D4748571F9DCBFA0090AA78 /* IMCWaterShedController.m in Sources */,
 				0DA8ACFC1E40AE2E008194C6 /* IMC3DHandler.m in Sources */,
 				0DC508CE1F5F3B3400C1E9D8 /* IMCMtkView.m in Sources */,
 				0DAA1EF01E55F45700579003 /* IMCPreferencesController.m in Sources */,

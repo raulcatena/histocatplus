@@ -17,6 +17,7 @@
 @property (nonatomic, strong) IMCImageStack *stack;
 @property (nonatomic, assign) int * paintMask;
 @property (nonatomic, strong) NSString *thresholdingInfo;
+@property (nonatomic, strong) NSMutableArray *options;
 
 @property (nonatomic, assign) NSInteger channelIndex;
 @property (nonatomic, assign) NSInteger framerIndex;

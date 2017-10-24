@@ -35,6 +35,7 @@
     CVPixelBufferLockBaseAddress(pxbuffer, 0);
     void *pxdata = CVPixelBufferGetBaseAddress(pxbuffer);
     
+    
     CGColorSpaceRef rgbColorSpace = CGColorSpaceCreateDeviceRGB();
     CGContextRef context = CGBitmapContextCreate(
                                                  pxdata, frameSize.width, frameSize.height,
@@ -45,6 +46,15 @@
     
     CGContextDrawImage(context, CGRectMake(0, 0, CGImageGetWidth(image),
                                            CGImageGetHeight(image)), image);
+    
+//    UInt8 *conv = (UInt8 *)pxdata;
+////    NSInteger count = 0;
+////    for (NSInteger i = 3; i < frameSize.width * frameSize.height * 4; i+=4) {
+////        if(conv[i] > 0)
+////            count++;
+////    }
+////    NSLog(@"%li positive", count);
+    
     CGColorSpaceRelease(rgbColorSpace);
     CGContextRelease(context);
     
@@ -55,12 +65,12 @@
 
 +(void)invertARGBImageFromRGBAImage:(CGImageRef)image
 {
-//    CGColorSpaceRef sp = CGImageGetColorSpace(image);
-//    NSLog(@"type %i", CGColorSpaceGetModel(sp));
+    //    CGColorSpaceRef sp = CGImageGetColorSpace(image);
+    //    NSLog(@"type %i", CGColorSpaceGetModel(sp));
     CGSize dimensions = CGSizeMake(CGImageGetWidth(image), CGImageGetHeight(image));
     CFDataRef rawData = CGDataProviderCopyData(CGImageGetDataProvider(image));
     UInt8 * buf = (UInt8 *) CFDataGetBytePtr(rawData);
-
+    
     
     for(int i=0; i<dimensions.width * dimensions.height * 4; i+=4)
     {
@@ -80,6 +90,7 @@
 
 +(void)writeImagesAsMovie:(NSArray *)array toPath:(NSString*)path size:(CGSize)size duration:(int)duration
 {
+    
     NSError *error = nil;
     AVAssetWriter *videoWriter = [[AVAssetWriter alloc] initWithURL:[NSURL fileURLWithPath:path]
                                                            fileType:AVFileTypeQuickTimeMovie
@@ -93,12 +104,12 @@
                                    nil];
     
     AVAssetWriterInput* writerInput = [AVAssetWriterInput assetWriterInputWithMediaType:AVMediaTypeVideo
-                                                                          outputSettings:videoSettings];
+                                                                         outputSettings:videoSettings];
     
     writerInput.expectsMediaDataInRealTime = YES;
     
     NSDictionary* bufferAttributes=[NSDictionary dictionaryWithObjectsAndKeys:
-                    [NSNumber numberWithInt:kCVPixelFormatType_32ARGB], kCVPixelBufferPixelFormatTypeKey,nil];
+                                    [NSNumber numberWithInt:kCVPixelFormatType_32ARGB], kCVPixelBufferPixelFormatTypeKey,nil];
     
     AVAssetWriterInputPixelBufferAdaptor *adaptor = [AVAssetWriterInputPixelBufferAdaptor assetWriterInputPixelBufferAdaptorWithAssetWriterInput:writerInput sourcePixelBufferAttributes:bufferAttributes];
     
@@ -117,51 +128,23 @@
     
     buffer = [IMCVideoCreator pixelBufferFromCGImage:ref];
     CVPixelBufferPoolCreatePixelBuffer (NULL, adaptor.pixelBufferPool, &buffer);
-    
-    
     [adaptor appendPixelBuffer:buffer withPresentationTime:kCMTimeZero];
-    int i = 1;
-    while (writerInput.readyForMoreMediaData) // every iteration i add my CGImage to buffer, but after 5th iteration readyForMoreMediaData sets to NO, Why???
-    {
-        
-        //CMTime frameTime = CMTimeMake(1, 16);
+    
+    for (int i = 1; i < array.count; i++) {
         CMTime lastTime=CMTimeMake(i, duration);
-        //CMTime presentTime = CMTimeAdd(lastTime, frameTime);
-        
-        if (i >= [array count])
-        {
-            buffer = NULL;
-        }
-        else
-        {
-            ref = (__bridge CGImageRef)[array objectAtIndex:i];
-            buffer = [IMCVideoCreator pixelBufferFromCGImage:ref];
-        }
-        //CVBufferRetain(buffer);
-        
-        if (buffer)
-        {
-            
-            // append buffer
-            [adaptor appendPixelBuffer:buffer withPresentationTime:lastTime];
-            i++;
-        }
-        else
-        {
-            // done!
-            //Finish the session:
-            
-            [writerInput markAsFinished];
-            [videoWriter finishWritingWithCompletionHandler:^{
-            
-            }];
-            //All memory gets clean here, even from the CGImageRefs in the array
-            CVPixelBufferPoolRelease(adaptor.pixelBufferPool);
-            
-            break;
-        }
+        ref = (__bridge CGImageRef)array[i];
+        buffer = [IMCVideoCreator pixelBufferFromCGImage:ref];
+        [adaptor appendPixelBuffer:buffer withPresentationTime:lastTime];
+        while (!writerInput.readyForMoreMediaData);
+        CVBufferRelease(buffer);
+        i++;
     }
+    [writerInput markAsFinished];
+    [videoWriter finishWritingWithCompletionHandler:^{
+        CVPixelBufferPoolRelease(adaptor.pixelBufferPool);
+    }];
 }
+
 
 //+(void)writeImages:(NSArray *)array toPathFolder:(NSString*)path size:(CGSize)size
 //{

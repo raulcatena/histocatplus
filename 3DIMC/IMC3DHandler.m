@@ -57,10 +57,10 @@
     
     //if([self memoryTest])return;
     
-    self.allBuffer = (float ***)malloc(images * sizeof(float **));
+    self.allBuffer = (UInt8 ***)malloc(images * sizeof(UInt8 **));
     
     for (NSInteger i = 0; i < images; i++) {
-        float ** imageBuff = (float **)calloc(channels, sizeof(float *));
+        UInt8 ** imageBuff = (UInt8 **)calloc(channels, sizeof(UInt8 *));
         //for (NSInteger j = 0; j < channels; j++) {
         //    imageBuff[j] = (float *)calloc(width * height, sizeof(float));
         //}
@@ -118,10 +118,10 @@
         self.allBuffer[indexStack][channel] = NULL;
     }
     
-    self.allBuffer[indexStack][channel] = (float *)calloc(self.width * self.height, sizeof(float));
+    self.allBuffer[indexStack][channel] = (UInt8 *)calloc(self.width * self.height, sizeof(float));
     
     for(int i=0; i<length; i++)
-        self.allBuffer[indexStack][channel][i] = buf[i]/255.0f;
+        self.allBuffer[indexStack][channel][i] = buf[i];
     
     CFRelease(rawData);
     CFRelease(image);
@@ -140,10 +140,10 @@
         self.allBuffer[indexStack][channel] = NULL;
     }
     
-    self.allBuffer[indexStack][channel] = (float *)calloc(self.width * self.height, sizeof(float));
+    self.allBuffer[indexStack][channel] = (UInt8 *)calloc(self.width * self.height, sizeof(float));
     
     for(int i=0, k=0; i<length; i++, k+=4)
-        self.allBuffer[indexStack][channel][i] = buf[k]/255.0f;
+        self.allBuffer[indexStack][channel][i] = buf[k];
     
     if(buf)
         free(buf);
@@ -164,7 +164,7 @@
         self.allBuffer[indexStack][0] = NULL;
     }
     
-    self.allBuffer[indexStack][0] = (float *)calloc(self.width * self.height, sizeof(float));
+    self.allBuffer[indexStack][0] = (UInt8 *)calloc(self.width * self.height, sizeof(UInt8));
     
     for(int i=0, k=0; i<length; i++, k+=4)
         self.allBuffer[indexStack][0][i] = buf[k] != 0? 1:0;
@@ -301,7 +301,8 @@
             if(self.allBuffer[i]){
                 add += sizeof(float *);
                 for (NSInteger j = 0; j < self.channels; j++) {
-                    if(self.allBuffer[i][j])add += (self.width * self.height);
+                    if(self.allBuffer[i][j])
+                        add += (self.width * self.height);
                 }
             }
         }

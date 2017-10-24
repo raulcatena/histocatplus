@@ -45,6 +45,7 @@
     IMCThresholder *doer = [[IMCThresholder alloc]init];
     doer.label = mask.itemSubName;
     doer.mask = mask;//Capture the settings from selected mask
+    doer.options = mask.imageStack.channelSettings;
     
     NSInteger howmanystacks = self.stacksTableView.selectedRowIndexes.count;
     __block NSInteger counter = 0;

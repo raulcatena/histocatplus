@@ -465,9 +465,9 @@ typedef struct
     for (int i = 0; i< self.colorsObtained.count; i++) {
         NSColor *colorObj = [self.colorsObtained objectAtIndex:i];
         colorObj = [colorObj colorUsingColorSpace:[NSColorSpace sRGBColorSpace]];
-        colors[i*4] = colorObj.redComponent;;
-        colors[i*4+1] = colorObj.greenComponent;;
-        colors[i*4+2] = colorObj.blueComponent;
+        colors[i*4] = colorObj.redComponent/255.0f;
+        colors[i*4+1] = colorObj.greenComponent/255.0f;
+        colors[i*4+2] = colorObj.blueComponent/255.0f;
     }
     
 }
@@ -828,7 +828,7 @@ typedef struct
     [self backGroundColor];
     
     //Get from delegate all necessary data
-    float *** data = [self.delegate threeDData];
+    UInt8 *** data = [self.delegate threeDData];
     bool *mask = [self.delegate showMask];
     
     NSInteger widthModel = (float)[self.delegate witdhModel];
@@ -899,12 +899,12 @@ typedef struct
             if(oldThickness != self.defaultThickness)
                 [self prepareVertexBuffer];//Gotta change voxels every stack, as thickness could vary. Normally 2uM though
             
-            float **stackData = data[indexOfStack];
+            UInt8 **stackData = data[indexOfStack];
 
             if(stackData == NULL)
                 continue;
             
-            float *stackChannelData = NULL;
+            UInt8 *stackChannelData = NULL;
             
             GLKVector4 color;
             
@@ -923,7 +923,7 @@ typedef struct
                         NSInteger premult = chann * 4;
                         dataVal = stackChannelData[i];
                         
-                        if(dataVal > .0f){
+                        if(dataVal > 0){
                             red += dataVal * colors[premult];
                             green += dataVal * colors[premult + 1];
                             blue += dataVal * colors[premult + 2];

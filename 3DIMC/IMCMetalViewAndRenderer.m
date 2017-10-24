@@ -214,7 +214,7 @@ bool heightDescriptor[] = {
 //    return;
     voxelsToRenderCounter = 0;
     
-    float *** data = [self.delegate threeDData];
+    UInt8 *** data = [self.delegate threeDData];
     float * zPositions = [self.delegate zValues];
     float * zThicknesses = [self.delegate thicknesses];
     
@@ -245,9 +245,9 @@ bool heightDescriptor[] = {
             for (int i = 0; i< self.colorsObtained.count; i++) {
                 NSColor *colorObj = [self.colorsObtained objectAtIndex:i];
                 colorObj = [colorObj colorUsingColorSpace:[NSColorSpace sRGBColorSpace]];
-                colors[i * 3] = colorObj.redComponent;;
-                colors[i * 3 + 1] = colorObj.greenComponent;;
-                colors[i * 3 + 2] = colorObj.blueComponent;
+                colors[i * 3] = colorObj.redComponent/255.0f;
+                colors[i * 3 + 1] = colorObj.greenComponent/255.0f;
+                colors[i * 3 + 2] = colorObj.blueComponent/255.0f;
             }
             NSArray *arranged = [self.delegate inOrderIndexesArranged];
             __block NSUInteger prevVisited = 0;
@@ -258,7 +258,7 @@ bool heightDescriptor[] = {
                     NSInteger corresponding = [[arranged[corresp]firstObject]integerValue];
                     if(corresponding != prevVisited){
                         prevVisited = corresponding;
-                        float ** sliceData = data[corresponding];
+                        UInt8 ** sliceData = data[corresponding];
                         if(sliceData){
                             
                             x = 0;
@@ -266,7 +266,7 @@ bool heightDescriptor[] = {
                             z = zPositions[corresponding];
                             thickness = zThicknesses[corresponding];
                             
-                            float *chanData = NULL;
+                            UInt8 *chanData = NULL;
                             
                             for (NSInteger idx = 0; idx < self.indexesObtained.count; idx++) {
                                 
@@ -291,7 +291,7 @@ bool heightDescriptor[] = {
                                             buff[cursor + internalStride + 2] += chanData[pix] * colors[idx * 3 + 1];
                                             buff[cursor + internalStride + 3] += chanData[pix] * colors[idx * 3 + 2];
                                         }else{
-                                            RgbColor rgb = RgbFromFloatUnit(chanData[pix]);
+                                            RgbColor rgb = RgbFromFloatUnit(chanData[pix]/255.0f);
                                             buff[cursor + internalStride + 1] += rgb.r/255.0f;
                                             buff[cursor + internalStride + 2] += rgb.g/255.0f;
                                             buff[cursor + internalStride + 3] += rgb.b/255.0f;
@@ -470,10 +470,10 @@ bool heightDescriptor[] = {
 
 
 -(void)drawInMTKView:(IMCMtkView *)view{
-    
+    view.framebufferOnly = NO;
     if(view.refresh == NO && !self.forceColorBufferRecalculation)
         return;
-    
+
     view.refresh = NO;
     
     if(!self.device){
@@ -540,6 +540,8 @@ bool heightDescriptor[] = {
     MTLRenderPassDescriptor * rpd = view.currentRenderPassDescriptor;//[MTLRenderPassDescriptor new];
     if(!rpd)
         return;
+    
+    id<MTLTexture> text = [drawable texture];
     rpd.colorAttachments[0].texture = drawable.texture;
     rpd.colorAttachments[0].loadAction = MTLLoadActionClear;
     NSColor *bg = [self backGroundColor];
@@ -575,13 +577,13 @@ bool heightDescriptor[] = {
     
     [renderEncoder endEncoding];
     
-//    [comBuffer addCompletedHandler:^(id<MTLCommandBuffer> buffer){
-//        view.refresh = NO;
-//    }];
+    [comBuffer addCompletedHandler:^(id<MTLCommandBuffer> buffer){
+        //view.refresh = NO;
+        view.lastRenderedTexture = text;
+    }];
     
     //Commit
     [comBuffer presentDrawable:drawable];
-    
     [comBuffer commit];
 }
 -(void)mtkView:(MTKView *)view drawableSizeWillChange:(CGSize)size{

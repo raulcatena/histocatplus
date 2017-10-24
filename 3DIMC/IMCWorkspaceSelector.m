@@ -17,7 +17,7 @@
 #import "IMCComputationOnMask.h"
 #import "IMCWorkSpace.h"
 #import "IMC3DHandler.h"
-#import "IMC3dMask.h"
+#import "IMC3DMask.h"
 
 
 @implementation IMCWorkspaceSelector
