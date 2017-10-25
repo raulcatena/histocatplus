@@ -12,5 +12,6 @@
 
 @interface IMCVideoCreator : NSObject
 +(void)writeImagesAsMovie:(NSArray *)array toPath:(NSString*)path size:(CGSize)size duration:(int)duration;
++(void)writeImagesAsMovieWithBuffers:(UInt8 **)data  images:(NSInteger)images toPath:(NSString*)path size:(CGSize)size duration:(int)duration;
 //+(void)writeImages:(NSArray *)array toPathFolder:(NSString*)path size:(CGSize)size;
 @end

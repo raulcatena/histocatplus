@@ -285,14 +285,22 @@
     return self.imageStack.numberOfPixels * sizeof(int)/pow(2.0f, 20.0f);
 }
 
--(void)saveFileWithBuffer:(void *)buffer{
+-(void)saveFileWith32IntBuffer:(int *)buffer length:(NSInteger)length{
+    NSData *data = [NSData dataWithBytes:buffer length:length * sizeof(int)];
+    if(!self.relativePath)
+        self.relativePath = [self.workingFolderRealative stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.m32", self.itemHash]];
+    [self.fileWrapper checkAndCreateWorkingFolder];
+    [data writeToFile:self.absolutePath options:NSDataWritingAtomic error:NULL];
+}
+
+-(void)saveFileWithBuffer:(void *)buffer bits:(size_t)bits{
     CGColorSpaceRef colorspace = CGColorSpaceCreateDeviceGray();
     CFDataRef dataRef = CFDataCreate(NULL, buffer, self.imageStack.numberOfPixels * 2);
     CGDataProviderRef provider = CGDataProviderCreateWithCFData(dataRef);
     
-    CGBitmapInfo bmInfo = kCGBitmapByteOrder16Little;
+    CGBitmapInfo bmInfo = bits == 16 ? kCGBitmapByteOrder16Little : kCGBitmapByteOrder32Little;
 
-    CGImageRef imageRet = CGImageCreate(self.imageStack.width, self.imageStack.height, 16, 16, self.imageStack.width * 2, colorspace, bmInfo, provider, NULL, true, kCGRenderingIntentDefault);
+    CGImageRef imageRet = CGImageCreate(self.imageStack.width, self.imageStack.height, bits, bits, self.imageStack.width * bits/8, colorspace, bmInfo, provider, NULL, true, kCGRenderingIntentDefault);
     
     if(!self.relativePath)
         self.relativePath = [self.workingFolderRealative stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.tiff", self.itemHash]];
@@ -300,6 +308,9 @@
     [self.imageStack.fileWrapper checkAndCreateWorkingFolder];
     
     [IMCFileExporter writeArrayOfRefImages:@[(__bridge id)imageRet] withTitles:@[@"mask"] atPath:self.absolutePath in16bits:YES];
+    CGColorSpaceRelease(colorspace);
+    CGDataProviderRelease(provider);
+    CFRelease(dataRef);
 }
 
 -(void)dealloc{

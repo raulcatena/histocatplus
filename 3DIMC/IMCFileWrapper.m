@@ -178,7 +178,7 @@
        || [path.pathExtension isEqualToString:EXTENSION_PNG])
         *success = [IMC_TIFFLoader loadNonTIFFData:data toIMCImageStack:imageStack];
     
-    if([path.pathExtension isEqualToString:EXTENSION_MAT])
+    if([path.pathExtension isEqualToString:EXTENSION_M32])
         *success = [IMC_MatlabLoader loadMatDataETHZ:data toIMCImageStack:imageStack];
 
 }

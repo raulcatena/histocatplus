@@ -770,6 +770,13 @@
                                 </connections>
                             </menuItem>
                             <menuItem isSeparatorItem="YES" id="WoB-ub-F7D"/>
+                            <menuItem title="2D Watershed..." id="Tw5-YD-cWD" userLabel="2D Watershed">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="watershed2D:" target="-1" id="7nX-Kp-pP7"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem isSeparatorItem="YES" id="0kG-jc-0mV"/>
                             <menuItem title="3D Mask..." hidden="YES" id="t2z-KL-5Mk" userLabel="3D Mask">
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <connections>

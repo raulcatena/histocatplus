@@ -84,7 +84,7 @@ BOOL doesJumpLineTest(NSInteger index, NSInteger indexTest, NSInteger width, NSI
     return NO;
 }
 
-void denoiseOrMeanFilter(NSInteger pix, NSInteger width, NSInteger planePixels, UInt8 *prevLayer, UInt8 *layer, UInt8 *postLayer, bool denoiseOrMean, float * temp1Buffer[2], NSInteger tempBufferUse){
+void denoiseOrMeanFilter(NSInteger pix, NSInteger width, NSInteger planePixels, UInt8 *prevLayer, UInt8 *layer, UInt8 *postLayer, bool denoiseOrMean, UInt8 * temp1Buffer[2], NSInteger tempBufferUse){
     
     NSInteger blurCounter = 0;
     float sum = 0;
@@ -113,7 +113,7 @@ void denoiseOrMeanFilter(NSInteger pix, NSInteger width, NSInteger planePixels, 
         temp1Buffer[tempBufferUse][pix] = sum - layer[pix] < layer[pix]? 0 : layer[pix];
     //Mean filter
     if(denoiseOrMean == true)
-        temp1Buffer[tempBufferUse][pix] = sum/blurCounter;
+        temp1Buffer[tempBufferUse][pix] = MIN(255, (UInt8)(sum/blurCounter));
 }
 
 int gaussian [9][3] = {
@@ -128,7 +128,7 @@ int gaussian [9][3] = {
     {1, 1, 1}
 };
 
-void gaussianFilter(NSInteger pix, NSInteger width, NSInteger planePixels, UInt8 *prevLayer, UInt8 *layer, UInt8 *postLayer, bool denoiseOrMean, float * temp1Buffer[2], NSInteger tempBufferUse){
+void gaussianFilter(NSInteger pix, NSInteger width, NSInteger planePixels, UInt8 *prevLayer, UInt8 *layer, UInt8 *postLayer, bool denoiseOrMean, UInt8 * temp1Buffer[2], NSInteger tempBufferUse){
     
     NSInteger blurCounter = 0;
     float sum = 0;
@@ -154,7 +154,7 @@ void gaussianFilter(NSInteger pix, NSInteger width, NSInteger planePixels, UInt8
         }
         
     }
-    temp1Buffer[tempBufferUse][pix] = sum/(blurCounter/2);
+    temp1Buffer[tempBufferUse][pix] = MIN(255, (UInt8)(sum/blurCounter));
 }
 
 int sharpen [9][3] = {
@@ -169,7 +169,7 @@ int sharpen [9][3] = {
     {1, 1, 0}
 };
 
-void sharpenFilter(NSInteger pix, NSInteger width, NSInteger planePixels, UInt8 *prevLayer, UInt8 *layer, UInt8 *postLayer, bool denoiseOrMean, float * temp1Buffer[2], NSInteger tempBufferUse){
+void sharpenFilter(NSInteger pix, NSInteger width, NSInteger planePixels, UInt8 *prevLayer, UInt8 *layer, UInt8 *postLayer, bool denoiseOrMean, UInt8 * temp1Buffer[2], NSInteger tempBufferUse){
     
     NSInteger blurCounter = 0;
     float sum = 0;
@@ -195,7 +195,7 @@ void sharpenFilter(NSInteger pix, NSInteger width, NSInteger planePixels, UInt8 
         }
         
     }
-    temp1Buffer[tempBufferUse][pix] = sum/blurCounter;
+    temp1Buffer[tempBufferUse][pix] = MIN(255, (UInt8)(sum/blurCounter));
 }
 
 void reorderLayers(NSInteger chann, NSArray * indexesArranged, NSInteger planePixels, UInt8 *** data, NSInteger width, NSInteger height, bool *mask, NSInteger mode, float * deltas_z){
@@ -221,9 +221,9 @@ void reorderLayers(NSInteger chann, NSArray * indexesArranged, NSInteger planePi
 
 void applyFilterToChannel(NSInteger chann, NSArray * indexesArranged, NSInteger planePixels, UInt8 *** data, NSInteger width, NSInteger height, bool *mask, NSInteger mode, float * deltas_z){
     
-    float* temp1Buffer[2];
+    UInt8* temp1Buffer[2];
     for (int i = 0; i < 2; i++)
-        temp1Buffer[i] = malloc(sizeof(float) * planePixels);
+        temp1Buffer[i] = malloc(sizeof(UInt8) * planePixels);
     
     NSInteger blurCounter = 0;
     float sum = 0;
@@ -792,6 +792,7 @@ void threeDMeanBlur(UInt8 *** data, NSInteger width, NSInteger height, NSArray *
     
     CGColorSpaceRelease(colorspace);
     CGDataProviderRelease(provider);
+    CFRelease(dataRef);
     
     free(data);
     

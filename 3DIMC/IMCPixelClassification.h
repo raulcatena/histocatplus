@@ -25,7 +25,7 @@
 @property (nonatomic, readonly) BOOL isThreshold;
 @property (nonatomic, readonly) NSMutableDictionary *thresholdSettings;
 
-@property (nonatomic, readonly) int * mask;
+@property (nonatomic, assign) int * mask;
 
 @property (nonatomic, strong) NSMutableArray<IMCComputationOnMask *> *computationNodes;
 
@@ -38,7 +38,8 @@
 -(void)addFeaturesFromCellProfiler:(NSURL *)url;
 -(NSInteger)numberOfSegments;
 -(void)extractDataForMask:(NSIndexSet *)computations;
--(void)saveFileWithBuffer:(void *)buffer;
+-(void)saveFileWith32IntBuffer:(int *)buffer length:(NSInteger)length;
+-(void)saveFileWithBuffer:(void *)buffer bits:(size_t)bits;
 -(void)initComputations;
 -(void)removeChild:(IMCNodeWrapper *)childNode;
 

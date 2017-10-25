@@ -398,7 +398,7 @@
         int cellId = 1;
         for (float analyze = 1.0f; analyze > final; analyze -= self.stepWatershed) {
             //Add Values
-            float analyzeAdded = analyze;
+            float analyzeAdded = analyze * 255;
             NSLog(@"%f step", analyzeAdded);
             
             //        if(schannel > 0)
@@ -411,7 +411,7 @@
                     if(handler.allBuffer[i][channel]){
                         for (NSInteger j = 0; j < allLength; j++){
                             if(maskIds[offset + j] == 0){
-                                float val = handler.allBuffer[i][channel][j];
+                                UInt8 val = handler.allBuffer[i][channel][j];
                                 if(schannel > 0 && handler.allBuffer[i][schannel])
                                     val -= handler.allBuffer[i][schannel][j];
                                 if(val >= analyzeAdded){
@@ -442,7 +442,7 @@
         NSLog(@"Assigned %i", cellId);
     }
     if(self.type == MASK3D_THRESHOLD || self.type == MASK3D_THRESHOLD_SEGMENT){
-        float analyze = self.threshold;
+        float analyze = self.threshold * 255;
         
         for (NSInteger a = 0; a < handler.imagesArranged; a++) {
             NSInteger i = [handler internalSliceIndexForExternal:a];
@@ -451,7 +451,7 @@
                 if(handler.allBuffer[i][channel])
                     for (NSInteger j = 0; j < allLength; j++)
                         if(maskIds[offset + j] == 0){
-                            float val = handler.allBuffer[i][channel][j];
+                            UInt8 val = handler.allBuffer[i][channel][j];
                             if(schannel > 0 && handler.allBuffer[i][schannel])
                                 val -= handler.allBuffer[i][schannel][j];
                             if(val >= analyze)
@@ -473,35 +473,6 @@
                             }
                         }
         }
-        
-//        for (NSInteger i = 0; i <handler.images; i++){
-//            NSInteger offset = allLength * i;
-//            if(handler.allBuffer[i])
-//                if(handler.allBuffer[i][channel])
-//                    for (NSInteger j = 0; j < allLength; j++)
-//                        if(maskIds[offset + j] == 0){
-//                            float val = handler.allBuffer[i][channel][j];
-//                            if(schannel > 0 && handler.allBuffer[i][schannel])
-//                                val -= handler.allBuffer[i][schannel][j];
-//                            if(val >= analyze)
-//                                maskIds[offset + j] = -1;
-//                        }
-//        }
-//        
-//        for (NSInteger i = 0; i <handler.images; i++){NSLog(@"IM");
-//            NSInteger offset = allLength * i;
-//            if(handler.allBuffer[i])
-//                if(handler.allBuffer[i][channel])
-//                    for (NSInteger j = 0; j < allLength; j++)
-//                        if(maskIds[offset + j] == -1){
-//                            int qual = [self checkCandidates:offset + j fullMaskLength:fullMask planLength:allLength width:self.width];
-//                            if(qual >= self.minKernel){//Promote all
-//                                [self assignId:self.type == MASK3D_THRESHOLD_SEGMENT?cellId:1 toIndex:offset + j fullMaskLength:fullMask planLength:allLength width:self.width];
-//                                cellId++;
-//                            }
-//                        }
-//            
-//        }
         NSLog(@"Assigned %i", cellId);
     }
     //Reset negative values
@@ -564,7 +535,7 @@
         float pre[randomColors];
         float pass = .95f/randomColors;
         for (int i = 0; i < randomColors; i++) {
-            pre[i] = 0.05f + pass * i;
+            pre[i] = (0.05f + pass * i) * 255;
         }
         
         if(self.threeDHandler.allBuffer)

@@ -56,6 +56,9 @@
 //3DMask
 #import "IMC3DMask.h"
 
+//Watershed
+#import "IMCWaterShedSegmenter.h"
+
 @interface IMCWorkSpace (){
     dispatch_queue_t threadPainting;
 }
@@ -1676,35 +1679,25 @@
 -(void)recordZVideo:(NSButton *)sender{
     dispatch_queue_t aQ = dispatch_queue_create("aQQQ", NULL);
     dispatch_async(aQ, ^{
-        NSMutableArray *allImages = [NSMutableArray arrayWithCapacity:STEPS];
+        //NSMutableArray *allImages = [NSMutableArray arrayWithCapacity:STEPS];
+        UInt8 ** allData = (UInt8 **)malloc(STEPS * sizeof(UInt8 *));
         for (int i = 0; i<STEPS; i++) {
             [self.metalView rotateX:0 Y:2*M_PI/STEPS Z:0];
             self.metalView.refresh = YES;
             while (self.metalView.refresh);
             id<MTLTexture> old = self.metalView.lastRenderedTexture;
             while (old == self.metalView.lastRenderedTexture);
-            [allImages addObject:(id)[self imageForVideo]];//Careful, we are passing a CF type to NSArray. Cast to avoid warning. Handle with care
+            allData[i] = (UInt8 *)[self.metalView captureData];
+            //[allImages addObject:(id)[self imageForVideo]];//Careful, we are passing a CF type to NSArray. Cast to avoid warning. Handle with care
         }
         NSString *fullPath = [NSString stringWithFormat:@"%@%@.mp4", self.fileURL.path, [NSDate date].description];
-        [IMCVideoCreator writeImagesAsMovie:allImages toPath:fullPath size:[self sizeFrame] duration:50];
-        
+        //NSString *fullPathB = [NSString stringWithFormat:@"%@%@_b.mp4", self.fileURL.path, [NSDate date].description];
+        //[IMCVideoCreator writeImagesAsMovie:allImages toPath:fullPath size:[self sizeFrame] duration:50];
         dispatch_async(dispatch_get_main_queue(), ^{
-            while ([allImages lastObject]) {
-                id obj = [allImages lastObject];
-                [allImages removeLastObject];
-                CGImageRelease((__bridge CGImageRef)obj);
-            }
-            
-            for(id im in allImages){
-                CGImageRef ref = (__bridge CGImageRef)im;
-                if(ref)
-                    NSLog(@"Ref %@", ref);
-                NSLog(@"Ref %@", ref);
-            }
+            [IMCVideoCreator writeImagesAsMovieWithBuffers:allData images:STEPS toPath:fullPath size:[self sizeFrame] duration:50];
+            for(int i = 0; i < STEPS; i++)free(allData[i]);
+            free(allData);
         });
-        
-        
-        
     });
 }
 -(void)recordStackVideo:(NSButton *)sender{
@@ -2033,6 +2026,14 @@
 }
 -(NSArray *)masks{
     return [self.dataCoordinator masks];
+}
+
+#pragma mark watershed
+-(IBAction)watershed2D:(id)sender{
+    if(!self.inScopeImage || self.inOrderIndexes.count == 0)
+        return;
+    
+    [IMCWaterShedSegmenter wizard2DWatershedIndexes:self.inOrderIndexes.copy scopeImage:self.inScopeImage scopeImages:self.inScopeImages.copy];
 }
 
 #pragma mark analytics

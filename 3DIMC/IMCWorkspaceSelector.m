@@ -178,7 +178,8 @@
         else
             [cell setTextColor:[NSColor blackColor]];
         if(item == self.parent.inScopeMask || item == self.parent.inScopeImage || item == self.parent.inScope3DMask || item == self.parent.inScopeComputation)
-            [cell setTextColor:[NSColor orangeColor]];
+            if(node.isLoaded)
+                [cell setTextColor:[NSColor orangeColor]];
         return;
     }
     

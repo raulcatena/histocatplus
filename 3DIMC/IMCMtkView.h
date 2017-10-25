@@ -28,5 +28,7 @@
 -(void)rotateX:(float)angleX Y:(float)angleY Z:(float)angleZ;
 
 -(CGImageRef)captureImageRef;
+-(NSImage *)captureImage;
+-(void *)captureData;
 
 @end

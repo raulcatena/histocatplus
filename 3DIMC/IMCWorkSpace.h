@@ -251,6 +251,8 @@
 -(IBAction)create3DMaskFromCurrent:(id)sender;
 -(IBAction)create3DMaskByThresholding:(id)sender;
 -(IBAction)create3DMaskByThresholdingKeepId:(id)sender;
+-(IBAction)watershed2D:(id)sender;
+
 
 @end
 

@@ -154,6 +154,7 @@
 #define EXTENSION_TXT @"txt"
 #define EXTENSION_MCD @"mcd"
 #define EXTENSION_MAT @"mat"
+#define EXTENSION_M32 @"m32"
 #define EXTENSION_JPG @"jpg"
 #define EXTENSION_JPEG @"jpeg"
 #define EXTENSION_PNG @"png"

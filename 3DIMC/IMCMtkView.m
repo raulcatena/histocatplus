@@ -160,6 +160,45 @@ static void ReleaseCVPixelBuffer(void *pixel, const void *data, size_t size)
     //free(p);
     return cgImageRef;
 }
+-(NSImage *)captureImage{
+    
+    self.framebufferOnly = NO;
+    
+    id<MTLTexture> texture = self.lastRenderedTexture;
+    
+    NSInteger width = texture.width;
+    NSInteger height   = texture.height;
+    
+    NSInteger rowBytes = width * 4;
+    UInt8 * p = malloc(width * height * 4);
+    
+    [texture getBytes:p bytesPerRow:rowBytes fromRegion:MTLRegionMake2D(0, 0, width, height) mipmapLevel:0];
+    
+    CGColorSpaceRef pColorSpace = CGColorSpaceCreateDeviceRGB();
+    CGBitmapInfo bitmapInfo = kCGImageAlphaFirst | kCGBitmapByteOrder32Little;
+    NSInteger selftureSize = width * height * 4;
+    CGDataProviderRef provider = CGDataProviderCreateWithData(nil, p, selftureSize, ReleaseCVPixelBuffer);
+    CGImageRef cgImageRef = CGImageCreate(width, height, 8, 32, rowBytes, pColorSpace, bitmapInfo, provider, nil, YES, kCGRenderingIntentDefault);
+    NSImage *im = [[NSImage alloc]initWithCGImage:cgImageRef size:NSMakeSize(width, height)];
+    CFRelease(provider);
+    CGImageRelease(cgImageRef);
+    return im;
+}
+-(void *)captureData{
+    
+    self.framebufferOnly = NO;
+    
+    id<MTLTexture> texture = self.lastRenderedTexture;
+    
+    NSInteger width = texture.width;
+    NSInteger height = texture.height;
+    
+    NSInteger rowBytes = width * 4;
+    UInt8 * p = malloc(width * height * 4);
+    
+    [texture getBytes:p bytesPerRow:rowBytes fromRegion:MTLRegionMake2D(0, 0, width, height) mipmapLevel:0];
+    return p;
+}
 
 
 

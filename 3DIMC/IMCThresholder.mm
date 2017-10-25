@@ -88,7 +88,7 @@
         sBit[i] = (UInt16)copy[i];//if(copy[i] > 0)sBit[i]--;
     
     self.mask.parent = self.stack;
-    [self.mask saveFileWithBuffer:sBit];
+    [self.mask saveFileWithBuffer:sBit bits:16];
     
     if(self.saveInverse == YES){
         self.inv = [[IMCPixelClassification alloc]init];
@@ -103,7 +103,7 @@
         UInt16 * iBit = (UInt16 *)calloc(sizePic, sizeof(UInt16));
         for (NSInteger i = 0; i < sizePic; i++)
             iBit[i] = (UInt16)copy[i] != 0?0:1;
-        [self.inv saveFileWithBuffer:iBit];
+        [self.inv saveFileWithBuffer:iBit bits:16];
         if(iBit)
             free(iBit);
     }
