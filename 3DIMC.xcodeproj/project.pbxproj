@@ -758,6 +758,15 @@
 		0DB400631E534D7D00179ECB /* bhsne.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0DB4005E1E534D7D00179ECB /* bhsne.cpp */; };
 		0DB400641E534D7D00179ECB /* sptree.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0DB400601E534D7D00179ECB /* sptree.cpp */; };
 		0DB4006A1E5359F700179ECB /* RandomForests.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0DB400681E5359F700179ECB /* RandomForests.cpp */; };
+		0DBB87621FA21FF400F468DA /* IMCFlockOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DBB87611FA21FF400F468DA /* IMCFlockOperation.m */; };
+		0DBB87641FA2200100F468DA /* flock.c in Sources */ = {isa = PBXBuildFile; fileRef = 0DBB87631FA2200100F468DA /* flock.c */; };
+		0DBB87651FA2200100F468DA /* flock.c in Sources */ = {isa = PBXBuildFile; fileRef = 0DBB87631FA2200100F468DA /* flock.c */; };
+		0DBB87661FA2200100F468DA /* flock.c in Sources */ = {isa = PBXBuildFile; fileRef = 0DBB87631FA2200100F468DA /* flock.c */; };
+		0DBB87691FA221AA00F468DA /* find_connected.c in Sources */ = {isa = PBXBuildFile; fileRef = 0DBB87681FA221AA00F468DA /* find_connected.c */; };
+		0DBB876A1FA221AA00F468DA /* find_connected.c in Sources */ = {isa = PBXBuildFile; fileRef = 0DBB87681FA221AA00F468DA /* find_connected.c */; };
+		0DBB876D1FA2228B00F468DA /* find_connected.c in Sources */ = {isa = PBXBuildFile; fileRef = 0DBB87681FA221AA00F468DA /* find_connected.c */; };
+		0DBB876E1FA2287B00F468DA /* IMCFlockOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DBB87611FA21FF400F468DA /* IMCFlockOperation.m */; };
+		0DBB876F1FA2287B00F468DA /* IMCFlockOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DBB87611FA21FF400F468DA /* IMCFlockOperation.m */; };
 		0DBC28AC1F818549001F24E0 /* IMC3DMaskComputations.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DBC28AB1F818549001F24E0 /* IMC3DMaskComputations.m */; };
 		0DBC28AD1F822A87001F24E0 /* IMC3DMaskComputations.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DBC28AB1F818549001F24E0 /* IMC3DMaskComputations.m */; };
 		0DBC28AE1F822A88001F24E0 /* IMC3DMaskComputations.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DBC28AB1F818549001F24E0 /* IMC3DMaskComputations.m */; };
@@ -1152,6 +1161,12 @@
 		0DB400621E534D7D00179ECB /* vptree.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vptree.h; sourceTree = "<group>"; };
 		0DB400671E5359F700179ECB /* RandomForests.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = RandomForests.hpp; sourceTree = "<group>"; };
 		0DB400681E5359F700179ECB /* RandomForests.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RandomForests.cpp; sourceTree = "<group>"; };
+		0DBB87601FA21FF400F468DA /* IMCFlockOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IMCFlockOperation.h; sourceTree = "<group>"; };
+		0DBB87611FA21FF400F468DA /* IMCFlockOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IMCFlockOperation.m; sourceTree = "<group>"; };
+		0DBB87631FA2200100F468DA /* flock.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = flock.c; sourceTree = "<group>"; };
+		0DBB87671FA2201700F468DA /* flock.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = flock.h; sourceTree = "<group>"; };
+		0DBB87681FA221AA00F468DA /* find_connected.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = find_connected.c; sourceTree = "<group>"; };
+		0DBB876C1FA221BD00F468DA /* find_connected.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = find_connected.h; sourceTree = "<group>"; };
 		0DBC28AA1F818549001F24E0 /* IMC3DMaskComputations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IMC3DMaskComputations.h; sourceTree = "<group>"; };
 		0DBC28AB1F818549001F24E0 /* IMC3DMaskComputations.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IMC3DMaskComputations.m; sourceTree = "<group>"; };
 		0DC0E4881F63F2C500DD1B62 /* SpillOverTableCleanWithZeros.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = SpillOverTableCleanWithZeros.txt; sourceTree = "<group>"; };
@@ -1505,6 +1520,7 @@
 		0D0D83D41FA12CDB0044EDC1 /* Cell Algorithms */ = {
 			isa = PBXGroup;
 			children = (
+				0DBB875F1FA21FCB00F468DA /* Flock */,
 				0D0D84071FA138B30044EDC1 /* OperationWrappers */,
 				0D0D83FC1FA1382D0044EDC1 /* PCA */,
 				0D0D83E81FA12D550044EDC1 /* kMeans */,
@@ -2164,6 +2180,19 @@
 			name = RRFF;
 			sourceTree = "<group>";
 		};
+		0DBB875F1FA21FCB00F468DA /* Flock */ = {
+			isa = PBXGroup;
+			children = (
+				0DBB87601FA21FF400F468DA /* IMCFlockOperation.h */,
+				0DBB87611FA21FF400F468DA /* IMCFlockOperation.m */,
+				0DBB87671FA2201700F468DA /* flock.h */,
+				0DBB87631FA2200100F468DA /* flock.c */,
+				0DBB876C1FA221BD00F468DA /* find_connected.h */,
+				0DBB87681FA221AA00F468DA /* find_connected.c */,
+			);
+			name = Flock;
+			sourceTree = "<group>";
+		};
 		0DDB4BE61EFB0EEF000C1656 /* Compensation */ = {
 			isa = PBXGroup;
 			children = (
@@ -2666,6 +2695,7 @@
 				0DA2B82D1E70A32900EAA438 /* IMCCombineMasks.mm in Sources */,
 				0D00ACA61E65C2CC00887057 /* IMCPixelMap.mm in Sources */,
 				0D9BA37D1F74CECB00C02457 /* IMCVoxelMaskRenderer.m in Sources */,
+				0DBB876A1FA221AA00F468DA /* find_connected.c in Sources */,
 				0D6627321E69A72600BC2C92 /* IMCPixelTrainer.mm in Sources */,
 				0D0D83F11FA12D650044EDC1 /* kmeans.c in Sources */,
 				0D00ABEA1E64D53400887057 /* NSUnarchiverGZipAdditions.m in Sources */,
@@ -2686,6 +2716,7 @@
 				0D00ABF21E64D53400887057 /* IMC_TxtLoader.m in Sources */,
 				0DBC28AD1F822A87001F24E0 /* IMC3DMaskComputations.m in Sources */,
 				0D00ABF31E64D53400887057 /* IMCColorLegend.m in Sources */,
+				0DBB87651FA2200100F468DA /* flock.c in Sources */,
 				0D00ABF41E64D53400887057 /* IMCImageStack.m in Sources */,
 				0D00ABF51E64D53400887057 /* bhsne.cpp in Sources */,
 				0D9BA3821F7A10AF00C02457 /* IMC3DMask.m in Sources */,
@@ -2705,6 +2736,7 @@
 				0D00AC001E64D53400887057 /* IMCBrushTools.m in Sources */,
 				0D00AC011E64D53400887057 /* IMCWorkSpaceRefresher.mm in Sources */,
 				0DA17B801E792E5500B3CF5C /* IMCChannelWrapper.m in Sources */,
+				0DBB876E1FA2287B00F468DA /* IMCFlockOperation.m in Sources */,
 				0DA2B80B1E6D933800EAA438 /* IMCCellSegmenter.m in Sources */,
 				0D00AC021E64D53400887057 /* NSArchiverGZipAdditions.m in Sources */,
 				0D00AC031E64D53400887057 /* NSView+Utilities.m in Sources */,
@@ -2797,6 +2829,7 @@
 				0D9F30941EF909CF00E1E083 /* IMCPixelMap.mm in Sources */,
 				0D9F30951EF909CF00E1E083 /* IMCPixelTrainer.mm in Sources */,
 				0D9BA37E1F74CECB00C02457 /* IMCVoxelMaskRenderer.m in Sources */,
+				0DBB876D1FA2228B00F468DA /* find_connected.c in Sources */,
 				0D9F30961EF909CF00E1E083 /* NSUnarchiverGZipAdditions.m in Sources */,
 				0D0D83F21FA12D650044EDC1 /* kmeans.c in Sources */,
 				0D9F30971EF909CF00E1E083 /* IMCRandomForests.mm in Sources */,
@@ -2817,6 +2850,7 @@
 				0D9F30A11EF909CF00E1E083 /* IMCColorLegend.m in Sources */,
 				0DBC28AE1F822A88001F24E0 /* IMC3DMaskComputations.m in Sources */,
 				0D9F30A21EF909CF00E1E083 /* IMCImageStack.m in Sources */,
+				0DBB87661FA2200100F468DA /* flock.c in Sources */,
 				0D9F30A31EF909CF00E1E083 /* bhsne.cpp in Sources */,
 				0D9F30A41EF909CF00E1E083 /* IMCImprovedRegistration.m in Sources */,
 				0D9BA3831F7A10AF00C02457 /* IMC3DMask.m in Sources */,
@@ -2836,6 +2870,7 @@
 				0D9F30B01EF909CF00E1E083 /* IMCBrushTools.m in Sources */,
 				0D9F30B11EF909CF00E1E083 /* IMCWorkSpaceRefresher.mm in Sources */,
 				0D9F30B21EF909CF00E1E083 /* IMCChannelWrapper.m in Sources */,
+				0DBB876F1FA2287B00F468DA /* IMCFlockOperation.m in Sources */,
 				0D9F30B31EF909CF00E1E083 /* IMCCellSegmenter.m in Sources */,
 				0D9F30B41EF909CF00E1E083 /* NSArchiverGZipAdditions.m in Sources */,
 				0D9F30B51EF909CF00E1E083 /* NSView+Utilities.m in Sources */,
@@ -2880,6 +2915,7 @@
 				0DB37D411E360D31002975E2 /* NSColor+Utilities.m in Sources */,
 				0DAA1EFE1E57AECD00579003 /* IMCWorkspaceSelector.m in Sources */,
 				0DA630521F5EE7D20032E102 /* shaders.metal in Sources */,
+				0DBB87691FA221AA00F468DA /* find_connected.c in Sources */,
 				0DAA1EFB1E566F7A00579003 /* IMCMasks.m in Sources */,
 				0DB37CF81E30B958002975E2 /* IMCFileWrapper.m in Sources */,
 				0D0D83F61FA12D650044EDC1 /* IMCKMeansDashboard.m in Sources */,
@@ -2888,6 +2924,7 @@
 				0DB37D1D1E32ADE9002975E2 /* IMC_TIFFLoader.m in Sources */,
 				0DB37D571E36A1E2002975E2 /* IMCBlendModes.m in Sources */,
 				0D6720531E3FF3C800C19663 /* IMCTransformDictController.m in Sources */,
+				0DBB87621FA21FF400F468DA /* IMCFlockOperation.m in Sources */,
 				0DB4004A1E530BB600179ECB /* IMCBrushBullet.m in Sources */,
 				0D9BA3741F744DC800C02457 /* IMC3dMasking.mm in Sources */,
 				0DA2B8331E72E16600EAA438 /* IMCCellTrainer.m in Sources */,
@@ -2914,6 +2951,7 @@
 				0D0D84041FA138360044EDC1 /* IMCPCAOperation.m in Sources */,
 				0DB37D321E34B17F002975E2 /* IMC_BIMCLoader.m in Sources */,
 				0D0D83D01FA12C670044EDC1 /* IMCTestCPP.cpp in Sources */,
+				0DBB87641FA2200100F468DA /* flock.c in Sources */,
 				0D0D83E51FA12D410044EDC1 /* IMCGeneralPlot.m in Sources */,
 				0DA84DA31E3B53FE00D075C7 /* XMLDictionary.m in Sources */,
 				0DA2B81D1E70023C00EAA438 /* IMCThresholder.mm in Sources */,

@@ -203,7 +203,7 @@
             chosen = compo;
     NSInteger width = chosen.channels.count + 1;
     
-    NSMutableArray *channs = @[@"Acquisiton"].mutableCopy;
+    NSMutableArray *channs  = @[].mutableCopy;//= @[@"Acquisiton"].mutableCopy;
     NSArray *keys = loader.metadata[JSON_METADATA_KEYS];
     NSMutableArray *selectedKeys = @[].mutableCopy;
     [indexSetMetadata enumerateIndexesUsingBlock:^(NSUInteger index, BOOL *stop){

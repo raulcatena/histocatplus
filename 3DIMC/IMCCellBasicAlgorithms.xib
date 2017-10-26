@@ -393,13 +393,13 @@
                     <popUpButton verticalHuggingPriority="750" id="8ST-yl-ZwH">
                         <rect key="frame" x="199" y="58" width="99" height="26"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxY="YES"/>
-                        <popUpButtonCell key="cell" type="push" title="kNearestNeigourg" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="kQY-X4-F3a" id="d0n-UF-Wdl">
+                        <popUpButtonCell key="cell" type="push" title="Flock" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="kQY-X4-F3a" id="d0n-UF-Wdl">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="menu"/>
                             <menu key="menu" id="fOG-gd-QkP">
                                 <items>
                                     <menuItem title="kMeans" id="oEW-6j-LoX"/>
-                                    <menuItem title="kNearestNeigourg" state="on" id="kQY-X4-F3a" userLabel="PCA"/>
+                                    <menuItem title="Flock" state="on" id="kQY-X4-F3a" userLabel="PCA"/>
                                 </items>
                             </menu>
                         </popUpButtonCell>
@@ -583,16 +583,6 @@
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <button hidden="YES" verticalHuggingPriority="750" id="Tgc-ph-ue2">
-                        <rect key="frame" x="612" y="1" width="69" height="32"/>
-                        <buttonCell key="cell" type="push" title="Gate" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="f3R-Gn-ZzH">
-                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="system"/>
-                        </buttonCell>
-                        <connections>
-                            <action selector="gate:" target="-2" id="CM8-HX-ztx"/>
-                        </connections>
-                    </button>
                 </subviews>
             </view>
             <connections>

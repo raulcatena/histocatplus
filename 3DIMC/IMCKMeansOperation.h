@@ -9,6 +9,7 @@
 #import "IMCTsneOperation.h"
 
 @interface IMCKMeansOperation : IMCTsneOperation
+
 @property (nonatomic, assign) int numberOfRestarts;
 @property (nonatomic, assign) int numberOfClusters;
 @end

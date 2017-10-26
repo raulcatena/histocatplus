@@ -11,10 +11,12 @@
 #import "IMCBhSNEOperation.h"
 #import "IMCPCAOperation.h"
 #import "IMCKMeansOperation.h"
+#import "IMCFlockOperation.h"
 #import "kmeans.h"
 #import "IMCImageGenerator.h"
 #import "NSView+Utilities.h"
 #import "IMCComputationOnMask.h"
+#import "flock.h"
 
 @interface IMCCellBasicAlgorithms (){
     int iterationsCursor;
@@ -195,6 +197,37 @@
     [self.clusteringOperations addOperation:op];
 }
 
+-(void)runFlock{
+    
+    int aClusteringCursor = 0;
+    int *clusters = (int *) calloc(self.computation.segmentedUnits, sizeof(int));//not iVar anymore
+    
+    NSInteger segments = self.computation.segmentedUnits;
+    unsigned int chansToAnalyze = (unsigned int)[self.tableView.selectedRowIndexes count];
+    double ** input = (double **)malloc(segments * sizeof(double *));
+    for (NSInteger i = 0; i < segments; i++)
+        input[i] = (double *)malloc(chansToAnalyze * sizeof(double));
+    __block int counter = 0;
+    [self.tableView.selectedRowIndexes enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop){
+        for (NSInteger i = 0; i < segments; i++)
+            input[i][counter] = (double)asinh(self.computation.computedData[idx][i]);
+        counter++;
+    }];
+//    directMethod(chansToAnalyze, segments, input, clusters);
+    
+    
+    IMCFlockOperation *op = [[IMCFlockOperation alloc]init];
+    op.outputDataInt = clusters;
+    op.flockInput = input;
+    op.numberOfValues = segments;
+    op.numberOfCycles = 2;
+    op.numberOfVariables = chansToAnalyze;
+    op.iterationCursor = aClusteringCursor;
+    op.indexSet = [self.tableView.selectedRowIndexes copy];
+    [self.clusteringOperationsArray addObject:op];
+    [self.clusteringOperations addOperation:op];
+}
+
 -(void)runReducer:(NSButton *)sender{
     
     if(!self.dimensionalityRedOperations)self.dimensionalityRedOperations = [[NSOperationQueue alloc]init];
@@ -230,7 +263,7 @@
             break;
             
         case 1:
-            //
+            [self runFlock];
             break;
             
         default:
@@ -238,7 +271,7 @@
     }
     
     [self.timer2 invalidate];
-    self.timer2 = [NSTimer scheduledTimerWithTimeInterval:0.2 target:self selector:@selector(checkProgressClusterer) userInfo:nil repeats:YES];
+    self.timer2 = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(checkProgressClusterer) userInfo:nil repeats:YES];
     [self.timer2 fire];
 }
 
