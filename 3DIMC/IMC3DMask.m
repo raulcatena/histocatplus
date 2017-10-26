@@ -173,7 +173,7 @@
     if(dic.allKeys.count == 1)
         return [dic.allKeys.firstObject intValue];
     if(dic.allKeys.count > 1){
-        return 0;
+        return [[[NSSet setWithArray:dic.allKeys]anyObject]intValue];//0;
 
 //        NSInteger max = 0;
 //        NSNumber *key;
@@ -410,6 +410,11 @@
                 if(handler.allBuffer[i]){
                     if(handler.allBuffer[i][channel]){
                         for (NSInteger j = 0; j < allLength; j++){
+                            if(maskIds[j] == -1){
+                                int neigh = [self touchesId:j fullMaskLength:fullMask planLength:allLength];
+                                if(neigh > 0)
+                                    maskIds[j] = neigh;
+                            }
                             if(maskIds[offset + j] == 0){
                                 UInt8 val = handler.allBuffer[i][channel][j];
                                 if(schannel > 0 && handler.allBuffer[i][schannel])

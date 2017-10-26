@@ -43,11 +43,12 @@
     });
 }
 
-+(void)operationOnImages:(NSArray <IMCImageStack *>*)images operation:(kOperation)operation withIndexSetChannels:(NSIndexSet *)indexSet toIndex:(NSInteger)index block:(void(^)())block{
++(BOOL)operationOnImages:(NSArray <IMCImageStack *>*)images operation:(kOperation)operation withIndexSetChannels:(NSIndexSet *)indexSet toIndex:(NSInteger)index block:(void(^)())block{
     if(images.count == 0)
-        return;
+        return NO;
     NSInteger sure = [General runAlertModalAreYouSure];
-    if (sure == NSAlertSecondButtonReturn)return;
+    if (sure == NSAlertSecondButtonReturn)
+        return NO;
     
     NSMutableArray *closedFiles = @[].mutableCopy;
     for (IMCImageStack *stack in images)
@@ -95,14 +96,16 @@
         if(block)
             dispatch_async(dispatch_get_main_queue(), ^{block();});
     });
+    return YES;
 }
 
-+(void)operationOnComputations:(NSArray <IMCComputationOnMask *>*)comps operation:(kOperation)operation withIndexSetChannels:(NSIndexSet *)indexSet toIndex:(NSInteger)index block:(void(^)())block{
++(BOOL)operationOnComputations:(NSArray <IMCComputationOnMask *>*)comps operation:(kOperation)operation withIndexSetChannels:(NSIndexSet *)indexSet toIndex:(NSInteger)index block:(void(^)())block{
     if(comps.count == 0)
-        return;
+        return NO;
     
     NSInteger sure = [General runAlertModalAreYouSure];
-    if (sure == NSAlertSecondButtonReturn)return;
+    if (sure == NSAlertSecondButtonReturn)
+        return NO;
     
     dispatch_queue_t aQ = dispatch_queue_create("otQ", NULL);
     dispatch_async(aQ, ^{
@@ -130,14 +133,16 @@
                 default:
                     break;
             }
-            
             if(!wasLoaded)
                 [comp unLoadLayerDataWithBlock:nil];
             if(!maskWasLoaded)
                 [comp.mask unLoadLayerDataWithBlock:nil];
         }
-        if(block)block();//Don't know why always crashes if I do it in the main thread. It should not, and I usually call refresh in this block. I leave it like this as it fixes the bug but am not convinced
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if(block)block();//Don't know why always crashes if I do it in the main thread. It should not, and I usually call refresh in this block. I leave it like this as it fixes the bug but am not convinced
+        });
     });
+    return YES;
 }
 
 +(void)applySettingsFromStack:(IMCImageStack *)stack stacks:(NSArray <IMCFileWrapper *>*)stacks withIndexSetChannels:(NSIndexSet *)indexSet block:(void(^)())block{

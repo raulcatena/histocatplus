@@ -38,16 +38,22 @@
     }
     [super setParent:parent];
 }
+
 -(void)removeChild:(IMCNodeWrapper *)childNode{    
     for (NSMutableDictionary *trainJson in [self.jsonDictionary[JSON_DICT_PIXEL_MASK_COMPUTATIONS]copy])
         if(childNode.jsonDictionary == trainJson){
             [self.jsonDictionary[JSON_DICT_PIXEL_MASK_COMPUTATIONS]removeObject:trainJson];
             NSFileManager *man = [NSFileManager defaultManager];
+            NSError *error;
+            NSLog(@"%@", childNode.absolutePath);
             if([man fileExistsAtPath:childNode.absolutePath])
                 [man removeItemAtPath:childNode.absolutePath error:NULL];
+            
             if([[NSFileManager defaultManager]fileExistsAtPath:childNode.secondAbsolutePath])
                 [[NSFileManager defaultManager]removeItemAtPath:childNode.secondAbsolutePath error:NULL];
             childNode.parent = nil;
+            if(error)
+                NSLog(@"Error %@", error);
         }
 }
 -(NSString *)itemSubName{

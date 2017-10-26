@@ -20,14 +20,14 @@ typedef enum{
 
 @interface IMCChannelOperations : NSObject
 
-+(void)operationOnImages:(NSArray <IMCImageStack *>*)images operation:(kOperation)operation withIndexSetChannels:(NSIndexSet *)indexSet toIndex:(NSInteger)index block:(void(^)())block;
++(BOOL)operationOnImages:(NSArray <IMCImageStack *>*)images operation:(kOperation)operation withIndexSetChannels:(NSIndexSet *)indexSet toIndex:(NSInteger)index block:(void(^)())block;
 +(void)applySettingsFromStack:(IMCImageStack *)stack stacks:(NSArray <IMCImageStack *>*)stacks withIndexSetChannels:(NSIndexSet *)indexSet block:(void(^)())block;
 +(void)applySettingsAdjustToMaxFromStack:(IMCImageStack *)stack stacks:(NSArray <IMCImageStack *>*)stacks withIndexSetChannels:(NSIndexSet *)indexSet block:(void(^)())block;
 +(void)applySettingsFromComputation:(IMCComputationOnMask *)computation stacks:(NSArray <IMCComputationOnMask *>*)computations withIndexSetChannels:(NSIndexSet *)indexSet block:(void(^)())block;
 +(void)applyColors:(IMCImageStack *)stack stacks:(NSArray <IMCFileWrapper *>*)stacks withIndexSetChannels:(NSIndexSet *)indexSet block:(void(^)())block;
 
 //On computations
-+(void)operationOnComputations:(NSArray <IMCComputationOnMask *>*)comps operation:(kOperation)operation withIndexSetChannels:(NSIndexSet *)indexSet toIndex:(NSInteger)index block:(void(^)())block;
++(BOOL)operationOnComputations:(NSArray <IMCComputationOnMask *>*)comps operation:(kOperation)operation withIndexSetChannels:(NSIndexSet *)indexSet toIndex:(NSInteger)index block:(void(^)())block;
 
 //File saving
 +(void)savefiles:(NSArray <IMCFileWrapper *>*)files block:(void(^)())block;

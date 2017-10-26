@@ -50,7 +50,7 @@
 @property (nonatomic, strong) NSMutableArray<IMCPixelClassification *> *inScopeMasks;
 @property (nonatomic, strong) NSMutableArray<IMCComputationOnMask *> *inScopeComputations;
 @property (nonatomic, strong) NSMutableArray<NSImage *> *inScopePanoramas;
-@property (nonatomic, readonly) NSArray *involvedStacksForMetadata;
+@property (nonatomic, strong) NSMutableArray *involvedStacksForMetadata;
 @property (nonatomic, strong) NSMutableArray *inOrderIndexes;
 @property (nonatomic, strong) NSMutableArray *channelsInScopeForPlotting;
 @property (nonatomic, strong) IMCChannelSettingsDelegate *customChannelsDelegate;
@@ -252,7 +252,8 @@
 -(IBAction)create3DMaskByThresholding:(id)sender;
 -(IBAction)create3DMaskByThresholdingKeepId:(id)sender;
 -(IBAction)watershed2D:(id)sender;
-
+//Cell Algorithms
+-(IBAction)cellBasicAlgorithms:(id)sender;
 
 @end
 

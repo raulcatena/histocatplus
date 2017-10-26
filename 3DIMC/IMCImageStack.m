@@ -453,14 +453,9 @@
                free(cachedSettings[index]);cachedSettings[index] = NULL;
         }];
         [self rerackBuffers];
+        [[self channelSettings] removeObjectsAtIndexes:indexes];
         [self.origChannels removeObjectsAtIndexes:indexes];
         [self.channels removeObjectsAtIndexes:indexes];
-        
-        NSMutableArray *setting = [self channelSettings];
-        if(setting){
-            if(setting.count < indexes.lastIndex)
-                [setting removeObjectsAtIndexes:indexes];
-        }
     }
 }
 

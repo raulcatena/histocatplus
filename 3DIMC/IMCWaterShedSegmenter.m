@@ -315,12 +315,11 @@ int gaussianMatrix [9][3] = {
                         maskIds[j] = neigh;
                 }
                 if(maskIds[j] == 0){
-                    UInt8 val = 0;
-                    for (int a = 0; a < inOrderIndexes.count; a++) {
+                    int val = 0;
+                    for (int a = 0; a < inOrderIndexes.count; a++)
                         val += copies[a][j];
-                        if(val >= 255)
-                            break;
-                    }
+                    val = MIN(255, val);
+                    
                     if(schannel >= 0 && copyS)
                         val = MAX(0, val - copyS[j]);
                     if(val >= analyzeAdded){
@@ -357,14 +356,15 @@ int gaussianMatrix [9][3] = {
     mask.parent = stack;
     mask.isLoaded = YES;
     mask.mask = maskIds;
-    mask.itemName = name;
-    [mask saveFileWith32IntBuffer:maskIds length:allLength];
+    mask.itemName = [name stringByAppendingFormat:@"_%@", stack.itemName];;
     
     //Expand
     if(expansion > 0){
         mask.jsonDictionary[JSON_DICT_PIXEL_MASK_IS_DUAL] = @YES;
         [IMCWaterShedSegmenter expand:expansion length:allLength width:width mask:maskIds];
     }
+    
+    [mask saveFileWith32IntBuffer:maskIds length:allLength];
     
     //Prepare the 3D buffer handler
     //[IMCWaterShedSegmenter passToHandler];

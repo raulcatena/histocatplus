@@ -155,16 +155,15 @@
     
     if(!self.mask.isLoaded)
         [self.mask loadLayerDataWithBlock:nil];
-    
     while(!self.mask.isLoaded);
     
     if(!self.isLoaded)
         [self open];
     
-    while(!self.isLoaded);
+    if(!self.isLoaded)
+        return;
     
     [super loadLayerDataWithBlock:block];
-    
 }
 -(void)unLoadLayerDataWithBlock:(void (^)())block{
     [self release_computedData];
@@ -179,7 +178,7 @@
     self.computedData = malloc(countChannels * sizeof(float*));
     
     for (NSInteger i = 0; i < countChannels; i++)
-        self.computedData[i] = i == 0 ? calloc(self.segmentedUnits, sizeof(float)) : malloc(self.segmentedUnits * sizeof(float));//Old solution
+        self.computedData[i] = calloc(self.segmentedUnits, sizeof(float));
     
     self.isLoaded = YES;
 }
@@ -202,17 +201,17 @@
 #pragma mark save
 
 -(void)saveData{
-    NSString *path = [[self.fileWrapper.workingFolder stringByAppendingPathComponent:self.mask.itemHash]stringByAppendingPathExtension:@".cbin"];
+    
     NSMutableData *data = [NSMutableData data];
     NSInteger count = self.channels.count;
-    for (NSInteger i = 0; i < count; i++)
+    for (NSInteger i = 0; i < count; i++){
         if(self.computedData[i])
             [data appendBytes:self.computedData[i] length:self.segmentedUnits * sizeof(float)];
-    
+    }
     
         
     NSError *error = nil;
-    [data writeToFile:path options:NSDataWritingAtomic error:&error];
+    [data writeToFile:self.absolutePath options:NSDataWritingAtomic error:&error];
     if(error)
         NSLog(@"Write returned error: %@", [error localizedDescription]);
 }
@@ -220,13 +219,10 @@
 #pragma mark open
 
 -(BOOL)hasBackData{
-    NSString *path = [[self.workingFolder stringByAppendingPathComponent:self.mask.itemHash]stringByAppendingPathExtension:@".cbin"];
-    return [[NSFileManager defaultManager]fileExistsAtPath:path];
+    return [[NSFileManager defaultManager]fileExistsAtPath:self.absolutePath];
 }
 
 -(void)open{
-    
-    NSString *path = [[self.workingFolder stringByAppendingPathComponent:self.mask.itemHash]stringByAppendingPathExtension:@".cbin"];
     /*if([self hasBackData]){
         [self prepData];
         NSData *data = [NSData dataWithContentsOfFile:path];
@@ -251,15 +247,22 @@
     }*/
 
     if([self hasBackData]){
-        [self prepData];
-        NSData *data = [NSData dataWithContentsOfFile:path];
-        float *allBytes = (float *)data.bytes;
         
-        NSInteger counter = 0;
-        
+        NSData *data = [NSData dataWithContentsOfFile:self.absolutePath];
+
+
         NSInteger channelsCount = self.channels.count;
         NSInteger units = self.segmentedUnits;
         
+        if(data.length < channelsCount * units * sizeof(float)){
+            self.isLoaded = NO;
+            dispatch_async(dispatch_get_main_queue(), ^{[General runAlertModalWithMessage:@"File corrupted"];});
+            return;
+        }
+        
+        [self prepData];
+        NSInteger counter = 0;
+        float *allBytes = (float *)data.bytes;
         for (NSInteger i = 0; i < channelsCount; i++) {
             for (NSInteger j = 0; j < units; j++) {
                 self.computedData[i][j] = allBytes[counter];
@@ -349,7 +352,7 @@
     [arr addObject:@"Density"];
     countComps += 4;
     self.jsonDictionary[JSON_DICT_PIXEL_MASK_COMPUTATION_METADATA_SEGMENTED_CHANNELS] = arr;
-    self.jsonDictionary[JSON_DICT_PIXEL_MASK_COMPUTATION_METADATA_SEGMENTED_ORIG_CHANNELS] = arr.copy;
+    self.jsonDictionary[JSON_DICT_PIXEL_MASK_COMPUTATION_METADATA_SEGMENTED_ORIG_CHANNELS] = arr.mutableCopy;
     
     return countComps;
 }
@@ -746,7 +749,9 @@
         cachedSettings = (float **)calloc(self.channels.count, sizeof(float *));
     }
 }
-
+-(NSString *)absolutePath{
+    return [[self.fileWrapper.workingFolder stringByAppendingPathComponent:self.mask.itemHash]stringByAppendingPathExtension:@"cbin"];
+}
 -(float *)createImageForMaskWithCellData:(float *)data maskOption:(MaskOption)option maskType:(MaskType)maskType maskSingleColor:(NSColor *)maskSingleColor{
     
     int * copy = copyMask(self.mask.mask, (int)self.mask.imageStack.width, (int)self.mask.imageStack.height);
@@ -967,7 +972,9 @@
 
 #pragma mark add results
 -(void)addBuffer:(float *)buffer withName:(NSString *)name atIndex:(NSInteger)index{
-    NSLog(@"Already %li %li", index, self.channels.count);
+    
+    [self clearCacheBuffers];
+    
     if(index == NSNotFound || index > self.channels.count)
         index = self.channels.count;
     
@@ -982,7 +989,7 @@
         old[i] = self.computedData[i];
     
     NSUInteger alreadyInComp = [self.channels indexOfObject:name];
-    NSLog(@"Already %li", alreadyInComp);
+    
     if(alreadyInComp != NSNotFound){
         if(self.computedData[alreadyInComp])
             free(self.computedData[alreadyInComp]);
@@ -1002,30 +1009,37 @@
                 self.computedData[i] = old[i - (i > index)];
         }
     }
-    [self clearCacheBuffers];
+    
     [self saveData];
     free(old);
 }
 #pragma mark other operations on channels
 
 -(void)removeChannelsWithIndexSet:(NSIndexSet *)indexSet{
+    
     if(self.computedData && self.isLoaded){
-        float ** new = calloc(self.channels.count - indexSet.count, sizeof(float *));
-        NSInteger counter = 0;
-        for (NSInteger i = 0; i < self.channels.count; i++) {
-            if(![indexSet containsIndex:i]){
-                new[counter] = self.computedData[i];
-                counter++;
-            }else{
-                if(self.computedData[i])
-                    free(self.computedData[i]);
-            }
-        }
-        free(self.computedData);
-        self.computedData = new;
         
+        NSInteger oldCount = self.channels.count;
         [self.originalChannels removeObjectsAtIndexes:indexSet];
         [self.channels removeObjectsAtIndexes:indexSet];
+        
+        float ** new = calloc(oldCount - indexSet.count, sizeof(float *));
+        NSInteger counter = 0;
+        for (NSInteger i = 0; i < oldCount; i++) {
+            if([indexSet containsIndex:i]){
+                if(self.computedData[i]){
+                    free(self.computedData[i]);
+                    self.computedData[i] = NULL;
+                }
+            }else{
+                new[counter] = self.computedData[i];
+                counter++;
+            }
+        }
+        
+        free(self.computedData);
+        self.computedData = new;
+        [self clearCacheBuffers];
         [self saveData];
     }
 }

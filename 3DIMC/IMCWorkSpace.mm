@@ -59,6 +59,9 @@
 //Watershed
 #import "IMCWaterShedSegmenter.h"
 
+//Cell basic algorithms
+#import "IMCCellBasicAlgorithms.h"
+
 @interface IMCWorkSpace (){
     dispatch_queue_t threadPainting;
 }
@@ -71,6 +74,7 @@
 @property (nonatomic, strong) IMCMetalViewAndRenderer *metalViewDelegate;
 @property (nonatomic, assign) NSModalSession compensationSession;
 @property (nonatomic, strong) IMCCompensation * compensationHandler;
+@property (nonatomic, strong) IMCCellBasicAlgorithms * cellAnalysis;
 
 @end
 
@@ -87,6 +91,7 @@
         self.inScopePanoramas = @[].mutableCopy;
         self.inScopeMasks = @[].mutableCopy;
         self.inScopeComputations = @[].mutableCopy;
+        self.involvedStacksForMetadata = @[].mutableCopy;
         self.batchWindows = @[].mutableCopy;
         
         self.customChannelsDelegate = [[IMCChannelSettingsDelegate alloc]init];
@@ -1029,7 +1034,9 @@
             while(counter>4);
             [node loadLayerDataWithBlock:^{counter--;}];
         }
+        NSLog(@"A");
         [self refresh];
+        NSLog(@"B");
     });
 }
 -(void)closeNodes:(NSMenuItem *)sender{
@@ -1061,11 +1068,15 @@
 
 -(void)deleteChannels:(NSMenuItem *)sender{
     NSIndexSet *is = self.channels.selectedRowIndexes.copy;
-    [self.channels deselectAll:nil];
+    
+    self.channels.delegate = nil;
+
     if(self.inScopeImages.count > 0)
         [IMCChannelOperations operationOnImages:self.inScopeImages.copy operation:OPERATION_REMOVE_CHANNELS withIndexSetChannels:is toIndex:-1 block:^{[self refresh];}];//Index irrelevant
     if(self.inScopeComputations.count > 0)
         [IMCChannelOperations operationOnComputations:self.inScopeComputations.copy operation:OPERATION_REMOVE_CHANNELS withIndexSetChannels:is toIndex:-1 block:^{[self refresh];}];
+    
+    self.channels.delegate = self;
 }
 -(void)addChannelsInline:(NSMenuItem *)sender{
     NSIndexSet *selectedChannels = self.channels.selectedRowIndexes.copy;
@@ -1172,10 +1183,12 @@
         if([item isMemberOfClass:[IMCPixelClassification class]]){
             IMCPixelClassification *mask = item;//I use train
             [mask.imageStack removeChild:mask];
+            [self.involvedStacksForMetadata removeObject:mask.imageStack];
         }
         if([item isMemberOfClass:[IMCComputationOnMask class]]){
             IMCComputationOnMask *comp = item;//I use train
             [comp.mask removeChild:comp];
+            [self.involvedStacksForMetadata removeObject:comp];
         }
 //        if([item isMemberOfClass:[IMCMaskTraining class]]){
 //            IMCPixelTraining *train = item;//I use train
@@ -1380,18 +1393,6 @@
     for (IMCPixelClassification *mask in self.inScopeMasks) {
         if(![involvedStacks containsObject:mask.imageStack])
             [involvedStacks addObject:mask.imageStack];
-    }
-    for (IMCComputationOnMask *comp in self.inScopeComputations) {
-        if(![involvedStacks containsObject:comp.mask.imageStack])
-            [involvedStacks addObject:comp.mask.imageStack];
-    }
-    return involvedStacks;
-}
--(NSArray *)involvedStacksForMetadata{
-    NSMutableArray *involvedStacks = [self.inScopeImages mutableCopy];
-    for (IMCComputationOnMask *comp in self.inScopeComputations) {
-        if(![involvedStacks containsObject:comp.mask.imageStack])
-            [involvedStacks addObject:comp.mask.imageStack];
     }
     for (IMCComputationOnMask *comp in self.inScopeComputations) {
         if(![involvedStacks containsObject:comp.mask.imageStack])
@@ -2064,6 +2065,16 @@
     self.compensationHandler = nil;
     self.compensationSession = nil;
     return YES;
+}
+
+#pragma mark cell basic algorithms
+
+-(void)cellBasicAlgorithms:(id)sender{
+    if(self.inScopeComputation){
+        if(!self.cellAnalysis)
+            self.cellAnalysis = [[IMCCellBasicAlgorithms alloc]initWithComputation:self.inScopeComputation];
+        [[self.cellAnalysis window] makeKeyAndOrderFront:self.cellAnalysis];
+    }
 }
 
 #pragma mark

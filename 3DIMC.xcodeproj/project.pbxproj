@@ -242,6 +242,51 @@
 		0D04DBF61EEABA7200B16BAB /* IMCMetricsCalculator.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D04DBF41EEABA7200B16BAB /* IMCMetricsCalculator.m */; };
 		0D04DBF91EEABA7E00B16BAB /* IMCMetric.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D04DBF81EEABA7E00B16BAB /* IMCMetric.m */; };
 		0D04DBFA1EEABA7E00B16BAB /* IMCMetric.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D04DBF81EEABA7E00B16BAB /* IMCMetric.m */; };
+		0D0D83C71FA12C670044EDC1 /* IMCBhSNEOperation.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0D0D83C11FA12C670044EDC1 /* IMCBhSNEOperation.mm */; };
+		0D0D83C81FA12C670044EDC1 /* IMCBhSNEOperation.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0D0D83C11FA12C670044EDC1 /* IMCBhSNEOperation.mm */; };
+		0D0D83C91FA12C670044EDC1 /* IMCBhSNEOperation.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0D0D83C11FA12C670044EDC1 /* IMCBhSNEOperation.mm */; };
+		0D0D83CA1FA12C670044EDC1 /* IMCTsneDashboard.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D0D83C31FA12C670044EDC1 /* IMCTsneDashboard.m */; };
+		0D0D83CB1FA12C670044EDC1 /* IMCTsneDashboard.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D0D83C31FA12C670044EDC1 /* IMCTsneDashboard.m */; };
+		0D0D83CC1FA12C670044EDC1 /* IMCTsneDashboard.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D0D83C31FA12C670044EDC1 /* IMCTsneDashboard.m */; };
+		0D0D83CD1FA12C670044EDC1 /* IMCTsneDashboard.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0D0D83C41FA12C670044EDC1 /* IMCTsneDashboard.xib */; };
+		0D0D83CE1FA12C670044EDC1 /* IMCTsneDashboard.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0D0D83C41FA12C670044EDC1 /* IMCTsneDashboard.xib */; };
+		0D0D83CF1FA12C670044EDC1 /* IMCTsneDashboard.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0D0D83C41FA12C670044EDC1 /* IMCTsneDashboard.xib */; };
+		0D0D83D01FA12C670044EDC1 /* IMCTestCPP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0D0D83C61FA12C670044EDC1 /* IMCTestCPP.cpp */; };
+		0D0D83D11FA12C670044EDC1 /* IMCTestCPP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0D0D83C61FA12C670044EDC1 /* IMCTestCPP.cpp */; };
+		0D0D83D21FA12C670044EDC1 /* IMCTestCPP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0D0D83C61FA12C670044EDC1 /* IMCTestCPP.cpp */; };
+		0D0D83DA1FA12D040044EDC1 /* IMCMathWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D0D83D61FA12D040044EDC1 /* IMCMathWindowController.m */; };
+		0D0D83DB1FA12D040044EDC1 /* IMCMathWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D0D83D61FA12D040044EDC1 /* IMCMathWindowController.m */; };
+		0D0D83DC1FA12D040044EDC1 /* IMCMathWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D0D83D61FA12D040044EDC1 /* IMCMathWindowController.m */; };
+		0D0D83E01FA12D040044EDC1 /* IMCCellBasicAlgorithms.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0D0D83D91FA12D040044EDC1 /* IMCCellBasicAlgorithms.xib */; };
+		0D0D83E11FA12D040044EDC1 /* IMCCellBasicAlgorithms.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0D0D83D91FA12D040044EDC1 /* IMCCellBasicAlgorithms.xib */; };
+		0D0D83E21FA12D040044EDC1 /* IMCCellBasicAlgorithms.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0D0D83D91FA12D040044EDC1 /* IMCCellBasicAlgorithms.xib */; };
+		0D0D83E51FA12D410044EDC1 /* IMCGeneralPlot.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D0D83E41FA12D410044EDC1 /* IMCGeneralPlot.m */; };
+		0D0D83E61FA12D410044EDC1 /* IMCGeneralPlot.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D0D83E41FA12D410044EDC1 /* IMCGeneralPlot.m */; };
+		0D0D83E71FA12D410044EDC1 /* IMCGeneralPlot.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D0D83E41FA12D410044EDC1 /* IMCGeneralPlot.m */; };
+		0D0D83F01FA12D650044EDC1 /* kmeans.c in Sources */ = {isa = PBXBuildFile; fileRef = 0D0D83EA1FA12D650044EDC1 /* kmeans.c */; };
+		0D0D83F11FA12D650044EDC1 /* kmeans.c in Sources */ = {isa = PBXBuildFile; fileRef = 0D0D83EA1FA12D650044EDC1 /* kmeans.c */; };
+		0D0D83F21FA12D650044EDC1 /* kmeans.c in Sources */ = {isa = PBXBuildFile; fileRef = 0D0D83EA1FA12D650044EDC1 /* kmeans.c */; };
+		0D0D83F31FA12D650044EDC1 /* IMCKMeansOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D0D83EC1FA12D650044EDC1 /* IMCKMeansOperation.m */; };
+		0D0D83F41FA12D650044EDC1 /* IMCKMeansOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D0D83EC1FA12D650044EDC1 /* IMCKMeansOperation.m */; };
+		0D0D83F51FA12D650044EDC1 /* IMCKMeansOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D0D83EC1FA12D650044EDC1 /* IMCKMeansOperation.m */; };
+		0D0D83F61FA12D650044EDC1 /* IMCKMeansDashboard.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D0D83EE1FA12D650044EDC1 /* IMCKMeansDashboard.m */; };
+		0D0D83F71FA12D650044EDC1 /* IMCKMeansDashboard.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D0D83EE1FA12D650044EDC1 /* IMCKMeansDashboard.m */; };
+		0D0D83F81FA12D650044EDC1 /* IMCKMeansDashboard.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D0D83EE1FA12D650044EDC1 /* IMCKMeansDashboard.m */; };
+		0D0D83F91FA12D650044EDC1 /* IMCKMeansDashboard.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0D0D83EF1FA12D650044EDC1 /* IMCKMeansDashboard.xib */; };
+		0D0D83FA1FA12D650044EDC1 /* IMCKMeansDashboard.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0D0D83EF1FA12D650044EDC1 /* IMCKMeansDashboard.xib */; };
+		0D0D83FB1FA12D650044EDC1 /* IMCKMeansDashboard.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0D0D83EF1FA12D650044EDC1 /* IMCKMeansDashboard.xib */; };
+		0D0D84011FA138360044EDC1 /* pca.c in Sources */ = {isa = PBXBuildFile; fileRef = 0D0D83FE1FA138360044EDC1 /* pca.c */; };
+		0D0D84021FA138360044EDC1 /* pca.c in Sources */ = {isa = PBXBuildFile; fileRef = 0D0D83FE1FA138360044EDC1 /* pca.c */; };
+		0D0D84031FA138360044EDC1 /* pca.c in Sources */ = {isa = PBXBuildFile; fileRef = 0D0D83FE1FA138360044EDC1 /* pca.c */; };
+		0D0D84041FA138360044EDC1 /* IMCPCAOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D0D84001FA138360044EDC1 /* IMCPCAOperation.m */; };
+		0D0D84051FA138360044EDC1 /* IMCPCAOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D0D84001FA138360044EDC1 /* IMCPCAOperation.m */; };
+		0D0D84061FA138360044EDC1 /* IMCPCAOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D0D84001FA138360044EDC1 /* IMCPCAOperation.m */; };
+		0D0D84081FA139860044EDC1 /* IMCCellBasicAlgorithms.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D0D83D81FA12D040044EDC1 /* IMCCellBasicAlgorithms.m */; };
+		0D0D84091FA144BC0044EDC1 /* IMCCellBasicAlgorithms.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D0D83D81FA12D040044EDC1 /* IMCCellBasicAlgorithms.m */; };
+		0D0D840A1FA144BD0044EDC1 /* IMCCellBasicAlgorithms.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D0D83D81FA12D040044EDC1 /* IMCCellBasicAlgorithms.m */; };
+		0D0D840D1FA14A9E0044EDC1 /* IMCBiaxialZero.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D0D840C1FA14A9E0044EDC1 /* IMCBiaxialZero.m */; };
+		0D0D840E1FA14A9E0044EDC1 /* IMCBiaxialZero.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D0D840C1FA14A9E0044EDC1 /* IMCBiaxialZero.m */; };
+		0D0D840F1FA14A9E0044EDC1 /* IMCBiaxialZero.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D0D840C1FA14A9E0044EDC1 /* IMCBiaxialZero.m */; };
 		0D15573F1E5D876900C27064 /* libopencv_calib3d.3.2.0.dylib in Resources */ = {isa = PBXBuildFile; fileRef = 0DFB2E281E478EF70065AC61 /* libopencv_calib3d.3.2.0.dylib */; };
 		0D1557401E5D876900C27064 /* libopencv_calib3d.3.2.dylib in Resources */ = {isa = PBXBuildFile; fileRef = 0DFB2E291E478EF70065AC61 /* libopencv_calib3d.3.2.dylib */; };
 		0D1557411E5D876900C27064 /* libopencv_calib3d.dylib in Resources */ = {isa = PBXBuildFile; fileRef = 0DFB2E2A1E478EF70065AC61 /* libopencv_calib3d.dylib */; };
@@ -837,6 +882,33 @@
 		0D04DBF41EEABA7200B16BAB /* IMCMetricsCalculator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IMCMetricsCalculator.m; sourceTree = "<group>"; };
 		0D04DBF71EEABA7E00B16BAB /* IMCMetric.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IMCMetric.h; sourceTree = "<group>"; };
 		0D04DBF81EEABA7E00B16BAB /* IMCMetric.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IMCMetric.m; sourceTree = "<group>"; };
+		0D0D83C01FA12C670044EDC1 /* IMCBhSNEOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IMCBhSNEOperation.h; sourceTree = "<group>"; };
+		0D0D83C11FA12C670044EDC1 /* IMCBhSNEOperation.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = IMCBhSNEOperation.mm; sourceTree = "<group>"; };
+		0D0D83C21FA12C670044EDC1 /* IMCTsneDashboard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IMCTsneDashboard.h; sourceTree = "<group>"; };
+		0D0D83C31FA12C670044EDC1 /* IMCTsneDashboard.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IMCTsneDashboard.m; sourceTree = "<group>"; };
+		0D0D83C41FA12C670044EDC1 /* IMCTsneDashboard.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = IMCTsneDashboard.xib; sourceTree = "<group>"; };
+		0D0D83C51FA12C670044EDC1 /* IMCTestCPP.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = IMCTestCPP.hpp; sourceTree = "<group>"; };
+		0D0D83C61FA12C670044EDC1 /* IMCTestCPP.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IMCTestCPP.cpp; sourceTree = "<group>"; };
+		0D0D83D51FA12D040044EDC1 /* IMCMathWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IMCMathWindowController.h; sourceTree = "<group>"; };
+		0D0D83D61FA12D040044EDC1 /* IMCMathWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IMCMathWindowController.m; sourceTree = "<group>"; };
+		0D0D83D71FA12D040044EDC1 /* IMCCellBasicAlgorithms.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IMCCellBasicAlgorithms.h; sourceTree = "<group>"; };
+		0D0D83D81FA12D040044EDC1 /* IMCCellBasicAlgorithms.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IMCCellBasicAlgorithms.m; sourceTree = "<group>"; };
+		0D0D83D91FA12D040044EDC1 /* IMCCellBasicAlgorithms.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = IMCCellBasicAlgorithms.xib; sourceTree = "<group>"; };
+		0D0D83E31FA12D410044EDC1 /* IMCGeneralPlot.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IMCGeneralPlot.h; sourceTree = "<group>"; };
+		0D0D83E41FA12D410044EDC1 /* IMCGeneralPlot.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IMCGeneralPlot.m; sourceTree = "<group>"; };
+		0D0D83E91FA12D650044EDC1 /* kmeans.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = kmeans.h; sourceTree = "<group>"; };
+		0D0D83EA1FA12D650044EDC1 /* kmeans.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = kmeans.c; sourceTree = "<group>"; };
+		0D0D83EB1FA12D650044EDC1 /* IMCKMeansOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IMCKMeansOperation.h; sourceTree = "<group>"; };
+		0D0D83EC1FA12D650044EDC1 /* IMCKMeansOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IMCKMeansOperation.m; sourceTree = "<group>"; };
+		0D0D83ED1FA12D650044EDC1 /* IMCKMeansDashboard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IMCKMeansDashboard.h; sourceTree = "<group>"; };
+		0D0D83EE1FA12D650044EDC1 /* IMCKMeansDashboard.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IMCKMeansDashboard.m; sourceTree = "<group>"; };
+		0D0D83EF1FA12D650044EDC1 /* IMCKMeansDashboard.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = IMCKMeansDashboard.xib; sourceTree = "<group>"; };
+		0D0D83FD1FA138360044EDC1 /* pca.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pca.h; sourceTree = "<group>"; };
+		0D0D83FE1FA138360044EDC1 /* pca.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = pca.c; sourceTree = "<group>"; };
+		0D0D83FF1FA138360044EDC1 /* IMCPCAOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IMCPCAOperation.h; sourceTree = "<group>"; };
+		0D0D84001FA138360044EDC1 /* IMCPCAOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IMCPCAOperation.m; sourceTree = "<group>"; };
+		0D0D840B1FA14A9E0044EDC1 /* IMCBiaxialZero.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IMCBiaxialZero.h; sourceTree = "<group>"; };
+		0D0D840C1FA14A9E0044EDC1 /* IMCBiaxialZero.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IMCBiaxialZero.m; sourceTree = "<group>"; };
 		0D21D9451F5696D7003EF354 /* IMCAirLabClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IMCAirLabClient.h; sourceTree = "<group>"; };
 		0D21D9461F5696D7003EF354 /* IMCAirLabClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IMCAirLabClient.m; sourceTree = "<group>"; };
 		0D4336431E4DEE4E0096371D /* NSOpenGLView+Utilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSOpenGLView+Utilities.h"; sourceTree = "<group>"; };
@@ -1402,6 +1474,91 @@
 			name = Metrics;
 			sourceTree = "<group>";
 		};
+		0D0D83BF1FA12C2B0044EDC1 /* tSNE */ = {
+			isa = PBXGroup;
+			children = (
+				0DB400581E534D2D00179ECB /* IMCTsneOperation.h */,
+				0DB400591E534D2D00179ECB /* IMCTsneOperation.m */,
+				0D0D83C21FA12C670044EDC1 /* IMCTsneDashboard.h */,
+				0D0D83C31FA12C670044EDC1 /* IMCTsneDashboard.m */,
+				0D0D83C41FA12C670044EDC1 /* IMCTsneDashboard.xib */,
+				0DB4005B1E534D6E00179ECB /* tsne_c.h */,
+				0DB4005C1E534D6E00179ECB /* tsne_c.c */,
+			);
+			name = tSNE;
+			sourceTree = "<group>";
+		};
+		0D0D83D31FA12C760044EDC1 /* bhSNE */ = {
+			isa = PBXGroup;
+			children = (
+				0D0D83C01FA12C670044EDC1 /* IMCBhSNEOperation.h */,
+				0D0D83C11FA12C670044EDC1 /* IMCBhSNEOperation.mm */,
+				0DB4005E1E534D7D00179ECB /* bhsne.cpp */,
+				0DB4005F1E534D7D00179ECB /* bhsne.h */,
+				0DB400601E534D7D00179ECB /* sptree.cpp */,
+				0DB400611E534D7D00179ECB /* sptree.h */,
+				0DB400621E534D7D00179ECB /* vptree.h */,
+			);
+			name = bhSNE;
+			sourceTree = "<group>";
+		};
+		0D0D83D41FA12CDB0044EDC1 /* Cell Algorithms */ = {
+			isa = PBXGroup;
+			children = (
+				0D0D84071FA138B30044EDC1 /* OperationWrappers */,
+				0D0D83FC1FA1382D0044EDC1 /* PCA */,
+				0D0D83E81FA12D550044EDC1 /* kMeans */,
+				0D0D83D31FA12C760044EDC1 /* bhSNE */,
+				0D0D83BF1FA12C2B0044EDC1 /* tSNE */,
+				0D0D83D51FA12D040044EDC1 /* IMCMathWindowController.h */,
+				0D0D83D61FA12D040044EDC1 /* IMCMathWindowController.m */,
+				0D0D83D71FA12D040044EDC1 /* IMCCellBasicAlgorithms.h */,
+				0D0D83D81FA12D040044EDC1 /* IMCCellBasicAlgorithms.m */,
+				0D0D83D91FA12D040044EDC1 /* IMCCellBasicAlgorithms.xib */,
+				0D0D83E31FA12D410044EDC1 /* IMCGeneralPlot.h */,
+				0D0D83E41FA12D410044EDC1 /* IMCGeneralPlot.m */,
+				0D0D840B1FA14A9E0044EDC1 /* IMCBiaxialZero.h */,
+				0D0D840C1FA14A9E0044EDC1 /* IMCBiaxialZero.m */,
+			);
+			name = "Cell Algorithms";
+			sourceTree = "<group>";
+		};
+		0D0D83E81FA12D550044EDC1 /* kMeans */ = {
+			isa = PBXGroup;
+			children = (
+				0D0D83E91FA12D650044EDC1 /* kmeans.h */,
+				0D0D83EA1FA12D650044EDC1 /* kmeans.c */,
+				0D0D83EB1FA12D650044EDC1 /* IMCKMeansOperation.h */,
+				0D0D83EC1FA12D650044EDC1 /* IMCKMeansOperation.m */,
+				0D0D83ED1FA12D650044EDC1 /* IMCKMeansDashboard.h */,
+				0D0D83EE1FA12D650044EDC1 /* IMCKMeansDashboard.m */,
+				0D0D83EF1FA12D650044EDC1 /* IMCKMeansDashboard.xib */,
+			);
+			name = kMeans;
+			sourceTree = "<group>";
+		};
+		0D0D83FC1FA1382D0044EDC1 /* PCA */ = {
+			isa = PBXGroup;
+			children = (
+				0D0D83FD1FA138360044EDC1 /* pca.h */,
+				0D0D83FE1FA138360044EDC1 /* pca.c */,
+				0D0D83FF1FA138360044EDC1 /* IMCPCAOperation.h */,
+				0D0D84001FA138360044EDC1 /* IMCPCAOperation.m */,
+			);
+			name = PCA;
+			sourceTree = "<group>";
+		};
+		0D0D84071FA138B30044EDC1 /* OperationWrappers */ = {
+			isa = PBXGroup;
+			children = (
+				0DB400551E534CCF00179ECB /* IMCMathOperation.h */,
+				0DB400561E534CCF00179ECB /* IMCMathOperation.m */,
+				0D0D83C51FA12C670044EDC1 /* IMCTestCPP.hpp */,
+				0D0D83C61FA12C670044EDC1 /* IMCTestCPP.cpp */,
+			);
+			name = OperationWrappers;
+			sourceTree = "<group>";
+		};
 		0D57600E1EB9CAC2008CAB94 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -1751,6 +1908,7 @@
 				0DA2B8301E72E13E00EAA438 /* ClassifyCells */,
 				0DA8ACF91E40AE07008194C6 /* 3D */,
 				0DDB4BE61EFB0EEF000C1656 /* Compensation */,
+				0D0D83D41FA12CDB0044EDC1 /* Cell Algorithms */,
 				0D00ACA71E65D6B800887057 /* ClassifyPixels */,
 				0DB37CDE1E304D25002975E2 /* AppDelegate.h */,
 				0DB37CDF1E304D25002975E2 /* AppDelegate.mm */,
@@ -1998,21 +2156,10 @@
 		0DB4004B1E534CA700179ECB /* RRFF */ = {
 			isa = PBXGroup;
 			children = (
-				0DB400551E534CCF00179ECB /* IMCMathOperation.h */,
-				0DB400561E534CCF00179ECB /* IMCMathOperation.m */,
 				0DB4004C1E534CB700179ECB /* IMCRandomForests.h */,
 				0DB4004D1E534CB700179ECB /* IMCRandomForests.mm */,
 				0DB400671E5359F700179ECB /* RandomForests.hpp */,
 				0DB400681E5359F700179ECB /* RandomForests.cpp */,
-				0DB400581E534D2D00179ECB /* IMCTsneOperation.h */,
-				0DB400591E534D2D00179ECB /* IMCTsneOperation.m */,
-				0DB4005B1E534D6E00179ECB /* tsne_c.h */,
-				0DB4005C1E534D6E00179ECB /* tsne_c.c */,
-				0DB4005E1E534D7D00179ECB /* bhsne.cpp */,
-				0DB4005F1E534D7D00179ECB /* bhsne.h */,
-				0DB400601E534D7D00179ECB /* sptree.cpp */,
-				0DB400611E534D7D00179ECB /* sptree.h */,
-				0DB400621E534D7D00179ECB /* vptree.h */,
 			);
 			name = RRFF;
 			sourceTree = "<group>";
@@ -2135,6 +2282,7 @@
 				0D00AC4B1E64D53400887057 /* template.txt in Resources */,
 				0D9BA3781F744DC800C02457 /* IMC3dMasking.xib in Resources */,
 				0DA17B871E79360100B3CF5C /* IMCMiniRConsole.xib in Resources */,
+				0D0D83E11FA12D040044EDC1 /* IMCCellBasicAlgorithms.xib in Resources */,
 				0D00AC4C1E64D53400887057 /* libopencv_calib3d.3.2.0.dylib in Resources */,
 				0D00AC4D1E64D53400887057 /* libopencv_calib3d.3.2.dylib in Resources */,
 				0D00AC4E1E64D53400887057 /* libopencv_calib3d.dylib in Resources */,
@@ -2159,6 +2307,7 @@
 				0D00AC5D1E64D53400887057 /* scatter.txt in Resources */,
 				0D00AC5E1E64D53400887057 /* libopencv_imgcodecs.dylib in Resources */,
 				0D00AC5F1E64D53400887057 /* libopencv_imgproc.3.2.0.dylib in Resources */,
+				0D0D83FA1FA12D650044EDC1 /* IMCKMeansDashboard.xib in Resources */,
 				0D00AC601E64D53400887057 /* libopencv_imgproc.3.2.dylib in Resources */,
 				0D00AC611E64D53400887057 /* libopencv_imgproc.dylib in Resources */,
 				0D00AC621E64D53400887057 /* libopencv_ml.3.2.0.dylib in Resources */,
@@ -2190,6 +2339,7 @@
 				0D00AC771E64D53400887057 /* libopencv_video.dylib in Resources */,
 				0D00AC781E64D53400887057 /* libopencv_videoio.3.2.0.dylib in Resources */,
 				0D00AC791E64D53400887057 /* libopencv_videoio.3.2.dylib in Resources */,
+				0D0D83CE1FA12C670044EDC1 /* IMCTsneDashboard.xib in Resources */,
 				0D00AC7A1E64D53400887057 /* libopencv_videoio.dylib in Resources */,
 				0D00AC7B1E64D53400887057 /* libopencv_videostab.3.2.0.dylib in Resources */,
 				0D00AC7C1E64D53400887057 /* libopencv_videostab.3.2.dylib in Resources */,
@@ -2240,6 +2390,7 @@
 				0D9F31041EF909CF00E1E083 /* template.txt in Resources */,
 				0D9BA3791F744DC800C02457 /* IMC3dMasking.xib in Resources */,
 				0D9F31061EF909CF00E1E083 /* IMCMiniRConsole.xib in Resources */,
+				0D0D83E21FA12D040044EDC1 /* IMCCellBasicAlgorithms.xib in Resources */,
 				0D9F31071EF909CF00E1E083 /* libopencv_calib3d.3.2.0.dylib in Resources */,
 				0D9F31081EF909CF00E1E083 /* libopencv_calib3d.3.2.dylib in Resources */,
 				0D9F31091EF909CF00E1E083 /* libopencv_calib3d.dylib in Resources */,
@@ -2264,6 +2415,7 @@
 				0D9F311A1EF909CF00E1E083 /* scatter.txt in Resources */,
 				0D9F311B1EF909CF00E1E083 /* libopencv_imgcodecs.dylib in Resources */,
 				0D9F311C1EF909CF00E1E083 /* libopencv_imgproc.3.2.0.dylib in Resources */,
+				0D0D83FB1FA12D650044EDC1 /* IMCKMeansDashboard.xib in Resources */,
 				0D9F311D1EF909CF00E1E083 /* libopencv_imgproc.3.2.dylib in Resources */,
 				0D9F311E1EF909CF00E1E083 /* libopencv_imgproc.dylib in Resources */,
 				0D9F311F1EF909CF00E1E083 /* libopencv_ml.3.2.0.dylib in Resources */,
@@ -2295,6 +2447,7 @@
 				0D9F31391EF909CF00E1E083 /* libopencv_video.dylib in Resources */,
 				0D9F313A1EF909CF00E1E083 /* libopencv_videoio.3.2.0.dylib in Resources */,
 				0D9F313B1EF909CF00E1E083 /* libopencv_videoio.3.2.dylib in Resources */,
+				0D0D83CF1FA12C670044EDC1 /* IMCTsneDashboard.xib in Resources */,
 				0D9F313C1EF909CF00E1E083 /* libopencv_videoio.dylib in Resources */,
 				0D9F313D1EF909CF00E1E083 /* libopencv_videostab.3.2.0.dylib in Resources */,
 				0D9F313E1EF909CF00E1E083 /* libopencv_videostab.3.2.dylib in Resources */,
@@ -2345,6 +2498,7 @@
 				0D00ABBD1E61B30900887057 /* template.txt in Resources */,
 				0D9BA3771F744DC800C02457 /* IMC3dMasking.xib in Resources */,
 				0DA17B861E79360100B3CF5C /* IMCMiniRConsole.xib in Resources */,
+				0D0D83E01FA12D040044EDC1 /* IMCCellBasicAlgorithms.xib in Resources */,
 				0D15573F1E5D876900C27064 /* libopencv_calib3d.3.2.0.dylib in Resources */,
 				0D1557401E5D876900C27064 /* libopencv_calib3d.3.2.dylib in Resources */,
 				0D1557411E5D876900C27064 /* libopencv_calib3d.dylib in Resources */,
@@ -2369,6 +2523,7 @@
 				0D15574F1E5D876900C27064 /* libopencv_imgcodecs.3.2.dylib in Resources */,
 				0D00ABBF1E620CE400887057 /* scatter.txt in Resources */,
 				0D1557501E5D876900C27064 /* libopencv_imgcodecs.dylib in Resources */,
+				0D0D83F91FA12D650044EDC1 /* IMCKMeansDashboard.xib in Resources */,
 				0D1557511E5D876900C27064 /* libopencv_imgproc.3.2.0.dylib in Resources */,
 				0D1557521E5D876900C27064 /* libopencv_imgproc.3.2.dylib in Resources */,
 				0D1557531E5D876900C27064 /* libopencv_imgproc.dylib in Resources */,
@@ -2400,6 +2555,7 @@
 				0D1557691E5D876900C27064 /* libopencv_videoio.3.2.0.dylib in Resources */,
 				0D15576A1E5D876900C27064 /* libopencv_videoio.3.2.dylib in Resources */,
 				0D15576B1E5D876900C27064 /* libopencv_videoio.dylib in Resources */,
+				0D0D83CD1FA12C670044EDC1 /* IMCTsneDashboard.xib in Resources */,
 				0D15576C1E5D876900C27064 /* libopencv_videostab.3.2.0.dylib in Resources */,
 				0D15576D1E5D876900C27064 /* libopencv_videostab.3.2.dylib in Resources */,
 				0D15576E1E5D876900C27064 /* libopencv_videostab.dylib in Resources */,
@@ -2453,6 +2609,7 @@
 				0D00ACBE1E663D3400887057 /* IMCButtonLayer.m in Sources */,
 				0D00ABC51E64D53400887057 /* IMCTiledScrollView.m in Sources */,
 				0DA17B851E79360100B3CF5C /* IMCMiniRConsole.m in Sources */,
+				0D0D83C81FA12C670044EDC1 /* IMCBhSNEOperation.mm in Sources */,
 				0D00ABC61E64D53400887057 /* IMCLoader.m in Sources */,
 				0D00ABC71E64D53400887057 /* IMCMathOperation.m in Sources */,
 				0DA2B8271E7043A900EAA438 /* IMCPaintMask.m in Sources */,
@@ -2463,6 +2620,7 @@
 				0DA630531F5EE7D20032E102 /* shaders.metal in Sources */,
 				0D00ABCA1E64D53400887057 /* IMCMasks.m in Sources */,
 				0D00ABCB1E64D53400887057 /* IMCFileWrapper.m in Sources */,
+				0D0D83F71FA12D650044EDC1 /* IMCKMeansDashboard.m in Sources */,
 				0D00ABCC1E64D53400887057 /* IMCRegistrationOCV.mm in Sources */,
 				0D00ABCD1E64D53400887057 /* General.m in Sources */,
 				0D00ABCE1E64D53400887057 /* IMC_TIFFLoader.m in Sources */,
@@ -2474,12 +2632,14 @@
 				0D00ABD21E64D53400887057 /* IMCComputationOnMask.m in Sources */,
 				0DEA0B3E1EE976FF004E80C9 /* IMCMetadataTableDelegate.m in Sources */,
 				0D00ABD31E64D53400887057 /* IMCImageGenerator.m in Sources */,
+				0D0D84021FA138360044EDC1 /* pca.c in Sources */,
 				0D00ABD41E64D53400887057 /* IMC_DataLoader.m in Sources */,
 				0D00ABD51E64D53400887057 /* IMCImageView.m in Sources */,
 				0D00ABD61E64D53400887057 /* IMCPixelTraining.m in Sources */,
 				0D00ABD71E64D53400887057 /* NSTableView+ContextMenu.m in Sources */,
 				0D00ABD81E64D53400887057 /* IMCTsneOperation.m in Sources */,
 				0D00ABD91E64D53400887057 /* Base64.m in Sources */,
+				0D0D83F41FA12D650044EDC1 /* IMCKMeansOperation.m in Sources */,
 				0D00ABDA1E64D53400887057 /* IMCChannelSettings.m in Sources */,
 				0D00ABDB1E64D53400887057 /* NSTiffSplitter.m in Sources */,
 				0DA2B8171E7001D700EAA438 /* IMCThresholdMask.mm in Sources */,
@@ -2489,7 +2649,10 @@
 				0DA2B8101E6D966A00EAA438 /* IMCSegmentationBatch.m in Sources */,
 				0D00ABDE1E64D53400887057 /* IMCScrollView.m in Sources */,
 				0D00ABDF1E64D53400887057 /* NSString+MD5.m in Sources */,
+				0D0D84051FA138360044EDC1 /* IMCPCAOperation.m in Sources */,
 				0D00ABE01E64D53400887057 /* IMC_BIMCLoader.m in Sources */,
+				0D0D83D11FA12C670044EDC1 /* IMCTestCPP.cpp in Sources */,
+				0D0D83E61FA12D410044EDC1 /* IMCGeneralPlot.m in Sources */,
 				0D00ABE21E64D53400887057 /* XMLDictionary.m in Sources */,
 				0DA2B81E1E70023C00EAA438 /* IMCThresholder.mm in Sources */,
 				0D00ABE31E64D53400887057 /* OpenGLView.m in Sources */,
@@ -2504,13 +2667,16 @@
 				0D00ACA61E65C2CC00887057 /* IMCPixelMap.mm in Sources */,
 				0D9BA37D1F74CECB00C02457 /* IMCVoxelMaskRenderer.m in Sources */,
 				0D6627321E69A72600BC2C92 /* IMCPixelTrainer.mm in Sources */,
+				0D0D83F11FA12D650044EDC1 /* kmeans.c in Sources */,
 				0D00ABEA1E64D53400887057 /* NSUnarchiverGZipAdditions.m in Sources */,
+				0D0D83CB1FA12C670044EDC1 /* IMCTsneDashboard.m in Sources */,
 				0D00ABEB1E64D53400887057 /* IMCRandomForests.mm in Sources */,
 				0D21D9481F569723003EF354 /* IMCAirLabClient.m in Sources */,
 				0D00ABEC1E64D53400887057 /* IMCNodeWrapper.m in Sources */,
 				0D00ABED1E64D53400887057 /* IMCCellSegmentation.mm in Sources */,
 				0D00ABEE1E64D53400887057 /* IMCFileExporter.m in Sources */,
 				0D4748521F9DCBE10090AA78 /* IMCWaterShedSegmenter.m in Sources */,
+				0D0D840E1FA14A9E0044EDC1 /* IMCBiaxialZero.m in Sources */,
 				0D00ABEF1E64D53400887057 /* RandomForests.cpp in Sources */,
 				0DA6304A1F5EDE100032E102 /* IMCMetalViewAndRenderer.m in Sources */,
 				0D00ABF01E64D53400887057 /* IMCWorkSpace.mm in Sources */,
@@ -2542,6 +2708,7 @@
 				0DA2B80B1E6D933800EAA438 /* IMCCellSegmenter.m in Sources */,
 				0D00AC021E64D53400887057 /* NSArchiverGZipAdditions.m in Sources */,
 				0D00AC031E64D53400887057 /* NSView+Utilities.m in Sources */,
+				0D0D83DB1FA12D040044EDC1 /* IMCMathWindowController.m in Sources */,
 				0D99BFCF1E82E35000E337A2 /* IMCThresholdBatch.m in Sources */,
 				0D00AC041E64D53400887057 /* NSArray+Statistics.m in Sources */,
 				0D00AC051E64D53400887057 /* IMCCellDataExport.m in Sources */,
@@ -2551,6 +2718,7 @@
 				0D04DBF21EEABA6000B16BAB /* IMCMetricsController.m in Sources */,
 				0D04DBF61EEABA7200B16BAB /* IMCMetricsCalculator.m in Sources */,
 				0D00AC071E64D53400887057 /* AppDelegate.mm in Sources */,
+				0D0D84091FA144BC0044EDC1 /* IMCCellBasicAlgorithms.m in Sources */,
 				0DC508CF1F5F3B3400C1E9D8 /* IMCMtkView.m in Sources */,
 				0D00AC081E64D53400887057 /* IMC3DHandler.m in Sources */,
 				0D00AC091E64D53400887057 /* IMCPreferencesController.m in Sources */,
@@ -2572,6 +2740,7 @@
 				0D9F30661EF909CF00E1E083 /* IMCButtonLayer.m in Sources */,
 				0D9F30671EF909CF00E1E083 /* IMCTiledScrollView.m in Sources */,
 				0D9F30681EF909CF00E1E083 /* IMCMiniRConsole.m in Sources */,
+				0D0D83C91FA12C670044EDC1 /* IMCBhSNEOperation.mm in Sources */,
 				0D9F30691EF909CF00E1E083 /* IMCLoader.m in Sources */,
 				0D9F306A1EF909CF00E1E083 /* IMCMathOperation.m in Sources */,
 				0D9F306B1EF909CF00E1E083 /* IMCPaintMask.m in Sources */,
@@ -2582,6 +2751,7 @@
 				0D9F306E1EF909CF00E1E083 /* IMCMasks.m in Sources */,
 				0D9F306F1EF909CF00E1E083 /* IMCFileWrapper.m in Sources */,
 				0D9F30701EF909CF00E1E083 /* IMCRegistrationOCV.mm in Sources */,
+				0D0D83F81FA12D650044EDC1 /* IMCKMeansDashboard.m in Sources */,
 				0D9F30711EF909CF00E1E083 /* General.m in Sources */,
 				0D9F30721EF909CF00E1E083 /* IMC_TIFFLoader.m in Sources */,
 				0D9F30731EF909CF00E1E083 /* IMCBlendModes.m in Sources */,
@@ -2593,12 +2763,14 @@
 				0D9F30781EF909CF00E1E083 /* IMCMetadataTableDelegate.m in Sources */,
 				0D9F30791EF909CF00E1E083 /* IMCImageGenerator.m in Sources */,
 				0D9F307A1EF909CF00E1E083 /* IMC_DataLoader.m in Sources */,
+				0D0D84031FA138360044EDC1 /* pca.c in Sources */,
 				0D9F307B1EF909CF00E1E083 /* IMCImageView.m in Sources */,
 				0D9F307C1EF909CF00E1E083 /* IMCPixelTraining.m in Sources */,
 				0D9F307D1EF909CF00E1E083 /* NSTableView+ContextMenu.m in Sources */,
 				0D9F307E1EF909CF00E1E083 /* IMCTsneOperation.m in Sources */,
 				0D9F307F1EF909CF00E1E083 /* Base64.m in Sources */,
 				0D9F30801EF909CF00E1E083 /* IMCChannelSettings.m in Sources */,
+				0D0D83F51FA12D650044EDC1 /* IMCKMeansOperation.m in Sources */,
 				0D9F30811EF909CF00E1E083 /* NSTiffSplitter.m in Sources */,
 				0D9F30821EF909CF00E1E083 /* IMCThresholdMask.mm in Sources */,
 				0DA630501F5EE60A0032E102 /* Matrix4.m in Sources */,
@@ -2608,7 +2780,10 @@
 				0D9F30861EF909CF00E1E083 /* IMCScrollView.m in Sources */,
 				0D9F30871EF909CF00E1E083 /* NSString+MD5.m in Sources */,
 				0D9F30881EF909CF00E1E083 /* IMC_BIMCLoader.m in Sources */,
+				0D0D84061FA138360044EDC1 /* IMCPCAOperation.m in Sources */,
 				0D9F30891EF909CF00E1E083 /* XMLDictionary.m in Sources */,
+				0D0D83D21FA12C670044EDC1 /* IMCTestCPP.cpp in Sources */,
+				0D0D83E71FA12D410044EDC1 /* IMCGeneralPlot.m in Sources */,
 				0D9F308A1EF909CF00E1E083 /* IMCThresholder.mm in Sources */,
 				0D9F308B1EF909CF00E1E083 /* OpenGLView.m in Sources */,
 				0D9F308C1EF909CF00E1E083 /* NSMutableArray-RowMoving.m in Sources */,
@@ -2623,13 +2798,16 @@
 				0D9F30951EF909CF00E1E083 /* IMCPixelTrainer.mm in Sources */,
 				0D9BA37E1F74CECB00C02457 /* IMCVoxelMaskRenderer.m in Sources */,
 				0D9F30961EF909CF00E1E083 /* NSUnarchiverGZipAdditions.m in Sources */,
+				0D0D83F21FA12D650044EDC1 /* kmeans.c in Sources */,
 				0D9F30971EF909CF00E1E083 /* IMCRandomForests.mm in Sources */,
+				0D0D83CC1FA12C670044EDC1 /* IMCTsneDashboard.m in Sources */,
 				0D21D9491F569724003EF354 /* IMCAirLabClient.m in Sources */,
 				0D9F30981EF909CF00E1E083 /* IMCNodeWrapper.m in Sources */,
 				0D9F30991EF909CF00E1E083 /* IMCCellSegmentation.mm in Sources */,
 				0D9F309A1EF909CF00E1E083 /* IMCFileExporter.m in Sources */,
 				0D9F309B1EF909CF00E1E083 /* RandomForests.cpp in Sources */,
 				0D4748531F9DCBE10090AA78 /* IMCWaterShedSegmenter.m in Sources */,
+				0D0D840F1FA14A9E0044EDC1 /* IMCBiaxialZero.m in Sources */,
 				0DA6304B1F5EDE100032E102 /* IMCMetalViewAndRenderer.m in Sources */,
 				0D9F309C1EF909CF00E1E083 /* IMCWorkSpace.mm in Sources */,
 				0D9F309D1EF909CF00E1E083 /* IMCCombineMasksBatch.m in Sources */,
@@ -2661,6 +2839,7 @@
 				0D9F30B31EF909CF00E1E083 /* IMCCellSegmenter.m in Sources */,
 				0D9F30B41EF909CF00E1E083 /* NSArchiverGZipAdditions.m in Sources */,
 				0D9F30B51EF909CF00E1E083 /* NSView+Utilities.m in Sources */,
+				0D0D83DC1FA12D040044EDC1 /* IMCMathWindowController.m in Sources */,
 				0D9F30B61EF909CF00E1E083 /* IMCThresholdBatch.m in Sources */,
 				0D9F30B71EF909CF00E1E083 /* NSArray+Statistics.m in Sources */,
 				0D9F30B81EF909CF00E1E083 /* IMCCellDataExport.m in Sources */,
@@ -2670,6 +2849,7 @@
 				0D9F30BC1EF909CF00E1E083 /* IMCMetricsController.m in Sources */,
 				0D9F30BD1EF909CF00E1E083 /* IMCMetricsCalculator.m in Sources */,
 				0D9F30BE1EF909CF00E1E083 /* AppDelegate.mm in Sources */,
+				0D0D84081FA139860044EDC1 /* IMCCellBasicAlgorithms.m in Sources */,
 				0DC508D01F5F3B3400C1E9D8 /* IMCMtkView.m in Sources */,
 				0D9F30BF1EF909CF00E1E083 /* IMC3DHandler.m in Sources */,
 				0D9F30C01EF909CF00E1E083 /* IMCPreferencesController.m in Sources */,
@@ -2691,6 +2871,7 @@
 				0D00ACBD1E663A8900887057 /* IMCButtonLayer.m in Sources */,
 				0DB37D5D1E36BC6E002975E2 /* IMCTiledScrollView.m in Sources */,
 				0DA17B841E79360100B3CF5C /* IMCMiniRConsole.m in Sources */,
+				0D0D83C71FA12C670044EDC1 /* IMCBhSNEOperation.mm in Sources */,
 				0DB37D0D1E30C110002975E2 /* IMCLoader.m in Sources */,
 				0DB400571E534CCF00179ECB /* IMCMathOperation.m in Sources */,
 				0DA2B8231E70033E00EAA438 /* IMCPaintMask.m in Sources */,
@@ -2701,6 +2882,7 @@
 				0DA630521F5EE7D20032E102 /* shaders.metal in Sources */,
 				0DAA1EFB1E566F7A00579003 /* IMCMasks.m in Sources */,
 				0DB37CF81E30B958002975E2 /* IMCFileWrapper.m in Sources */,
+				0D0D83F61FA12D650044EDC1 /* IMCKMeansDashboard.m in Sources */,
 				0DFB2D651E473D5E0065AC61 /* IMCRegistrationOCV.mm in Sources */,
 				0DB37D041E30BDED002975E2 /* General.m in Sources */,
 				0DB37D1D1E32ADE9002975E2 /* IMC_TIFFLoader.m in Sources */,
@@ -2712,12 +2894,14 @@
 				0DAA1F061E59072000579003 /* IMCComputationOnMask.m in Sources */,
 				0DEA0B3D1EE976FF004E80C9 /* IMCMetadataTableDelegate.m in Sources */,
 				0DB37D2B1E33A75E002975E2 /* IMCImageGenerator.m in Sources */,
+				0D0D84011FA138360044EDC1 /* pca.c in Sources */,
 				0DB37D231E32AE6D002975E2 /* IMC_DataLoader.m in Sources */,
 				0D43364B1E4E7EF30096371D /* IMCImageView.m in Sources */,
 				0DAA1EE81E55DC1800579003 /* IMCPixelTraining.m in Sources */,
 				0DB37D161E3258D3002975E2 /* NSTableView+ContextMenu.m in Sources */,
 				0DB4005A1E534D2E00179ECB /* IMCTsneOperation.m in Sources */,
 				0DA268971E512F39007E6EDD /* Base64.m in Sources */,
+				0D0D83F31FA12D650044EDC1 /* IMCKMeansOperation.m in Sources */,
 				0DB37D3A1E35547A002975E2 /* IMCChannelSettings.m in Sources */,
 				0D6720461E3C1E2E00C19663 /* NSTiffSplitter.m in Sources */,
 				0DA2B8161E7001D700EAA438 /* IMCThresholdMask.mm in Sources */,
@@ -2727,7 +2911,10 @@
 				0DA2B80F1E6D966A00EAA438 /* IMCSegmentationBatch.m in Sources */,
 				0DB37D351E34B4DE002975E2 /* IMCScrollView.m in Sources */,
 				0DB37D101E30C90F002975E2 /* NSString+MD5.m in Sources */,
+				0D0D84041FA138360044EDC1 /* IMCPCAOperation.m in Sources */,
 				0DB37D321E34B17F002975E2 /* IMC_BIMCLoader.m in Sources */,
+				0D0D83D01FA12C670044EDC1 /* IMCTestCPP.cpp in Sources */,
+				0D0D83E51FA12D410044EDC1 /* IMCGeneralPlot.m in Sources */,
 				0DA84DA31E3B53FE00D075C7 /* XMLDictionary.m in Sources */,
 				0DA2B81D1E70023C00EAA438 /* IMCThresholder.mm in Sources */,
 				0D9AEE7D1E44E68800F76590 /* OpenGLView.m in Sources */,
@@ -2742,13 +2929,16 @@
 				0D00ACA51E65C2CC00887057 /* IMCPixelMap.mm in Sources */,
 				0D9BA37C1F74CECB00C02457 /* IMCVoxelMaskRenderer.m in Sources */,
 				0DA2689D1E512F39007E6EDD /* NSUnarchiverGZipAdditions.m in Sources */,
+				0D0D83F01FA12D650044EDC1 /* kmeans.c in Sources */,
 				0DB400521E534CB700179ECB /* IMCRandomForests.mm in Sources */,
+				0D0D83CA1FA12C670044EDC1 /* IMCTsneDashboard.m in Sources */,
 				0DB37CFB1E30B98F002975E2 /* IMCNodeWrapper.m in Sources */,
 				0D21D9471F5696D7003EF354 /* IMCAirLabClient.m in Sources */,
 				0DB400401E53071C00179ECB /* IMCCellSegmentation.mm in Sources */,
 				0D6720491E3CA57900C19663 /* IMCFileExporter.m in Sources */,
 				0DB4006A1E5359F700179ECB /* RandomForests.cpp in Sources */,
 				0D4748511F9DCBE10090AA78 /* IMCWaterShedSegmenter.m in Sources */,
+				0D0D840D1FA14A9E0044EDC1 /* IMCBiaxialZero.m in Sources */,
 				0D00ABB91E61014800887057 /* IMCWorkSpace.mm in Sources */,
 				0DA630491F5EDE100032E102 /* IMCMetalViewAndRenderer.m in Sources */,
 				0D67204D1E3EA79500C19663 /* IMCChannelOperations.m in Sources */,
@@ -2780,6 +2970,7 @@
 				0DA2B80A1E6D8E6A00EAA438 /* IMCCellSegmenter.m in Sources */,
 				0D5C20EA1E38E5F000DCD346 /* NSView+Utilities.m in Sources */,
 				0DB37D2E1E34B14E002975E2 /* NSArray+Statistics.m in Sources */,
+				0D0D83DA1FA12D040044EDC1 /* IMCMathWindowController.m in Sources */,
 				0D99BFCD1E82E34800E337A2 /* IMCThresholdBatch.m in Sources */,
 				0DA6660E1E6059FB003DD274 /* IMCCellDataExport.m in Sources */,
 				0DB37CFE1E30BA0D002975E2 /* IMCPanoramaWrapper.m in Sources */,
@@ -2789,6 +2980,7 @@
 				0D04DBF11EEABA6000B16BAB /* IMCMetricsController.m in Sources */,
 				0D04DBF51EEABA7200B16BAB /* IMCMetricsCalculator.m in Sources */,
 				0DA8ACFC1E40AE2E008194C6 /* IMC3DHandler.m in Sources */,
+				0D0D840A1FA144BD0044EDC1 /* IMCCellBasicAlgorithms.m in Sources */,
 				0DC508CE1F5F3B3400C1E9D8 /* IMCMtkView.m in Sources */,
 				0DAA1EF01E55F45700579003 /* IMCPreferencesController.m in Sources */,
 				0DFB2EBB1E48848B0065AC61 /* IMCRegistration.m in Sources */,

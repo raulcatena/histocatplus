@@ -724,6 +724,31 @@
                                     <action selector="cellClassification:" target="-1" id="p5t-In-uHV"/>
                                 </connections>
                             </menuItem>
+                            <menuItem isSeparatorItem="YES" id="Sqq-GL-N7V"/>
+                            <menuItem title="2D Watershed..." id="Tw5-YD-cWD" userLabel="2D Watershed">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="watershed2D:" target="-1" id="7nX-Kp-pP7"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="3D Watershed Mask From current..." id="Dm7-VC-ouQ" userLabel="3D Watershed">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="create3DMaskFromCurrent:" target="-1" id="DnW-Zs-sCE"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="3D Threshold Mask From current..." id="TFo-8e-5jv" userLabel="3D Threshold">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="create3DMaskByThresholding:" target="-1" id="dZ0-uV-uPJ"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="3D Threshold Mask From current with IDs..." id="i0B-YF-qDk" userLabel="3D ThresholdIds">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="create3DMaskByThresholdingKeepId:" target="-1" id="atO-XO-oGD"/>
+                                </connections>
+                            </menuItem>
                             <menuItem isSeparatorItem="YES" id="3GO-Wf-X8M"/>
                             <menuItem title="Pixel Classification Batch..." id="pFo-84-5aX" userLabel="Pixel Classification Batch...">
                                 <modifierMask key="keyEquivalentModifierMask"/>
@@ -756,6 +781,12 @@
                                     <action selector="combineMasks:" target="-1" id="ebX-7m-Pgd"/>
                                 </connections>
                             </menuItem>
+                            <menuItem title="Cell Analysis Algorithms (tSNE, Clustering, etc)..." id="bAa-s0-ZME" userLabel="Cell Analysis Algorithms">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="cellBasicAlgorithms:" target="-1" id="XoB-gd-zkX"/>
+                                </connections>
+                            </menuItem>
                             <menuItem isSeparatorItem="YES" id="FR7-5v-Icd"/>
                             <menuItem title="Copy pixel classification training settings..." id="fB5-1D-LFJ" userLabel="CopyPixelTrainingSettings">
                                 <modifierMask key="keyEquivalentModifierMask"/>
@@ -770,35 +801,11 @@
                                 </connections>
                             </menuItem>
                             <menuItem isSeparatorItem="YES" id="WoB-ub-F7D"/>
-                            <menuItem title="2D Watershed..." id="Tw5-YD-cWD" userLabel="2D Watershed">
-                                <modifierMask key="keyEquivalentModifierMask"/>
-                                <connections>
-                                    <action selector="watershed2D:" target="-1" id="7nX-Kp-pP7"/>
-                                </connections>
-                            </menuItem>
                             <menuItem isSeparatorItem="YES" id="0kG-jc-0mV"/>
                             <menuItem title="3D Mask..." hidden="YES" id="t2z-KL-5Mk" userLabel="3D Mask">
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <connections>
                                     <action selector="showMasker:" target="-1" id="M8b-dd-P8r"/>
-                                </connections>
-                            </menuItem>
-                            <menuItem title="3D Watershed Mask From current..." id="Dm7-VC-ouQ" userLabel="3D Watershed">
-                                <modifierMask key="keyEquivalentModifierMask"/>
-                                <connections>
-                                    <action selector="create3DMaskFromCurrent:" target="-1" id="DnW-Zs-sCE"/>
-                                </connections>
-                            </menuItem>
-                            <menuItem title="3D Threshold Mask From current..." id="TFo-8e-5jv" userLabel="3D Threshold">
-                                <modifierMask key="keyEquivalentModifierMask"/>
-                                <connections>
-                                    <action selector="create3DMaskByThresholding:" target="-1" id="dZ0-uV-uPJ"/>
-                                </connections>
-                            </menuItem>
-                            <menuItem title="3D Threshold Mask From current with IDs..." id="i0B-YF-qDk" userLabel="3D ThresholdIds">
-                                <modifierMask key="keyEquivalentModifierMask"/>
-                                <connections>
-                                    <action selector="create3DMaskByThresholdingKeepId:" target="-1" id="atO-XO-oGD"/>
                                 </connections>
                             </menuItem>
                         </items>
@@ -830,6 +837,13 @@
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <connections>
                                     <action selector="cellClassification:" target="-1" id="bFh-ZQ-7ff"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem isSeparatorItem="YES" id="kMk-jI-Fbo"/>
+                            <menuItem title="2D Watershed..." id="4So-Je-h8m" userLabel="2D Watershed">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="watershed2D:" target="-1" id="Ukj-gQ-ljD"/>
                                 </connections>
                             </menuItem>
                             <menuItem isSeparatorItem="YES" id="TRa-el-eSZ"/>

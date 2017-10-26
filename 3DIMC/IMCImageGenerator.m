@@ -513,6 +513,8 @@ void threeDMeanBlur(UInt8 *** data, NSInteger width, NSInteger height, NSArray *
     CGColorSpaceRef colorSpace = CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB);
     CGContextRef canvas = CGBitmapContextCreate(NULL, width, height, bitsPerComponent, bytesPerPixel * width, colorSpace, kCGImageAlphaPremultipliedLast);
     
+    CGContextSetInterpolationQuality(canvas, kCGInterpolationNone);
+    
     CGContextSetBlendMode(canvas, blend);
     
     CGAffineTransform transform = CGAffineTransformIdentity;

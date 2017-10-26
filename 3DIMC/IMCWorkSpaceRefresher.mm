@@ -49,6 +49,7 @@
     self.parent.memoryUsage.stringValue = [NSString stringWithFormat:@"Memory usage: %.2f %@", mb > 1024?mb/1024:mb, mb>1024?@"GB":@"MB"];
 }
 
+
 -(void)refresh{
     overrideRefresh = YES;
     

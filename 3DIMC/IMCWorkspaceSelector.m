@@ -93,7 +93,8 @@
                       self.parent.inScopeFiles,
                       self.parent.inScopeMasks,
                       self.parent.inScopePanoramas,
-                      self.parent.inScopeComputations];
+                      self.parent.inScopeComputations,
+                      self.parent.involvedStacksForMetadata];
     
     for(NSMutableArray *arr in arrs)
         [arr removeAllObjects];
@@ -161,8 +162,17 @@
     }];
 
     for (IMCImageStack *stack in array)
-        if(![self.parent.inScopeImages containsObject:stack])
+        if(![self.parent.inScopeImages containsObject:stack]){
             [self.parent.inScopeImages addObject:stack];
+            [self.parent.involvedStacksForMetadata addObject:stack];
+        }
+    for (IMCComputationOnMask *comp in self.parent.inScopeComputations)
+        if(![self.parent.involvedStacksForMetadata containsObject:comp.mask.imageStack])
+            [self.parent.involvedStacksForMetadata addObject:comp.mask.imageStack];
+    for (IMCPixelClassification *mask in self.parent.inScopeMasks)
+        if(![self.parent.involvedStacksForMetadata containsObject:mask.imageStack])
+            [self.parent.involvedStacksForMetadata addObject:mask.imageStack];
+    
     
     [self.parent refresh];
 }
