@@ -787,6 +787,25 @@
                                     <action selector="cellBasicAlgorithms:" target="-1" id="XoB-gd-zkX"/>
                                 </connections>
                             </menuItem>
+                            <menuItem title="Clustering" id="MwB-09-tPh">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <menu key="submenu" title="Clustering" id="MYG-bl-a4g">
+                                    <items>
+                                        <menuItem title="k-Means" id="UcC-Ea-O53">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="clusterKMeans:" target="-1" id="bTx-4b-Wut"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Flock" id="5lx-8g-Lxp" userLabel="Flock">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="clusterFlock:" target="-1" id="4wW-Jd-2A2"/>
+                                            </connections>
+                                        </menuItem>
+                                    </items>
+                                </menu>
+                            </menuItem>
                             <menuItem isSeparatorItem="YES" id="FR7-5v-Icd"/>
                             <menuItem title="Copy pixel classification training settings..." id="fB5-1D-LFJ" userLabel="CopyPixelTrainingSettings">
                                 <modifierMask key="keyEquivalentModifierMask"/>

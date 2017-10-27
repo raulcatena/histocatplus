@@ -25,7 +25,8 @@
     infoView.channels = [self.delegate channelsForCell];
     infoView.delegate = self;
     NSInteger channelIndex = [[self.delegate indexesForCell][row]integerValue];
-    infoView.settingsDictionary = [self.settingsJsonArray objectAtIndex:channelIndex];
+    if(channelIndex < self.settingsJsonArray.count)
+        infoView.settingsDictionary = [self.settingsJsonArray objectAtIndex:channelIndex];
     infoView.backgroundStyle = row%2 == 0?NSBackgroundStyleDark:NSBackgroundStyleLight;
     [infoView setTag:channelIndex];
     infoView.localIndex = row;
@@ -40,9 +41,12 @@
     if(!self.whichTableView)
         self.whichTableView = [self.delegate whichTableView];
     
+    NSLog(@"CFC %li", [self.delegate channelsForCell].count);
+    
     for (NSInteger i = 0; i < [self.delegate channelsForCell].count; i++) {
         IMCChannelSettings *cell = [self tableView:self.whichTableView viewForTableColumn:column row:i];
-        [array addObject:cell.color.color];
+        if(cell)
+            [array addObject:cell.color.color];
     }
     return array;
 }

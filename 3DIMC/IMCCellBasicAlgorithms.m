@@ -213,9 +213,7 @@
             input[i][counter] = (double)asinh(self.computation.computedData[idx][i]);
         counter++;
     }];
-//    directMethod(chansToAnalyze, segments, input, clusters);
-    
-    
+        
     IMCFlockOperation *op = [[IMCFlockOperation alloc]init];
     op.outputDataInt = clusters;
     op.flockInput = input;

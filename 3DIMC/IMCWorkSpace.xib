@@ -1193,6 +1193,9 @@
                                                         <menuItem title="Gauss + Sharpen" id="6dy-JT-LWF">
                                                             <modifierMask key="keyEquivalentModifierMask"/>
                                                         </menuItem>
+                                                        <menuItem title="Mode Filter" id="VLC-em-JX7">
+                                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                                        </menuItem>
                                                     </items>
                                                 </menu>
                                             </popUpButtonCell>

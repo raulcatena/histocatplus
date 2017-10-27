@@ -1034,9 +1034,7 @@
             while(counter>4);
             [node loadLayerDataWithBlock:^{counter--;}];
         }
-        NSLog(@"A");
         [self refresh];
-        NSLog(@"B");
     });
 }
 -(void)closeNodes:(NSMenuItem *)sender{
@@ -1222,22 +1220,25 @@
 }
 -(void)extractFeaturesForMask:(NSMenuItem *)sender{
     
-    NSIndexSet *computations = [General cellComputations];
-    __block NSInteger counter = 0;
-    NSArray *masks = self.inScopeMasks.copy;
-    
-    dispatch_queue_t feat = dispatch_queue_create("feat", NULL);
-    dispatch_async(feat, ^{
-        for(IMCPixelClassification *mask in masks){
-            while (counter>3);
-            counter++;
-            [mask extractDataForMask:computations];
-            dispatch_async(dispatch_get_main_queue(), ^{
-                counter--;
-                [self.filesTree reloadData];
-            });
-        }
-    });
+    NSInteger rawOrProcessedData = [IMCUtils inputOptions:@[@"Extract from raw pixel data", @"Extract from preprocessed data"] prompt:@"Choose an option"];
+    if(rawOrProcessedData >= 0){
+        NSIndexSet *computations = [General cellComputations];
+        __block NSInteger counter = 0;
+        NSArray *masks = self.inScopeMasks.copy;
+        
+        dispatch_queue_t feat = dispatch_queue_create("feat", NULL);
+        dispatch_async(feat, ^{
+            for(IMCPixelClassification *mask in masks){
+                while (counter>3);
+                counter++;
+                [mask extractDataForMask:computations processedData:(BOOL)rawOrProcessedData];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    counter--;
+                    [self.filesTree reloadData];
+                });
+            }
+        });
+    }
 }
 -(void)addChannelsFromTSV:(NSMenuItem *)sender{
     NSOpenPanel* panel = [NSOpenPanel openPanel];
@@ -2035,6 +2036,17 @@
         return;
     
     [IMCWaterShedSegmenter wizard2DWatershedIndexes:self.inOrderIndexes.copy scopeImage:self.inScopeImage scopeImages:self.inScopeImages.copy];
+}
+
+#pragma mark cluster
+
+-(void)clusterFlock:(id)sender{
+    NSLog(@"A");
+    [IMCComputationOnMask flockForComps:self.inScopeComputations indexes:self.channels.selectedRowIndexes];
+    NSLog(@"B");
+}
+-(void)clusterKMeans:(id)sender{
+
 }
 
 #pragma mark analytics

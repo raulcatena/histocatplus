@@ -277,7 +277,7 @@
     if(sure == NSAlertFirstButtonReturn){
         dispatch_queue_t feat = dispatch_queue_create("feat", NULL);
         dispatch_async(feat, ^{
-            [mask extractDataForMask:[General cellComputations]];
+            [mask extractDataForMask:[General cellComputations] processedData:YES];
             dispatch_async(dispatch_get_main_queue(), ^{
                 if(block)block();
             });

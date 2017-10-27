@@ -254,6 +254,8 @@
 -(IBAction)watershed2D:(id)sender;
 //Cell Algorithms
 -(IBAction)cellBasicAlgorithms:(id)sender;
+-(IBAction)clusterKMeans:(id)sender;
+-(IBAction)clusterFlock:(id)sender;
 
 @end
 

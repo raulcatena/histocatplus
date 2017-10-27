@@ -13,6 +13,7 @@
 #import "IMCImageGenerator.h"
 #import "IMCFileWrapper.h"
 #import "NSMutableArrayAdditions.h"
+#import "flock.h"
 
 @class IMCMaskTraining;
 
@@ -357,12 +358,26 @@
     return countComps;
 }
 
--(void)extractDataForMaskOperation:(NSIndexSet *)computations{
+-(void)extractDataForMaskOperation:(NSIndexSet *)computations processedData:(BOOL)rawOrProcessedData{
     [self channelsCreate:computations];
     //Get the mask
     int * maskC = [self.mask mask];
     //Get the IMC data
     float ** allData = self.mask.imageStack.stackData;
+    
+    if(rawOrProcessedData){
+        NSMutableArray *allIndexes = @[].mutableCopy;
+        for (NSInteger i = 0; i < self.mask.imageStack.channels.count; i++)
+            [allIndexes addObject:@(i)];
+        UInt8 ** adjustedData = [self.mask.imageStack preparePassBuffers:allIndexes];
+        allData = (float **)malloc(self.mask.imageStack.channels.count * sizeof(float *));
+        NSInteger numberOfPixels = self.mask.imageStack.numberOfPixels;
+        for (NSInteger i = 0; i < self.mask.imageStack.channels.count; i++) {
+            allData[i] = malloc(numberOfPixels * sizeof(float));
+            for (NSInteger j = 0; j < numberOfPixels; j++)
+                allData[i][j] = (float)adjustedData[i][j];
+        }
+    }
     
     NSArray *imcChannels = self.mask.imageStack.channels;
     
@@ -520,15 +535,21 @@
     }
     free(arr);
     [self saveData];
+    
+    if(rawOrProcessedData){
+        for (NSInteger i = 0; i < self.mask.imageStack.channels.count; i++)
+            free(allData[i]);
+        free(allData);
+    }
 }
 
 
--(void)extractDataForMask:(NSIndexSet *)computations{
+-(void)extractDataForMask:(NSIndexSet *)computations processedData:(BOOL)rawOrProcessedData{
     BOOL wasLoaded = self.mask.imageStack.isLoaded;
     if(!wasLoaded)
         [self.mask.imageStack loadLayerDataWithBlock:nil];
     while (!self.mask.imageStack.isLoaded);
-    [self extractDataForMaskOperation:computations];
+    [self extractDataForMaskOperation:computations processedData:rawOrProcessedData];
     if(!wasLoaded){
         [self.mask.imageStack unLoadLayerDataWithBlock:nil];
         while(self.mask.imageStack.isLoaded);
@@ -690,6 +711,9 @@
         return;
     if(!self.computedData[index])
         return;
+    
+    if(!cachedValues)
+        [self allocateCacheBufferContainers];
     
     float *vals = [self createImageForMaskWithCellData:self.computedData[index] maskOption:option maskType:maskType maskSingleColor:maskSingleColor];
     
@@ -1084,6 +1108,76 @@
         
         [self addBuffer:newChan withName:[NSString stringWithFormat:@"PROD(%@)", str] atIndex:index];
     }
+}
+
+#pragma mark prep data various samples
+
++(BOOL)flockForComps:(NSArray<IMCComputationOnMask *> *)comps indexes:(NSIndexSet *)indexSet{
+    BOOL success = YES;
+    if(comps.count == 0){
+        [General runAlertModalWithMessage:@"You must select at least one mask computation (cell data)"];
+        success = NO;
+    }
+    NSInteger channels = comps.firstObject.channels.count;
+    for (IMCComputationOnMask *comp in comps)
+        if(comp.channels.count != channels)
+            success = NO;
+    if(!success)
+        [General runAlertModalWithMessage:@"All cell data files must have the same number of channels"];
+    if(indexSet.lastIndex >= comps.firstObject.channels.count)
+        success = NO;
+    if(success){
+        NSInteger allCells = 0;
+        NSMutableArray *closeAtEnd = @[].mutableCopy;
+        for(IMCComputationOnMask *comp in comps){
+            BOOL wasLoaded = comp.isLoaded;
+            if(!wasLoaded)
+                [comp loadLayerDataWithBlock:nil];
+            while(!comp.isLoaded);
+            if(!wasLoaded)
+                [closeAtEnd addObject:comp];
+            allCells += comp.segmentedUnits;
+        }
+        int *clusters = (int *) calloc(allCells, sizeof(int));//not iVar anymore
+        
+        NSInteger channsToAnalyze = indexSet.count;
+        double ** data = (double **)malloc(allCells * sizeof(double *));
+        for (int i = 0; i < allCells; i++)
+            data[i] = malloc(channsToAnalyze * sizeof(double));
+        
+        NSInteger offSetCells = 0;
+        for (IMCComputationOnMask *comp in comps) {
+            __block int counter = 0;
+            NSInteger cellsComp = comp.segmentedUnits;
+            [indexSet enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop){
+                for (int i = 0; i < cellsComp; i++)
+                    data[offSetCells + i][counter] = asinh(comp.computedData[idx][i]);
+                counter++;
+            }];
+            offSetCells += cellsComp;
+        }
+        directMethod(indexSet.count, allCells, data, clusters);
+        
+        for (int i =0 ; i < allCells; i++) {
+            printf("%i\n", clusters[i]);
+        }
+        
+        offSetCells = 0;
+        for (IMCComputationOnMask *comp in comps) {
+            NSInteger cellsComp = comp.segmentedUnits;
+            float * result = malloc(cellsComp * sizeof(float));
+            for (int i = 0; i < cellsComp; i++)
+                result[i] = (float)clusters[offSetCells + i] + 1.0f;
+            [comp addBuffer:result withName:[@"Flock_" stringByAppendingString:[NSDate date].description] atIndex:NSNotFound];
+            offSetCells += cellsComp;
+        }
+        free(clusters);
+        
+        for (IMCComputationOnMask *comp in closeAtEnd)
+            [comp unLoadLayerDataWithBlock:nil];
+    }
+    
+    return success;
 }
 
 #pragma mark memmory management

@@ -37,7 +37,7 @@
 -(CGImageRef)coloredMask:(NSInteger)option maskType:(MaskType)maskType singleColor:(NSColor *)color;
 -(void)addFeaturesFromCellProfiler:(NSURL *)url;
 -(NSInteger)numberOfSegments;
--(void)extractDataForMask:(NSIndexSet *)computations;
+-(void)extractDataForMask:(NSIndexSet *)computations processedData:(BOOL)rawOrProcessedData;
 -(void)saveFileWith32IntBuffer:(int *)buffer length:(NSInteger)length;
 -(void)saveFileWithBuffer:(void *)buffer bits:(size_t)bits;
 -(void)initComputations;

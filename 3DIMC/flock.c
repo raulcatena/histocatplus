@@ -1937,31 +1937,31 @@ void directMethod(long num_dm, long file_Len, double **input_data, int *results)
         results[i] = (int)all_population_ID[i]+1;
     //======================================RCF================================//
     
-//    for (i=0;i<num_population;i++)
-//    {
-//        free(population_center[i]);
-//    }
-//    free(population_center);
-//    
-//    
-//    for (i=0;i<file_Len;i++)
-//        free(normalized_data[i]);
-//    free(normalized_data);	
-//    
-//    free(grid_populationID);
-//    
-//    free(cluster_populationID);
-//    free(grid_clusterID);
-//    free(cluster_ID);
-//    
-//    for (i=0;i<file_Len;i++)
-//        free(input_data[i]);
-//    free(input_data);
-//    
-//    free(grid_ID);
-//    free(population_ID);
-//    free(all_population_ID);
-//    free(eventID_To_denseventID);
+    for (i=0;i<num_population;i++)
+    {
+        free(population_center[i]);
+    }
+    free(population_center);
+    
+    
+    for (i=0;i<file_Len;i++)
+        free(normalized_data[i]);
+    free(normalized_data);	
+    
+    free(grid_populationID);
+    
+    free(cluster_populationID);
+    free(grid_clusterID);
+    free(cluster_ID);
+    
+    for (i=0;i<file_Len;i++)
+        free(input_data[i]);
+    free(input_data);
+    
+    free(grid_ID);
+    free(population_ID);
+    free(all_population_ID);
+    free(eventID_To_denseventID);
     
     ///////////////////////////////////////////////////////////
     printf("Ending time:\t\t\t\t");

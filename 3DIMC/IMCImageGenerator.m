@@ -156,6 +156,33 @@ void gaussianFilter(NSInteger pix, NSInteger width, NSInteger planePixels, UInt8
     }
     temp1Buffer[tempBufferUse][pix] = MIN(255, (UInt8)(sum/blurCounter));
 }
+void modeFilter(NSInteger pix, NSInteger width, NSInteger planePixels, UInt8 *prevLayer, UInt8 *layer, UInt8 *postLayer, bool denoiseOrMean, UInt8 * temp1Buffer[2], NSInteger tempBufferUse){
+    
+    UInt8 * bins = calloc(256, sizeof(UInt8));
+    
+    for (int i = 0; i < 9; i++) {
+        NSInteger index = pix + gaussian[i][0] + width * gaussian[i][1];
+        //TODO jumper
+        //if( doesJumpLineTest(pix, index, width, height, planePixels, 2))
+        if(index < 0 || index >= planePixels)
+            continue;
+        
+        if(prevLayer)
+            bins[prevLayer[index]]++;
+        bins[layer[index]]++;
+        if(postLayer)
+            bins[postLayer[index]]++;
+    }
+    UInt8 winnerIndex = 0;
+    //NSInteger mostCommon = 0;
+    for (int i = 0; i < 256; i++) {
+        if(bins[i] > bins[winnerIndex]){
+            winnerIndex = i;
+        }
+    }
+    free(bins);
+    temp1Buffer[tempBufferUse][pix] = winnerIndex;
+}
 
 int sharpen [9][3] = {
     {-1, -1, 0},
@@ -255,7 +282,6 @@ void applyFilterToChannel(NSInteger chann, NSArray * indexesArranged, NSInteger 
         }else
             postLayer = NULL;
         
-        
         //Channel was not loaded. Break channel and go to next
         if(layer == NULL)
             continue;
@@ -273,6 +299,8 @@ void applyFilterToChannel(NSInteger chann, NSArray * indexesArranged, NSInteger 
                 gaussianFilter(pix, width, planePixels, prevLayer, layer, postLayer, (bool)(mode - 1), temp1Buffer, tempBufferUse);
             if(mode == 4)
                 sharpenFilter(pix, width, planePixels, prevLayer, layer, postLayer, (bool)(mode - 1), temp1Buffer, tempBufferUse);
+            if(mode == 5)
+                modeFilter(pix, width, planePixels, prevLayer, layer, postLayer, (bool)(mode - 1), temp1Buffer, tempBufferUse);
         }
         tempBufferUse = (NSInteger)!tempBufferUse;
         
@@ -307,6 +335,9 @@ void threeDMeanBlur(UInt8 *** data, NSInteger width, NSInteger height, NSArray *
         if(mode == 6){
             applyFilterToChannel(chann, indexesArranged, planePixels, data, width, height, mask, 3, deltas_z);
             applyFilterToChannel(chann, indexesArranged, planePixels, data, width, height, mask, 4, deltas_z);
+        }
+        if(mode == 7){
+            applyFilterToChannel(chann, indexesArranged, planePixels, data, width, height, mask, 5, deltas_z);
         }
     }];
 }

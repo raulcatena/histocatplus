@@ -225,7 +225,7 @@
        [comp addFeaturesFromCellProfiler:url];
    }
 
--(void)extractDataForMask:(NSIndexSet *)computations{
+-(void)extractDataForMask:(NSIndexSet *)computations processedData:(BOOL)rawOrProcessedData{
     NSMutableDictionary *dict = @{
                     JSON_DICT_ITEM_HASH: [IMCUtils randomStringOfLength:30]
                             }.mutableCopy;
@@ -233,7 +233,7 @@
     IMCComputationOnMask *comp = [[IMCComputationOnMask alloc]init];
     comp.jsonDictionary = dict;
     comp.parent = self;
-    [comp extractDataForMask:computations];
+    [comp extractDataForMask:computations processedData:rawOrProcessedData];
 }
 
 -(NSMutableArray *)computations{

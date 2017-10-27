@@ -25,7 +25,7 @@
 @property (nonatomic, strong) NSMutableArray<IMCMaskTraining *> *trainingNodes;
 
 -(void)addFeaturesFromCellProfiler:(NSURL *)url;
--(void)extractDataForMask:(NSIndexSet *)computations;
+-(void)extractDataForMask:(NSIndexSet *)computations processedData:(BOOL)rawOrProcessedData;
 -(float *)createImageForMaskWithCellData:(float *)data maskOption:(MaskOption)option maskType:(MaskType)maskType maskSingleColor:(NSColor *)maskSingleColor;
 -(CGImageRef)coloredMaskForChannel:(NSInteger)channel color:(NSColor *)color maskOption:(MaskOption)maskOption maskType:(MaskType)maskType maskSingleColor:(NSColor *)maskSingleColor brightField:(BOOL)brightField;
 -(BOOL)hasBackData;
@@ -56,5 +56,7 @@
 -(float)averagedSumOfSquaresForArray:(NSArray *)arrayOfChannelArrays;
 -(NSString *)shannonForCountStatsArray:(NSArray *)countStatsArray;
 -(NSString *)simpsonForCountStatsArray:(NSArray *)countStatsArray;
+
++(BOOL)flockForComps:(NSArray<IMCComputationOnMask *> *)comps indexes:(NSIndexSet *)indexSet;
 
 @end
