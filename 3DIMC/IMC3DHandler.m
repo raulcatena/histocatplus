@@ -276,6 +276,10 @@
     }
     return arr;
 }
+-(NSArray *)indexesArranged3DMask{
+    NSMutableArray *arr = @[].mutableCopy;
+    return arr;
+}
 -(NSUInteger)imagesArranged{
     return [self indexesArranged].count;
 }

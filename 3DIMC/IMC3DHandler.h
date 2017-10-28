@@ -24,7 +24,8 @@
 @property (nonatomic, assign) NSRect interestProportions;
 @property (nonatomic, assign) float defaultZ;
 @property (nonatomic, weak) IMCLoader *loader;
-@property (nonatomic, weak) NSArray *indexesArranged;
+@property (nonatomic, readonly) NSArray *indexesArranged;
+@property (nonatomic, readonly) NSArray *indexesArranged3DMask;
 
 -(void)startBufferForImages:(NSInteger)images channels:(NSInteger)channels width:(NSInteger)width height:(NSInteger)height;
 -(void)addImageStack:(IMCImageStack *)stack atIndexOfStack:(NSInteger)indexStack channel:(NSInteger)channel;

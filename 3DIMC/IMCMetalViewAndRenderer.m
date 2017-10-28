@@ -260,7 +260,6 @@ bool heightDescriptor[] = {
                         prevVisited = corresponding;
                         UInt8 ** sliceData = data[corresponding];
                         if(sliceData){
-                            
                             x = 0;
                             y = 0;
                             z = zPositions[corresponding];
@@ -331,7 +330,6 @@ bool heightDescriptor[] = {
                 }
                 cursor += renderableArea * stride;
             }];
-            
             NSInteger bufferSize = renderableArea * slices.count * stride;
             float * cleanBuffer = malloc(bufferSize * sizeof(float));
             

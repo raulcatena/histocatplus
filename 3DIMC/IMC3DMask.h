@@ -40,6 +40,7 @@ typedef enum{
 @property (nonatomic, weak) IMCLoader *coordinator;
 @property (nonatomic, weak) IMC3DHandler *threeDHandler;
 @property (nonatomic, assign) NSInteger blurMode;
+@property (nonatomic, readonly) NSInteger slices;
 
 @property (nonatomic, strong) NSMutableArray<IMC3DMaskComputations *> *computationNodes;
 

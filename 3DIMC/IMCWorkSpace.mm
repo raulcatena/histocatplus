@@ -1652,6 +1652,12 @@
     self.metalViewDelegate.forceColorBufferRecalculation = YES;
 }
 -(NSArray *)inOrderIndexesArranged{
+    if(self.inScope3DMask){
+        NSMutableArray *arr = @[].mutableCopy;
+        for(int i = 0; i < self.inScope3DMask.slices; i++)
+            [arr addObject:@[@(i)]];
+        return arr;
+    }
     return self.threeDHandler.indexesArranged;
 }
 #pragma mark record video
