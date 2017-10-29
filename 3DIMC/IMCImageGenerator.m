@@ -225,28 +225,8 @@ void sharpenFilter(NSInteger pix, NSInteger width, NSInteger planePixels, UInt8 
     temp1Buffer[tempBufferUse][pix] = MIN(255, (UInt8)(sum/blurCounter));
 }
 
-void reorderLayers(NSInteger chann, NSArray * indexesArranged, NSInteger planePixels, UInt8 *** data, NSInteger width, NSInteger height, bool *mask, NSInteger mode, float * deltas_z){
-    if(data){
-        
-        for (NSArray *arr in indexesArranged) {
-            if(arr.count > 1){
-                NSInteger indexFirst = [arr.firstObject integerValue];
-                UInt8 *layer = data[indexFirst][chann];
-                if(layer){
-                    for (NSInteger i = 1; i < arr.count; i++) {
-                        UInt8 *nextLayer = data[[arr[i]integerValue]][chann];
-                        if(nextLayer){
-                            for (NSInteger i = 0; i < planePixels; i++)
-                                layer[i] += nextLayer[i];
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
 
-void applyFilterToChannel(NSInteger chann, NSArray * indexesArranged, NSInteger planePixels, UInt8 *** data, NSInteger width, NSInteger height, bool *mask, NSInteger mode, float * deltas_z){
+void applyFilterToChannel(NSInteger chann, NSInteger images, NSInteger planePixels, UInt8 *** data, NSInteger width, NSInteger height, bool *mask, NSInteger mode, float * deltas_z){
     
     UInt8* temp1Buffer[2];
     for (int i = 0; i < 2; i++)
@@ -256,14 +236,11 @@ void applyFilterToChannel(NSInteger chann, NSArray * indexesArranged, NSInteger 
     float sum = 0;
     NSInteger tempBufferUse = 0;
     
-    reorderLayers(chann, indexesArranged, planePixels, data, width, height, mask, mode, deltas_z);
-    
     UInt8 *prevLayer = NULL;
     UInt8 *layer = NULL;
     UInt8 *postLayer = NULL;
     
-    for (NSArray *indxs in indexesArranged) {
-        NSInteger stack = [indxs.firstObject integerValue];
+    for (NSInteger stack = 0; stack < images; stack++) {
         NSLog(@"%li", stack);
         //Probably never the case
         if(data[stack] == NULL)
@@ -276,10 +253,9 @@ void applyFilterToChannel(NSInteger chann, NSArray * indexesArranged, NSInteger 
         else
             layer = data[stack][chann];
         
-        if(indxs != indexesArranged.lastObject){
-            NSInteger idxx = [[indexesArranged[[indexesArranged indexOfObject:indxs] + 1] firstObject] integerValue];
-            postLayer = data[idxx][chann];
-        }else
+        if(stack < images - 1)
+            postLayer = data[stack][chann];
+        else
             postLayer = NULL;
         
         //Channel was not loaded. Break channel and go to next
@@ -318,7 +294,7 @@ void applyFilterToChannel(NSInteger chann, NSArray * indexesArranged, NSInteger 
     free(temp1Buffer[1]);
 }
 
-void threeDMeanBlur(UInt8 *** data, NSInteger width, NSInteger height, NSArray * indexesArranged, NSIndexSet * channels, NSInteger mode, bool *mask, float * deltas_z){
+void threeDMeanBlur(UInt8 *** data, NSInteger width, NSInteger height, NSInteger images, NSIndexSet * channels, NSInteger mode, bool *mask, float * deltas_z){
     
     if(data == NULL || mode == 0)
         return;
@@ -327,17 +303,17 @@ void threeDMeanBlur(UInt8 *** data, NSInteger width, NSInteger height, NSArray *
     
     [channels enumerateIndexesUsingBlock:^(NSUInteger chann, BOOL *stop){
         if(mode < 5)
-            applyFilterToChannel(chann, indexesArranged, planePixels, data, width, height, mask, mode, deltas_z);
+            applyFilterToChannel(chann, images, planePixels, data, width, height, mask, mode, deltas_z);
         if(mode == 5){
-            applyFilterToChannel(chann, indexesArranged, planePixels, data, width, height, mask, 4, deltas_z);
-            applyFilterToChannel(chann, indexesArranged, planePixels, data, width, height, mask, 3, deltas_z);
+            applyFilterToChannel(chann, images, planePixels, data, width, height, mask, 4, deltas_z);
+            applyFilterToChannel(chann, images, planePixels, data, width, height, mask, 3, deltas_z);
         }
         if(mode == 6){
-            applyFilterToChannel(chann, indexesArranged, planePixels, data, width, height, mask, 3, deltas_z);
-            applyFilterToChannel(chann, indexesArranged, planePixels, data, width, height, mask, 4, deltas_z);
+            applyFilterToChannel(chann, images, planePixels, data, width, height, mask, 3, deltas_z);
+            applyFilterToChannel(chann, images, planePixels, data, width, height, mask, 4, deltas_z);
         }
         if(mode == 7){
-            applyFilterToChannel(chann, indexesArranged, planePixels, data, width, height, mask, 5, deltas_z);
+            applyFilterToChannel(chann, images, planePixels, data, width, height, mask, 5, deltas_z);
         }
     }];
 }

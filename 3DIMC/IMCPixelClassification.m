@@ -275,13 +275,12 @@
 
 -(NSInteger)numberOfSegments{
     if(segmentsCalculated == 0 && self.mask){
-        for (NSInteger i = 0; i <self.imageStack.numberOfPixels; i++) {
+        NSInteger pixels = self.imageStack.numberOfPixels;
+        for (NSInteger i = 0; i < pixels; i++) {
             if(self.mask[i] > segmentsCalculated)
                 segmentsCalculated = self.mask[i];
         }
-        if(segmentsCalculated == 0)segmentsCalculated = -1;
     }
-    if(segmentsCalculated == -1)return 0;
     return segmentsCalculated;
 }
 

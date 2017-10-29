@@ -40,9 +40,7 @@
     
     if(!self.whichTableView)
         self.whichTableView = [self.delegate whichTableView];
-    
-    NSLog(@"CFC %li", [self.delegate channelsForCell].count);
-    
+        
     for (NSInteger i = 0; i < [self.delegate channelsForCell].count; i++) {
         IMCChannelSettings *cell = [self tableView:self.whichTableView viewForTableColumn:column row:i];
         if(cell)

@@ -173,13 +173,14 @@
 }
 
 -(void)prepData{
+    
     [self release_computedData];
     
     NSInteger countChannels = self.channels.count;
     self.computedData = malloc(countChannels * sizeof(float*));
-    
+    NSInteger segments = self.segmentedUnits;
     for (NSInteger i = 0; i < countChannels; i++)
-        self.computedData[i] = calloc(self.segmentedUnits, sizeof(float));
+        self.computedData[i] = malloc(segments * sizeof(float));;
     
     self.isLoaded = YES;
 }
@@ -250,7 +251,6 @@
     if([self hasBackData]){
         
         NSData *data = [NSData dataWithContentsOfFile:self.absolutePath];
-
 
         NSInteger channelsCount = self.channels.count;
         NSInteger units = self.segmentedUnits;
@@ -1185,8 +1185,10 @@
 -(void)release_computedData{
     if(self.computedData){
         for (NSInteger i = 0; i < self.channels.count; i++)
-            if(self.computedData[i])
+            if(self.computedData[i]){
                 free(self.computedData[i]);
+                self.computedData[i] = NULL;
+            }
         
         free(self.computedData);
         self.computedData = NULL;
@@ -1212,7 +1214,8 @@
     }
 }
 -(NSUInteger)usedMegaBytes{
-    if(!self.computedData)return 0;
+    if(!self.computedData)
+        return 0;
     return self.mask.numberOfSegments * self.channels.count * sizeof(float)/pow(2, 20);
 }
 -(void)dealloc{

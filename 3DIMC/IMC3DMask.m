@@ -381,10 +381,10 @@
     
     self.width = handler.width;
     self.height = handler.height;
-    self.slices = handler.imagesArranged;
+    self.slices = handler.images;
     
     NSInteger allLength = self.width * self.height;
-    NSInteger fullMask = allLength *  handler.imagesArranged;
+    NSInteger fullMask = allLength *  handler.images;
     NSInteger channel = self.channel;
     NSInteger schannel = self.substractChannel;
     
@@ -403,16 +403,15 @@
             //        if(schannel > 0)
             //            analyzeAdded *= (1 - analyze);
             
-            for (NSInteger a = 0; a < handler.imagesArranged; a++) {
-                NSInteger i = [handler internalSliceIndexForExternal:a];
-                NSInteger offset = allLength * a;
+            for (NSInteger i = 0; i < handler.images; i++) {
+                NSInteger offset = allLength * i;
                 if(handler.allBuffer[i]){
                     if(handler.allBuffer[i][channel]){
                         for (NSInteger j = 0; j < allLength; j++){
-                            if(maskIds[j] == -1){
-                                int neigh = [self touchesId:j fullMaskLength:fullMask planLength:allLength];
+                            if(maskIds[offset + j] == -1){
+                                int neigh = [self touchesId:offset + j fullMaskLength:fullMask planLength:allLength];
                                 if(neigh > 0)
-                                    maskIds[j] = neigh;
+                                    maskIds[offset + j] = neigh;
                             }
                             if(maskIds[offset + j] == 0){
                                 UInt8 val = handler.allBuffer[i][channel][j];
@@ -426,9 +425,8 @@
                     }
                 }
             }
-            for (NSInteger a = 0; a < handler.imagesArranged; a++) {
-                NSInteger i = [handler internalSliceIndexForExternal:a];
-                NSInteger offset = allLength * a;
+            for (NSInteger i = 0; i < handler.images; i++) {
+                NSInteger offset = allLength * i;
                 if(handler.allBuffer[i])
                     if(handler.allBuffer[i][channel])
                         for (NSInteger j = 0; j < allLength; j++){
@@ -448,9 +446,8 @@
     if(self.type == MASK3D_THRESHOLD || self.type == MASK3D_THRESHOLD_SEGMENT){
         float analyze = self.threshold * 255;
         
-        for (NSInteger a = 0; a < handler.imagesArranged; a++) {
-            NSInteger i = [handler internalSliceIndexForExternal:a];
-            NSInteger offset = allLength * a;
+        for (NSInteger i = 0; i < handler.images; i++) {
+            NSInteger offset = allLength * i;
             if(handler.allBuffer[i])
                 if(handler.allBuffer[i][channel])
                     for (NSInteger j = 0; j < allLength; j++)
@@ -463,9 +460,8 @@
                         }
         }
         int cellId = 1;
-        for (NSInteger a = 0; a < handler.imagesArranged; a++) {
-            NSInteger i = [handler internalSliceIndexForExternal:a];
-            NSInteger offset = allLength * a;
+        for (NSInteger i = 0; i < handler.images; i++) {
+            NSInteger offset = allLength * i;
             if(handler.allBuffer[i])
                 if(handler.allBuffer[i][channel])
                     for (NSInteger j = 0; j < allLength; j++)
@@ -500,7 +496,7 @@
     IMC3DHandler *handler = self.threeDHandler;
     
     NSInteger allLength = self.width * self.height;
-    NSInteger fullMask = allLength *  handler.imagesArranged;
+    NSInteger fullMask = allLength *  handler.images;
     NSInteger width = self.width;
     
     for (NSInteger i = 0; i < self.expansion; i++) {
@@ -533,7 +529,7 @@
         NSInteger allLength = self.width * self.height;
         //NSInteger fullMaskLength = allLength * self.slices;
         
-        [self.threeDHandler startBufferForImages:self.slices channels:1 width:self.width height:self.height];
+        [self.threeDHandler startBufferForImages:self.threeDHandler.items channels:1 width:self.width height:self.height];
         
         int randomColors = 12;
         float pre[randomColors];

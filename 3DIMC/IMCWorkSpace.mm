@@ -227,8 +227,8 @@
 -(void)setInScopeImage:(IMCImageStack *)inScopeImage{
     _inScopeImage = inScopeImage;
     if(!inScopeImage)return;
-    if(![self.inScopeImages containsObject:inScopeImage])
-        [self.inScopeImages addObject:inScopeImage];
+//    if(![self.inScopeImages containsObject:inScopeImage])
+//        [self.inScopeImages addObject:inScopeImage];
     [self.workSpaceRefresher updateForWithStack:inScopeImage];
 }
 -(void)setInScopeMask:(IMCPixelClassification *)inScopeMask{
@@ -1479,9 +1479,9 @@
         
         NSInteger maxWidth = [self.dataCoordinator maxWidth] * 1.5;
         if(self.whichTableCoordinator.indexOfSelectedItem == 1){
-            [self.threeDHandler startBufferForImages:self.dataCoordinator.inOrderImageWrappers.count channels:[self.dataCoordinator maxChannels] width:maxWidth height:maxWidth];
+            [self.threeDHandler startBufferForImages:self.dataCoordinator.inOrderImageWrappers.copy channels:[self.dataCoordinator maxChannels] width:maxWidth height:maxWidth];
         }else if(self.whichTableCoordinator.indexOfSelectedItem == 5){
-            [self.threeDHandler startBufferForImages:self.dataCoordinator.computations.count channels:[self.dataCoordinator maxChannelsComputations] width:maxWidth height:maxWidth];
+            [self.threeDHandler startBufferForImages:self.dataCoordinator.computations.copy channels:[self.dataCoordinator maxChannelsComputations] width:maxWidth height:maxWidth];
         }else if(self.whichTableCoordinator.indexOfSelectedItem == 7){
             //TODO
             //Render 3D Mask
@@ -1493,20 +1493,19 @@
 }
 -(void)redoZ:(NSButton *)sender{
     if([self canRender])
-        [self.threeDHandler prepDeltasAndProportionsWithStacks:self.dataCoordinator.inOrderImageWrappers];
+        [self.threeDHandler prepDeltasAndProportionsWithStacks];
 }
 -(void)addBuffersForStackImages:(NSButton *)sender{
     if([self canRender]){
         self.threeDProcessesIndicator.doubleValue = .0f;
         dispatch_queue_t queue = dispatch_queue_create("loadRender", NULL);
         dispatch_async(queue, ^{
-            if(![self.threeDHandler isReady])return;
-            NSIndexSet *channs = self.channels.selectedRowIndexes.copy;
-
-            //Prepare delta_z and thicknesses
-            [self.threeDHandler prepDeltasAndProportionsWithStacks:self.dataCoordinator.inOrderImageWrappers];
+            if(![self.threeDHandler isReady])
+                return;
             
+            NSIndexSet *channs = self.channels.selectedRowIndexes.copy;
             NSInteger total = self.filesTree.selectedRowIndexes.count;
+            
             [self.filesTree.selectedRowIndexes.copy enumerateIndexesUsingBlock:^(NSUInteger fileIdx, BOOL *stop){
                 IMCNodeWrapper *anobj;
                 anobj= [self.filesTree itemAtRow:fileIdx];
@@ -1534,13 +1533,11 @@
                         [stack loadLayerDataWithBlock:nil];
                     while(!stack.isLoaded);
                     [channs enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop){
-                        [self.threeDHandler addImageStack:stack atIndexOfStack:fileIdx channel:idx];
+                        [self.threeDHandler addImageStackatIndex:fileIdx channel:idx];
                     }];
-                    if(stackWasLoaded == NO){
-                        dispatch_async(dispatch_get_main_queue(), ^{
-                            [stack unLoadLayerDataWithBlock:nil];
-                        });
-                    }
+                    if(stackWasLoaded == NO)
+                        [stack unLoadLayerDataWithBlock:nil];
+                    
                 }else if(mask){
                     BOOL wasLoaded = mask.isLoaded;
                     if(!wasLoaded)
@@ -1555,8 +1552,10 @@
                         [comp loadLayerDataWithBlock:nil];
                     while(!comp.isLoaded);
                     [channs enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop){
-                        [self.threeDHandler addComputation:comp atIndexOfStack:fileIdx channel:idx maskOption:(MaskOption)self.maskVisualizeSelector.selectedSegment maskType:(MaskType)self.maskPartsSelector.selectedSegment];
+                        [self.threeDHandler addComputationAtIndex:fileIdx channel:idx maskOption:(MaskOption)self.maskVisualizeSelector.selectedSegment maskType:(MaskType)self.maskPartsSelector.selectedSegment];
                     }];
+                    if(wasLoaded == NO)
+                        [comp unLoadLayerDataWithBlock:nil];
                 }
                 dispatch_async(dispatch_get_main_queue(), ^{
                     self.threeDProcessesIndicator.doubleValue += 100.f/total;
@@ -1652,12 +1651,12 @@
     self.metalViewDelegate.forceColorBufferRecalculation = YES;
 }
 -(NSArray *)inOrderIndexesArranged{
-    if(self.inScope3DMask){
-        NSMutableArray *arr = @[].mutableCopy;
-        for(int i = 0; i < self.inScope3DMask.slices; i++)
-            [arr addObject:@[@(i)]];
-        return arr;
-    }
+//    if(self.inScope3DMask){
+//        NSMutableArray *arr = @[].mutableCopy;
+//        for(int i = 0; i < self.inScope3DMask.slices; i++)
+//            [arr addObject:@[@(i)]];
+//        return arr;
+//    }
     return self.threeDHandler.indexesArranged;
 }
 #pragma mark record video

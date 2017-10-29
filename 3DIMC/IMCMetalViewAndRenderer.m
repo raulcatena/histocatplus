@@ -200,15 +200,29 @@ bool heightDescriptor[] = {
     self.colorBuffer = [self.device newBufferWithBytes:vals length: 8 * 7 * sizeof(float) options:MTLResourceOptionCPUCacheModeDefault];
 }
 
--(NSInteger)externalSliceIndexForInternal:(NSInteger)internal inArrangedArray:(NSArray *)idx{
-    for (NSArray *arr in idx) {
-        if([[arr firstObject]  isEqual: @(internal)])
-            return [idx indexOfObject:arr];
-    }
-    return NSNotFound;
+-(NSArray *)onlyExternals:(NSIndexSet *)indexSet inArrangedArray:(NSArray *)idx{
+    NSMutableArray *res = @[].mutableCopy;
+    
+    for (NSArray *arr in idx)
+        for (NSNumber *num in arr)
+            if([indexSet containsIndex:num.integerValue]){
+                [res addObject:@([idx indexOfObject:arr])];
+                break;
+            }
+    
+    
+    
+//    [indexSet enumerateIndexesUsingBlock:^(NSUInteger sliceIndex, BOOL *stop){
+//        for (NSArray *arr in idx)
+//            for (NSNumber *num in arr)
+//                if(num.integerValue == sliceIndex)
+//                     if(![res containsObject:@([idx indexOfObject:arr])])
+//                         [res addObject:];
+//    }];
+    return res;
 }
 
--(void)updateColorBufferWithWidth:(NSInteger)width height:(NSInteger)height slices:(NSIndexSet *)slices{
+-(void)updateColorBufferWithWidth:(NSInteger)width height:(NSInteger)height{
     
 //    [self syntheticCubes];
 //    return;
@@ -217,6 +231,9 @@ bool heightDescriptor[] = {
     UInt8 *** data = [self.delegate threeDData];
     float * zPositions = [self.delegate zValues];
     float * zThicknesses = [self.delegate thicknesses];
+    NSIndexSet *slices = [self.delegate stacksIndexSet];
+    NSArray *arranged = [self.delegate inOrderIndexesArranged];
+    NSArray *externals = [self onlyExternals:slices inArrangedArray:arranged];
     
     if(data && zPositions && zThicknesses){
         NSInteger area = width * height;
@@ -249,87 +266,79 @@ bool heightDescriptor[] = {
                 colors[i * 3 + 1] = colorObj.greenComponent/255.0f;
                 colors[i * 3 + 2] = colorObj.blueComponent/255.0f;
             }
-            NSArray *arranged = [self.delegate inOrderIndexesArranged];
-            __block NSUInteger prevVisited = 0;
             
-            [slices enumerateIndexesUsingBlock:^(NSUInteger slice, BOOL *stop){
-                NSInteger corresp = [self externalSliceIndexForInternal:slice inArrangedArray:arranged];
-                if(corresp != NSNotFound){
-                    NSInteger corresponding = [[arranged[corresp]firstObject]integerValue];
-                    if(corresponding != prevVisited){
-                        prevVisited = corresponding;
-                        UInt8 ** sliceData = data[corresponding];
-                        if(sliceData){
-                            x = 0;
-                            y = 0;
-                            z = zPositions[corresponding];
-                            thickness = zThicknesses[corresponding];
-                            
-                            UInt8 *chanData = NULL;
-                            
-                            for (NSInteger idx = 0; idx < self.indexesObtained.count; idx++) {
+            for (NSNumber *num in externals) {
+           
+                NSInteger corresponding = num.integerValue;
+                UInt8 ** sliceData = data[corresponding];
+                if(sliceData){
+                    x = 0;
+                    y = 0;
+                    z = zPositions[[[arranged[corresponding]firstObject]integerValue]];
+                    thickness = zThicknesses[[[arranged[corresponding]firstObject]integerValue]];
+                    UInt8 *chanData = NULL;
+                    
+                    for (NSInteger idx = 0; idx < self.indexesObtained.count; idx++) {
+                        
+                        NSInteger realIndex = [self.indexesObtained[idx]integerValue];
+                        
+                        chanData = sliceData[realIndex];
+                        if(chanData){
+                            NSInteger internalCursor = 0;
+                            for (NSInteger pix = 0; pix < area; pix++) {
                                 
-                                NSInteger realIndex = [self.indexesObtained[idx]integerValue];
+                                if(mask[pix] == false)
+                                    continue;
                                 
-                                chanData = sliceData[realIndex];
-                                if(chanData){
-                                    
-                                    NSInteger internalCursor = 0;
-                                    for (NSInteger pix = 0; pix < area; pix++) {
-                                        if(mask[pix] == false){
-                                            continue;
-                                        }
-                                        if(internalCursor >= renderableArea){
-                                            break;
-                                        }
-                                        
-                                        NSInteger internalStride = internalCursor * stride;
-                                        
-                                        if(self.colorsObtained.count > 0){
-                                            buff[cursor + internalStride + 1] += chanData[pix] * colors[idx * 3];
-                                            buff[cursor + internalStride + 2] += chanData[pix] * colors[idx * 3 + 1];
-                                            buff[cursor + internalStride + 3] += chanData[pix] * colors[idx * 3 + 2];
-                                        }else{
-                                            RgbColor rgb = RgbFromFloatUnit(chanData[pix]/255.0f);
-                                            buff[cursor + internalStride + 1] += rgb.r/255.0f;
-                                            buff[cursor + internalStride + 2] += rgb.g/255.0f;
-                                            buff[cursor + internalStride + 3] += rgb.b/255.0f;
-                                        }
-                                        buff[cursor + internalStride + 4] = internalCursor % _renderWidth;
-                                        buff[cursor + internalStride + 5] = internalCursor /_renderWidth;
-                                        buff[cursor + internalStride + 6] = z;
-                                        buff[cursor + internalStride + 7] = thickness;
-                                        
-                                        //Filters
-                                        float max = .0f;
-                                        float sum = .0f;
-                                        for (int i = 1; i < 4; i++){
-                                            float val = buff[cursor + internalStride + i];
-                                            if(val > max)
-                                                max = val;
-                                            sum += val;
-                                            if(sum > 1.0f){
-                                                sum = 1.0f;
-                                                break;
-                                            }
-                                        }
-                                        
-                                        if(alphaMode == ALPHA_MODE_OPAQUE)
-                                            buff[cursor + internalStride] = max < minThresholdForAlpha ? 0.0f : 1.0f;
-                                        if(alphaMode == ALPHA_MODE_FIXED)
-                                            buff[cursor + internalStride] = max < minThresholdForAlpha ? 0.0f : minThresholdForAlpha;//Alpha
-                                        if(alphaMode == ALPHA_MODE_ADAPTIVE)
-                                            buff[cursor + internalStride] = max < minThresholdForAlpha ? 0.0f : sum;//MIN(1.0f, sum);//Alpha
-                                        
-                                        internalCursor++;
+                                if(internalCursor >= renderableArea)
+                                    break;
+                                
+                                NSInteger internalStride = internalCursor * stride;
+                                
+                                if(self.colorsObtained.count > 0){
+                                    buff[cursor + internalStride + 1] += chanData[pix] * colors[idx * 3];
+                                    buff[cursor + internalStride + 2] += chanData[pix] * colors[idx * 3 + 1];
+                                    buff[cursor + internalStride + 3] += chanData[pix] * colors[idx * 3 + 2];
+                                }else{
+                                    RgbColor rgb = RgbFromFloatUnit(chanData[pix]/255.0f);
+                                    buff[cursor + internalStride + 1] += rgb.r/255.0f;
+                                    buff[cursor + internalStride + 2] += rgb.g/255.0f;
+                                    buff[cursor + internalStride + 3] += rgb.b/255.0f;
+                                }
+                                buff[cursor + internalStride + 4] = internalCursor % _renderWidth;
+                                buff[cursor + internalStride + 5] = internalCursor /_renderWidth;
+                                buff[cursor + internalStride + 6] = z;
+                                buff[cursor + internalStride + 7] = thickness;
+                                
+                                //Filters
+                                float max = .0f;
+                                float sum = .0f;
+                                for (int i = 1; i < 4; i++){
+                                    float val = buff[cursor + internalStride + i];
+                                    if(val > max)
+                                        max = val;
+                                    sum += val;
+                                    if(sum > 1.0f){
+                                        sum = 1.0f;
+                                        break;
                                     }
                                 }
+                                
+                                if(alphaMode == ALPHA_MODE_OPAQUE)
+                                    buff[cursor + internalStride] = max < minThresholdForAlpha ? 0.0f : 1.0f;
+                                if(alphaMode == ALPHA_MODE_FIXED)
+                                    buff[cursor + internalStride] = max < minThresholdForAlpha ? 0.0f : minThresholdForAlpha;//Alpha
+                                if(alphaMode == ALPHA_MODE_ADAPTIVE)
+                                    buff[cursor + internalStride] = max < minThresholdForAlpha ? 0.0f : sum;//MIN(1.0f, sum);//Alpha
+                                
+                                internalCursor++;
                             }
                         }
                     }
                 }
                 cursor += renderableArea * stride;
-            }];
+            }
+
             NSInteger bufferSize = renderableArea * slices.count * stride;
             float * cleanBuffer = malloc(bufferSize * sizeof(float));
             
@@ -515,7 +524,7 @@ bool heightDescriptor[] = {
     
     //prepareData
     if([self checkNeedsUpdate] || self.forceColorBufferRecalculation)
-        [self updateColorBufferWithWidth:width height:height slices:[self.delegate stacksIndexSet]];
+        [self updateColorBufferWithWidth:width height:height];
     self.forceColorBufferRecalculation = NO;
     if(!self.colorBuffer)
         return;

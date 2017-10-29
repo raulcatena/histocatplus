@@ -34,7 +34,7 @@ typedef struct HsvColor
 //Pixel Filter
 void applyFilterToPixelData(UInt8 * pixelData, NSInteger width, NSInteger height, NSInteger mode, float factor, NSInteger layers, NSInteger channels);
 void applySmoothingFilterToPixelData(UInt8 * pixelData, NSInteger width, NSInteger height, NSInteger mode, NSInteger layers);
-void threeDMeanBlur(UInt8 *** data, NSInteger width, NSInteger height, NSArray * indexesArranged, NSIndexSet * channels, NSInteger mode, bool *mask, float * deltas_z);
+void threeDMeanBlur(UInt8 *** data, NSInteger width, NSInteger height, NSInteger images, NSIndexSet * channels, NSInteger mode, bool *mask, float * deltas_z);
 
 //Main image assembly function
 +(NSImage *)imageForImageStacks:(NSMutableArray<IMCImageStack*>*)setStacks indexes:(NSArray *)indexArray withColoringType:(NSInteger)coloringType customColors:(NSArray *)customColors minNumberOfColors:(NSInteger)minAmountColors width:(NSInteger)width height:(NSInteger)height withTransforms:(BOOL)applyTransforms blend:(CGBlendMode)blend andMasks:(NSArray<IMCPixelClassification *> *)masks andComputations:(NSArray<IMCComputationOnMask *>*)computations maskOption:(MaskOption)maskOption maskType:(MaskType)maskType maskSingleColor:(NSColor *)maskSingleColor isAlignmentPair:(BOOL)isAlignmentPair brightField:(BOOL)brightField;

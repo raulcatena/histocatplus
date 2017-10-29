@@ -101,17 +101,17 @@
     if(self.parent.inScopeComputations.count == 1 && self.parent.inScopeComputation.isLoaded)
         self.parent.statsInfo.stringValue = [self.parent.inScopeComputation descriptionWithIndexes:self.parent.channels.selectedRowIndexes];
 
-    
+    NSLog(@"F");
     self.parent.scrollSubpanels.hidden = YES;
     self.parent.applyTransfomrs.hidden = YES;
     
     [self calculateMemory];
-    
+    NSLog(@"G");
     if([self.parent.tabs.selectedTabViewItem.identifier isEqualToString:TAB_ID_BLEND]){
         [self checkToolsBlendMode];
         [self refreshBlend];
     }
-    
+    NSLog(@"H");
     if([self.parent.tabs.selectedTabViewItem.identifier isEqualToString:TAB_ID_TILES]){
         [self checkToolsTilesMode];
         [self refreshTiles];
@@ -124,7 +124,7 @@
     if([self.parent.tabs.selectedTabViewItem.identifier isEqualToString:TAB_ID_ANALYTICS]){
         [self.parent.metricsController refreshTables];
     }
-    
+    NSLog(@"I");
     self.parent.channelsTag.stringValue = [NSString stringWithFormat:@"Channels (%li/%li)", self.parent.channels.selectedRowIndexes.count, [self.parent.channels numberOfRows ]];
     self.parent.objectsTag.stringValue = [NSString stringWithFormat:@"Files/Stacks/Masks (%li/%li)", self.parent.filesTree.selectedRowIndexes.count, [self.parent.filesTree numberOfChildrenOfItem:nil]];
 }
