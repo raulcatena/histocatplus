@@ -2018,7 +2018,10 @@
 #pragma mark cluster
 
 -(void)clusterFlock:(id)sender{
-    [IMCComputationOnMask flockForComps:self.inScopeComputations indexes:self.channels.selectedRowIndexes];
+    if(self.inScope3DMask)
+        [self.inScope3DMask flockWithChannelindexes:self.channels.selectedRowIndexes.copy];
+    else
+        [IMCComputationOnMask flockForComps:self.inScopeComputations indexes:self.channels.selectedRowIndexes.copy];
 }
 -(void)clusterKMeans:(id)sender{
 

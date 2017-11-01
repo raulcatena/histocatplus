@@ -1546,10 +1546,10 @@
                                     <menuItem title="Masks" id="vEG-oO-P1L" userLabel="Masks">
                                         <modifierMask key="keyEquivalentModifierMask"/>
                                     </menuItem>
-                                    <menuItem title="Mask Measurements" id="LtS-GR-UB7" userLabel="Mask Measurements">
+                                    <menuItem title="Cell data" id="LtS-GR-UB7" userLabel="Mask Measurements">
                                         <modifierMask key="keyEquivalentModifierMask"/>
                                     </menuItem>
-                                    <menuItem title="Mask Trainings" id="i6s-Uy-cff" userLabel="Mask Trainings">
+                                    <menuItem title="Cell Trainings" id="i6s-Uy-cff" userLabel="Mask Trainings">
                                         <modifierMask key="keyEquivalentModifierMask"/>
                                     </menuItem>
                                     <menuItem title="3D Masks" id="VMc-O5-f42" userLabel="3D Masks">

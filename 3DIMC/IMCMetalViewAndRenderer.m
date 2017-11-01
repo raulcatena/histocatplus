@@ -269,7 +269,6 @@ bool heightDescriptor[] = {
             }
             
             for (NSNumber *num in externals) {
-           ;
                 NSInteger corresponding = num.integerValue;
                 UInt8 ** sliceData = data[corresponding];
                 if(sliceData){

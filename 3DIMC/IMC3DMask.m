@@ -13,6 +13,7 @@
 #import "IMCImageGenerator.h"
 #import "IMC3DHandler.h"
 #import "IMC3DMaskComputations.h"
+#import "flock.h"
 
 @interface IMC3DMask(){
     int * maskIds;
@@ -972,22 +973,164 @@
         [self.threeDHandler startBufferForImages:self.threeDHandler.loader.inOrderImageWrappers channels:self.channels.count width:self.width height:self.height];
         
         if(self.threeDHandler.allBuffer && computedData){
+            UInt8 *** allBuff = self.threeDHandler.allBuffer;
+            NSInteger slices = self.slices;
+            
+            
+            NSMutableArray *indexesO = @[].mutableCopy;
+            NSMutableArray *maxesO = @[].mutableCopy;
+            NSInteger numberOfChannels = channels.count;
+            NSInteger numberOfSegments = self.segments;
             [channels enumerateIndexesUsingBlock:^(NSUInteger channel, BOOL *stop){
-                for (NSInteger i = 0; i < self.slices; i++) {
-                    if(!self.threeDHandler.allBuffer[i][channel])
-                        self.threeDHandler.allBuffer[i][channel] = calloc(planeLength, sizeof(UInt8));
-                }
-                for (NSInteger i = 0; i < fullMaskLength; i++) {
-                    if(maskIds[i] > 0){
-                        NSInteger plane = i / planeLength;
-                        NSInteger pix = i % planeLength;
-                        self.threeDHandler.allBuffer[plane][channel][pix] = (UInt8)computedData[channel][maskIds[i] - 1];
-                    }
-                }
+                //Allocate buffers if necessary
+                for (NSInteger i = 0; i < slices; i++)
+                    if(!allBuff[i][channel])
+                        allBuff[i][channel] = calloc(planeLength, sizeof(UInt8));
+                
+                //Get real channel index
+                [indexesO addObject:@(channel)];
+                
+                //Find maximum value
+                UInt8 localMax = 0;
+                for(NSInteger i = 0; i < numberOfSegments; i++)
+                    localMax = MAX(localMax, computedData[channel][i]);
+                
+                //Keep Max value
+                [maxesO addObject:@(localMax)];
             }];
+            
+            
+            //Make C indexes ad Maxes for speed
+            NSInteger indexes[numberOfChannels];
+            NSInteger maxes[numberOfChannels];
+            for (int i = 0; i < numberOfChannels; i++){
+                indexes[i] = [indexesO[i]integerValue];
+                maxes[i] = [maxesO[i]integerValue];
+                NSLog(@"Max %li ", maxes[i]);
+            }
+            
+            for (NSInteger i = 0; i < fullMaskLength; i++) {
+                if(maskIds[i] > 0){
+                    NSInteger plane = i / planeLength;
+                    NSInteger pix = i % planeLength;
+                    NSInteger cell = maskIds[i] - 1;
+                    
+                    for (int chan = 0; chan < numberOfChannels; chan++)
+                        allBuff[plane][indexes[chan]][pix] = (UInt8)(computedData[indexes[chan]][cell] * 255.0f / maxes[chan]);
+
+                }
+            }
+
         }
         
     }
+}
+
+#pragma mark Flock 3D
+
+-(BOOL)flockWithChannelindexes:(NSIndexSet *)indexSet{
+    BOOL success = YES;
+    if(indexSet.count == 0){
+        [General runAlertModalWithMessage:@"You must select at least one mask computation (cell data)"];
+        success = NO;
+    }
+
+    if(success){
+        NSMutableArray *closeAtEnd = @[].mutableCopy;
+
+        BOOL wasLoaded = self.isLoaded;
+        if(!wasLoaded)
+            [self loadLayerDataWithBlock:nil];
+        while (!self.isLoaded);
+        
+        NSInteger cellsComp = self.segments;
+        NSInteger channsToAnalyze = indexSet.count;
+        int *clusters = (int *) calloc(cellsComp, sizeof(int));//not iVar anymore
+        
+        double ** data = (double **)malloc(cellsComp * sizeof(double *));
+        for (int i = 0; i < cellsComp; i++)
+            data[i] = malloc(channsToAnalyze * sizeof(double));
+        
+
+        
+        __block NSInteger counter = 0;
+        [indexSet enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop){
+            for (int i = 0; i < cellsComp; i++)
+                data[i][counter] = asinh(computedData[idx][i]);
+            counter++;
+        }];
+
+        directMethod(indexSet.count, cellsComp, data, clusters);
+        
+        NSUInteger highest = 0;
+        for (int i =0 ; i < cellsComp; i++)
+            if(clusters[i] > highest)
+                highest = clusters[i];
+        
+        
+        NSString *opName = [@"Flock_" stringByAppendingString:[NSDate date].description];
+        
+        float * result = malloc(cellsComp * sizeof(float));
+        for (int i = 0; i < cellsComp; i++)
+            result[i] = (float)clusters[i];
+        [self addBuffer:result withName:opName atIndex:NSNotFound];
+        for (int j = 0; j < highest; j++) {
+            float * itemized = malloc(cellsComp * sizeof(float));
+            for (int i = 0; i < cellsComp; i++)
+                itemized[i] = clusters[i] == j ? 1.0f : 0.0f;
+            [self addBuffer:itemized withName:[opName stringByAppendingFormat:@"_cluster_%i", j] atIndex:NSNotFound];
+        }
+            
+        
+        free(clusters);
+        
+        for (IMCComputationOnMask *comp in closeAtEnd)
+            [comp unLoadLayerDataWithBlock:nil];
+    }
+    
+    return success;
+}
+
+#pragma mark add results
+-(void)addBuffer:(float *)buffer withName:(NSString *)name atIndex:(NSInteger)index{
+    
+    if(index == NSNotFound || index > self.channels.count)
+        index = self.channels.count;
+    
+    if(!self.isLoaded)
+        [self loadLayerDataWithBlock:nil];
+    while (!self.isLoaded);
+    
+    NSInteger oldNumberOfChannels = self.channels.count;
+    
+    float ** old = calloc(oldNumberOfChannels, sizeof(float *));
+    for(NSInteger i = 0; i < oldNumberOfChannels; i++)
+        old[i] = computedData[i];
+    
+    NSUInteger alreadyInComp = [self.channels indexOfObject:name];
+    
+    if(alreadyInComp != NSNotFound){
+        if(computedData[alreadyInComp])
+            free(computedData[alreadyInComp]);
+        computedData[alreadyInComp] = buffer;
+    }else{
+        [self.channels insertObject:name atIndex:index];
+        
+        if(computedData)
+            free(computedData);
+        
+        computedData = calloc(self.channels.count, sizeof(float *));
+        
+        for(NSInteger i = 0; i < oldNumberOfChannels + 1; i++){
+            if(i == index)
+                computedData[i] = buffer;
+            else
+                computedData[i] = old[i - (i > index)];
+        }
+    }
+    
+    [self saveCellData];
+    free(old);
 }
 
 -(void)dealloc{

@@ -1111,10 +1111,17 @@
 
 +(BOOL)flockForComps:(NSArray<IMCComputationOnMask *> *)comps indexes:(NSIndexSet *)indexSet{
     BOOL success = YES;
+    
+    //Perform checks
     if(comps.count == 0){
         [General runAlertModalWithMessage:@"You must select at least one mask computation (cell data)"];
         success = NO;
     }
+    if(indexSet.count == 0){
+        [General runAlertModalWithMessage:@"You must select at least one channel"];
+        success = NO;
+    }
+    
     NSInteger channels = comps.firstObject.channels.count;
     for (IMCComputationOnMask *comp in comps)
         if(comp.channels.count != channels)
@@ -1123,6 +1130,7 @@
         [General runAlertModalWithMessage:@"All cell data files must have the same number of channels"];
     if(indexSet.lastIndex >= comps.firstObject.channels.count)
         success = NO;
+    
     if(success){
         NSInteger allCells = 0;
         NSMutableArray *closeAtEnd = @[].mutableCopy;

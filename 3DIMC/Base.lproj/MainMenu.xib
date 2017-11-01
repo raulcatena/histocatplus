@@ -885,11 +885,36 @@
                                 </connections>
                             </menuItem>
                             <menuItem isSeparatorItem="YES" id="4Sg-Ys-XYn"/>
-                            <menuItem title="Combine Masks..." id="0wm-9z-kF3" userLabel="Pixel Classification Batch...">
+                            <menuItem title="Combine Masks..." id="0wm-9z-kF3" userLabel="Combine Masks">
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <connections>
                                     <action selector="combineMasks:" target="-1" id="dxz-7g-pvz"/>
                                 </connections>
+                            </menuItem>
+                            <menuItem title="Cell Analysis Algorithms (tSNE, Clustering, etc)..." id="de1-vb-Mv0" userLabel="Cell Analysis Algorithms">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="cellBasicAlgorithms:" target="-1" id="XEz-YX-E3M"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Clustering" id="Q8U-Gr-IB0">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <menu key="submenu" title="Clustering" id="haN-XQ-yEs">
+                                    <items>
+                                        <menuItem title="k-Means" id="dPs-ak-9ut">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="clusterKMeans:" target="-1" id="puE-yz-ANZ"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Flock" id="bL6-wL-4KD" userLabel="Flock">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="clusterFlock:" target="-1" id="B2E-P7-0iY"/>
+                                            </connections>
+                                        </menuItem>
+                                    </items>
+                                </menu>
                             </menuItem>
                             <menuItem isSeparatorItem="YES" id="xAw-3R-rsc"/>
                             <menuItem title="Copy training settings..." id="sFq-vb-htQ" userLabel="CopyPixelTrainingSettings">
