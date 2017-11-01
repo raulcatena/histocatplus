@@ -546,11 +546,11 @@ void threeDMeanBlur(UInt8 *** data, NSInteger width, NSInteger height, NSInteger
             col = colors[MIN(i, indexArray.count - 1)];
         CGImageRef aRef = [computation coloredMaskForChannel:[indexArray[i]integerValue] color:col maskOption:maskOption maskType:maskType maskSingleColor:maskSingleColor brightField:brightField];
         CGContextDrawImage(canvas, framePaint, aRef);
-        CFRelease(aRef);
+        CGImageRelease(aRef);
     }
     
     CGImageRef ref = CGBitmapContextCreateImage (canvas);
-    CFRelease(canvas);
+    CGContextRelease(canvas);
     CFRelease(colorSpace);
     return ref;
 }

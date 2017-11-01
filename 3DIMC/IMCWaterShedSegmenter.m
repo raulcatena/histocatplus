@@ -280,74 +280,67 @@ int gaussianMatrix [9][3] = {
     
     int * maskIds = calloc(allLength, sizeof(int));
     
-    BOOL wasLoaded = stack.isLoaded;
-    if(!wasLoaded)
-        [stack loadLayerDataWithBlock:nil];
-    while(!stack.isLoaded);
-    
-    
-    UInt8 ** chanImage = [stack preparePassBuffers:inOrderIndexes];
-    UInt8 * chanImageS = NULL;
-    if(schannel >= 0)
-        chanImageS= [stack preparePassBuffers:@[@(schannel)]][0];
-
-    if(chanImage){
-        UInt8 ** copies = calloc(inOrderIndexes.count, sizeof(UInt8 *));
-        for (int a = 0; a < inOrderIndexes.count; a++) {
-            copies[a] = calloc(allLength, sizeof(UInt8));
-             [self gaussianFilter2D_l3:width allLength:allLength buff:chanImage[a] receiver:copies[a]];
-        }
-        UInt8 * copyS = calloc(allLength, sizeof(UInt8));
-       
-        if(chanImageS)
-            [self gaussianFilter2D_l3:width allLength:allLength buff:chanImageS receiver:copyS];
-
-        int cellId = 1;
-        for (float analyze = 1.0f; analyze > threshold; analyze -= gradient) {
-            //Add Values
-            float analyzeAdded = analyze * 255;
-            NSLog(@"%f step", analyzeAdded);
-            
-            for (NSInteger j = 0; j < allLength; j++){
-                if(maskIds[j] == -1){
-                    int neigh = [IMCWaterShedSegmenter touchesId:j fullMaskLength:allLength width:width mask:maskIds];
-                    if(neigh > 0)
-                        maskIds[j] = neigh;
-                }
-                if(maskIds[j] == 0){
-                    int val = 0;
-                    for (int a = 0; a < inOrderIndexes.count; a++)
-                        val += copies[a][j];
-                    val = MIN(255, val);
-                    
-                    if(schannel >= 0 && copyS)
-                        val = MAX(0, val - copyS[j]);
-                    if(val >= analyzeAdded){
-                        maskIds[j] = [IMCWaterShedSegmenter touchesId:j fullMaskLength:allLength width:width mask:maskIds];
-                    }
-                }
-            }
-            for (NSInteger j = 0; j < allLength; j++){
-                if(maskIds[j] == -1){
-                    int qual = [IMCWaterShedSegmenter checkCandidates:j fullMaskLength:allLength width:width mask:maskIds];
-                    if(qual >= minKernel){//Promote all
-                        [IMCWaterShedSegmenter assignId:cellId toIndex:j fullMaskLength:allLength width:width mask:maskIds];
-                        cellId++;
-                    }
-                }
-            }
-        }
-        NSLog(@"Assigned %i", cellId);
-        [self fillHoles:4 fullMaskLength:allLength width:width mask:maskIds];
+    [stack openIfNecessaryAndPerformBlock:^{
+        UInt8 ** chanImage = [stack preparePassBuffers:inOrderIndexes];
+        UInt8 * chanImageS = NULL;
+        if(schannel >= 0)
+            chanImageS= [stack preparePassBuffers:@[@(schannel)]][0];
         
-        for (int a = 0; a < inOrderIndexes.count; a++)
-            free(copies[a]);
-        free(copies);
-        free(copyS);
-    }
-    
-    if(!wasLoaded)
-        [stack unLoadLayerDataWithBlock:nil];
+        if(chanImage){
+            UInt8 ** copies = calloc(inOrderIndexes.count, sizeof(UInt8 *));
+            for (int a = 0; a < inOrderIndexes.count; a++) {
+                copies[a] = calloc(allLength, sizeof(UInt8));
+                [self gaussianFilter2D_l3:width allLength:allLength buff:chanImage[a] receiver:copies[a]];
+            }
+            UInt8 * copyS = calloc(allLength, sizeof(UInt8));
+            
+            if(chanImageS)
+                [self gaussianFilter2D_l3:width allLength:allLength buff:chanImageS receiver:copyS];
+            
+            int cellId = 1;
+            for (float analyze = 1.0f; analyze > threshold; analyze -= gradient) {
+                //Add Values
+                float analyzeAdded = analyze * 255;
+                NSLog(@"%f step", analyzeAdded);
+                
+                for (NSInteger j = 0; j < allLength; j++){
+                    if(maskIds[j] == -1){
+                        int neigh = [IMCWaterShedSegmenter touchesId:j fullMaskLength:allLength width:width mask:maskIds];
+                        if(neigh > 0)
+                            maskIds[j] = neigh;
+                    }
+                    if(maskIds[j] == 0){
+                        int val = 0;
+                        for (int a = 0; a < inOrderIndexes.count; a++)
+                            val += copies[a][j];
+                        val = MIN(255, val);
+                        
+                        if(schannel >= 0 && copyS)
+                            val = MAX(0, val - copyS[j]);
+                        if(val >= analyzeAdded){
+                            maskIds[j] = [IMCWaterShedSegmenter touchesId:j fullMaskLength:allLength width:width mask:maskIds];
+                        }
+                    }
+                }
+                for (NSInteger j = 0; j < allLength; j++){
+                    if(maskIds[j] == -1){
+                        int qual = [IMCWaterShedSegmenter checkCandidates:j fullMaskLength:allLength width:width mask:maskIds];
+                        if(qual >= minKernel){//Promote all
+                            [IMCWaterShedSegmenter assignId:cellId toIndex:j fullMaskLength:allLength width:width mask:maskIds];
+                            cellId++;
+                        }
+                    }
+                }
+            }
+            NSLog(@"Assigned %i", cellId);
+            [self fillHoles:4 fullMaskLength:allLength width:width mask:maskIds];
+            
+            for (int a = 0; a < inOrderIndexes.count; a++)
+                free(copies[a]);
+            free(copies);
+            free(copyS);
+        }
+    }];
     
     //Reset negative values
     [IMCWaterShedSegmenter resetNegs:allLength mask:maskIds];
@@ -356,6 +349,7 @@ int gaussianMatrix [9][3] = {
     mask.parent = stack;
     mask.isLoaded = YES;
     mask.mask = maskIds;
+    mask.jsonDictionary[JSON_DICT_PIXEL_MASK_IS_CELL] = @YES;
     mask.itemName = [name stringByAppendingFormat:@"_%@", stack.itemName];;
     
     //Expand
@@ -363,17 +357,7 @@ int gaussianMatrix [9][3] = {
         mask.jsonDictionary[JSON_DICT_PIXEL_MASK_IS_DUAL] = @YES;
         [IMCWaterShedSegmenter expand:expansion length:allLength width:width mask:maskIds];
     }
-    
     [mask saveFileWith32IntBuffer:maskIds length:allLength];
-    
-    //Prepare the 3D buffer handler
-    //[IMCWaterShedSegmenter passToHandler];
-    
-    //Load up node
-    //[IMCWaterShedSegmenter loadLayerDataWithBlock:nil];
-    
-    //Save file with mask
-    //[IMCWaterShedSegmenter saveData];
 }
 
 +(void)expand:(int)expansion length:(NSInteger)allLength width:(NSInteger)width mask:(int *)maskIds{

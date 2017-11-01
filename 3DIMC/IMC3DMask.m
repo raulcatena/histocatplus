@@ -16,6 +16,8 @@
 
 @interface IMC3DMask(){
     int * maskIds;
+    float ** computedData;
+    UInt8 *** auxiliaryData;
 }
 
 @property (nonatomic, assign) NSInteger width;
@@ -87,6 +89,12 @@
 -(void)setChannel:(NSInteger)channel{
     self.metadata[JSON_DICT_3DS_METADATA_CHANNEL] = @(channel);
 }
+-(NSMutableArray *)channels{
+    return self.metadata[JSON_DICT_3DS_METADATA_CHANNELS];
+}
+-(void)setChannels:(NSMutableArray *)channels{
+    self.metadata[JSON_DICT_3DS_METADATA_CHANNELS] = channels;
+}
 -(NSInteger)substractChannel{
     return [self.metadata[JSON_DICT_3DS_METADATA_SUBST_CHANNEL]integerValue];
 }
@@ -140,6 +148,12 @@
 }
 -(void)setSlices:(NSInteger)slices{
     self.metadata[JSON_DICT_3DS_METADATA_THICK] = @(slices);
+}
+-(NSInteger)segments{
+    return [self.metadata[JSON_DICT_3DS_METADATA_SEGMENTS]integerValue];
+}
+-(void)setSegments:(NSInteger)segments{
+    self.metadata[JSON_DICT_3DS_METADATA_SEGMENTS] = @(segments);
 }
 
 -(int)touchesId:(NSInteger)testIndex fullMaskLength:(NSInteger)fullMaskLength planLength:(NSInteger)plane{
@@ -384,7 +398,7 @@
     self.slices = handler.images;
     
     NSInteger allLength = self.width * self.height;
-    NSInteger fullMask = allLength *  handler.images;
+    NSInteger fullMask = allLength *  self.slices;
     NSInteger channel = self.channel;
     NSInteger schannel = self.substractChannel;
     
@@ -442,6 +456,7 @@
             }
         }
         NSLog(@"Assigned %i", cellId);
+        self.segments = cellId - 1;
     }
     if(self.type == MASK3D_THRESHOLD || self.type == MASK3D_THRESHOLD_SEGMENT){
         float analyze = self.threshold * 255;
@@ -474,6 +489,7 @@
                         }
         }
         NSLog(@"Assigned %i", cellId);
+        self.segments = cellId - 1;
     }
     //Reset negative values
     [self resetNegs:fullMask];
@@ -522,14 +538,14 @@
                 maskIds[j] = -maskIds[j];
         
     }
+    
 }
 
 -(void)passToHandler{
     if(maskIds){
         NSInteger allLength = self.width * self.height;
         //NSInteger fullMaskLength = allLength * self.slices;
-        
-        [self.threeDHandler startBufferForImages:self.threeDHandler.items channels:1 width:self.width height:self.height];
+        [self.threeDHandler startBufferForImages:self.threeDHandler.loader.inOrderImageWrappers channels:1 width:self.width height:self.height];
         
         int randomColors = 12;
         float pre[randomColors];
@@ -570,6 +586,13 @@
     [self.coordinator checkAndCreateWorkingDirectory];
     return  [[self.coordinator.workingDirectoryPath stringByAppendingPathComponent:self.itemHash]stringByAppendingPathExtension:@".3mask"];
 }
+
+-(NSString *)pathCellDataFile{
+    [self.coordinator checkAndCreateWorkingDirectory];
+    return  [[self.coordinator.workingDirectoryPath stringByAppendingPathComponent:self.itemHash]stringByAppendingPathExtension:@".cbin"];
+}
+
+#pragma mark save
 -(void)saveData{
     if(maskIds){
         NSInteger elems = self.slices * self.width * self.height;
@@ -577,7 +600,7 @@
         int * compMask = malloc(count);
         
         int cursorComp = 0;
-        int scopeValue = maskIds[0], inRow = 1;;
+        int scopeValue = maskIds[0], inRow = 1;
         for (NSInteger i = 1; i < elems; i++) {
             if(maskIds[i] == scopeValue)
                 inRow++;
@@ -598,9 +621,33 @@
                 NSLog(@"Write returned error: %@", [error localizedDescription]);
     }
 }
+
+
+
+-(void)saveCellData{
+    
+    NSMutableData *data = [NSMutableData data];
+    NSInteger channels = self.channels.count;
+    
+    for (NSInteger i = 0; i < channels; i++)
+        if(computedData[i])
+            [data appendBytes:computedData[i] length:self.segments * sizeof(float)];
+    
+    NSError *error = nil;
+    NSString *path = [self pathCellDataFile];
+    [data writeToFile:path options:NSDataWritingAtomic error:&error];
+    if(error)
+        NSLog(@"Write returned error: %@", [error localizedDescription]);
+}
+
 -(void)deleteSelf{
     NSString *path = [self pathFile];
     NSError *error = nil;
+    [[NSFileManager defaultManager]removeItemAtPath:path error:&error];
+    if(error)
+        NSLog(@"Remove returned error: %@", [error localizedDescription]);
+    
+    path = [self pathCellDataFile];
     [[NSFileManager defaultManager]removeItemAtPath:path error:&error];
     if(error)
         NSLog(@"Remove returned error: %@", [error localizedDescription]);
@@ -610,12 +657,13 @@
     
     NSString *path = [self pathFile];
     NSData *data = [NSData dataWithContentsOfFile:path];
-    [self releaseMask];
-    NSInteger elems = self.slices * self.width * self.height;
-    NSInteger count = elems * sizeof(int);
-    maskIds = malloc(count);
     
     if(data){
+        [self releaseMask];
+        NSInteger elems = self.slices * self.width * self.height;
+        NSInteger count = elems * sizeof(int);
+        maskIds = malloc(count);
+        
         NSInteger counter = 0;
         int reps;
         int val;
@@ -631,13 +679,320 @@
             }
         }
     }
-
     [self passToHandler];
     [super loadLayerDataWithBlock:nil];
+    
+    
+    NSData *cellData = [NSData dataWithContentsOfFile:[self pathCellDataFile]];
+    if(cellData){
+        NSInteger channelsCount = self.channels.count;
+        NSInteger units = self.segments;
+        
+        if(data.length < channelsCount * units * sizeof(float)){
+            dispatch_async(dispatch_get_main_queue(), ^{[General runAlertModalWithMessage:@"File corrupted"];});
+            return;
+        }
+        
+        [self allocateComputedData];
+        
+        NSInteger counter = 0;
+        float *allBytes = (float *)cellData.bytes;
+        for (NSInteger i = 0; i < channelsCount; i++) {
+            for (NSInteger j = 0; j < units; j++) {
+                computedData[i][j] = allBytes[counter];
+                counter ++;
+            }
+        }
+    }else{
+        NSInteger input = [General runAlertModalAreYouSureWithMessage:
+                           @"No channel data associated to this mask.\
+                           Would you like to extract the channel data for thud 3D mask? This may take a few minutes."];
+        
+        if(input == NSAlertFirstButtonReturn)
+            [self extractCellData];
+    }    
 }
 -(void)unLoadLayerDataWithBlock:(void (^)())block{
     [self releaseMask];
+    [self clearComputedData];
     [super unLoadLayerDataWithBlock:block];
+}
+
+#pragma mark extract cell data
+
+-(NSInteger)depthFromVoxel:(NSInteger)voxelIndex width:(NSInteger)width planeLength:(NSInteger)planeLength totalMask:(NSInteger)fullMaskLength{
+    
+    NSInteger cellId = maskIds[voxelIndex];
+    maskIds[voxelIndex] = -maskIds[voxelIndex];
+    
+    NSMutableArray *voxels = @[].mutableCopy;
+    NSMutableArray *processing = @[].mutableCopy;
+    
+    NSNumber * testVoxel = @(voxelIndex);
+    
+    while (testVoxel) {
+        NSInteger val = testVoxel.integerValue;
+        NSInteger candidates[6] = {val - width,
+            val + width,
+            val - 1,
+            val + 1,
+            val - planeLength,
+            val + planeLength
+        };
+        for (int m = 0; m < 6;  m++){
+            if(candidates[m] >= 0 && candidates[m] < fullMaskLength)
+                if(maskIds[candidates[m]] == cellId){
+                    maskIds[candidates[m]] = -maskIds[candidates[m]];
+                    [processing addObject:@(candidates[m])];
+                }
+        }
+        [voxels addObject:testVoxel];
+        testVoxel = [processing lastObject];
+        [processing removeLastObject];
+    }
+    NSInteger basePlane = voxelIndex/planeLength;
+    NSInteger maxDepth = basePlane;
+    for (NSNumber *num in voxels) {
+        NSInteger vox = num.integerValue;
+        maxDepth = MAX(vox/planeLength, maxDepth);
+        maskIds[vox] = -maskIds[vox];
+    }
+    
+    return maxDepth;
+}
+
+-(NSInteger)maxDepthInPlane:(NSInteger)plane width:(NSInteger)width planeLength:(NSInteger)planeLength totalMask:(NSInteger)fullMaskLength{
+    
+    NSInteger planeOffset = planeLength * plane;
+    
+    NSInteger maxDepth = 0;
+    NSMutableArray *seen = @[].mutableCopy;
+    for (NSInteger i = 0; i < planeLength; i++) {
+        NSInteger index = planeOffset + i;
+        if(maskIds[index] > 0){
+            if(![seen containsObject:@(maskIds[index])]){
+                [seen addObject:@(maskIds[index])];
+                NSInteger depth = [self depthFromVoxel:index width:width planeLength:planeLength totalMask:fullMaskLength];
+                maxDepth = MAX(maxDepth, depth);
+            }
+        }
+    }
+    return maxDepth;
+}
+
+-(NSArray *)collectVoxelsForVoxelIndex:(NSInteger)voxelIndex width:(NSInteger)width planeLength:(NSInteger)planeLength totalMask:(NSInteger)fullMaskLength{
+    
+    NSInteger cellId = maskIds[voxelIndex];
+    maskIds[voxelIndex] = -maskIds[voxelIndex];
+    
+    NSMutableArray *voxels = @[].mutableCopy;
+    NSMutableArray *processing = @[].mutableCopy;
+    
+    NSNumber * testVoxel = @(voxelIndex);
+    
+    while (testVoxel) {
+        NSInteger val = testVoxel.integerValue;
+        NSInteger candidates[6] = {val - width,
+            val + width,
+            val - 1,
+            val + 1,
+            val - planeLength,
+            val + planeLength
+        };
+        for (int m = 0; m < 6;  m++){
+            if(candidates[m] >= 0 && candidates[m] < fullMaskLength)
+                if(maskIds[candidates[m]] == cellId){
+                    maskIds[candidates[m]] = -maskIds[candidates[m]];
+                    [processing addObject:@(candidates[m])];
+                }
+        }
+        [voxels addObject:testVoxel];
+        testVoxel = [processing lastObject];
+        [processing removeLastObject];
+    }
+    return voxels;
+}
+-(void)clearComputedData{
+    if(computedData){
+        NSInteger channels = [self.threeDHandler.loader maxChannels];
+        for (NSInteger c = 0; c < channels; c++) {
+            if(computedData[c]){
+                free(computedData[c]);
+                computedData[c] = NULL;
+            }
+        }
+        free(computedData);
+        computedData = NULL;
+    }
+}
+-(void)allocateComputedData{
+    [self clearComputedData];
+    
+    NSInteger channels = [[self channels]count];
+    computedData = malloc(channels * sizeof(float *));
+    for (NSInteger c = 0; c < channels; c++)
+        computedData[c] = calloc(self.segments, sizeof(float));
+}
+-(void)extractCellData{
+    [self openIfNecessaryAndPerformBlock:^{
+        
+        NSInteger planeLength = self.width * self.height;
+        NSInteger fullMask = planeLength *  self.slices;
+        NSInteger maxWidth = [self.threeDHandler.loader maxWidth] * 1.5;
+        
+        NSInteger channelsExtraction = [self.threeDHandler.loader maxChannels];
+        for (IMCImageStack *stack in self.threeDHandler.loader.inOrderImageWrappers) {
+            if(stack.channels.count < channelsExtraction){
+                [General runAlertModalWithMessage:@"An image does not have as many channels as the first image on top of the stack. Can't proceed"];
+                return;
+            }
+        }
+        NSMutableArray *channelStrings = [[(IMCImageStack *)self.threeDHandler.loader.inOrderImageWrappers.firstObject channels]mutableCopy];
+        [channelStrings addObjectsFromArray:@[@"X", @"Y", @"Z", @"Density", @"Size"]];
+        [self setChannels:channelStrings];
+        
+        [self allocateComputedData];
+        
+        NSInteger total = self.segments;
+        if(total == 0)
+            for (NSInteger i = 0; i < fullMask; i++)
+                if(maskIds[i] > total)
+                    total = maskIds[i];
+        
+        
+        if(total > 0)
+            self.segments = total - 1;
+        else
+            return;
+        
+        auxiliaryData = calloc(self.slices, sizeof(UInt8 **));
+        NSLog(@"Segments %li ", self.segments);
+        
+        
+        dispatch_queue_t slicer = dispatch_queue_create("slicer", NULL);
+        dispatch_async(slicer, ^{
+            NSInteger end = 0;
+            for (NSInteger p = 0; p < self.slices; p++) {
+                //Find until where deepest voxel falls
+                NSInteger lastTouchedPlane = [self maxDepthInPlane:p width:self.width planeLength:planeLength totalMask:fullMask];
+                
+                //Define range to have open only relevant slices
+                NSInteger begg = [self.threeDHandler internalSliceIndexForExternal:p];
+                end = MAX(end, [self.threeDHandler internalSliceIndexForExternal:lastTouchedPlane]);
+                
+                NSLog(@"Layer %li goes to %li internals %li | %li", p, lastTouchedPlane, begg, end);
+                
+                //Open relevant slices and form auxiliary buffer
+                for (NSInteger l = begg; l < end + 1; l++){
+                    
+                    NSInteger ext = [self.threeDHandler externalSliceIndexForInternal:l];
+                    
+                    if(!auxiliaryData[ext]){
+                        NSLog(@"Load external %li", ext);
+                        auxiliaryData[ext] = malloc(channelsExtraction * sizeof(UInt8 *));
+                        for(NSInteger c = 0; c < channelsExtraction; c++)
+                            auxiliaryData[ext][c] = calloc(planeLength, sizeof(UInt8));
+                        
+                        NSArray *internals = [self.threeDHandler indexesArranged][ext];
+                        for(NSNumber *internal in internals){
+                            
+                            IMCImageStack *stack = self.threeDHandler.loader.inOrderImageWrappers[internal.integerValue];
+                            if(!stack.isLoaded)
+                                [stack loadLayerDataWithBlock:nil];
+                            while(!stack.isLoaded);
+                            
+                            for (NSInteger c = 0; c < channelsExtraction; c++) {
+                                CGImageRef ref = [IMCImageGenerator whiteRotatedBufferForImage:stack atIndex:c superCanvasW:maxWidth superCanvasH:maxWidth];
+                                UInt8 *buf = [IMCImageGenerator bufferForImageRef:ref];
+                                for(NSInteger pix = 0, pos = 0; pix < planeLength; pix++, pos += 4)
+                                    auxiliaryData[ext][c][pix] += buf[pos];
+                                CGImageRelease(ref);
+                                free(buf);
+                            }
+                            [stack unLoadLayerDataWithBlock:nil];
+                            
+                        }
+                    }
+                }
+                
+                //Close unnecessary slices
+                for (NSInteger s = 0; s < p; s++) {
+                    if(auxiliaryData[s]){
+                        NSLog(@"Remove external %li", s);
+                        for (NSInteger c = 0; c < channelsExtraction; c++)
+                            if(auxiliaryData[s][c])
+                                free(auxiliaryData[s][c]);
+                        free(auxiliaryData[s]);
+                        auxiliaryData[s] = NULL;
+                    }
+                }
+                
+                
+                NSInteger offsetPlane = p * planeLength;
+                NSInteger upperLimit = offsetPlane + planeLength;
+                for (NSInteger i = offsetPlane; i < upperLimit; i++) {
+                    if(maskIds[i] > 0){
+                        NSInteger cellId = maskIds[i] - 1;
+                        NSArray *collectedVoxelIndexes = [self collectVoxelsForVoxelIndex:i width:self.width planeLength:planeLength totalMask:fullMask];
+                        
+                        for (NSNumber *num in collectedVoxelIndexes) {
+                            NSInteger index = num.integerValue%planeLength;
+                            NSInteger planeItBelongs = num.integerValue/planeLength;
+                            if(planeItBelongs < p || planeItBelongs > lastTouchedPlane)
+                                NSLog(@"_____%li", planeItBelongs);
+                            for (NSInteger c = 0; c < channelsExtraction; c ++)
+                                computedData[c][cellId] += (float)auxiliaryData[planeItBelongs][c][index];
+                        }
+                        for (NSInteger c = 0; c < channelsExtraction; c ++)
+                            computedData[c][cellId] /= (float)collectedVoxelIndexes.count;
+                    }
+                }
+            }
+            for (NSInteger i = 0; i < fullMask; i++)
+                if(maskIds[i] < 0)
+                    maskIds[i] = -maskIds[i];
+            
+            [self saveCellData];
+        });
+    }];
+}
+
+-(void)passToHandlerChannels:(NSIndexSet *)channels{
+
+    if(channels.count == 0)
+    {
+        [self passToHandler];
+        return;
+    }
+
+    if(maskIds){
+        NSInteger planeLength = self.width * self.height;
+        NSInteger fullMaskLength = planeLength * self.slices;
+        
+        [self.threeDHandler startBufferForImages:self.threeDHandler.loader.inOrderImageWrappers channels:self.channels.count width:self.width height:self.height];
+        
+        if(self.threeDHandler.allBuffer && computedData){
+            [channels enumerateIndexesUsingBlock:^(NSUInteger channel, BOOL *stop){
+                for (NSInteger i = 0; i < self.slices; i++) {
+                    if(!self.threeDHandler.allBuffer[i][channel])
+                        self.threeDHandler.allBuffer[i][channel] = calloc(planeLength, sizeof(UInt8));
+                }
+                for (NSInteger i = 0; i < fullMaskLength; i++) {
+                    if(maskIds[i] > 0){
+                        NSInteger plane = i / planeLength;
+                        NSInteger pix = i % planeLength;
+                        self.threeDHandler.allBuffer[plane][channel][pix] = (UInt8)computedData[channel][maskIds[i] - 1];
+                    }
+                }
+            }];
+        }
+        
+    }
+}
+
+-(void)dealloc{
+    [self clearComputedData];
+    [self releaseMask];
 }
 
 @end

@@ -90,7 +90,7 @@
                         <menu key="menu" id="0Ns-FU-1aB"/>
                     </popUpButtonCell>
                     <connections>
-                        <action selector="selectedChannel:" target="c22-O7-iKe" id="8Ls-FL-VUj"/>
+                        <action selector="changedChannel:" target="c22-O7-iKe" id="QqC-K0-kcn"/>
                     </connections>
                 </popUpButton>
                 <colorWell misplaced="YES" id="LIn-3z-hye">

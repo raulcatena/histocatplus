@@ -44,4 +44,6 @@
 -(void)loadLayerDataWithBlock:(void(^)())block;//To always override
 -(void)unLoadLayerDataWithBlock:(void(^)())block;//To always override
 
+-(void)openIfNecessaryAndPerformBlock:(void(^)())block;
+
 @end

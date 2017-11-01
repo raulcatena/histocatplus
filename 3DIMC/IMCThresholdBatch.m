@@ -55,23 +55,18 @@
         [self.stacksTableView.selectedRowIndexes enumerateIndexesUsingBlock:^(NSUInteger index, BOOL *stop){
             
             IMCImageStack *stack = [self.delegate allStacks][index];
-            BOOL wasLoaded = stack.isLoaded;
-            if(!wasLoaded)
-                [stack loadLayerDataWithBlock:nil];
-            while(!stack.isLoaded);
-            
-            doer.mask = nil;//So that a new one is created everytime
-            doer.stack = stack;
-            [doer generateBinaryMask];
-            [doer saveMask];
-            if(!wasLoaded)
-                [stack unLoadLayerDataWithBlock:nil];
-            counter++;
-            dispatch_async(dispatch_get_main_queue(), ^{
-                self.progressBar.doubleValue = counter/(float)howmanystacks;
-                if(self.progressBar.doubleValue == 1.0)
-                    sender.enabled = YES;
-            });
+            [stack openIfNecessaryAndPerformBlock:^{
+                doer.mask = nil;//So that a new one is created everytime
+                doer.stack = stack;
+                [doer generateBinaryMask];
+                [doer saveMask];
+                counter++;
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    self.progressBar.doubleValue = counter/(float)howmanystacks;
+                    if(self.progressBar.doubleValue == 1.0)
+                        sender.enabled = YES;
+                });
+            }];
         }];
     });
 }

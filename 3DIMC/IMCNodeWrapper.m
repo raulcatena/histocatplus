@@ -54,7 +54,16 @@
 -(void)populateSelfWithDictionary{
 
 }
-
+-(void)openIfNecessaryAndPerformBlock:(void(^)())block{
+    BOOL wasLoaded = self.isLoaded;
+    if(!wasLoaded)
+        [self loadLayerDataWithBlock:nil];
+    while(!self.isLoaded);
+    if(block)
+        block();
+    if(!wasLoaded)
+        [self unLoadLayerDataWithBlock:nil];
+}
 -(void)loadLayerDataWithBlock:(void(^)())block;{
     if([self isMemberOfClass:[IMCFileWrapper class]])
         for (IMCNodeWrapper *pan in self.children){

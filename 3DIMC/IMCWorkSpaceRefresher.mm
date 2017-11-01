@@ -75,6 +75,9 @@
         }
     }
     
+    ///////// ======= IMAGE RENDERING
+    
+    //Case of panoramas
     if(self.parent.inScopePanoramas.count > 0 && [[self.parent.filesTree itemAtRow:self.parent.filesTree.selectedRow] isMemberOfClass:[IMCPanoramaWrapper class]]){
         [self refreshFromImageArray:self.parent.inScopePanoramas];
         IMCPanoramaWrapper *pan = [self.parent.filesTree itemAtRow:self.parent.filesTree.selectedRow];
@@ -101,22 +104,37 @@
     if(self.parent.inScopeComputations.count == 1 && self.parent.inScopeComputation.isLoaded)
         self.parent.statsInfo.stringValue = [self.parent.inScopeComputation descriptionWithIndexes:self.parent.channels.selectedRowIndexes];
 
-    NSLog(@"F");
+    
+    [self calculateMemory];
+
+    
     self.parent.scrollSubpanels.hidden = YES;
     self.parent.applyTransfomrs.hidden = YES;
     
-    [self calculateMemory];
-    NSLog(@"G");
-    if([self.parent.tabs.selectedTabViewItem.identifier isEqualToString:TAB_ID_BLEND]){
-        [self checkToolsBlendMode];
-        [self refreshBlend];
+    BOOL refreshImagesLastCheck = self.parent.autoRefreshLock.state;
+    if([self.parent.tabs.selectedTabViewItem.identifier isEqualToString:TAB_ID_BLEND] || [self.parent.tabs.selectedTabViewItem.identifier isEqualToString:TAB_ID_TILES]){
+        NSInteger open = 0;
+        for(IMCNodeWrapper *wr in self.parent.inScopeImages)
+            if(wr.isLoaded)
+                open++;
+        for(IMCNodeWrapper *wr in self.parent.inScopeComputations)
+            if(wr.isLoaded)
+                open++;
+        if(open * self.parent.channels.selectedRowIndexes.count > 100 && self.parent.autoRefreshLock.state == NSOnState)
+            if([General runAlertModalAreYouSureWithMessage:@"More than 100 images/channels to refresh, are you sure?"] == NSAlertSecondButtonReturn)
+                refreshImagesLastCheck = NO;
+        if(refreshImagesLastCheck){
+            if([self.parent.tabs.selectedTabViewItem.identifier isEqualToString:TAB_ID_BLEND]){
+                [self checkToolsBlendMode];
+                [self refreshBlend];
+            }
+            if([self.parent.tabs.selectedTabViewItem.identifier isEqualToString:TAB_ID_TILES]){
+                [self checkToolsTilesMode];
+                [self refreshTiles];
+            }
+        }
     }
-    NSLog(@"H");
-    if([self.parent.tabs.selectedTabViewItem.identifier isEqualToString:TAB_ID_TILES]){
-        [self checkToolsTilesMode];
-        [self refreshTiles];
-    }
-//    
+//
 //    if([self.parent.tabs.selectedTabViewItem.identifier isEqualToString:@"4"]){
 //        [self refreshRControls];
 //    }
@@ -124,7 +142,8 @@
     if([self.parent.tabs.selectedTabViewItem.identifier isEqualToString:TAB_ID_ANALYTICS]){
         [self.parent.metricsController refreshTables];
     }
-    NSLog(@"I");
+    
+    //Table selection counters
     self.parent.channelsTag.stringValue = [NSString stringWithFormat:@"Channels (%li/%li)", self.parent.channels.selectedRowIndexes.count, [self.parent.channels numberOfRows ]];
     self.parent.objectsTag.stringValue = [NSString stringWithFormat:@"Files/Stacks/Masks (%li/%li)", self.parent.filesTree.selectedRowIndexes.count, [self.parent.filesTree numberOfChildrenOfItem:nil]];
 }
@@ -243,10 +262,12 @@
         NSMutableArray *involvedStacks = @[].mutableCopy;
         for (IMCComputationOnMask *comp in self.parent.inScopeComputations)
             if(![involvedStacks containsObject:comp.mask.imageStack])
-                [involvedStacks addObject:comp.mask.imageStack];
+                if(comp.mask.imageStack)
+                    [involvedStacks addObject:comp.mask.imageStack];
         for (IMCPixelClassification *mask in self.parent.inScopeMasks)
             if(![involvedStacks containsObject:mask.imageStack])
-                [involvedStacks addObject:mask.imageStack];
+                if(mask.imageStack)
+                    [involvedStacks addObject:mask.imageStack];
         for (IMCImageStack *stack in self.parent.inScopeImages)
             if(![involvedStacks containsObject:stack])
                 [involvedStacks addObject:stack];
@@ -356,8 +377,12 @@
         [self.parent.scrollViewBlends.imageView addScaleWithScaleFactor:self.parent.scaleBarCalibration.floatValue color:self.parent.scaleBarColor.color fontSize:self.parent.scaleBarFontSize.floatValue widthPhoto:self.parent.inScopeImage.width stepForced:self.parent.scaleBarSteps.integerValue onlyBorder:NO static:self.parent.scaleBarStatic.state];
     else [self.parent.scrollViewBlends.imageView removeScale];
     
-    if(self.parent.legends.state == NSOnState)
-        [self.parent.scrollViewBlends.imageView setLabels:[self.parent channelsForCell] withColors:[self.parent.customChannelsDelegate collectColors] backGround:self.parent.lengendsBackgroundColor.color fontSize:self.parent.legendsFontSize.floatValue vAlign:self.parent.legendsVertical.state static:self.parent.legendsStatic.state];
+    if(self.parent.legends.state == NSOnState){
+        NSMutableArray *arr = @[].mutableCopy;
+        for(NSNumber *idx in self.parent.inOrderIndexes)
+            [arr addObject:[self.parent channelsForCell][idx.integerValue]];
+        [self.parent.scrollViewBlends.imageView setLabels:arr withColors:[self.parent.customChannelsDelegate collectColors] backGround:self.parent.lengendsBackgroundColor.color fontSize:self.parent.legendsFontSize.floatValue vAlign:self.parent.legendsVertical.state static:self.parent.legendsStatic.state];
+    }
     else [self.parent.scrollViewBlends.imageView removeLabels];
 }
 
@@ -382,8 +407,11 @@
     for (IMCImageStack *stack in involvedStacks) {
         [arr addObject:stack.itemName.copy];
         if(involvedStacks.count > 1){
-            [cols addObject:[self.parent.customChannelsDelegate collectColors].copy];
-            [channs addObject:[self.parent channelsForCell].copy];
+            if([self.parent.customChannelsDelegate collectColors]){
+                [cols addObject:[self.parent.customChannelsDelegate collectColors].copy];
+                if([self.parent channelsForCell])
+                    [channs addObject:[self.parent channelsForCell].copy];
+            }
         }
         else
         {

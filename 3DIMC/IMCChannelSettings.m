@@ -48,6 +48,10 @@
     if([sender isMemberOfClass:[NSColorWell class]])[sender becomeFirstResponder];
 }
 
+-(void)changedChannel:(NSPopUpButton *)sender{
+    [self.delegate changed:self.index for:sender.indexOfSelectedItem];
+}
+
 -(void)setTag:(NSInteger)atag{
     
     [self.background setWantsLayer:YES];
@@ -57,7 +61,7 @@
 }
 
 -(void)setLocalIndex:(NSInteger)localIndex{
-    
+    _localIndex = localIndex;
     NSColor *color = [NSColor colorInHueAtIndex:localIndex totalColors:[self.delegate numberOfChannels] withColoringType:[self.delegate typeOfColoring] minumAmountColors:3];
 
     if(!color){
@@ -70,7 +74,7 @@
     self.color.color = color;
     
     //[self.selectChannel selectItemAtIndex:localIndex];
-    [self.selectChannel selectItemWithTitle:self.channels[localIndex]];
+    [self.selectChannel selectItemWithTitle:self.channels[self.index]];
 }
 
 - (void)drawRect:(NSRect)dirtyRect {

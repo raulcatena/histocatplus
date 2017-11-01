@@ -92,30 +92,27 @@
             while (activeProcesses>=cores);
             activeProcesses++;
             IMCPixelMap *map = [self.delegate allMapsForSegmentation][index];
-            
             //if([[NSFileManager defaultManager]fileExistsAtPath:map.absolutePath]){
-            if(!map.isLoaded)
-                [map loadLayerDataWithBlock:nil];
-            
-            while (!map.isLoaded);
-            map.isSegmentation = YES;
-            [map saveColorizedPixelMapPredictions];
-            
-            [IMCCellSegmenter saveCellProfilerPipelineWithImageWithWf:map.workingFolder hash:map.itemHash minCellDiam:self.minCellDiam.stringValue maxCellDiam:self.maxCellDiam.stringValue lowThreshold:self.lowerThreshold.stringValue upperThreshold:self.upperThreshold.stringValue showIntermediate:YES foreGround:NO];
-            
-            NSString *maskPath = [NSString stringWithFormat:@"%@/%@_seg_pmap_mask_cells.tiff", map.workingFolder, map.itemHash.copy];
-            
-            dispatch_queue_t aQ = dispatch_queue_create([IMCUtils randomStringOfLength:5].UTF8String, NULL);
-            dispatch_async(aQ, ^{
-                [IMCCellSegmenter runCPSegmentationForeGround:NO details:NO onStack:map.imageStack withHash:map.itemHash withBlock:^{
-                    counter++;
-                    self.progressBar.doubleValue = counter/(float)howmanymaps;
-                    if(self.progressBar.doubleValue == 1.0)
-                        sender.enabled = YES;
-                    [map.imageStack getMaskAtURL:[NSURL fileURLWithPath:maskPath]];
-                } inOwnThread:NO];
-                activeProcesses--;
-            });
+            [map openIfNecessaryAndPerformBlock:^{
+                map.isSegmentation = YES;
+                [map saveColorizedPixelMapPredictions];
+                
+                [IMCCellSegmenter saveCellProfilerPipelineWithImageWithWf:map.workingFolder hash:map.itemHash minCellDiam:self.minCellDiam.stringValue maxCellDiam:self.maxCellDiam.stringValue lowThreshold:self.lowerThreshold.stringValue upperThreshold:self.upperThreshold.stringValue showIntermediate:YES foreGround:NO];
+                
+                NSString *maskPath = [NSString stringWithFormat:@"%@/%@_seg_pmap_mask_cells.tiff", map.workingFolder, map.itemHash.copy];
+                
+                dispatch_queue_t aQ = dispatch_queue_create([IMCUtils randomStringOfLength:5].UTF8String, NULL);
+                dispatch_async(aQ, ^{
+                    [IMCCellSegmenter runCPSegmentationForeGround:NO details:NO onStack:map.imageStack withHash:map.itemHash withBlock:^{
+                        counter++;
+                        self.progressBar.doubleValue = counter/(float)howmanymaps;
+                        if(self.progressBar.doubleValue == 1.0)
+                            sender.enabled = YES;
+                        [map.imageStack getMaskAtURL:[NSURL fileURLWithPath:maskPath]];
+                    } inOwnThread:NO];
+                    activeProcesses--;
+                });
+            }];
         }];
     });
     

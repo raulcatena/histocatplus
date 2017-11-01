@@ -209,43 +209,39 @@
     
     NSInteger sure = [General runAlertModalAreYouSure];if (sure == NSAlertSecondButtonReturn)return;
     
-    NSMutableArray *closedFiles = @[].mutableCopy;
-    for (IMCImageStack *stack in stacks)
-        if(!stack.fileWrapper.isLoaded)
-            if(![closedFiles containsObject:stack.fileWrapper])
-                [closedFiles addObject:stack.fileWrapper];
-    
-    if(!stack.isLoaded){
-        [General runAlertModalWithMessage:@"Run this function from the stacks filter"];
-        return;
-    }
-    
     dispatch_queue_t aQ = dispatch_queue_create("aaQ", NULL);
     dispatch_async(aQ, ^{
         for (IMCImageStack *otherStack in stacks) {
-            
-            if(!otherStack.fileWrapper.isLoaded)
-                [otherStack.fileWrapper loadLayerDataWithBlock:nil];
-            while (!otherStack.fileWrapper.isLoaded);
-            [indexSet enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop){
-                float maxStack = [stack.channelSettings[idx][JSON_DICT_CHANNEL_SETTINGS_MAXOFFSET]floatValue];
-                float maxValue = [stack maxForIndex:idx];
-                
-                if(otherStack.channels.count > idx){
-                    float otherMax = [otherStack maxForIndex:idx];
-                    float otherAdjust = maxValue * maxStack / otherMax;
-                    
-                    [otherStack.channelSettings replaceObjectAtIndex:idx withObject:[stack.channelSettings[idx]mutableCopy]];
-                    [otherStack.channelSettings[idx] setValue:[NSNumber numberWithFloat:MIN(1.0f, otherAdjust)] forKey:JSON_DICT_CHANNEL_SETTINGS_MAXOFFSET];
-                }
-            }];
+            if(otherStack != stack){
+                [otherStack openIfNecessaryAndPerformBlock:^{
+                    [indexSet enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop){
+                        float maxStack = [stack.channelSettings[idx][JSON_DICT_CHANNEL_SETTINGS_MAXOFFSET]floatValue];
+                        float maxValue = [stack maxForIndex:idx];
+                        
+                        if(otherStack.channels.count > idx){
+                            float otherMax = [otherStack maxForIndex:idx];
+                            float otherAdjust = maxValue * maxStack / otherMax;
+                            
+                            [otherStack.channelSettings replaceObjectAtIndex:idx withObject:[stack.channelSettings[idx]mutableCopy]];
+                            [otherStack.channelSettings[idx] setValue:[NSNumber numberWithFloat:MIN(1.0f, otherAdjust)] forKey:JSON_DICT_CHANNEL_SETTINGS_MAXOFFSET];
+                        }
+                    }];
+                }];
+            }
         }
-        
-        for (IMCFileWrapper *file in closedFiles)
-            [file unLoadLayerDataWithBlock:nil];
-        
         if(block)dispatch_async(dispatch_get_main_queue(), ^{block();});
     });
+    
+//    NSMutableArray *closedFiles = @[].mutableCopy;
+//    for (IMCImageStack *stack in stacks)
+//        if(!stack.fileWrapper.isLoaded)
+//            if(![closedFiles containsObject:stack.fileWrapper])
+//                [closedFiles addObject:stack.fileWrapper];
+    
+//    if(!stack.isLoaded){
+//        [General runAlertModalWithMessage:@"Run this function from the stacks filter"];
+//        return;
+//    }
 }
 
 +(void)converttoTIFFFiles:(NSArray <IMCFileWrapper *>*)files block:(void(^)())block{

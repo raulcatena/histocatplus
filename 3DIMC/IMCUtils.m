@@ -146,7 +146,7 @@
         NSButton *but = [[NSButton alloc]initWithFrame:NSMakeRect(0, height - ([values indexOfObject:val] + 1) * heightButton, 300, heightButton)];
         [but setButtonType:NSSwitchButton];
         but.title = val;
-        but.state = NSOnState;
+        but.state = NSOffState;
         [but setTag:[values indexOfObject:val]];
         [inner addSubview:but];
         [buttons addObject:but];

@@ -14,6 +14,7 @@
 -(void)madeChannelConfChanges;
 -(NSInteger)numberOfChannels;
 -(NSInteger)typeOfColoring;
+-(void)changed:(NSInteger)oldChannel for:(NSInteger)newChannel;
 
 @end
 
@@ -40,6 +41,7 @@
 @property (nonatomic, assign) id<ChannelConfCell>delegate;
 
 -(IBAction)selectedChannel:(id)sender;
+-(IBAction)changedChannel:(NSPopUpButton *)sender;
 -(void)setTag:(NSInteger)atag;
 
 @end

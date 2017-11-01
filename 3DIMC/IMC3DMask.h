@@ -41,6 +41,8 @@ typedef enum{
 @property (nonatomic, weak) IMC3DHandler *threeDHandler;
 @property (nonatomic, assign) NSInteger blurMode;
 @property (nonatomic, readonly) NSInteger slices;
+@property (nonatomic, readonly) NSInteger segments;
+@property (nonatomic, readonly) NSArray * channels;
 
 @property (nonatomic, strong) NSMutableArray<IMC3DMaskComputations *> *computationNodes;
 
@@ -59,6 +61,7 @@ typedef enum{
 
 -(void)extractMaskFromRender;
 -(void)passToHandler;
+-(void)passToHandlerChannels:(NSIndexSet *)channels;
 -(void)deleteSelf;
 
 @end

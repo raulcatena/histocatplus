@@ -259,6 +259,7 @@ bool heightDescriptor[] = {
             bool * mask = [self.delegate showMask];
             
             float * colors = (float *)malloc(self.colorsObtained.count * 3 * sizeof(float));
+            
             for (int i = 0; i< self.colorsObtained.count; i++) {
                 NSColor *colorObj = [self.colorsObtained objectAtIndex:i];
                 colorObj = [colorObj colorUsingColorSpace:[NSColorSpace sRGBColorSpace]];
@@ -268,7 +269,7 @@ bool heightDescriptor[] = {
             }
             
             for (NSNumber *num in externals) {
-           
+           ;
                 NSInteger corresponding = num.integerValue;
                 UInt8 ** sliceData = data[corresponding];
                 if(sliceData){
@@ -285,11 +286,12 @@ bool heightDescriptor[] = {
                         chanData = sliceData[realIndex];
                         if(chanData){
                             NSInteger internalCursor = 0;
+
                             for (NSInteger pix = 0; pix < area; pix++) {
                                 
                                 if(mask[pix] == false)
                                     continue;
-                                
+
                                 if(internalCursor >= renderableArea)
                                     break;
                                 

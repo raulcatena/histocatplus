@@ -117,6 +117,7 @@
 #define JSON_DICT_3DS_METADATA_TYPE @"json_dict_3ds_met_type"
 #define JSON_DICT_3DS_METADATA_ORIGIN @"json_dict_3ds_met_origin"
 #define JSON_DICT_3DS_METADATA_CHANNEL @"json_dict_3ds_met_chan"
+#define JSON_DICT_3DS_METADATA_CHANNELS @"json_dict_3ds_met_chans"
 #define JSON_DICT_3DS_METADATA_SUBST_CHANNEL @"json_dict_3ds_met_subchan"
 #define JSON_DICT_3DS_METADATA_THRESHOLD @"json_dict_3ds_met_thres"
 #define JSON_DICT_3DS_METADATA_STEP_WATERSHED @"json_dict_3ds_met_stepwtshd"
@@ -125,6 +126,7 @@
 #define JSON_DICT_3DS_METADATA_WIDTH @"json_dict_3ds_width"
 #define JSON_DICT_3DS_METADATA_HEIGHT @"json_dict_3ds_height"
 #define JSON_DICT_3DS_METADATA_THICK @"json_dict_3ds_thick"
+#define JSON_DICT_3DS_METADATA_SEGMENTS @"json_dict_3ds_segments"
 #define JSON_DICT_3DS_METADATA_SHEEP_SHAVER @"json_dict_3ds_sheep"
 
 

@@ -205,6 +205,7 @@
 }
 
 -(void)loadLayerDataWithBlock:(void (^)())block{
+    
     dispatch_queue_t aQ = dispatch_queue_create("aQQ", NULL);
     dispatch_async(aQ, ^{
         if([self isMemberOfClass:NSClassFromString(@"IMCPixelMap")]){

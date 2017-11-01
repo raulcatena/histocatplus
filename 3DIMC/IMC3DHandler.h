@@ -45,4 +45,8 @@
 -(float)totalThickness;
 -(void)meanBlurModelWithKernel:(NSInteger)kernel forChannels:(NSIndexSet *)channels mode:(NSInteger)mode;
 
+-(NSInteger)externalSliceIndexForInternal:(NSInteger)internal;
+-(NSInteger)internalSliceIndexForExternal:(NSInteger)external;
+-(NSArray *)indexesArranged;
+
 @end

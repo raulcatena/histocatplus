@@ -233,6 +233,7 @@
     IMCComputationOnMask *comp = [[IMCComputationOnMask alloc]init];
     comp.jsonDictionary = dict;
     comp.parent = self;
+    //comp.isLoaded = YES;
     [comp extractDataForMask:computations processedData:rawOrProcessedData];
 }
 

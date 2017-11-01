@@ -15,7 +15,7 @@
 @implementation IMCChannelSettingsDelegate
 
 -(NSInteger)numberOfRowsInTableView:(NSTableView *)tableView{
-    return [self.delegate channelsForCell].count;
+    return [self.delegate indexesForCell].count;
 }
 
 -(id)tableView:(NSTableView *)tableView viewForTableColumn:(nullable NSTableColumn *)tableColumn row:(NSInteger)row{
@@ -41,7 +41,7 @@
     if(!self.whichTableView)
         self.whichTableView = [self.delegate whichTableView];
         
-    for (NSInteger i = 0; i < [self.delegate channelsForCell].count; i++) {
+    for (NSInteger i = 0; i < [self.delegate indexesForCell].count; i++) {
         IMCChannelSettings *cell = [self tableView:self.whichTableView viewForTableColumn:column row:i];
         if(cell)
             [array addObject:cell.color.color];
@@ -56,11 +56,15 @@
 }
 
 -(NSInteger)numberOfChannels{
-    return [self.delegate channelsForCell].count;
+    return [self.delegate indexesForCell].count;
 }
 
 -(NSInteger)typeOfColoring{
     return [self.delegate typeOfColoring];
+}
+
+-(void)changed:(NSInteger)oldChannel for:(NSInteger)newChannel{
+    [self.delegate changed:oldChannel for:newChannel];
 }
 
 @end

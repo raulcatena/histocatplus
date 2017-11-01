@@ -241,26 +241,22 @@
     for (NSNumber *index in internals) {
         NSInteger internal = index.integerValue;
         IMCImageStack *stack = self.items[internal];
-        BOOL wasLoaded = stack.isLoaded;
-        if(!stack.isLoaded)
-            [stack loadLayerDataWithBlock:nil];
-        while (!stack.isLoaded);
         
-        CGImageRef image = [IMCImageGenerator whiteRotatedBufferForImage:stack
-                                                                 atIndex:channel
-                                                            superCanvasW:self.width superCanvasH:self.height];
-        if(!wasLoaded)
-            [stack unLoadLayerDataWithBlock:nil];
-        CFDataRef rawData = CGDataProviderCopyData(CGImageGetDataProvider(image));
-        
-        UInt8 * buf = (UInt8 *) CFDataGetBytePtr(rawData);
-        NSInteger length = CFDataGetLength(rawData);
-        NSLog(@"L %li", length);
-        for(int i=0; i<length; i++)
-            self.allBuffer[indexStack][channel][i] += buf[i];
-        
-        CFRelease(rawData);
-        CFRelease(image);
+        [stack openIfNecessaryAndPerformBlock:^{
+            CGImageRef image = [IMCImageGenerator whiteRotatedBufferForImage:stack
+                                                                     atIndex:channel
+                                                                superCanvasW:self.width superCanvasH:self.height];
+            CFDataRef rawData = CGDataProviderCopyData(CGImageGetDataProvider(image));
+            
+            UInt8 * buf = (UInt8 *) CFDataGetBytePtr(rawData);
+            NSInteger length = CFDataGetLength(rawData);
+
+            for(int i=0; i<length; i++)
+                self.allBuffer[indexStack][channel][i] += buf[i];
+            
+            CFRelease(rawData);
+            CFRelease(image);
+        }];
     }
 }
 -(void)addComputationAtIndex:(NSInteger)indexStack channel:(NSInteger)channel maskOption:(MaskOption)option maskType:(MaskType)type{
@@ -279,28 +275,25 @@
         NSInteger internal = index.integerValue;
         
         IMCComputationOnMask *comp = self.items[internal];
-        BOOL wasLoaded = comp.isLoaded;
-        if(!comp.isLoaded)
-            [comp loadLayerDataWithBlock:nil];
-        while (!comp.isLoaded);
-        
-        CGImageRef ref = [IMCImageGenerator refForMaskComputation:comp indexes:@[@(channel)] coloringType:1 customColors:@[[NSColor whiteColor]] minNumberOfColors:1 width:self.width height:self.height withTransforms:YES blendMode:kCGBlendModeScreen maskOption:option maskType:type maskSingleColor:[NSColor whiteColor] brightField:NO];
-        
-        if(!wasLoaded)
-            [comp unLoadLayerDataWithBlock:nil];
-        
-        UInt8 *buf = [IMCImageGenerator bufferForImageRef:ref];
-        
-        NSInteger length = self.width * self.height;//CFDataGetLength(rawData);
-        
-        for(int i=0, k=0; i<length; i++, k+=4)
-            self.allBuffer[indexStack][channel][i] += buf[k];
-        
-        if(buf)
-            free(buf);
-        if(ref)
-            CFRelease(ref);
-        
+        [comp.mask openIfNecessaryAndPerformBlock:^{
+            [comp openIfNecessaryAndPerformBlock:^{
+                
+                CGImageRef ref = [IMCImageGenerator refForMaskComputation:comp indexes:@[@(channel)] coloringType:1 customColors:@[[NSColor whiteColor]] minNumberOfColors:1 width:self.width height:self.height withTransforms:YES blendMode:kCGBlendModeScreen maskOption:option maskType:type maskSingleColor:[NSColor whiteColor] brightField:NO];
+                
+                UInt8 *buf = [IMCImageGenerator bufferForImageRef:ref];
+                
+                NSInteger length = self.width * self.height;//CFDataGetLength(rawData);
+                
+                for(int i=0, k=0; i<length; i++, k+=4)
+                    self.allBuffer[indexStack][channel][i] += buf[k];
+                
+                if(buf)
+                    free(buf);
+                if(ref)
+                    CGImageRelease(ref);
+                [comp clearCacheBuffers];
+            }];
+        }];
     }
 }
 -(void)addMask:(IMCPixelClassification *)mask atIndexOfStack:(NSInteger)indexStack maskOption:(MaskOption)option maskType:(MaskType)type{

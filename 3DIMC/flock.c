@@ -512,17 +512,18 @@ long select_bin(double **normalized_data, long file_Len, long num_dm, long min_g
       i++;
     }
 
-   if ((select_num_bin<min_grid) || (select_num_bin>max_grid))
-  {
-    fprintf(stderr,"Number of events collected is too few in terms of number of markers used. The file should not be processed!\n"); //modified on Nov 4, 2010
-	exit(0);
-  }
-	
-  if (temp_index==0)
-  {
-	 fprintf(stderr,"Too many dimensions with too few events in the input file, or a too large number of bins used.\n"); //modified on July 23, 2010
-	 abort();
-  }
+    //RCF
+//   if ((select_num_bin<min_grid) || (select_num_bin>max_grid))
+//  {
+//    fprintf(stderr,"Number of events collected is too few in terms of number of markers used. The file should not be processed!\n"); //modified on Nov 4, 2010
+//	exit(0);
+//  }
+//	
+//  if (temp_index==0)
+//  {
+//	 fprintf(stderr,"Too many dimensions with too few events in the input file, or a too large number of bins used.\n"); //modified on July 23, 2010
+//	 abort();
+//  }
  
 
   free(temp_grid_ID);
@@ -599,11 +600,12 @@ int select_dense(long file_Len, long *all_grid_ID, long num_nonempty, long *num_
     }
 
   //added on July 23, 2010
-  if (biggest_size<3)
-  {
-	 fprintf(stderr,"Too many dimensions with too few events in the input file, or a too large number of bins used.\n"); //modified on July 23, 2010
-	 abort();
-  }
+    //RCF
+//  if (biggest_size<3)
+//  {
+//	 fprintf(stderr,"Too many dimensions with too few events in the input file, or a too large number of bins used.\n"); //modified on July 23, 2010
+//	 abort();
+//  }
 
   grid_size_index=(long*)malloc(sizeof(long)*biggest_size);
   memset(grid_size_index,0,sizeof(long)*biggest_size);
@@ -644,23 +646,24 @@ int select_dense(long file_Len, long *all_grid_ID, long num_nonempty, long *num_
 	  if (all_grid_vol[i]>=den_t_event)
 		temp_num_dense_grids++;
 
-  if (temp_num_dense_grids<=1)
-  {
-	  //modified on July 23, 2010
-	  //printf("a too high density threshold is set! Please decrease your density threshold.\n");
-	  //exit(0);
-	  fprintf(stderr,"a too high density threshold is set! Please decrease your density threshold.\n"); //modified on July 23, 2010
-	  abort();
-  }
-
-  if (temp_num_dense_grids>=100000)
-  {
-	  //modified on July 23, 2010
-	  //printf("a too low density threshold is set! Please increase your density threshold.\n");
-	  //exit(0);
-	  fprintf(stderr,"a too low density threshold is set! Please increase your density threshold.\n"); //modified on July 23, 2010
-	  abort();
-  }
+    //RCF
+//  if (temp_num_dense_grids<=1)
+//  {
+//	  //modified on July 23, 2010
+//	  //printf("a too high density threshold is set! Please decrease your density threshold.\n");
+//	  //exit(0);
+//	  fprintf(stderr,"a too high density threshold is set! Please decrease your density threshold.\n"); //modified on July 23, 2010
+//	  abort();
+//  }
+//
+//  if (temp_num_dense_grids>=100000)
+//  {
+//	  //modified on July 23, 2010
+//	  //printf("a too low density threshold is set! Please increase your density threshold.\n");
+//	  //exit(0);
+//	  fprintf(stderr,"a too low density threshold is set! Please increase your density threshold.\n"); //modified on July 23, 2010
+//	  abort();
+//  }
   
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // Compute dense_grid_reverse
@@ -1926,7 +1929,7 @@ void directMethod(long num_dm, long file_Len, double **input_data, int *results)
     memset(all_population_ID,0,sizeof(long)*file_Len);
     
     kmeans_flock(normalized_data, num_population, KMEANS_TERM, file_Len, num_dm, all_population_ID, population_center);
-    show(input_data, all_population_ID, file_Len, num_population, num_dm, para_name_string);
+    //show(input_data, all_population_ID, file_Len, num_population, num_dm, para_name_string);
     
     ID2Center_all(input_data,file_Len,num_dm,num_population,all_population_ID,population_center);
     

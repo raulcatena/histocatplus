@@ -467,9 +467,7 @@ float distanceFromPointAToXAndYWidhWidth(NSInteger indexA, float x, float y, NSI
 //            return res;
 //        }
     }
-    
-    NSLog(@"URL is %@", url);
-    
+        
     if ([[url.absoluteString pathExtension]isEqualToString:EXTENSION_M32]) {
         NSData *data = [NSData dataWithContentsOfURL:url];
         NSInteger lenght = stack.numberOfPixels;

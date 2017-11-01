@@ -17,6 +17,7 @@
 -(NSTableView *)whichTableView;
 -(NSArray *)channelsForCell;
 -(NSArray *)indexesForCell;
+-(void)changed:(NSInteger)oldChannel for:(NSInteger)newChannel;
 
 @end
 

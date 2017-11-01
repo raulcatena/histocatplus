@@ -80,6 +80,8 @@
     if(!self.imageStack.isLoaded)
         [self.imageStack loadLayerDataWithBlock:nil];
     while(!self.imageStack.isLoaded);
+    ///?XXX necessary to open?
+    
     NSInteger pix = self.imageStack.numberOfPixels;
     self.trainingBuffer = (UInt8 *)calloc(pix, sizeof(UInt8));
     if(image){

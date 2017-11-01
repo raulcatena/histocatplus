@@ -248,12 +248,9 @@
 }
 -(void)setInScope3DMask:(IMC3DMask *)inScope3DMask{
     _inScope3DMask = inScope3DMask;
-    if(inScope3DMask.isLoaded)
-        [inScope3DMask passToHandler];
-    if(inScope3DMask){
+    if(inScope3DMask && self.inOrderIndexes.count == 0)
         self.inOrderIndexes = @[@(0)].mutableCopy;
-        inScope3DMask.blurMode = self.cleanUpMode.indexOfSelectedItem;
-    }
+    inScope3DMask.blurMode = self.cleanUpMode.indexOfSelectedItem;
 }
 
 #pragma mark File Handling
@@ -584,25 +581,20 @@
             dispatch_queue_t saver = dispatch_queue_create("saver", NULL);
             dispatch_async(saver, ^{
                 for (IMCImageStack *stck in ims) {
-                    BOOL wasOpen = stck.isLoaded;
-                    if(!wasOpen){
-                        [stck loadLayerDataWithBlock:nil];
-                        while (!stck.isLoaded);
-                    }
-                    NSString *folder = [IMCFileExporter saveTIFFsFolder:stck atFolderPath:panel.URL.path];
-                    if(!wasOpen)
-                        [stck unLoadLayerDataWithBlock:nil];
-                    if(stck.pixelMasks.count > 0)
-                        for (IMCPixelClassification *mask in stck.pixelMasks)
-                            if(mask.isCellMask){
-                                NSString *maskPathCopy = [folder stringByAppendingPathComponent:[@"00" stringByAppendingString:mask.relativePath.lastPathComponent]];
-                                if(maskPathCopy){
-                                    NSError *error;
-                                    [[NSFileManager defaultManager]copyItemAtPath:mask.absolutePath toPath:maskPathCopy error:&error];
-                                    if(error)
-                                        NSLog(@"___Error %@", error);
+                    [stck openIfNecessaryAndPerformBlock:^{
+                        NSString *folder = [IMCFileExporter saveTIFFsFolder:stck atFolderPath:panel.URL.path];
+                        if(stck.pixelMasks.count > 0)
+                            for (IMCPixelClassification *mask in stck.pixelMasks)
+                                if(mask.isCellMask){
+                                    NSString *maskPathCopy = [folder stringByAppendingPathComponent:[@"00" stringByAppendingString:mask.relativePath.lastPathComponent]];
+                                    if(maskPathCopy){
+                                        NSError *error;
+                                        [[NSFileManager defaultManager]copyItemAtPath:mask.absolutePath toPath:maskPathCopy error:&error];
+                                        if(error)
+                                            NSLog(@"___Error %@", error);
+                                    }
                                 }
-                            }
+                    }];
                 }
             });
         }
@@ -968,20 +960,10 @@
 #pragma mark external tableview delegates
 
 -(NSArray *)channelsForCell{
-    NSMutableArray *arr = @[].mutableCopy;
-    for (NSNumber *num in self.inOrderIndexes) {
-        if(self.inScopeComputations.count > 0)
-        {
-            id obj = [[self.inScopeComputation.channels objectAtIndex:MIN(self.inScopeComputation.channels.count - 1, num.integerValue)]copy];
-            if(obj)[arr addObject:obj];
-        }
-        else
-        {
-            id obj = [[self.inScopeImage.channels objectAtIndex:MIN(self.inScopeImage.channels.count - 1, num.integerValue)]copy];
-            if(obj)[arr addObject:obj];
-        }
-    }
-    return [NSArray arrayWithArray:arr];
+    if(self.inScopeComputations.count > 0)
+        return self.inScopeComputation.channels;
+    else
+        return self.inScopeImage.channels;
 }
 
 -(NSArray *)indexesForCell{
@@ -1006,7 +988,11 @@
 -(NSTableView *)tableViewEvents{
     return self.eventsTable;
 }
-
+-(void)changed:(NSInteger)oldChannel for:(NSInteger)newChannel{
+    [self.channels deselectRow:oldChannel];
+    if(![self.channels.selectedRowIndexes containsIndex:newChannel])
+        [self.channels selectRowIndexes:[NSIndexSet indexSetWithIndex:newChannel] byExtendingSelection:YES];
+}
 #pragma mark NSTabView
 
 -(void)tabView:(NSTabView *)tabView didSelectTabViewItem:(NSTabViewItem *)tabViewItem{
@@ -1231,11 +1217,13 @@
             for(IMCPixelClassification *mask in masks){
                 while (counter>3);
                 counter++;
-                [mask extractDataForMask:computations processedData:(BOOL)rawOrProcessedData];
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    counter--;
-                    [self.filesTree reloadData];
-                });
+                [mask openIfNecessaryAndPerformBlock:^{
+                    [mask extractDataForMask:computations processedData:(BOOL)rawOrProcessedData];
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        counter--;
+                        [self.filesTree reloadData];
+                    });
+                }];
             }
         });
     }
@@ -1502,6 +1490,8 @@
         dispatch_async(queue, ^{
             if(![self.threeDHandler isReady])
                 return;
+            if(self.channels.selectedRowIndexes.count == 0)
+                return;
             
             NSIndexSet *channs = self.channels.selectedRowIndexes.copy;
             NSInteger total = self.filesTree.selectedRowIndexes.count;
@@ -1528,34 +1518,22 @@
                     mask = (IMCPixelClassification *)anobj;
                 
                 if(stack && !comp){
-                    BOOL stackWasLoaded = stack.isLoaded;
-                    if(!stackWasLoaded)
-                        [stack loadLayerDataWithBlock:nil];
-                    while(!stack.isLoaded);
-                    [channs enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop){
-                        [self.threeDHandler addImageStackatIndex:fileIdx channel:idx];
+                    [stack openIfNecessaryAndPerformBlock:^{
+                        [channs enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop){
+                            [self.threeDHandler addImageStackatIndex:fileIdx channel:idx];
+                        }];
                     }];
-                    if(stackWasLoaded == NO)
-                        [stack unLoadLayerDataWithBlock:nil];
                     
                 }else if(mask){
-                    BOOL wasLoaded = mask.isLoaded;
-                    if(!wasLoaded)
-                        [mask loadLayerDataWithBlock:nil];
-                    while(!mask.isLoaded);
-                    
-                    [self.threeDHandler addMask:mask atIndexOfStack:fileIdx maskOption:(MaskOption)self.maskVisualizeSelector.selectedSegment maskType:(MaskType)self.maskPartsSelector.selectedSegment];
-                    
-                }else if(comp){
-                    BOOL wasLoaded = comp.isLoaded;
-                    if(!wasLoaded)
-                        [comp loadLayerDataWithBlock:nil];
-                    while(!comp.isLoaded);
-                    [channs enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop){
-                        [self.threeDHandler addComputationAtIndex:fileIdx channel:idx maskOption:(MaskOption)self.maskVisualizeSelector.selectedSegment maskType:(MaskType)self.maskPartsSelector.selectedSegment];
+                    [mask openIfNecessaryAndPerformBlock:^{
+                        [self.threeDHandler addMask:mask atIndexOfStack:fileIdx maskOption:(MaskOption)self.maskVisualizeSelector.selectedSegment maskType:(MaskType)self.maskPartsSelector.selectedSegment];
                     }];
-                    if(wasLoaded == NO)
-                        [comp unLoadLayerDataWithBlock:nil];
+                }else if(comp){
+                    [comp openIfNecessaryAndPerformBlock:^{
+                        [channs enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop){
+                            [self.threeDHandler addComputationAtIndex:fileIdx channel:idx maskOption:(MaskOption)self.maskVisualizeSelector.selectedSegment maskType:(MaskType)self.maskPartsSelector.selectedSegment];
+                        }];
+                    }];
                 }
                 dispatch_async(dispatch_get_main_queue(), ^{
                     self.threeDProcessesIndicator.doubleValue += 100.f/total;
@@ -1651,12 +1629,6 @@
     self.metalViewDelegate.forceColorBufferRecalculation = YES;
 }
 -(NSArray *)inOrderIndexesArranged{
-//    if(self.inScope3DMask){
-//        NSMutableArray *arr = @[].mutableCopy;
-//        for(int i = 0; i < self.inScope3DMask.slices; i++)
-//            [arr addObject:@[@(i)]];
-//        return arr;
-//    }
     return self.threeDHandler.indexesArranged;
 }
 #pragma mark record video
@@ -2046,9 +2018,7 @@
 #pragma mark cluster
 
 -(void)clusterFlock:(id)sender{
-    NSLog(@"A");
     [IMCComputationOnMask flockForComps:self.inScopeComputations indexes:self.channels.selectedRowIndexes];
-    NSLog(@"B");
 }
 -(void)clusterKMeans:(id)sender{
 

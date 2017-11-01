@@ -24,6 +24,7 @@
 
 @property (nonatomic, strong) NSMutableArray<IMCMaskTraining *> *trainingNodes;
 
+-(UInt8 *)getCachedBufferForIndex:(NSInteger)index maskOption:(MaskOption)option maskType:(MaskType)maskType maskSingleColor:(NSColor *)maskSingleColor;
 -(void)addFeaturesFromCellProfiler:(NSURL *)url;
 -(void)extractDataForMask:(NSIndexSet *)computations processedData:(BOOL)rawOrProcessedData;
 -(float *)createImageForMaskWithCellData:(float *)data maskOption:(MaskOption)option maskType:(MaskType)maskType maskSingleColor:(NSColor *)maskSingleColor;
@@ -41,6 +42,7 @@
 -(void)removeChannelsWithIndexSet:(NSIndexSet *)indexSet;
 -(void)addChannelsWithIndexSet:(NSIndexSet *)indexSet toInlineIndex:(NSInteger)index;
 -(void)multiplyChannelsWithIndexSet:(NSIndexSet *)indexSet toInlineIndex:(NSInteger)index;
+-(void)clearCacheBuffers;
 
 //Prepare and Operations
 -(NSMutableArray *)arrayNumbersForIndex:(NSInteger)index;//--

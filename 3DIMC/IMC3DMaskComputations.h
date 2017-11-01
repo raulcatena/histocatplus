@@ -6,8 +6,8 @@
 //  Copyright © 2017 CatApps. All rights reserved.
 //
 
-#import "IMCNodeWrapper.h"
+#import "IMCComputationOnMask.h"
 
-@interface IMC3DMaskComputations : IMCNodeWrapper
+@interface IMC3DMaskComputations : IMCComputationOnMask
 
 @end

@@ -84,42 +84,29 @@
             
             IMCComputationOnMask *computation = [self.delegate allComputations][index];
             
-            BOOL maskLoaded = computation.mask.isLoaded;
-            if(!maskLoaded)
-                [computation.mask loadLayerDataWithBlock:nil];
-            while(!computation.mask.isLoaded);
-            
-            BOOL compLoaded = computation.isLoaded;
-            if(!compLoaded)
-                [computation loadLayerDataWithBlock:nil];
-            while(!computation.isLoaded);
-            
-            if(!trainer){
-                trainer  = [[IMCCellTrainer alloc]initWithComputation:computation andTrainings:selectedTrainings];
-                if(![trainer trainRandomForests])
-                    return;
-            }
-            else
-                trainer.computation = computation;
-            
-            trainer.theHash = nil;
-            
-            [trainer loadDataInRRFF];
-            [trainer classifyCells];
-            [trainer addResultsToComputation];
-            
-            if(!maskLoaded)
-               [computation.mask unLoadLayerDataWithBlock:nil];
-            
-            if(!compLoaded)
-               [computation unLoadLayerDataWithBlock:nil];
-            
-            counter++;
-            dispatch_async(dispatch_get_main_queue(), ^{
-                self.progressBar.doubleValue = counter/(float)howmanystacks;
-                if(self.progressBar.doubleValue == 1.0)
-                    sender.enabled = YES;
-            });
+            [computation.mask openIfNecessaryAndPerformBlock:^{
+                [computation openIfNecessaryAndPerformBlock:^{
+                    if(!trainer){
+                        trainer  = [[IMCCellTrainer alloc]initWithComputation:computation andTrainings:selectedTrainings];
+                        if(![trainer trainRandomForests])
+                            return;
+                    }
+                    else
+                        trainer.computation = computation;
+                    
+                    trainer.theHash = nil;
+                    
+                    [trainer loadDataInRRFF];
+                    [trainer classifyCells];
+                    [trainer addResultsToComputation];
+                    counter++;
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        self.progressBar.doubleValue = counter/(float)howmanystacks;
+                        if(self.progressBar.doubleValue == 1.0)
+                            sender.enabled = YES;
+                    });
+                }];
+            }];
         }];
     });
 }

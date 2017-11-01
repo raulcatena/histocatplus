@@ -153,17 +153,14 @@
 }
 
 -(void)loadLayerDataWithBlock:(void (^)())block{
-    
     if(!self.mask.isLoaded)
         [self.mask loadLayerDataWithBlock:nil];
-    while(!self.mask.isLoaded);
+    while (!self.mask.isDual);
     
     if(!self.isLoaded)
         [self open];
-    
     if(!self.isLoaded)
         return;
-    
     [super loadLayerDataWithBlock:block];
 }
 -(void)unLoadLayerDataWithBlock:(void (^)())block{
@@ -180,7 +177,7 @@
     self.computedData = malloc(countChannels * sizeof(float*));
     NSInteger segments = self.segmentedUnits;
     for (NSInteger i = 0; i < countChannels; i++)
-        self.computedData[i] = malloc(segments * sizeof(float));;
+        self.computedData[i] = calloc(segments, sizeof(float));;
     
     self.isLoaded = YES;
 }
@@ -362,10 +359,12 @@
     [self channelsCreate:computations];
     //Get the mask
     int * maskC = [self.mask mask];
+    
     //Get the IMC data
     float ** allData = self.mask.imageStack.stackData;
     
     if(rawOrProcessedData){
+        NSLog(@"Add data________");
         NSMutableArray *allIndexes = @[].mutableCopy;
         for (NSInteger i = 0; i < self.mask.imageStack.channels.count; i++)
             [allIndexes addObject:@(i)];
@@ -529,31 +528,28 @@
     int * neighbours = [self calculateNeighboursTouchingForMask:maskC width:width height:height];
     for (NSInteger i = 0; i < segments; i++)
         comp[computedChannels - 1][i] = neighbours[i];
+    
+    [self saveData];
+    
     free(neighbours);
     for (int a = 0; a < compartmentsExtractedFromChannels; a++){
         free(arr[a]);
     }
     free(arr);
-    [self saveData];
     
     if(rawOrProcessedData){
         for (NSInteger i = 0; i < self.mask.imageStack.channels.count; i++)
             free(allData[i]);
         free(allData);
     }
+    NSLog(@"Finished extracting");
 }
 
 
 -(void)extractDataForMask:(NSIndexSet *)computations processedData:(BOOL)rawOrProcessedData{
-    BOOL wasLoaded = self.mask.imageStack.isLoaded;
-    if(!wasLoaded)
-        [self.mask.imageStack loadLayerDataWithBlock:nil];
-    while (!self.mask.imageStack.isLoaded);
-    [self extractDataForMaskOperation:computations processedData:rawOrProcessedData];
-    if(!wasLoaded){
-        [self.mask.imageStack unLoadLayerDataWithBlock:nil];
-        while(self.mask.imageStack.isLoaded);
-    }
+    [self.mask.imageStack openIfNecessaryAndPerformBlock:^{
+        [self extractDataForMaskOperation:computations processedData:rawOrProcessedData];
+    }];
 }
 
 
@@ -682,7 +678,7 @@
         }
         
     }
-    return foundDiff;;
+    return foundDiff;
 }
 
 -(float)maxInBuffer:(float *)buffer{
@@ -719,24 +715,25 @@
     
     if(!vals || !settings)return;
     
-    if(settings[5] == .0f){
+    if(settings[5] == .0f)
         settings[5] = [self maxInBuffer:self.computedData[index]];
-    }
     
     NSInteger pixs = self.mask.imageStack.numberOfPixels;
     
+    float preCalcFactor = (float)(settings[5] * settings[0]);
     for (NSInteger i = 0; i < pixs; i++) {
         float val = vals[i];
         if(settings[4] == 1.0f)val = logf(val);
         if(settings[4] == 2.0f)val = asinhf(val/5.0f);
-        UInt8 bitValue = MIN(255, (val/(float)(settings[5] * settings[0]) * 255)*settings[2]);
+        UInt8 bitValue = MIN(255, (val/preCalcFactor * 255)*settings[2]);
         if(bitValue < settings[1] * 255)bitValue = 0;
         cachedValues[index][i] = bitValue;
     }
     if(settings[3] > 0)
         applyFilterToPixelData(cachedValues[index], self.mask.imageStack.width, self.mask.imageStack.height, 0, settings[3], 2, 1);
     
-    if(vals)free(vals);
+    if(vals)
+        free(vals);
 }
 
 -(void)allocateCacheBuffersForIndex:(NSUInteger)index withPixels:(NSUInteger)pixels{
@@ -1158,17 +1155,26 @@
         }
         directMethod(indexSet.count, allCells, data, clusters);
         
+        NSUInteger highest = 0;
         for (int i =0 ; i < allCells; i++) {
-            printf("%i\n", clusters[i]);
+            if(clusters[i] > highest)
+                highest = clusters[i];
         }
         
         offSetCells = 0;
+        NSString *opName = [@"Flock_" stringByAppendingString:[NSDate date].description];
         for (IMCComputationOnMask *comp in comps) {
             NSInteger cellsComp = comp.segmentedUnits;
             float * result = malloc(cellsComp * sizeof(float));
             for (int i = 0; i < cellsComp; i++)
-                result[i] = (float)clusters[offSetCells + i] + 1.0f;
-            [comp addBuffer:result withName:[@"Flock_" stringByAppendingString:[NSDate date].description] atIndex:NSNotFound];
+                result[i] = (float)clusters[offSetCells + i];
+            [comp addBuffer:result withName:opName atIndex:NSNotFound];
+            for (int j = 0; j < highest; j++) {
+                float * itemized = malloc(cellsComp * sizeof(float));
+                for (int i = 0; i < cellsComp; i++)
+                    itemized[i] = clusters[offSetCells + i] == j ? 1.0f : 0.0f;
+                [comp addBuffer:itemized withName:[opName stringByAppendingFormat:@"_cluster_%i", j] atIndex:NSNotFound];
+            }
             offSetCells += cellsComp;
         }
         free(clusters);
@@ -1198,25 +1204,35 @@
 -(void)clearCacheBuffers{
     if(cachedValues != NULL){
         for (int i = 0; i < self.channels.count; i++)
-            if(cachedValues[i] != NULL)
+            if(cachedValues[i] != NULL){
                 free(cachedValues[i]);
-        
+                cachedValues[i] = NULL;
+            }
         free(cachedValues);
         cachedValues = NULL;
     }
     if(cachedSettings != NULL){
         for (int i = 0; i < self.channels.count; i++)
-            if(cachedSettings[i] != NULL)
+            if(cachedSettings[i] != NULL){
                 free(cachedSettings[i]);
+                cachedSettings[i] = NULL;
+            }
         
         free(cachedSettings);
         cachedSettings = NULL;
     }
 }
 -(NSUInteger)usedMegaBytes{
-    if(!self.computedData)
-        return 0;
-    return self.mask.numberOfSegments * self.channels.count * sizeof(float)/pow(2, 20);
+    
+    NSUInteger bytes = 0;
+    if(cachedValues)
+        for (NSInteger i = 0; i < self.channels.count; i++)
+            if(cachedValues[i])
+                bytes += self.mask.imageStack.numberOfPixels/pow(2, 20);
+    if(self.computedData)
+        bytes += self.mask.numberOfSegments * self.channels.count * sizeof(float)/pow(2, 20);
+    
+    return bytes;
 }
 -(void)dealloc{
     NSLog(@"_____DEALLOCING MASK COMPS");
