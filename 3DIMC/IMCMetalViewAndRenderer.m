@@ -279,7 +279,6 @@ bool heightDescriptor[] = {
                     UInt8 *chanData = NULL;
                     
                     for (NSInteger idx = 0; idx < self.indexesObtained.count; idx++) {
-                        
                         NSInteger realIndex = [self.indexesObtained[idx]integerValue];
                         
                         chanData = sliceData[realIndex];

@@ -595,5 +595,11 @@ BOOL doesNotJumpLine(NSInteger index, NSInteger indexTest, NSInteger width, NSIn
         return YES;
     return NO;
 }
+BOOL doesNotJumpLinePlane(NSInteger index, NSInteger indexTest, NSInteger width, NSInteger height, NSInteger totalPlane, NSInteger total, NSInteger expectedDistance){
+    if(indexTest>=total || indexTest < 0)return NO;
+    NSInteger subIndexInplane = index % totalPlane;
+    NSInteger subIndexInplaneTest = indexTest % totalPlane;
+    return doesNotJumpLine(subIndexInplane, subIndexInplaneTest, width, height, totalPlane, expectedDistance);
+}
 
 @end

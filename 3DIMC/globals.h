@@ -128,6 +128,7 @@
 #define JSON_DICT_3DS_METADATA_THICK @"json_dict_3ds_thick"
 #define JSON_DICT_3DS_METADATA_SEGMENTS @"json_dict_3ds_segments"
 #define JSON_DICT_3DS_METADATA_SHEEP_SHAVER @"json_dict_3ds_sheep"
+#define JSON_DICT_3DS_METADATA_ROI_MASK @"json_dict_3ds_roi_mask"
 
 
 //METADATA
@@ -178,6 +179,8 @@
 #define THREE_D_ZOOM @"3DZOOM"
 #define THREE_D_POS @"3DPOS"
 #define THREE_D_ROT @"3DROT"
+#define METAL_BASE_MATRIX @"METAL_BASE_MATRIX"
+#define METAL_ROT_MATRIX @"METAL_ROT_MATRIX"
 
 //COMPENSTION MATRIX
 #define COMP_MATRIX @"COMP_MATRIX"

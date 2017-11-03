@@ -20,6 +20,8 @@
 -(CGRect)selectedArea;
 
 -(CGRect)selectedRectProportions;
+-(void)setSelectedRectProportions;
+
 -(NSPoint)originOfContainedImage;
 -(NSPoint)topOriginOfContainedImage;
 -(NSPoint)yFlippedtopOriginOfContainedImage;

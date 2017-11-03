@@ -14,6 +14,7 @@
 #import "IMCPixelTraining.h"
 #import "IMCPixelMap.h"
 #import "IMCPixelClassification.h"
+#import "IMC3DMask.h"
 #import "IMCComputationOnMask.h"
 #import "IMCImageGenerator.h"
 #import "NSImage+OpenCV.h"
@@ -104,6 +105,8 @@
     if(self.parent.inScopeComputations.count == 1 && self.parent.inScopeComputation.isLoaded)
         self.parent.statsInfo.stringValue = [self.parent.inScopeComputation descriptionWithIndexes:self.parent.channels.selectedRowIndexes];
 
+    if(self.parent.inScope3DMask.isLoaded)
+        self.parent.statsInfo.stringValue = [self.parent.inScope3DMask descriptionWithIndexes:self.parent.channels.selectedRowIndexes];
     
     [self calculateMemory];
 

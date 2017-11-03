@@ -94,6 +94,7 @@
                       self.parent.inScopeMasks,
                       self.parent.inScopePanoramas,
                       self.parent.inScopeComputations,
+                      self.parent.inScope3DMasks,
                       self.parent.involvedStacksForMetadata];
     
     for(NSMutableArray *arr in arrs)
@@ -115,6 +116,9 @@
             
         if([anobj isMemberOfClass:[IMCFileWrapper class]])
             [self.parent.inScopeFiles addObject:anobj];
+        
+        if([anobj isMemberOfClass:[IMC3DMask class]])
+            [self.parent.inScope3DMasks addObject:anobj];
         
         if([anobj isMemberOfClass:[IMCPixelClassification class]]){
             [self.parent.inScopeMasks addObject:anobj];

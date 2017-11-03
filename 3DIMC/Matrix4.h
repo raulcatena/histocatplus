@@ -52,4 +52,7 @@
 + (float)degreesToRad:(float)degrees;
 + (NSInteger)numberOfElements;
 
+- (NSString *_Nullable)stringRepresentation;
+- (void)setMatrixFromStringRepresentation:(NSString *_Nullable)string;
+
 @end

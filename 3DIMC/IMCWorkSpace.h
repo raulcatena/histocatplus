@@ -49,6 +49,7 @@
 @property (nonatomic, strong) NSMutableArray<IMCFileWrapper *> *inScopeFiles;
 @property (nonatomic, strong) NSMutableArray<IMCPixelClassification *> *inScopeMasks;
 @property (nonatomic, strong) NSMutableArray<IMCComputationOnMask *> *inScopeComputations;
+@property (nonatomic, strong) NSMutableArray<IMC3DMask *> *inScope3DMasks;
 @property (nonatomic, strong) NSMutableArray<NSImage *> *inScopePanoramas;
 @property (nonatomic, strong) NSMutableArray *involvedStacksForMetadata;
 @property (nonatomic, strong) NSMutableArray *inOrderIndexes;
@@ -137,6 +138,7 @@
 @property (nonatomic, weak) IBOutlet NSProgressIndicator *threeDProcessesIndicator;
 @property (nonatomic, weak) IBOutlet NSPopUpButton *cleanUpMode;
 @property (nonatomic, weak) IBOutlet NSPopUpButton *boostMode;
+@property (nonatomic, weak) IBOutlet NSPopUpButton *videoType;
 
 //TabPlotsTab
 @property (nonatomic, weak) IBOutlet IMCScrollView *plotResult;
@@ -204,9 +206,7 @@
 //3D
 -(IBAction)start3Dreconstruction:(NSButton *)sender;
 -(IBAction)redoZ:(NSButton *)sender;
--(IBAction)recordZVideo:(NSButton *)sender;
--(IBAction)recordStackVideo:(NSButton *)sender;
--(IBAction)recordSliceVideo:(NSButton *)sender;
+-(IBAction)recordVideo:(NSButton *)sender;
 -(IBAction)refresh3D:(id)sender;
 -(IBAction)stepperZChanged:(id)sender;
 //Segmentation

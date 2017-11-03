@@ -16,6 +16,7 @@
 #import "IMCImageGenerator.h"
 #import "NSView+Utilities.h"
 #import "IMCComputationOnMask.h"
+#import "IMC3DMask.h"
 #import "flock.h"
 
 @interface IMCCellBasicAlgorithms (){
@@ -43,6 +44,12 @@
 
 
 -(instancetype)initWithComputation:(IMCComputationOnMask *)computation{
+    self = [self init];
+    if(self)
+        self.computation = computation;
+    return self;
+}
+-(instancetype)initWith3DMask:(IMC3DMask *)computation{
     self = [self init];
     if(self)
         self.computation = computation;
@@ -98,9 +105,10 @@
     float *prep = (float *)calloc(self.computation.segmentedUnits * selected, sizeof(float));
     __block int cursor = 0;
     NSUInteger segments = [self.computation segmentedUnits];
+    float ** comp = self.computation.computedData;
     [self.tableView.selectedRowIndexes enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop){
         for (NSInteger i = 0; i < segments; i++)
-            prep[i * selected + cursor] = asinh(self.computation.computedData[idx][i]);
+            prep[i * selected + cursor] = asinh(comp[idx][i]);
         
         cursor++;
     }];

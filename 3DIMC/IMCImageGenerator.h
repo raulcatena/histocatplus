@@ -75,5 +75,7 @@ void threeDMeanBlur(UInt8 *** data, NSInteger width, NSInteger height, NSInteger
 RgbColor HsvToRgb(HsvColor hsv);
 RgbColor RgbFromFloatUnit(float unit);
 
++(float)degressToRadians:(float)degrees;
+
 
 @end

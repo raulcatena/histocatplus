@@ -12,6 +12,7 @@
 #import "IMCTsneDashboard.h"
 #import "IMCKMeansDashboard.h"
 
+@class IMC3DMask;
 
 @interface IMCCellBasicAlgorithms : IMCMathWindowController<Plot>
 
@@ -54,5 +55,6 @@
 -(IBAction)addClust:(id)sender;
 
 -(instancetype)initWithComputation:(IMCComputationOnMask *)computation;
+-(instancetype)initWith3DMask:(IMC3DMask *)computation;
 
 @end

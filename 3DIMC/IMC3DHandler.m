@@ -227,15 +227,19 @@
 
 #pragma mark load data
 
+-(void)freeLayer:(NSInteger)indexStack channel:(NSInteger)channel{
+    if(self.allBuffer[indexStack])
+        if(self.allBuffer[indexStack][channel]){
+            free(self.allBuffer[indexStack][channel]);
+            self.allBuffer[indexStack][channel] = NULL;
+        }
+}
+
 -(void)addImageStackatIndex:(NSInteger)indexStack channel:(NSInteger)channel{
     indexStack = [self externalSliceIndexForInternal:indexStack];
     NSArray *internals = [self indexesArranged][indexStack];
     
-    if(self.allBuffer[indexStack][channel])
-    {
-        free(self.allBuffer[indexStack][channel]);
-        self.allBuffer[indexStack][channel] = NULL;
-    }
+    [self freeLayer:indexStack channel:channel];
     self.allBuffer[indexStack][channel] = (UInt8 *)calloc(self.width * self.height, sizeof(float));
     
     for (NSNumber *index in internals) {

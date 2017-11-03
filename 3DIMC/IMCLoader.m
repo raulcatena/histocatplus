@@ -505,6 +505,18 @@
 -(NSString *)rotation{
     return _jsonDescription[THREE_D_ROT];
 }
+-(void)setBaseModelMatrixMetal:(NSString *)baseModelMatrixMetal{
+    _jsonDescription[METAL_BASE_MATRIX] = baseModelMatrixMetal;
+}
+-(NSString *)baseModelMatrixMetal{
+    return _jsonDescription[METAL_BASE_MATRIX];
+}
+-(void)setRotationMatrixMetal:(NSString *)rotationMatrixMetal{
+    _jsonDescription[METAL_ROT_MATRIX] = rotationMatrixMetal;
+}
+-(NSString *)rotationMatrixMetal{
+    return _jsonDescription[METAL_ROT_MATRIX];
+}
 
 #pragma mark comp matrix
 

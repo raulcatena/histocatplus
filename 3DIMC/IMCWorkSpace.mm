@@ -62,6 +62,9 @@
 //Cell basic algorithms
 #import "IMCCellBasicAlgorithms.h"
 
+//GLK
+#import "Matrix4.h"
+
 @interface IMCWorkSpace (){
     dispatch_queue_t threadPainting;
 }
@@ -90,6 +93,7 @@
         self.inScopeFiles = @[].mutableCopy;//TODO make SETm
         self.inScopePanoramas = @[].mutableCopy;
         self.inScopeMasks = @[].mutableCopy;
+        self.inScope3DMasks = @[].mutableCopy;
         self.inScopeComputations = @[].mutableCopy;
         self.involvedStacksForMetadata = @[].mutableCopy;
         self.batchWindows = @[].mutableCopy;
@@ -152,18 +156,19 @@
     }
 }
 -(void)restore3Dstate{
-    //Restore 3D state
-    if(self.openGlViewPort){
-        if(self.dataCoordinator.position){
-            self.openGlViewPort->position = NSPointFromString(self.dataCoordinator.position);
-            [self.openGlViewPort applyRotationWithInternalState];
-        }
-        if(self.dataCoordinator.rotation)
-            self.openGlViewPort->rotation = NSPointFromString(self.dataCoordinator.rotation);
+    if(self.metalView){
+        NSLog(@"%@", self.dataCoordinator.baseModelMatrixMetal);
+        NSLog(@"%@", self.dataCoordinator.rotationMatrixMetal);
+        if(self.dataCoordinator.baseModelMatrixMetal)
+            [self.metalView.baseModelMatrix setMatrixFromStringRepresentation:self.dataCoordinator.baseModelMatrixMetal];
+        
+        if(self.dataCoordinator.rotationMatrixMetal)
+            [self.metalView.rotationMatrix setMatrixFromStringRepresentation:self.dataCoordinator.rotationMatrixMetal];
+        
         if(self.dataCoordinator.zoom)
-            self.openGlViewPort->zoom = self.dataCoordinator.zoom.floatValue;
+            self.metalView.zoom = self.dataCoordinator.zoom.floatValue;
+        [self.metalView applyRotationWithInternalState];
     }
-
     if(self.dataCoordinator.selectedRectString)
         [self.scrollViewBlends.imageView setSelectedArea:NSRectFromString(self.dataCoordinator.selectedRectString)];
 }
@@ -263,24 +268,9 @@
     if(VIEWER_ONLY || VIEWER_HISTO)
         return;
     
-    if(self.openGlViewPort){
-        NSString *pos = NSStringFromPoint(self.openGlViewPort->position);
-        if(pos)self.dataCoordinator.position = pos;
-        
-        NSString *zoom = [NSString stringWithFormat:@"%f", self.openGlViewPort->zoom];
-        if(zoom)self.dataCoordinator.zoom = zoom;
-        
-        NSString *rotation = NSStringFromPoint(self.openGlViewPort->rotation);
-        if(rotation)self.dataCoordinator.rotation = rotation;
-    }else if(self.metalView){
-        NSString *pos = NSStringFromPoint(self.metalView.position);
-        if(pos)self.dataCoordinator.position = pos;
-        
-        NSString *zoom = [NSString stringWithFormat:@"%f", self.metalView.zoom];
-        if(zoom)self.dataCoordinator.zoom = zoom;
-        
-        NSString *rotation = NSStringFromPoint(self.metalView.rotation);
-        if(rotation)self.dataCoordinator.rotation = rotation;
+    if(self.metalView){
+        self.dataCoordinator.baseModelMatrixMetal = self.metalView.baseModelMatrix.stringRepresentation;
+        self.dataCoordinator.rotationMatrixMetal = self.metalView.rotationMatrix.stringRepresentation;
     }
     NSString *selArea = NSStringFromRect([self.scrollViewBlends.imageView selectedArea]);
     if(selArea)self.dataCoordinator.selectedRectString = selArea;
@@ -1655,7 +1645,18 @@
     return size;
 }
 
--(void)recordZVideo:(NSButton *)sender{
+-(void)recordVideo:(NSButton *)sender{
+    if(self.videoType.indexOfSelectedItem == 0)
+        [self recordYVideo];
+    if(self.videoType.indexOfSelectedItem == 1)
+        [self recordStackVideo];
+    if(self.videoType.indexOfSelectedItem == 2)
+        [self recordSliceVideo];
+    if(self.videoType.indexOfSelectedItem == 3)
+        [self recordRockVideo];
+}
+
+-(void)recordYVideo{
     dispatch_queue_t aQ = dispatch_queue_create("aQQQ", NULL);
     dispatch_async(aQ, ^{
         //NSMutableArray *allImages = [NSMutableArray arrayWithCapacity:STEPS];
@@ -1679,7 +1680,7 @@
         });
     });
 }
--(void)recordStackVideo:(NSButton *)sender{
+-(void)recordStackVideo{
     NSIndexSet *indexes = self.filesTree.selectedRowIndexes.copy;
     NSInteger count = indexes.count;
     NSMutableIndexSet *cursorSet = [NSMutableIndexSet indexSet];
@@ -1702,7 +1703,7 @@
     });
 }
 
--(void)recordSliceVideo:(NSButton *)sender{
+-(void)recordSliceVideo{
     NSIndexSet *indexes = self.filesTree.selectedRowIndexes.copy;
     NSInteger count = indexes.count;
     NSMutableIndexSet *cursorSet = [NSMutableIndexSet indexSet];
@@ -1722,6 +1723,39 @@
         }];
         NSString *fullPath = [NSString stringWithFormat:@"%@%@.mp4", self.fileURL.path, [NSDate date].description];
         [IMCVideoCreator writeImagesAsMovie:allImages toPath:fullPath size:[self sizeFrame] duration:16];
+    });
+}
+
+-(void)recordRockVideo{
+    dispatch_queue_t aQ = dispatch_queue_create("aQQQ", NULL);
+    dispatch_async(aQ, ^{
+        //NSMutableArray *allImages = [NSMutableArray arrayWithCapacity:STEPS];
+        UInt8 ** allData = (UInt8 **)malloc(STEPS * sizeof(UInt8 *));
+        float stepSize = 2 * M_PI/1000;
+        NSInteger stepsToTake = 80;
+        for (int i = 0; i< stepsToTake; i++) {
+            if(i < stepsToTake/4)
+                [self.metalView rotateX:0 Y:stepSize Z:-stepSize];
+            else if(i < stepsToTake/2)
+                [self.metalView rotateX:stepSize Y:0 Z:stepSize];
+            else if(i < stepsToTake/4 * 3)
+                [self.metalView rotateX:0 Y:-stepSize Z:stepSize];
+            else
+                [self.metalView rotateX:-stepSize Y:0 Z:-stepSize];
+            self.metalView.refresh = YES;
+            while (self.metalView.refresh);
+            id<MTLTexture> old = self.metalView.lastRenderedTexture;
+            while (old == self.metalView.lastRenderedTexture);
+            allData[i] = (UInt8 *)[self.metalView captureData];
+        }
+        NSString *fullPath = [NSString stringWithFormat:@"%@%@.mp4", self.fileURL.path, [NSDate date].description];
+
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [IMCVideoCreator writeImagesAsMovieWithBuffers:allData images:stepsToTake toPath:fullPath size:[self sizeFrame] duration:50];
+            for(int i = 0; i < stepsToTake; i++)
+                free(allData[i]);
+            free(allData);
+        });
     });
 }
 
@@ -2019,7 +2053,8 @@
 
 -(void)clusterFlock:(id)sender{
     if(self.inScope3DMask)
-        [self.inScope3DMask flockWithChannelindexes:self.channels.selectedRowIndexes.copy];
+        //[self.inScope3DMask flockWithChannelindexes:self.channels.selectedRowIndexes.copy];
+        [IMCComputationOnMask flockForComps:self.inScope3DMasks indexes:self.channels.selectedRowIndexes.copy];
     else
         [IMCComputationOnMask flockForComps:self.inScopeComputations indexes:self.channels.selectedRowIndexes.copy];
 }
@@ -2063,6 +2098,11 @@
     if(self.inScopeComputation){
         if(!self.cellAnalysis)
             self.cellAnalysis = [[IMCCellBasicAlgorithms alloc]initWithComputation:self.inScopeComputation];
+        [[self.cellAnalysis window] makeKeyAndOrderFront:self.cellAnalysis];
+    }
+    if(self.inScope3DMask){
+        if(!self.cellAnalysis)
+            self.cellAnalysis = [[IMCCellBasicAlgorithms alloc]initWith3DMask:self.inScope3DMask];
         [[self.cellAnalysis window] makeKeyAndOrderFront:self.cellAnalysis];
     }
 }

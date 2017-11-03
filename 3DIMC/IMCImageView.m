@@ -93,7 +93,7 @@
 
 -(void)drawROI{
     if(selectedArea.size.width < 1.0f)return;
-    
+    NSLog(@"%@___--===", NSStringFromRect(selectedArea));
     CGContextRef context = [[NSGraphicsContext currentContext] graphicsPort];
     
     CGContextSetLineWidth(context, 2.0);
@@ -227,6 +227,9 @@
                                 rect.size.height/self.bounds.size.height
                                 );
     return propRect;
+}
+-(void)setSelectedRectProportions{
+
 }
 -(CGRect)selectedRectProportions{
     CGRect rect = [self selectedRect];

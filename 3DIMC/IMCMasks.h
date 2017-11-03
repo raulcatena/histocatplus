@@ -35,6 +35,7 @@ void invertMask(int *mask, int width, int height);
 +(void)invertToProximity:(float *)distances cells:(NSInteger)cells;
 +(void)idMask:(int *)extracted target:(int *)target size:(CGSize)size;
 BOOL doesNotJumpLine(NSInteger index, NSInteger indexTest, NSInteger width, NSInteger height, NSInteger total, NSInteger expectedDistance);
+BOOL doesNotJumpLinePlane(NSInteger index, NSInteger indexTest, NSInteger width, NSInteger height, NSInteger totalPlane, NSInteger total, NSInteger expectedDistance);
 +(int *)maskFromFile:(NSURL *)url forImageStack:(IMCImageStack *)stack;
 
 @end

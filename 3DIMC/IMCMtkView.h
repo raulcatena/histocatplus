@@ -30,5 +30,6 @@
 -(CGImageRef)captureImageRef;
 -(NSImage *)captureImage;
 -(void *)captureData;
+-(void)applyRotationWithInternalState;
 
 @end

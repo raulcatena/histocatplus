@@ -14,11 +14,13 @@
 #import "IMC3DHandler.h"
 #import "IMC3DMaskComputations.h"
 #import "flock.h"
+#import "IMCMasks.h"
 
 @interface IMC3DMask(){
     int * maskIds;
     float ** computedData;
     UInt8 *** auxiliaryData;
+    NSIndexSet *lastIndexSet;
 }
 
 @property (nonatomic, assign) NSInteger width;
@@ -36,7 +38,9 @@
     }
     return self;
 }
-
+-(NSString *)itemName{
+    return self.jsonDictionary[JSON_DICT_ITEM_NAME];
+}
 #pragma mark Mask Relations
 -(void)setJsonDictionary:(NSMutableDictionary *)jsonDictionary{
     [super setJsonDictionary:jsonDictionary];
@@ -57,6 +61,8 @@
         }
     }
 }
+
+#pragma mark setters and getters
 
 -(NSString *)itemSubName{
     return self.origin == MASK3D_VOXELS ? @"Voxel-based" : @"Mask-based";
@@ -150,12 +156,27 @@
 -(void)setSlices:(NSInteger)slices{
     self.metadata[JSON_DICT_3DS_METADATA_THICK] = @(slices);
 }
--(NSInteger)segments{
-    return [self.metadata[JSON_DICT_3DS_METADATA_SEGMENTS]integerValue];
-}
 -(void)setSegments:(NSInteger)segments{
     self.metadata[JSON_DICT_3DS_METADATA_SEGMENTS] = @(segments);
 }
+-(NSInteger)segments{
+    return [self.metadata[JSON_DICT_3DS_METADATA_SEGMENTS]integerValue];
+}
+-(NSInteger)segmentedUnits{
+    return self.segments;
+}
+-(float **)computedData{
+    return computedData;
+}
+-(NSString *)roiMask{
+    return self.metadata[JSON_DICT_3DS_METADATA_ROI_MASK];
+}
+-(void)setRoiMask:(NSString *)roiMask{
+    self.metadata[JSON_DICT_3DS_METADATA_ROI_MASK] = roiMask;
+}
+
+
+#pragma mark help functions for watershed
 
 -(int)touchesId:(NSInteger)testIndex fullMaskLength:(NSInteger)fullMaskLength planLength:(NSInteger)plane{
     
@@ -390,6 +411,11 @@
         if(maskIds[i] < 0)
             maskIds[i] = 0;
 }
+-(void)invertNegs:(NSInteger)allLength{
+    for (NSInteger i = 0; i < allLength; i++)
+        if(maskIds[i] < 0)
+            maskIds[i] = -maskIds[i];
+}
 
 -(void)extractMaskFromRender{
     IMC3DHandler *handler = self.threeDHandler;
@@ -397,6 +423,8 @@
     self.width = handler.width;
     self.height = handler.height;
     self.slices = handler.images;
+    
+    self.roiMask = NSStringFromRect(self.threeDHandler.interestProportions);
     
     NSInteger allLength = self.width * self.height;
     NSInteger fullMask = allLength *  self.slices;
@@ -406,7 +434,9 @@
     float final = self.threshold;
 
     [self releaseMask];
+    
     maskIds = calloc(fullMask, sizeof(int));
+    bool * mask = self.threeDHandler.showMask;
     
     if(self.type == MASK3D_WATERSHED){
         int cellId = 1;
@@ -423,6 +453,8 @@
                 if(handler.allBuffer[i]){
                     if(handler.allBuffer[i][channel]){
                         for (NSInteger j = 0; j < allLength; j++){
+                            if(mask[j] == false)
+                                continue;
                             if(maskIds[offset + j] == -1){
                                 int neigh = [self touchesId:offset + j fullMaskLength:fullMask planLength:allLength];
                                 if(neigh > 0)
@@ -445,6 +477,8 @@
                 if(handler.allBuffer[i])
                     if(handler.allBuffer[i][channel])
                         for (NSInteger j = 0; j < allLength; j++){
+                            if(mask[j] == false)
+                                continue;
                             if(maskIds[offset + j] == -1){
                                 int qual = [self checkCandidates:offset + j fullMaskLength:fullMask planLength:allLength width:self.width];
                                 if(qual >= self.minKernel){//Promote all
@@ -502,7 +536,7 @@
     [self passToHandler];
     
     //Load up node
-    [super loadLayerDataWithBlock:nil];
+    self.isLoaded = YES;
     
     //Save file with mask
     [self saveData];
@@ -517,16 +551,20 @@
     NSInteger width = self.width;
     
     for (NSInteger i = 0; i < self.expansion; i++) {
+        
+        NSInteger zpass = i % 2 == 0 ? fullMask : allLength;
+        
         for (NSInteger j = 0; j < fullMask; j++) {
 
             int val = maskIds[j];
             if(val > 0){
-                NSInteger candidates[6] = {j - width,
+                NSInteger candidates[6] = {
+                    j - width,
                     j + width,
                     j - 1,
                     j + 1,
-                    j - i % 2 == 0 ? fullMask : allLength,
-                    j + i % 2 == 0 ? fullMask : allLength
+                    j - zpass,
+                    j + zpass
                 };
                 for (int m = 0; m < 6;  m++)
                     if(candidates[m] >= 0 && candidates[m] < fullMask)
@@ -534,10 +572,7 @@
                             maskIds[candidates[m]] = -val;
             }
         }
-        for (NSInteger j = 0; j < fullMask; j++)
-            if(maskIds[j] < 0)
-                maskIds[j] = -maskIds[j];
-        
+        [self invertNegs:fullMask];
     }
     
 }
@@ -572,7 +607,7 @@
                     }
                 }
             }
-        //[self.threeDHandler meanBlurModelWithKernel:3 forChannels:[NSIndexSet indexSetWithIndex:0] mode:self.blurMode];
+        [self.threeDHandler meanBlurModelWithKernel:3 forChannels:[NSIndexSet indexSetWithIndex:0] mode:self.blurMode];
     }
 }
 
@@ -681,7 +716,7 @@
         }
     }
     [self passToHandler];
-    [super loadLayerDataWithBlock:nil];
+    self.isLoaded = YES;
     
     
     NSData *cellData = [NSData dataWithContentsOfFile:[self pathCellDataFile]];
@@ -852,19 +887,20 @@
         [channelStrings addObjectsFromArray:@[@"X", @"Y", @"Z", @"Density", @"Size"]];
         [self setChannels:channelStrings];
         
-        [self allocateComputedData];
         
         NSInteger total = self.segments;
-        if(total == 0)
+        if(total == 0){
             for (NSInteger i = 0; i < fullMask; i++)
                 if(maskIds[i] > total)
                     total = maskIds[i];
-        
-        
-        if(total > 0)
-            self.segments = total - 1;
-        else
-            return;
+            
+            
+            if(total > 0)
+                self.segments = total - 1;
+            else
+                return;
+        }
+        [self allocateComputedData];
         
         auxiliaryData = calloc(self.slices, sizeof(UInt8 **));
         NSLog(@"Segments %li ", self.segments);
@@ -902,6 +938,10 @@
                                 [stack loadLayerDataWithBlock:nil];
                             while(!stack.isLoaded);
                             
+                            NSMutableArray *allChannels = @[].mutableCopy;
+                            for (int z = 0; z < stack.channels.count; z++)
+                                 [allChannels addObject:@(z)];
+                            
                             for (NSInteger c = 0; c < channelsExtraction; c++) {
                                 CGImageRef ref = [IMCImageGenerator whiteRotatedBufferForImage:stack atIndex:c superCanvasW:maxWidth superCanvasH:maxWidth];
                                 UInt8 *buf = [IMCImageGenerator bufferForImageRef:ref];
@@ -935,20 +975,21 @@
                     if(maskIds[i] > 0){
                         NSInteger cellId = maskIds[i] - 1;
                         NSArray *collectedVoxelIndexes = [self collectVoxelsForVoxelIndex:i width:self.width planeLength:planeLength totalMask:fullMask];
-                        
+    
                         for (NSNumber *num in collectedVoxelIndexes) {
                             NSInteger index = num.integerValue%planeLength;
                             NSInteger planeItBelongs = num.integerValue/planeLength;
-                            if(planeItBelongs < p || planeItBelongs > lastTouchedPlane)
-                                NSLog(@"_____%li", planeItBelongs);
                             for (NSInteger c = 0; c < channelsExtraction; c ++)
                                 computedData[c][cellId] += (float)auxiliaryData[planeItBelongs][c][index];
                         }
                         for (NSInteger c = 0; c < channelsExtraction; c ++)
                             computedData[c][cellId] /= (float)collectedVoxelIndexes.count;
+                        computedData[channelsExtraction + 4][cellId] = (float)collectedVoxelIndexes.count;
                     }
                 }
             }
+            
+            //Return mask to initial state
             for (NSInteger i = 0; i < fullMask; i++)
                 if(maskIds[i] < 0)
                     maskIds[i] = -maskIds[i];
@@ -966,6 +1007,18 @@
         return;
     }
 
+//    NSMutableIndexSet *removed = [NSMutableIndexSet indexSet];
+//    [channels enumerateIndexesUsingBlock:^(NSUInteger index, BOOL *stop){
+//        if(![lastIndexSet containsIndex:index])
+//            [removed addIndex:index];
+//    }];
+//    
+//    NSMutableIndexSet *indexesNew = [NSMutableIndexSet indexSet];
+//    [lastIndexSet enumerateIndexesUsingBlock:^(NSUInteger index, BOOL *stop){
+//        if(![channels containsIndex:index])
+//            [indexesNew addIndex:index];
+//    }];
+    
     if(maskIds){
         NSInteger planeLength = self.width * self.height;
         NSInteger fullMaskLength = planeLength * self.slices;
@@ -1022,7 +1075,7 @@
             }
 
         }
-        
+        [self.threeDHandler meanBlurModelWithKernel:3 forChannels:channels mode:self.blurMode];
     }
 }
 
@@ -1067,8 +1120,8 @@
             if(clusters[i] > highest)
                 highest = clusters[i];
         
-        
-        NSString *opName = [@"Flock_" stringByAppendingString:[NSDate date].description];
+        NSString *stamp = [NSString stringWithFormat:@"%f", [NSDate timeIntervalSinceReferenceDate]];
+        NSString *opName = [@"Flock_" stringByAppendingString:stamp];
         
         float * result = malloc(cellsComp * sizeof(float));
         for (int i = 0; i < cellsComp; i++)
@@ -1078,7 +1131,7 @@
             float * itemized = malloc(cellsComp * sizeof(float));
             for (int i = 0; i < cellsComp; i++)
                 itemized[i] = clusters[i] == j ? 1.0f : 0.0f;
-            [self addBuffer:itemized withName:[opName stringByAppendingFormat:@"_cluster_%i", j] atIndex:NSNotFound];
+            [self addBuffer:itemized withName:[NSString stringWithFormat:@"Cluster_%i_%@", j, opName] atIndex:NSNotFound];
         }
             
         

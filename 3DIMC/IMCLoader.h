@@ -37,6 +37,8 @@
 @property (nonatomic, copy) NSString *zoom;
 @property (nonatomic, copy) NSString *position;
 @property (nonatomic, copy) NSString *rotation;
+@property (nonatomic, copy) NSString *baseModelMatrixMetal;
+@property (nonatomic, copy) NSString *rotationMatrixMetal;
 
 -(void)openImagesFromURL:(NSArray<NSURL *>*)url;
 -(void)tryMasksFromURL:(NSURL *)url;

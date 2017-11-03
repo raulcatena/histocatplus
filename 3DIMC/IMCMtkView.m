@@ -57,6 +57,9 @@
     GLKVector3 yAxis = GLKMatrix4MultiplyVector3(GLKMatrix4Invert(self.rotationMatrix->glkMatrix, &isInvertible),
                                                  GLKVector3Make(0, 1, 0));
     self.rotationMatrix->glkMatrix = GLKMatrix4Rotate(self.rotationMatrix->glkMatrix, angleY, yAxis.x, yAxis.y, yAxis.z);
+    GLKVector3 zAxis = GLKMatrix4MultiplyVector3(GLKMatrix4Invert(self.rotationMatrix->glkMatrix, &isInvertible),
+                                                 GLKVector3Make(0, 0, 1));
+    self.rotationMatrix->glkMatrix = GLKMatrix4Rotate(self.rotationMatrix->glkMatrix, angleZ, zAxis.x, zAxis.y, zAxis.z);
 }
 
 -(void)mouseDragged:(NSEvent *)theEvent{

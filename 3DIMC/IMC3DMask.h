@@ -6,7 +6,7 @@
 //  Copyright © 2017 CatApps. All rights reserved.
 //
 
-#import "IMCNodeWrapper.h"
+#import "IMCComputationOnMask.h"
 
 @class IMCLoader;
 @class IMC3DHandler;
@@ -24,7 +24,7 @@ typedef enum{
     MASK3D_2D_MASKS
 }Mask3D_Origin;
 
-@interface IMC3DMask : IMCNodeWrapper
+@interface IMC3DMask : IMCComputationOnMask
 
 @property (nonatomic, readonly) NSArray *components;
 @property (nonatomic, readonly) NSMutableDictionary *metadata;
@@ -41,8 +41,8 @@ typedef enum{
 @property (nonatomic, weak) IMC3DHandler *threeDHandler;
 @property (nonatomic, assign) NSInteger blurMode;
 @property (nonatomic, readonly) NSInteger slices;
-@property (nonatomic, readonly) NSInteger segments;
 @property (nonatomic, readonly) NSMutableArray * channels;
+@property (nonatomic, readonly) NSString * roiMask;
 
 @property (nonatomic, strong) NSMutableArray<IMC3DMaskComputations *> *computationNodes;
 

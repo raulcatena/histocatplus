@@ -232,8 +232,6 @@ void applyFilterToChannel(NSInteger chann, NSInteger images, NSInteger planePixe
     for (int i = 0; i < 2; i++)
         temp1Buffer[i] = malloc(sizeof(UInt8) * planePixels);
     
-    NSInteger blurCounter = 0;
-    float sum = 0;
     NSInteger tempBufferUse = 0;
     
     UInt8 *prevLayer = NULL;
@@ -248,6 +246,7 @@ void applyFilterToChannel(NSInteger chann, NSInteger images, NSInteger planePixe
         
         if(layer)
             prevLayer = layer;
+        
         if(postLayer)
             layer = postLayer;
         else
@@ -265,9 +264,6 @@ void applyFilterToChannel(NSInteger chann, NSInteger images, NSInteger planePixe
         for (NSInteger pix = 0; pix < planePixels; pix++) {
             if(mask[pix] == false)
                 continue;
-            
-            blurCounter = 0;
-            sum = 0;
             
             if(mode < 3)
                 denoiseOrMeanFilter(pix, width, planePixels, prevLayer, layer, postLayer, (bool)(mode - 1), temp1Buffer, tempBufferUse);
@@ -720,10 +716,11 @@ void threeDMeanBlur(UInt8 *** data, NSInteger width, NSInteger height, NSInteger
     
     CGImageRef retRet = CGBitmapContextCreateImage(canvas);
     CFRelease(colorSpace);
-    CFRelease(canvas);
+    CGContextRelease(canvas);
     if(ref)
-        CFRelease(ref);
+        CGImageRelease(ref);
     free(buffers);
+    free(subBuffer);
     return retRet;
 }
 
