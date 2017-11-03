@@ -203,20 +203,31 @@
     [self allocateMask];
 }
 -(void)allocateMask{
+    NSLog(@"---%@", NSStringFromRect(_interestProportions));
     [self cleanMaskMemory];
     self.showMask = (bool *)calloc(self.width * self.height, sizeof(bool));
     NSInteger total = self.width * self.height;
-    for (NSInteger i = 0; i < total; i++) {
-        NSInteger y = i/self.height;
-        NSInteger x = i%self.height;
-        
-        if(y > self.height * self.interestProportions.origin.y
-           && y < self.height * (self.interestProportions.origin.y + self.interestProportions.size.height)
-           && x > self.width * self.interestProportions.origin.x
-           && x < self.width * (self.interestProportions.origin.x + self.interestProportions.size.width)
-           )
+    
+    CGFloat propOrX = self.interestProportions.origin.x;
+    CGFloat propOrY = 1.0f - self.interestProportions.origin.y;
+    CGFloat propW = fabs(self.interestProportions.size.width);
+    CGFloat propH = fabs(self.interestProportions.size.height);
+    
+    if(CGRectIsEmpty(self.interestProportions))
+        for (NSInteger i = 0; i < total; i++)
             self.showMask[i] = true;
-    }
+    else
+        for (NSInteger i = 0; i < total; i++){
+            NSInteger y = i / self.height;
+            NSInteger x = i % self.height;
+            
+            if(y > self.height * propOrY
+               && y < self.height * (propOrY + propH)
+               && x > self.width * propOrX
+               && x < self.width * (propOrX + propW)
+               )
+                self.showMask[i] = true;
+        }
 }
 
 -(NSPoint)proportionalOffsetToCenter{

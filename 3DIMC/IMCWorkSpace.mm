@@ -253,6 +253,8 @@
 }
 -(void)setInScope3DMask:(IMC3DMask *)inScope3DMask{
     _inScope3DMask = inScope3DMask;
+    if(inScope3DMask)
+        self.scrollViewBlends.imageView.selectedArea = NSRectFromString(inScope3DMask.roiMask);
     if(inScope3DMask && self.inOrderIndexes.count == 0)
         self.inOrderIndexes = @[@(0)].mutableCopy;
     inScope3DMask.blurMode = self.cleanUpMode.indexOfSelectedItem;
@@ -986,7 +988,9 @@
 #pragma mark NSTabView
 
 -(void)tabView:(NSTabView *)tabView didSelectTabViewItem:(NSTabViewItem *)tabViewItem{
-    self.threeDHandler.interestProportions = self.scrollViewBlends.imageView.selectedRectProportions;
+    if(self.inScope3DMask)
+        self.scrollViewBlends.imageView.selectedArea = NSRectFromString(self.inScope3DMask.roiMask);
+    self.threeDHandler.interestProportions = self.scrollViewBlends.imageView.selectedArea;
     [self refresh];
 }
 
@@ -1049,6 +1053,8 @@
         [IMCChannelOperations operationOnImages:self.inScopeImages.copy operation:OPERATION_REMOVE_CHANNELS withIndexSetChannels:is toIndex:-1 block:^{[self refresh];}];//Index irrelevant
     if(self.inScopeComputations.count > 0)
         [IMCChannelOperations operationOnComputations:self.inScopeComputations.copy operation:OPERATION_REMOVE_CHANNELS withIndexSetChannels:is toIndex:-1 block:^{[self refresh];}];
+    if(self.inScope3DMasks.count > 0)
+        [IMCChannelOperations operationOnComputations:self.inScope3DMasks.copy operation:OPERATION_REMOVE_CHANNELS withIndexSetChannels:is toIndex:-1 block:^{[self refresh];}];
     
     self.channels.delegate = self;
 }
@@ -1056,31 +1062,37 @@
     NSIndexSet *selectedChannels = self.channels.selectedRowIndexes.copy;
     [IMCChannelOperations operationOnImages:self.inScopeImages.copy operation:OPERATION_ADD_CHANNELS withIndexSetChannels:selectedChannels toIndex:self.channels.selectedRow + 1 block:^{[self refresh];}];
     [IMCChannelOperations operationOnComputations:self.inScopeComputations.copy operation:OPERATION_ADD_CHANNELS withIndexSetChannels:selectedChannels toIndex:self.channels.selectedRow + 1 block:^{[self refresh];}];
+    [IMCChannelOperations operationOnComputations:self.inScope3DMasks.copy operation:OPERATION_ADD_CHANNELS withIndexSetChannels:selectedChannels toIndex:self.channels.selectedRow + 1 block:^{[self refresh];}];
 }
 -(void)addChannelsBeggining:(NSMenuItem *)sender{
     NSIndexSet *selectedChannels = self.channels.selectedRowIndexes.copy;
     [IMCChannelOperations operationOnImages:self.inScopeImages.copy operation:OPERATION_ADD_CHANNELS withIndexSetChannels:selectedChannels toIndex:0 block:^{[self refresh];}];//Index irrelevant
     [IMCChannelOperations operationOnComputations:self.inScopeComputations.copy operation:OPERATION_ADD_CHANNELS withIndexSetChannels:selectedChannels toIndex:0 block:^{[self refresh];}];//Index irrelevant
+    [IMCChannelOperations operationOnComputations:self.inScope3DMasks.copy operation:OPERATION_ADD_CHANNELS withIndexSetChannels:selectedChannels toIndex:0 block:^{[self refresh];}];//Index irrelevant
 }
 -(void)addChannelsEnd:(NSMenuItem *)sender{
     NSIndexSet *selectedChannels = self.channels.selectedRowIndexes.copy;
     [IMCChannelOperations operationOnImages:self.inScopeImages.copy operation:OPERATION_ADD_CHANNELS withIndexSetChannels:selectedChannels toIndex:self.inScopeImage.channels.count block:^{[self refresh];}];
     [IMCChannelOperations operationOnComputations:self.inScopeComputations.copy operation:OPERATION_ADD_CHANNELS withIndexSetChannels:selectedChannels toIndex:self.inScopeComputation.channels.count block:^{[self refresh];}];
+    [IMCChannelOperations operationOnComputations:self.inScope3DMasks.copy operation:OPERATION_ADD_CHANNELS withIndexSetChannels:selectedChannels toIndex:self.inScopeComputation.channels.count block:^{[self refresh];}];
 }
 -(void)multiplyChannelsInline:(NSMenuItem *)sender{
     NSIndexSet *selectedChannels = self.channels.selectedRowIndexes.copy;
     [IMCChannelOperations operationOnImages:self.inScopeImages.copy operation:OPERATION_MULTIPLY_CHANNELS withIndexSetChannels:selectedChannels toIndex:self.channels.selectedRow + 1 block:^{[self refresh];}];
     [IMCChannelOperations operationOnComputations:self.inScopeComputations.copy operation:OPERATION_MULTIPLY_CHANNELS withIndexSetChannels:selectedChannels toIndex:self.channels.selectedRow + 1 block:^{[self refresh];}];
+    [IMCChannelOperations operationOnComputations:self.inScope3DMasks.copy operation:OPERATION_MULTIPLY_CHANNELS withIndexSetChannels:selectedChannels toIndex:self.channels.selectedRow + 1 block:^{[self refresh];}];
 }
 -(void)multiplyChannelsBeggining:(NSMenuItem *)sender{
     NSIndexSet *selectedChannels = self.channels.selectedRowIndexes.copy;
     [IMCChannelOperations operationOnImages:self.inScopeImages.copy operation:OPERATION_MULTIPLY_CHANNELS withIndexSetChannels:selectedChannels toIndex:0 block:^{[self refresh];}];
     [IMCChannelOperations operationOnComputations:self.inScopeComputations.copy operation:OPERATION_MULTIPLY_CHANNELS withIndexSetChannels:selectedChannels toIndex:0 block:^{[self refresh];}];
+    [IMCChannelOperations operationOnComputations:self.inScope3DMasks.copy operation:OPERATION_MULTIPLY_CHANNELS withIndexSetChannels:selectedChannels toIndex:0 block:^{[self refresh];}];
 }
 -(void)multiplyChannelsEnd:(NSMenuItem *)sender{
     NSIndexSet *selectedChannels = self.channels.selectedRowIndexes.copy;
     [IMCChannelOperations operationOnImages:self.inScopeImages.copy operation:OPERATION_MULTIPLY_CHANNELS withIndexSetChannels:selectedChannels toIndex:self.inScopeImage.channels.count block:^{[self refresh];}];
     [IMCChannelOperations operationOnComputations:self.inScopeComputations.copy operation:OPERATION_MULTIPLY_CHANNELS withIndexSetChannels:selectedChannels toIndex:self.inScopeComputation.channels.count block:^{[self refresh];}];
+    [IMCChannelOperations operationOnComputations:self.inScope3DMasks.copy operation:OPERATION_MULTIPLY_CHANNELS withIndexSetChannels:selectedChannels toIndex:self.inScopeComputation.channels.count block:^{[self refresh];}];
 }
 -(void)applySettings:(NSMenuItem *)sender{
     NSIndexSet *selectedChannels = self.channels.selectedRowIndexes.copy;
@@ -1464,7 +1476,7 @@
             //TODO
             //Render 3D Mask
         }
-        self.threeDHandler.interestProportions = self.scrollViewBlends.imageView.selectedRectProportions;
+        self.threeDHandler.interestProportions = self.scrollViewBlends.imageView.selectedArea;
         self.openGlViewPort.delegate = self;
         [self addBuffersForStackImages:sender];
     }
@@ -1557,7 +1569,7 @@
     return self.background3D.color;
 }
 -(CGRect)rectToRender{
-    return self.scrollViewBlends.imageView.selectedRectProportions;
+    return self.scrollViewBlends.imageView.selectedArea;
 }
 -(NSUInteger)witdhModel{
     return self.threeDHandler.width;

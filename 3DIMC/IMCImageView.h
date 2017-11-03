@@ -13,14 +13,7 @@
 @interface IMCImageView : NSImageView
 
 @property (nonatomic, strong) NSArray<IMCImageStack *> *stacks;
-
-//Special properties
--(CGRect)selectedRect;
--(void)setSelectedArea:(CGRect)area;
--(CGRect)selectedArea;
-
--(CGRect)selectedRectProportions;
--(void)setSelectedRectProportions;
+@property (nonatomic, assign) CGRect selectedArea;
 
 -(NSPoint)originOfContainedImage;
 -(NSPoint)topOriginOfContainedImage;

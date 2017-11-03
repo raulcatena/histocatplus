@@ -589,7 +589,7 @@
         for (int i = 0; i < randomColors; i++) {
             pre[i] = (0.05f + pass * i) * 255;
         }
-        
+        self.threeDHandler.interestProportions = NSRectFromString(self.roiMask);
         if(self.threeDHandler.allBuffer)
             for (NSInteger i = 0; i < self.threeDHandler.images; i++) {
                 
@@ -1023,6 +1023,7 @@
         NSInteger planeLength = self.width * self.height;
         NSInteger fullMaskLength = planeLength * self.slices;
         
+        self.threeDHandler.interestProportions = NSRectFromString(self.roiMask);
         [self.threeDHandler startBufferForImages:self.threeDHandler.loader.inOrderImageWrappers channels:self.channels.count width:self.width height:self.height];
         
         if(self.threeDHandler.allBuffer && computedData){
@@ -1184,6 +1185,19 @@
     
     [self saveCellData];
     free(old);
+}
+
+-(NSMutableArray *)arrayNumbersForIndex:(NSInteger)index{
+    NSMutableArray *array = @[].mutableCopy;
+    NSInteger cells = self.segmentedUnits;
+    float *data = computedData[index];
+    for (int i = 0; i < cells; i++) {
+        float val = data[i];
+        if(val > 0){
+            [array addObject:[NSNumber numberWithFloat:val]];
+        }
+    }
+    return array;
 }
 
 -(void)dealloc{

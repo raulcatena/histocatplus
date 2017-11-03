@@ -110,31 +110,29 @@
     dispatch_queue_t aQ = dispatch_queue_create("otQ", NULL);
     dispatch_async(aQ, ^{
         for (IMCComputationOnMask *comp in comps) {
-            BOOL maskWasLoaded = comp.mask.isLoaded;
-            if(!maskWasLoaded)
-                [comp.mask loadLayerDataWithBlock:nil];
-            while(!comp.mask.isLoaded);
-            BOOL wasLoaded = comp.isLoaded;
-            if(!wasLoaded)
-                [comp loadLayerDataWithBlock:nil];
-            while(!comp.isLoaded);
             
-            switch (operation) {
-                case OPERATION_REMOVE_CHANNELS:
-                    [comp removeChannelsWithIndexSet:indexSet];
-                    break;
-                case OPERATION_ADD_CHANNELS:
-                    [comp addChannelsWithIndexSet:indexSet toInlineIndex:index];
-                    break;
-                case OPERATION_MULTIPLY_CHANNELS:
-                    [comp multiplyChannelsWithIndexSet:indexSet toInlineIndex:index];
-                    break;
-                    
-                default:
-                    break;
+            BOOL maskWasLoaded = comp.mask.isLoaded;
+            if([comp isMemberOfClass:[IMCComputationOnMask class]]){
+                if(!maskWasLoaded)
+                    [comp.mask loadLayerDataWithBlock:nil];
+                while(!comp.mask.isLoaded);
             }
-            if(!wasLoaded)
-                [comp unLoadLayerDataWithBlock:nil];
+            [comp openIfNecessaryAndPerformBlock:^{
+                switch (operation) {
+                    case OPERATION_REMOVE_CHANNELS:
+                        [comp removeChannelsWithIndexSet:indexSet];
+                        break;
+                    case OPERATION_ADD_CHANNELS:
+                        [comp addChannelsWithIndexSet:indexSet toInlineIndex:index];
+                        break;
+                    case OPERATION_MULTIPLY_CHANNELS:
+                        [comp multiplyChannelsWithIndexSet:indexSet toInlineIndex:index];
+                        break;
+                        
+                    default:
+                        break;
+                }
+            }];
             if(!maskWasLoaded)
                 [comp.mask unLoadLayerDataWithBlock:nil];
         }

@@ -848,15 +848,19 @@
     return array;
 }
 -(NSDictionary *)statsForIndex:(NSInteger)index{
+    
     if(!self.statsComputed){
         self.statsComputed = @{}.mutableCopy;
     }
     if(!self.computedData)
         return nil;
+    
     if(!self.computedData[index])
         return nil;
+    
     if(index < 0 || index >= self.channels.count)
         return nil;
+    
     
     NSMutableDictionary *dic = [self.statsComputed valueForKey:[NSString stringWithFormat:@"%li", index]];
     if(!dic){
@@ -877,7 +881,9 @@
 -(NSArray *)statsForIndexSet:(NSIndexSet *)indexSet{
     NSMutableArray *indexes = @[].mutableCopy;
     [indexSet enumerateIndexesUsingBlock:^(NSUInteger ind, BOOL *stop){
-        [indexes addObject:[self statsForIndex:ind]];
+        id obj = [self statsForIndex:ind];
+        if(obj)
+            [indexes addObject:obj];
     }];
     return [NSArray arrayWithArray:indexes];
 }
@@ -981,6 +987,7 @@
     }
     if(indexSet.count > 1){
         NSArray *arr = [self countStatsForStack:indexSet];
+        
         [str appendString:[NSString stringWithFormat:@"Counts: %li\nShanon: %f\nSimpson: %f",
                                              [[arr sum]integerValue],
                                              [arr shannonIndex],

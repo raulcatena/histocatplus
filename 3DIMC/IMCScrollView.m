@@ -14,10 +14,6 @@
     NSPoint position;
     
     NSInteger histogramType;
-    
-    //For area selection
-    CGRect selectedArea;
-    NSPoint start;
 }
 
 @property (nonatomic, strong) NSImage *reserveImage;
@@ -150,74 +146,10 @@
         
 }
 
-
-#pragma mark ROI with right button
-
-
--(void)rightMouseDown:(NSEvent *)theEvent{
-    selectedArea = CGRectZero;
-    NSPoint event_location = [theEvent locationInWindow];
-    start = [self convertPoint:event_location fromView:nil];//Important to pass nil
-}
-
--(void)rightMouseDragged:(NSEvent *)theEvent{
-    NSPoint endInWindow = [theEvent locationInWindow];
-    NSPoint end = [self convertPoint:endInWindow fromView:nil];
-    selectedArea = CGRectMake(start.x, start.y, end.x - start.x, end.y - start.y);
-    [self setNeedsDisplay:YES];
-}
-
--(void)rightMouseUp:(NSEvent *)theEvent{
-
-}
-
-
--(CGRect)selectedRect{
-    float oriX = fabs(selectedArea.origin.x);
-    float oriY = fabs(selectedArea.origin.y);
-    float width = fabs(selectedArea.size.width);
-    float heigth = fabs(selectedArea.size.height);
-    
-    return CGRectMake(oriX, MIN(oriY, oriY + selectedArea.size.height), width, heigth);
-}
-
--(void)setSelectedRect:(CGRect)area{
-    selectedArea = area;
-}
-
 #pragma mark rotate gesture
 
 -(void)rotateWithEvent:(NSEvent *)event{
     [self.rotationDelegate rotated:event.rotation];
-}
-
-#pragma mark Drawing
-
--(void)drawSelectedRect{
-    if(selectedArea.size.width < 1.0f)return;
-    CGContextRef context = [[NSGraphicsContext currentContext] graphicsPort];
-    
-    CGContextSetLineWidth(context, 2.0);
-    [[NSColor whiteColor] setStroke];
-    
-    CGPoint addLines[] =
-    {
-        CGPointMake(selectedArea.origin.x, selectedArea.origin.y),
-        CGPointMake(selectedArea.origin.x + selectedArea.size.width, selectedArea.origin.y),
-        CGPointMake(selectedArea.origin.x + selectedArea.size.width, selectedArea.origin.y + selectedArea.size.height),
-        CGPointMake(selectedArea.origin.x, selectedArea.origin.y + selectedArea.size.height),
-        CGPointMake(selectedArea.origin.x, selectedArea.origin.y),
-    };
-    // Bulk call to add lines to the current path.
-    // Equivalent to MoveToPoint(points[0]); for(i=1; i<count; ++i) AddLineToPoint(points[i]);
-    CGContextAddLines(context, addLines, sizeof(addLines)/sizeof(addLines[0]));
-    CGContextStrokePath(context);
-}
-
-
-- (void)drawRect:(NSRect)dirtyRect {
-    [super drawRect:dirtyRect];
-    [self drawSelectedRect];
 }
 
 

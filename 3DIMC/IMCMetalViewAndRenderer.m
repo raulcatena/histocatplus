@@ -242,7 +242,10 @@ bool heightDescriptor[] = {
         
         
         self.renderWidth = (NSInteger)round((rectToRender.size.width * width));
-        self.renderHeight = (NSInteger)round((rectToRender.size.height * height));
+        self.renderHeight = (NSInteger)round((fabs(rectToRender.size.height) * height));
+        
+        NSLog(@"RW %li RH %li", self.renderWidth, self.renderHeight);
+        
         self.slices = slices.count;
         NSInteger renderableArea = self.renderWidth * self.renderHeight;
         

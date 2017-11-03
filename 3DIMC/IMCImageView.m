@@ -12,7 +12,6 @@
 
 @interface IMCImageView(){
     NSPoint start;
-    CGRect selectedArea;
 }
 @property (nonatomic, strong) IMCScale *scaleBar;
 @end
@@ -91,28 +90,6 @@
     return rect;
 }
 
--(void)drawROI{
-    if(selectedArea.size.width < 1.0f)return;
-    NSLog(@"%@___--===", NSStringFromRect(selectedArea));
-    CGContextRef context = [[NSGraphicsContext currentContext] graphicsPort];
-    
-    CGContextSetLineWidth(context, 2.0);
-    [[NSColor whiteColor] setStroke];
-    
-    CGPoint addLines[] =
-    {
-        CGPointMake(selectedArea.origin.x, selectedArea.origin.y),
-        CGPointMake(selectedArea.origin.x + selectedArea.size.width, selectedArea.origin.y),
-        CGPointMake(selectedArea.origin.x + selectedArea.size.width, selectedArea.origin.y + selectedArea.size.height),
-        CGPointMake(selectedArea.origin.x, selectedArea.origin.y + selectedArea.size.height),
-        CGPointMake(selectedArea.origin.x, selectedArea.origin.y),
-    };
-    // Bulk call to add lines to the current path.
-    // Equivalent to MoveToPoint(points[0]); for(i=1; i<count; ++i) AddLineToPoint(points[i]);
-    CGContextAddLines(context, addLines, sizeof(addLines)/sizeof(addLines[0]));
-    CGContextStrokePath(context);
-}
-
 -(void)setStacks:(NSArray<IMCImageStack *> *)stacks{
     _stacks = stacks;
     [self needsToDrawRect:self.bounds];
@@ -188,7 +165,7 @@
 }
 
 -(void)rightMouseDown:(NSEvent *)theEvent{
-    selectedArea = CGRectZero;
+    _selectedArea = CGRectZero;
     NSPoint event_location = [theEvent locationInWindow];
     start = [self convertPoint:event_location fromView:nil];//Important to pass nil
 }
@@ -196,7 +173,16 @@
 -(void)rightMouseDragged:(NSEvent *)theEvent{
     NSPoint endInWindow = [theEvent locationInWindow];
     NSPoint end = [self convertPoint:endInWindow fromView:nil];
-    selectedArea = CGRectMake(start.x, start.y, end.x - start.x, end.y - start.y);
+    
+    CGFloat width = self.bounds.size.width;
+    CGFloat height = self.bounds.size.height;
+    
+    //Invert if necessar
+    if(start.y < end.y){
+    
+    }
+    
+    _selectedArea = CGRectMake(start.x/width, start.y/height, (end.x - start.x)/width, (end.y - start.y)/height);
     [self setNeedsDisplay];
 }
                      
@@ -205,37 +191,30 @@
     //[self selectedRectProportions];
 }
 
--(CGRect)selectedRect{
-    float oriX = fabs(selectedArea.origin.x);
-    float oriY = fabs(selectedArea.origin.y);
-    float width = fabs(selectedArea.size.width);
-    float heigth = fabs(selectedArea.size.height);
-        
-    //CGRect rect = CGRectMake(oriX, MIN(oriY, oriY + selectedArea.size.height), width, heigth);
-    return CGRectMake(oriX, self.bounds.size.height - oriY, width, heigth);
+-(void)drawROI{
+    if(_selectedArea.size.width < .01f)return;
+    
+    CGContextRef context = [[NSGraphicsContext currentContext] graphicsPort];
+    
+    CGContextSetLineWidth(context, 2.0);
+    [[NSColor whiteColor] setStroke];
+    
+    CGFloat width = self.bounds.size.width;
+    CGFloat height = self.bounds.size.height;
+    
+    CGPoint addLines[] =
+    {
+        CGPointMake(_selectedArea.origin.x * width, _selectedArea.origin.y * height),
+        CGPointMake((_selectedArea.origin.x + _selectedArea.size.width) * width, _selectedArea.origin.y * height),
+        CGPointMake((_selectedArea.origin.x + _selectedArea.size.width) * width , (_selectedArea.origin.y + _selectedArea.size.height) * height),
+        CGPointMake(_selectedArea.origin.x * width, (_selectedArea.origin.y + _selectedArea.size.height) * height),
+        CGPointMake(_selectedArea.origin.x * width, _selectedArea.origin.y * height),
+    };
+    // Bulk call to add lines to the current path.
+    // Equivalent to MoveToPoint(points[0]); for(i=1; i<count; ++i) AddLineToPoint(points[i]);
+    CGContextAddLines(context, addLines, sizeof(addLines)/sizeof(addLines[0]));
+    CGContextStrokePath(context);
 }
--(CGRect)selectedArea{
-    return selectedArea;
-}
--(void)setSelectedArea:(CGRect)area{
-    selectedArea = area;
-}
--(CGRect)proportionedRect:(CGRect)rect{
-    NSRect propRect =NSMakeRect(rect.origin.x/self.bounds.size.width,
-                                rect.origin.y/self.bounds.size.height,
-                                rect.size.width/self.bounds.size.width,
-                                rect.size.height/self.bounds.size.height
-                                );
-    return propRect;
-}
--(void)setSelectedRectProportions{
-
-}
--(CGRect)selectedRectProportions{
-    CGRect rect = [self selectedRect];
-    return [self proportionedRect:rect];
-}
-
 #pragma mark addons to view ports
 
 

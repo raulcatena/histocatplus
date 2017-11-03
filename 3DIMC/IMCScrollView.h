@@ -36,10 +36,4 @@
 //Calculations with points retrieve from delegate call
 -(NSPoint)getTranslatedPoint:(NSPoint)point;
 
-
-//Get ROI
-
--(CGRect)selectedRect;
--(void)setSelectedRect:(CGRect)area;
-
 @end
