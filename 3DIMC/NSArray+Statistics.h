@@ -26,6 +26,7 @@ int compare (const void * a, const void * b);
 
 NSInteger milenile (NSInteger *values, int elements, int milenile);
 -(int)medianC;
+-(float)meanC;
 -(int)sumC;
 -(float)sumCFloats;
 

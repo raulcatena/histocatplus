@@ -23,6 +23,8 @@ struct PositionalData{
     float rightX;
     float upperY;
     float lowerY;
+    float nearZ;
+    float farZ;
     float halfTotalThickness;
     uint totalLayers;
     uint widthModel;
@@ -107,6 +109,18 @@ vertex VertexOut vertexShader(
 //        return out;
     
     float down = heightDescriptor[vid] == true? colors[baseIndex + 7] - 1.0f : 0;
+    if(colors[baseIndex + 4] < positional.leftX)
+        return out;
+    if(colors[baseIndex + 4] > positional.rightX)
+        return out;
+    if(colors[baseIndex + 5] < positional.upperY)
+        return out;
+    if(colors[baseIndex + 5] > positional.lowerY)
+        return out;
+    if(colors[baseIndex + 6] < positional.nearZ)
+        return out;
+    if(colors[baseIndex + 6] > positional.farZ)
+        return out;
     
     float3 pos = float3(vertex_array[vid][0] + colors[baseIndex + 4] - positional.widthModel/2,
                         vertex_array[vid][1] + colors[baseIndex + 5] - positional.heightModel/2,

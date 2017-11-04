@@ -1177,7 +1177,9 @@
         }
         
         offSetCells = 0;
-        NSString *opName = [@"Flock_" stringByAppendingString:[NSDate date].description];
+        NSString *stamp = [NSString stringWithFormat:@"%f", [NSDate timeIntervalSinceReferenceDate]];
+        NSString *opName = [@"Flock_" stringByAppendingString:stamp];
+        
         for (IMCComputationOnMask *comp in comps) {
             NSInteger cellsComp = comp.segmentedUnits;
             float * result = malloc(cellsComp * sizeof(float));
@@ -1188,7 +1190,7 @@
                 float * itemized = malloc(cellsComp * sizeof(float));
                 for (int i = 0; i < cellsComp; i++)
                     itemized[i] = clusters[offSetCells + i] == j ? 1.0f : 0.0f;
-                [comp addBuffer:itemized withName:[opName stringByAppendingFormat:@"_cluster_%i", j] atIndex:NSNotFound];
+                [comp addBuffer:itemized withName:[NSString stringWithFormat:@"Cluster_%i_%@", j, opName] atIndex:NSNotFound];
             }
             offSetCells += cellsComp;
         }

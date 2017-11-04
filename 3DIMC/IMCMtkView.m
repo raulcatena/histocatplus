@@ -23,8 +23,15 @@
 
 -(instancetype)initWithCoder:(NSCoder *)coder{
     self = [super initWithCoder:coder];
-    if(self)
+    if(self){
         _rotationMatrix = [[Matrix4 alloc]init];
+        self.leftXOffset = .0f;
+        self.rightXOffset = 1.0f;
+        self.lowerYOffset = 1.0f;
+        self.upperYOffset = .0f;
+        self.nearZOffset = .0f;
+        self.farZOffset = 1.0f;
+    }
     return self;
 }
 
@@ -74,25 +81,52 @@
     self.refresh = YES;
 }
 
+-(BOOL)computeOffSets:(NSEvent *)theEvent{
+    float factor = theEvent.deltaY * .002f;
+    
+    if (theEvent.modifierFlags & NSEventModifierFlagControl) {
+        if (theEvent.modifierFlags & NSEventModifierFlagFunction)
+            _rightXOffset = MIN(MAX(_leftXOffset, _rightXOffset - factor), 1.0f);
+        else
+            _leftXOffset = MAX(.0f, MIN(_leftXOffset + factor, _rightXOffset));
+        return YES;
+    }
+    if (theEvent.modifierFlags & NSEventModifierFlagOption) {
+        if (theEvent.modifierFlags & NSEventModifierFlagFunction)
+            _lowerYOffset = MIN(MAX(_lowerYOffset - factor, _upperYOffset), 1.0f);
+        else
+            _upperYOffset = MAX(MIN(_upperYOffset + factor, _lowerYOffset), .0f);
+        return YES;
+    }
+    if (theEvent.modifierFlags & NSEventModifierFlagCommand) {
+        if (theEvent.modifierFlags & NSEventModifierFlagFunction)
+            _nearZOffset = MAX(MIN(_nearZOffset + factor * 3, _farZOffset), .0f);
+        else
+            _farZOffset = MIN(MAX(_farZOffset - factor * 3, _nearZOffset), 1.0f);
+        return YES;
+    }
+    return NO;
+}
+
 #define MAX_ALLOWED_ZOOM 1.0f
 - (void)scrollWheel:(NSEvent *)theEvent {
     
-    //if(![self computeOffSets:theEvent]){
-    if(![self scrollWithWheel:theEvent]){
-        float value = theEvent.deltaY * 5.0f;
-        _zoom += value;
-        _zoom = MIN(MAX_ALLOWED_ZOOM, MAX(-MAX_ALLOWED_ZOOM, _zoom));
-        if(_zoom > MAX_ALLOWED_ZOOM){
-            _zoom = MAX_ALLOWED_ZOOM;
-            return;
+    if(![self computeOffSets:theEvent]){
+        if(![self scrollWithWheel:theEvent]){
+            float value = theEvent.deltaY * 5.0f;
+            _zoom += value;
+            _zoom = MIN(MAX_ALLOWED_ZOOM, MAX(-MAX_ALLOWED_ZOOM, _zoom));
+            if(_zoom > MAX_ALLOWED_ZOOM){
+                _zoom = MAX_ALLOWED_ZOOM;
+                return;
+            }
+            if(_zoom < -MAX_ALLOWED_ZOOM){
+                _zoom = -MAX_ALLOWED_ZOOM;
+                return;
+            }
+            [self.baseModelMatrix translate:0 y:0 z:value];
         }
-        if(_zoom < -MAX_ALLOWED_ZOOM){
-            _zoom = -MAX_ALLOWED_ZOOM;
-            return;
-        }
-        [self.baseModelMatrix translate:0 y:0 z:value];
     }
-    //}
     self.refresh = YES;
 }
 -(BOOL)scrollWithWheel:(NSEvent *)theEvent{
@@ -117,6 +151,12 @@
         [_baseModelMatrix translate:0 y:0 z:-500];
     }
     return _baseModelMatrix;
+}
+-(Matrix4 *)rotationMatrix{
+    if(!_rotationMatrix){
+        _rotationMatrix = [[Matrix4 alloc]init];
+    }
+    return _rotationMatrix;
 }
 
 - (void)mouseUp:(NSEvent *)theEvent {

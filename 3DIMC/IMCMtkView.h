@@ -18,12 +18,15 @@
 @property (nonatomic, assign) float *colors;
 @property (nonatomic, strong) Matrix4* baseModelMatrix;
 @property (nonatomic, strong) Matrix4* rotationMatrix;
-@property (nonatomic, assign) float leftX;
-@property (nonatomic, assign) float rightX;
-@property (nonatomic, assign) float upperY;
-@property (nonatomic, assign) float lowerY;
 @property (nonatomic, assign) IBInspectable BOOL refresh;
 @property(nonatomic, strong) id<MTLTexture>lastRenderedTexture;
+
+@property (nonatomic, assign) float leftXOffset;
+@property (nonatomic, assign) float rightXOffset;
+@property (nonatomic, assign) float lowerYOffset;
+@property (nonatomic, assign) float upperYOffset;
+@property (nonatomic, assign) float nearZOffset;
+@property (nonatomic, assign) float farZOffset;
 
 -(void)rotateX:(float)angleX Y:(float)angleY Z:(float)angleZ;
 

@@ -157,8 +157,6 @@
 }
 -(void)restore3Dstate{
     if(self.metalView){
-        NSLog(@"%@", self.dataCoordinator.baseModelMatrixMetal);
-        NSLog(@"%@", self.dataCoordinator.rotationMatrixMetal);
         if(self.dataCoordinator.baseModelMatrixMetal)
             [self.metalView.baseModelMatrix setMatrixFromStringRepresentation:self.dataCoordinator.baseModelMatrixMetal];
         
@@ -275,7 +273,8 @@
         self.dataCoordinator.rotationMatrixMetal = self.metalView.rotationMatrix.stringRepresentation;
     }
     NSString *selArea = NSStringFromRect([self.scrollViewBlends.imageView selectedArea]);
-    if(selArea)self.dataCoordinator.selectedRectString = selArea;
+    if(selArea)
+        self.dataCoordinator.selectedRectString = selArea;
 }
 
 - (NSData *)dataOfType:(NSString *)typeName error:(NSError **)outError {
@@ -2106,17 +2105,14 @@
 
 #pragma mark cell basic algorithms
 
--(void)cellBasicAlgorithms:(id)sender{
-    if(self.inScopeComputation){
-        if(!self.cellAnalysis)
+-(void)cellBasicAlgorithms:(id)sender{//TODO, have several possibilities, and combine Comps
+    if(!self.cellAnalysis){
+        if(self.inScopeComputation)
             self.cellAnalysis = [[IMCCellBasicAlgorithms alloc]initWithComputation:self.inScopeComputation];
-        [[self.cellAnalysis window] makeKeyAndOrderFront:self.cellAnalysis];
-    }
-    if(self.inScope3DMask){
-        if(!self.cellAnalysis)
+        else if(self.inScope3DMask)
             self.cellAnalysis = [[IMCCellBasicAlgorithms alloc]initWith3DMask:self.inScope3DMask];
-        [[self.cellAnalysis window] makeKeyAndOrderFront:self.cellAnalysis];
     }
+    [[self.cellAnalysis window] makeKeyAndOrderFront:self.cellAnalysis];
 }
 
 #pragma mark

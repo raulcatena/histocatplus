@@ -214,20 +214,19 @@
     CGFloat propH = fabs(self.interestProportions.size.height);
     
     if(CGRectIsEmpty(self.interestProportions))
-        for (NSInteger i = 0; i < total; i++)
+        self.interestProportions = NSMakeRect(0, 0, 1, 1);
+        
+    for (NSInteger i = 0; i < total; i++){
+        NSInteger y = i / self.height;
+        NSInteger x = i % self.height;
+        
+        if(y > self.height * propOrY
+           && y < self.height * (propOrY + propH)
+           && x > self.width * propOrX
+           && x < self.width * (propOrX + propW)
+           )
             self.showMask[i] = true;
-    else
-        for (NSInteger i = 0; i < total; i++){
-            NSInteger y = i / self.height;
-            NSInteger x = i % self.height;
-            
-            if(y > self.height * propOrY
-               && y < self.height * (propOrY + propH)
-               && x > self.width * propOrX
-               && x < self.width * (propOrX + propW)
-               )
-                self.showMask[i] = true;
-        }
+    }
 }
 
 -(NSPoint)proportionalOffsetToCenter{

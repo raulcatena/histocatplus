@@ -301,7 +301,7 @@ float distanceFromPointAToXAndYWidhWidth(NSInteger indexA, float x, float y, NSI
     return calcDist;
 }
 
-+(float *)distanceToMasks:(float *)xCentroids yCentroids:(float *)yCentroids destMask:(int *)maskDestination max:(NSInteger)max width:(NSInteger)width height:(NSInteger)height filterLabel:(NSInteger)filterLabel{
++(float *)distanceToMasksOld:(float *)xCentroids yCentroids:(float *)yCentroids destMask:(int *)maskDestination max:(NSInteger)max width:(NSInteger)width height:(NSInteger)height filterLabel:(NSInteger)filterLabel{
     
     float *results = calloc(max, sizeof(float));
     NSInteger total = width * height;
@@ -378,6 +378,83 @@ float distanceFromPointAToXAndYWidhWidth(NSInteger indexA, float x, float y, NSI
     
     return results;
 }
+
++(float *)distanceToMasks:(float *)xCentroids yCentroids:(float *)yCentroids destMask:(int *)maskDestination max:(NSInteger)max width:(NSInteger)width height:(NSInteger)height filterLabel:(NSInteger)filterLabel{
+    
+    float *results = calloc(max, sizeof(float));
+    bool *visited = calloc(max, sizeof(bool));
+    
+    NSInteger total = width * height;
+    
+    //Initial visit (for those that are already in mask)
+    for (NSInteger i = 0; i < max; i++) {
+        NSInteger index = round(xCentroids[i]) + round(yCentroids[i]) * width;
+        if(maskDestination[index] > 0)
+            visited[i] = true;
+    }
+    
+    BOOL found = YES;
+    int distance = 1;
+    BOOL firstRound = YES;
+    
+    while (found == YES) {
+        printf("-");
+        //Expand mask
+        found = NO;
+        for (NSInteger i = 0; i < total; i++) {
+            
+            if((maskDestination[i] > 0 && firstRound) || maskDestination[i] == -1){
+                NSInteger tests[4] = {
+                    i + width,
+                    i - width,
+                    i + 1,
+                    i - 1
+                };
+                for (int j = 0; j < 4; j++) {
+                    NSInteger test = tests[j];
+                    if(doesNotJumpLine(i, test, width, height, total, 2)){
+                        if(maskDestination[test] == 0){
+                            maskDestination[test] = -2;
+                            found = YES;
+                            
+                        }
+                    }
+                }
+            }
+        }
+        firstRound = NO;
+        
+        //Find if new centroid in expanded area
+        for (NSInteger i = 0; i < max; i++) {
+            if(visited[i] == false){
+                NSInteger index = xCentroids[i] + round(yCentroids[i]) * width;
+                if(maskDestination[index] == -2){
+                    visited[i] = true;
+                    results[i] = distance;
+                }
+            }
+        }
+        
+        //Turn candidates into inactive
+        for (NSInteger i = 0; i < total; i++) {
+            if(maskDestination[i] == -1)
+                maskDestination[i] = -3;//Archived
+            if(maskDestination[i] == -2)//Used in this round
+                maskDestination[i] = -1;//Will be ref for expansion in next round
+        }
+        distance++;
+    }
+    
+    //Clean up and restore mask state
+    for (NSInteger i = 0; i < total; i++) {
+        if(maskDestination[i] < 0)
+            maskDestination[i] = 0;
+    }
+    free(visited);
+    
+    return results;
+}
+
 +(void)invertToProximity:(float *)distances cells:(NSInteger)cells{
     float maxDistace = 0;
     for (NSInteger i = 0; i < cells; i++) {

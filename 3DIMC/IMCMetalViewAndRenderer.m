@@ -52,6 +52,8 @@ typedef struct{
     float rightX;
     float upperY;
     float lowerY;
+    float nearZ;
+    float farZ;
     float halfTotalThickness;
     uint32 totalLayers;
     uint32 widthModel;
@@ -490,7 +492,6 @@ bool heightDescriptor[] = {
         self.device = view.device;
         [self createMetalStack];
     }
-    
     //Projection Matrix
     [self projectionMatrixSetup:view];
     
@@ -513,11 +514,13 @@ bool heightDescriptor[] = {
     //Positional Data
     
     PositionalData positional;
-    positional.lowerY = view.lowerY;
-    positional.upperY = view.upperY;
-    positional.leftX = view.leftX;
-    positional.rightX = view.rightX;
+    positional.lowerY = view.lowerYOffset * height;
+    positional.upperY = view.upperYOffset * height;
+    positional.leftX = view.leftXOffset * width;
+    positional.rightX = view.rightXOffset * width;
     positional.halfTotalThickness = [self.delegate zValues][self.delegate.stacksIndexSet.lastIndex]/2;
+    positional.nearZ = view.nearZOffset * positional.halfTotalThickness * 2;
+    positional.farZ = view.farZOffset * positional.halfTotalThickness * 2;
     positional.widthModel = (uint)self.renderWidth;
     positional.heightModel = (uint)self.renderHeight;
     positional.totalLayers = (uint)self.slices;

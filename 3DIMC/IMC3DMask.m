@@ -15,6 +15,7 @@
 #import "IMC3DMaskComputations.h"
 #import "flock.h"
 #import "IMCMasks.h"
+#import "NSArray+Statistics.h"
 
 @interface IMC3DMask(){
     int * maskIds;
@@ -976,14 +977,26 @@
                         NSInteger cellId = maskIds[i] - 1;
                         NSArray *collectedVoxelIndexes = [self collectVoxelsForVoxelIndex:i width:self.width planeLength:planeLength totalMask:fullMask];
     
+                        NSMutableArray *positionsX = [NSMutableArray arrayWithCapacity:collectedVoxelIndexes.count];
+                        NSMutableArray *positionsY = [NSMutableArray arrayWithCapacity:collectedVoxelIndexes.count];
+                        NSMutableArray *positionsZ = [NSMutableArray arrayWithCapacity:collectedVoxelIndexes.count];
+                        
                         for (NSNumber *num in collectedVoxelIndexes) {
                             NSInteger index = num.integerValue%planeLength;
                             NSInteger planeItBelongs = num.integerValue/planeLength;
+                            
+                            [positionsX addObject:@(index%maxWidth)];
+                            [positionsY addObject:@(index/maxWidth)];
+                            [positionsZ addObject:@(planeLength)];
+                            
                             for (NSInteger c = 0; c < channelsExtraction; c ++)
                                 computedData[c][cellId] += (float)auxiliaryData[planeItBelongs][c][index];
                         }
                         for (NSInteger c = 0; c < channelsExtraction; c ++)
                             computedData[c][cellId] /= (float)collectedVoxelIndexes.count;
+                        computedData[channelsExtraction + 0][cellId] = [positionsX mean].floatValue;
+                        computedData[channelsExtraction + 1][cellId] = [positionsY mean].floatValue;
+                        computedData[channelsExtraction + 2][cellId] = [positionsZ mean].floatValue;
                         computedData[channelsExtraction + 4][cellId] = (float)collectedVoxelIndexes.count;
                     }
                 }
@@ -1045,7 +1058,7 @@
                 [indexesO addObject:@(channel)];
                 
                 //Find maximum value
-                UInt8 localMax = 0;
+                int localMax = 0;
                 for(NSInteger i = 0; i < numberOfSegments; i++)
                     localMax = MAX(localMax, computedData[channel][i]);
                 
@@ -1080,113 +1093,7 @@
     }
 }
 
-#pragma mark Flock 3D
-
--(BOOL)flockWithChannelindexes:(NSIndexSet *)indexSet{
-    BOOL success = YES;
-    if(indexSet.count == 0){
-        [General runAlertModalWithMessage:@"You must select at least one mask computation (cell data)"];
-        success = NO;
-    }
-
-    if(success){
-        NSMutableArray *closeAtEnd = @[].mutableCopy;
-
-        BOOL wasLoaded = self.isLoaded;
-        if(!wasLoaded)
-            [self loadLayerDataWithBlock:nil];
-        while (!self.isLoaded);
-        
-        NSInteger cellsComp = self.segments;
-        NSInteger channsToAnalyze = indexSet.count;
-        int *clusters = (int *) calloc(cellsComp, sizeof(int));//not iVar anymore
-        
-        double ** data = (double **)malloc(cellsComp * sizeof(double *));
-        for (int i = 0; i < cellsComp; i++)
-            data[i] = malloc(channsToAnalyze * sizeof(double));
-        
-
-        
-        __block NSInteger counter = 0;
-        [indexSet enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop){
-            for (int i = 0; i < cellsComp; i++)
-                data[i][counter] = asinh(computedData[idx][i]);
-            counter++;
-        }];
-
-        directMethod(indexSet.count, cellsComp, data, clusters);
-        
-        NSUInteger highest = 0;
-        for (int i =0 ; i < cellsComp; i++)
-            if(clusters[i] > highest)
-                highest = clusters[i];
-        
-        NSString *stamp = [NSString stringWithFormat:@"%f", [NSDate timeIntervalSinceReferenceDate]];
-        NSString *opName = [@"Flock_" stringByAppendingString:stamp];
-        
-        float * result = malloc(cellsComp * sizeof(float));
-        for (int i = 0; i < cellsComp; i++)
-            result[i] = (float)clusters[i];
-        [self addBuffer:result withName:opName atIndex:NSNotFound];
-        for (int j = 0; j < highest; j++) {
-            float * itemized = malloc(cellsComp * sizeof(float));
-            for (int i = 0; i < cellsComp; i++)
-                itemized[i] = clusters[i] == j ? 1.0f : 0.0f;
-            [self addBuffer:itemized withName:[NSString stringWithFormat:@"Cluster_%i_%@", j, opName] atIndex:NSNotFound];
-        }
-            
-        
-        free(clusters);
-        
-        for (IMCComputationOnMask *comp in closeAtEnd)
-            [comp unLoadLayerDataWithBlock:nil];
-    }
-    
-    return success;
-}
-
-#pragma mark add results
--(void)addBuffer:(float *)buffer withName:(NSString *)name atIndex:(NSInteger)index{
-    
-    if(index == NSNotFound || index > self.channels.count)
-        index = self.channels.count;
-    
-    if(!self.isLoaded)
-        [self loadLayerDataWithBlock:nil];
-    while (!self.isLoaded);
-    
-    NSInteger oldNumberOfChannels = self.channels.count;
-    
-    float ** old = calloc(oldNumberOfChannels, sizeof(float *));
-    for(NSInteger i = 0; i < oldNumberOfChannels; i++)
-        old[i] = computedData[i];
-    
-    NSUInteger alreadyInComp = [self.channels indexOfObject:name];
-    
-    if(alreadyInComp != NSNotFound){
-        if(computedData[alreadyInComp])
-            free(computedData[alreadyInComp]);
-        computedData[alreadyInComp] = buffer;
-    }else{
-        [self.channels insertObject:name atIndex:index];
-        
-        if(computedData)
-            free(computedData);
-        
-        computedData = calloc(self.channels.count, sizeof(float *));
-        
-        for(NSInteger i = 0; i < oldNumberOfChannels + 1; i++){
-            if(i == index)
-                computedData[i] = buffer;
-            else
-                computedData[i] = old[i - (i > index)];
-        }
-    }
-    
-    [self saveCellData];
-    free(old);
-}
-
+//Overriden because the number of cells don't come from mask parent but from the class directly
 -(NSMutableArray *)arrayNumbersForIndex:(NSInteger)index{
     NSMutableArray *array = @[].mutableCopy;
     NSInteger cells = self.segmentedUnits;

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="12120" systemVersion="16E195" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" customObjectInstantitationMethod="direct">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="12120" systemVersion="16G29" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" customObjectInstantitationMethod="direct">
     <dependencies>
+        <deployment identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="12120"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -142,7 +143,7 @@
                         <rect key="frame" x="259" y="171" width="348" height="331"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <clipView key="contentView" id="hr0-9k-GIi">
-                            <rect key="frame" x="1" y="1" width="331" height="314"/>
+                            <rect key="frame" x="1" y="1" width="346" height="329"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <view id="ZUQ-Ye-9IN">
@@ -152,11 +153,11 @@
                             </subviews>
                         </clipView>
                         <scroller key="horizontalScroller" verticalHuggingPriority="750" horizontal="YES" id="tFB-ma-0xA">
-                            <rect key="frame" x="1" y="315" width="331" height="15"/>
+                            <rect key="frame" x="1" y="314" width="346" height="16"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
                         <scroller key="verticalScroller" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="ZVf-jz-C87">
-                            <rect key="frame" x="332" y="1" width="15" height="314"/>
+                            <rect key="frame" x="331" y="1" width="16" height="329"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
                     </scrollView>
@@ -164,7 +165,7 @@
                         <rect key="frame" x="618" y="171" width="348" height="331"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <clipView key="contentView" id="C4X-0l-rwU">
-                            <rect key="frame" x="1" y="1" width="331" height="314"/>
+                            <rect key="frame" x="1" y="1" width="346" height="329"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <view id="Awv-pY-vHZ">
@@ -174,11 +175,11 @@
                             </subviews>
                         </clipView>
                         <scroller key="horizontalScroller" verticalHuggingPriority="750" horizontal="YES" id="es4-4U-5BR">
-                            <rect key="frame" x="1" y="315" width="331" height="15"/>
+                            <rect key="frame" x="1" y="314" width="346" height="16"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
                         <scroller key="verticalScroller" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="x7E-JJ-sHs">
-                            <rect key="frame" x="332" y="1" width="15" height="314"/>
+                            <rect key="frame" x="331" y="1" width="16" height="329"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
                     </scrollView>
@@ -205,7 +206,7 @@
                         <rect key="frame" x="975" y="171" width="348" height="331"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <clipView key="contentView" id="D0Q-aa-7oB">
-                            <rect key="frame" x="1" y="1" width="331" height="314"/>
+                            <rect key="frame" x="1" y="1" width="346" height="329"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <view id="G94-fK-VvP">
@@ -215,11 +216,11 @@
                             </subviews>
                         </clipView>
                         <scroller key="horizontalScroller" verticalHuggingPriority="750" horizontal="YES" id="Guh-4q-ufe">
-                            <rect key="frame" x="1" y="315" width="331" height="15"/>
+                            <rect key="frame" x="1" y="314" width="346" height="16"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
                         <scroller key="verticalScroller" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="dbP-7j-373">
-                            <rect key="frame" x="332" y="1" width="15" height="314"/>
+                            <rect key="frame" x="331" y="1" width="16" height="329"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
                     </scrollView>
