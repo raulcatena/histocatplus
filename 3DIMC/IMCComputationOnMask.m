@@ -874,6 +874,7 @@
             dic[@"med"] = [array median];
             dic[@"std"] = [array standardDeviation];
             dic[@"total"] = [array sum];
+            dic[@"max"] = [array max];
         }
     }
     return [NSDictionary dictionaryWithDictionary:dic];
@@ -932,7 +933,8 @@
 -(int)xIndexInArray:(NSArray *)array{
     int xIndex = -1;
     for (NSString *str in array) {
-        if ([str isEqualToString:@"X"] || [str isEqualToString:@"avg_X"])xIndex = (int)[self.channels indexOfObject:str];
+        if ([str isEqualToString:@"X"] || [str isEqualToString:@"avg_X"] || [str isEqualToString:@"cell_avg_X"])
+            xIndex = (int)[self.channels indexOfObject:str];
     }
     return xIndex;
 }
@@ -940,9 +942,18 @@
 -(int)yIndexInArray:(NSArray *)array{
     int yIndex = -1;
     for (NSString *str in array) {
-        if ([str isEqualToString:@"Y"] || [str isEqualToString:@"avg_Y"])yIndex = (int)[self.channels indexOfObject:str];
+        if ([str isEqualToString:@"Y"] || [str isEqualToString:@"avg_Y"] || [str isEqualToString:@"cell_avg_Y"])
+            yIndex = (int)[self.channels indexOfObject:str];
     }
     return yIndex;
+}
+-(int)zIndexInArray:(NSArray *)array{
+    int zIndex = -1;
+    for (NSString *str in array) {
+        if ([str isEqualToString:@"Z"] || [str isEqualToString:@"avg_Z"] || [str isEqualToString:@"cell_avg_Z"])
+            zIndex = (int)[self.channels indexOfObject:str];
+    }
+    return zIndex;
 }
 -(NSArray *)centroidsForChannel:(NSInteger)channel{
     int xIndex = [self xIndexInArray:self.channels];
@@ -965,6 +976,10 @@
 -(float *)yCentroids{
     int yIndex = [self yIndexInArray:self.channels];
     return self.computedData[yIndex];
+}
+-(float *)zCentroids{
+    int zIndex = [self zIndexInArray:self.channels];
+    return self.computedData[zIndex];
 }
 -(NSString *)descriptionWithIndexes:(NSIndexSet *)indexSet{
     NSMutableString *str = @"".mutableCopy;
@@ -1024,7 +1039,7 @@
         self.computedData[alreadyInComp] = buffer;
     }else{
         [self.channels insertObject:name atIndex:index];
-        
+        NSLog(@"%li", index);
         if(self.computedData)
             free(self.computedData);
         
@@ -1092,6 +1107,7 @@
     }
 }
 -(void)multiplyChannelsWithIndexSet:(NSIndexSet *)indexSet toInlineIndex:(NSInteger)index{
+    
     if(self.computedData && self.isLoaded){
         
         NSMutableString *str = @"".mutableCopy;
@@ -1101,7 +1117,8 @@
                 [str appendString:@"+"];
         }];
         
-        NSInteger cells = self.mask.numberOfSegments;
+        NSInteger cells = self.segmentedUnits;
+        
         float * newChan = calloc(cells, sizeof(float));
         for (NSInteger i = 0; i < cells; i++)
             newChan[i] = 1;//init all to one because is multiplication
@@ -1189,8 +1206,8 @@
             for (int j = 0; j < highest; j++) {
                 float * itemized = malloc(cellsComp * sizeof(float));
                 for (int i = 0; i < cellsComp; i++)
-                    itemized[i] = clusters[offSetCells + i] == j ? 1.0f : 0.0f;
-                [comp addBuffer:itemized withName:[NSString stringWithFormat:@"Cluster_%i_%@", j, opName] atIndex:NSNotFound];
+                    itemized[i] = clusters[offSetCells + i] == j + 1 ? 1.0f : 0.0f;
+                [comp addBuffer:itemized withName:[NSString stringWithFormat:@"Cluster_%i_%@", j + 1, opName] atIndex:comp.channels.count];
             }
             offSetCells += cellsComp;
         }

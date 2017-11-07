@@ -94,7 +94,7 @@
         [tv reloadData];
     [self.parent.eventsTable reloadData];//This one goes aside to avoid crash in viewer only version
     
-    if(self.parent.inScopeComputations.count > 0)
+    if(self.parent.inScopeComputations.count > 0 || self.parent.inScope3DMask)
         if([self.parent.tabs.selectedTabViewItem.identifier isEqualToString:TAB_ID_DATAT])
             [self.parent.tableDelegate rebuildTable];
     
@@ -445,15 +445,20 @@
 #pragma mark Refresh R controls
 
 -(void)refreshRControls{
-    if(!self.parent.inScopeComputation)return;
+    if(!self.parent.inScopeComputation && !self.parent.inScope3DMask)
+        return;
     
     NSMutableArray *channsArr = @[@"CompId"].mutableCopy;
     for (IMCChannelWrapper *ch in [self.parent channelsInScopeForPlotting]) {
-        [channsArr addObject:self.parent.inScopeComputation.channels[ch.index]];
+        if(self.parent.inScopeComputation)[channsArr addObject:self.parent.inScopeComputation.channels[ch.index]];
+        if(self.parent.inScope3DMask)[channsArr addObject:self.parent.inScope3DMask.channels[ch.index]];
     }
     NSArray *update = @[self.parent.xChannel, self.parent.yChannel, self.parent.cChannel, self.parent.sChannel, self.parent.f1Channel, self.parent.f2Channel];
-    for(NSPopUpButton *pop in update)
+    for(NSPopUpButton *pop in update){
+        NSInteger i = pop.indexOfSelectedItem;
         [General addArrayOfStrings:channsArr toNSPopupButton:pop noneAtBeggining:YES];
+        [pop selectItemAtIndex:i];
+    }
     
 //    for(NSPopUpButton *pop in update){
 //        NSInteger index = [update indexOfObject:pop]+2;

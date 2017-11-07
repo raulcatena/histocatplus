@@ -211,16 +211,6 @@ bool heightDescriptor[] = {
                 [res addObject:@([idx indexOfObject:arr])];
                 break;
             }
-    
-    
-    
-//    [indexSet enumerateIndexesUsingBlock:^(NSUInteger sliceIndex, BOOL *stop){
-//        for (NSArray *arr in idx)
-//            for (NSNumber *num in arr)
-//                if(num.integerValue == sliceIndex)
-//                     if(![res containsObject:@([idx indexOfObject:arr])])
-//                         [res addObject:];
-//    }];
     return res;
 }
 

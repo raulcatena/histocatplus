@@ -415,14 +415,15 @@
     }
 }
 -(void)channelsDoubleClick:(NSTableView *)tv{
-    if(self.inScopeComputation)
-        [self passChannel:[self.inScopeComputation wrappedChannelAtIndex:tv.selectedRow]];
+    if(self.inScopeComputation || self.inScope3DMask)
+        [self passChannel:[self.inScopeComputation?self.inScopeComputation : self.inScope3DMask wrappedChannelAtIndex:tv.selectedRow]];
     if(self.inScopeImage && self.inScopeImage.isLoaded)
         [self.inScopeImage setAutoMaxForMilenile:9999 andChannel:MIN(tv.selectedRow, self.inScopeImage.channels.count - 1)];
     [self refresh];
 }
 -(void)passChannel:(IMCChannelWrapper *)chann{
-    if(!self.channelsInScopeForPlotting)self.channelsInScopeForPlotting = @[].mutableCopy;
+    if(!self.channelsInScopeForPlotting)
+        self.channelsInScopeForPlotting = @[].mutableCopy;
     id found;
     for(IMCChannelWrapper *ch in self.channelsInScopeForPlotting)
         if(ch.index == chann.index){
@@ -433,6 +434,7 @@
         [self.channelsInScopeForPlotting removeObject:found];
     else
         [self.channelsInScopeForPlotting addObject:chann];
+    
     [self.workSpaceRefresher refreshRControls];
 }
 -(void)pushImagesUpOrDownOld:(id)sender{
@@ -971,6 +973,8 @@
     return self.channelsCustom;
 }
 -(NSArray <IMCComputationOnMask *>*)computations{
+    if(self.inScope3DMask)
+        return @[self.inScope3DMask];
     return self.inScopeComputations;
 }
 -(NSArray <IMCImageStack *>*)stacks{
@@ -1073,7 +1077,7 @@
     NSIndexSet *selectedChannels = self.channels.selectedRowIndexes.copy;
     [IMCChannelOperations operationOnImages:self.inScopeImages.copy operation:OPERATION_ADD_CHANNELS withIndexSetChannels:selectedChannels toIndex:self.inScopeImage.channels.count block:^{[self refresh];}];
     [IMCChannelOperations operationOnComputations:self.inScopeComputations.copy operation:OPERATION_ADD_CHANNELS withIndexSetChannels:selectedChannels toIndex:self.inScopeComputation.channels.count block:^{[self refresh];}];
-    [IMCChannelOperations operationOnComputations:self.inScope3DMasks.copy operation:OPERATION_ADD_CHANNELS withIndexSetChannels:selectedChannels toIndex:self.inScopeComputation.channels.count block:^{[self refresh];}];
+    [IMCChannelOperations operationOnComputations:self.inScope3DMasks.copy operation:OPERATION_ADD_CHANNELS withIndexSetChannels:selectedChannels toIndex:self.inScope3DMask.channels.count block:^{[self refresh];}];
 }
 -(void)multiplyChannelsInline:(NSMenuItem *)sender{
     NSIndexSet *selectedChannels = self.channels.selectedRowIndexes.copy;
@@ -1091,7 +1095,7 @@
     NSIndexSet *selectedChannels = self.channels.selectedRowIndexes.copy;
     [IMCChannelOperations operationOnImages:self.inScopeImages.copy operation:OPERATION_MULTIPLY_CHANNELS withIndexSetChannels:selectedChannels toIndex:self.inScopeImage.channels.count block:^{[self refresh];}];
     [IMCChannelOperations operationOnComputations:self.inScopeComputations.copy operation:OPERATION_MULTIPLY_CHANNELS withIndexSetChannels:selectedChannels toIndex:self.inScopeComputation.channels.count block:^{[self refresh];}];
-    [IMCChannelOperations operationOnComputations:self.inScope3DMasks.copy operation:OPERATION_MULTIPLY_CHANNELS withIndexSetChannels:selectedChannels toIndex:self.inScopeComputation.channels.count block:^{[self refresh];}];
+    [IMCChannelOperations operationOnComputations:self.inScope3DMasks.copy operation:OPERATION_MULTIPLY_CHANNELS withIndexSetChannels:selectedChannels toIndex:self.inScope3DMask.channels.count block:^{[self refresh];}];
 }
 -(void)applySettings:(NSMenuItem *)sender{
     NSIndexSet *selectedChannels = self.channels.selectedRowIndexes.copy;
@@ -1201,6 +1205,33 @@
                 [self.inScopeMask addFeaturesFromCellProfiler:[[panel URLs]firstObject]];
         }
     }];
+}
+-(void)distances3D:(NSMenuItem *)sender{
+    if(self.inScope3DMask){
+        NSMutableArray * possibles = @[].mutableCopy;
+        NSMutableArray * names = @[].mutableCopy;
+        for (IMC3DMask *other in self.dataCoordinator.threeDNodes) {
+            if(other != self.inScope3DMask){
+                [possibles addObject:other];
+                [names addObject:other.itemName];
+            }
+        }
+        NSInteger chosen = [IMCUtils inputOptions:names prompt:@"Select a destinatino mask for distance calculation"];
+        if(chosen != NSNotFound){
+            IMC3DMask * chosenMask = possibles[chosen];
+            if(chosenMask){
+                [self.inScope3DMask distanceToOtherMask:chosenMask];
+            }
+        }
+    }
+}
+-(void)clusterInteraction:(NSMenuItem *)sender{
+    if(self.inScope3DMask){
+        NSInteger chosen = [IMCUtils inputOptions:self.inScope3DMask.channels prompt:@"Select a categorical variable (e.g. Flock clustering)"];
+        if(chosen != NSNotFound){
+            [self.inScope3DMask interactionAnalysis:chosen];
+        }
+    }
 }
 -(void)convertToMask:(NSMenuItem *)sender{
 

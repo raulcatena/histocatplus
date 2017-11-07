@@ -285,15 +285,17 @@
             for (IMCComputationOnMask *comp in self.parent.inScopeComputations.copy)
                 if(comp.channels.count > row)
                     [comp.channels replaceObjectAtIndex:row withObject:object];
-            //[self.parent.inScopeComputation.channels replaceObjectAtIndex:row withObject:object];
         }
         
         if (row < self.parent.inScopeImage.channels.count && !self.parent.inScopeComputation)
             for (IMCImageStack *stack in self.parent.inScopeImages.copy) {
                 if(stack.channels.count > row)
                     [stack.channels replaceObjectAtIndex:row withObject:object];
-            //[self.parent.inScopeImage.channels replaceObjectAtIndex:row withObject:object];
         }
+        
+        if (row < self.parent.inScope3DMask.channels.count && self.parent.inScope3DMask)
+            if(self.parent.inScope3DMask.channels.count > row)
+                [self.parent.inScope3DMask.channels replaceObjectAtIndex:row withObject:object];
     }
 }
 
@@ -406,6 +408,15 @@
                 [addingTitles addObjectsFromArray:titles];
                 [addingSelectors addObjectsFromArray:selectors];
     
+                compFuncs = YES;
+            }
+            if([item isMemberOfClass:[IMC3DMask class]] && item.isLoaded){
+                
+                NSArray *titles = @[@"Measure distances to other mask...", @"Cluster interaction analysis"];
+                NSArray *selectors = @[@"distances3D:", @"clusterInteraction:"];
+                [addingTitles addObjectsFromArray:titles];
+                [addingSelectors addObjectsFromArray:selectors];
+                
                 compFuncs = YES;
             }
         }];

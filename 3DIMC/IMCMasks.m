@@ -321,8 +321,11 @@ float distanceFromPointAToXAndYWidhWidth(NSInteger indexA, float x, float y, NSI
             // XXXXXXX
             // ------- x 5
             // XXXXXXX
-            for (int x = -distance; x < distance + 1; x++) {
-                for (int y = -distance; y < distance+1; y+= 2 * distance) {
+            int upperBound = distance + 1;
+            int twiceDistance = 2 * distance;
+            for (int x = -distance; x < upperBound; x++) {
+                for (int y = -distance; y < upperBound; y += twiceDistance) {
+                    
                     NSInteger indexTest = index + x + y * width;
                     if(doesNotJumpLine(index, indexTest, width, height, total, distance) == YES){
                         if(filterLabel == NSNotFound){
@@ -345,7 +348,7 @@ float distanceFromPointAToXAndYWidhWidth(NSInteger indexA, float x, float y, NSI
             // X-----X x 5
             // -------
             if (foundIndex == -1) {
-                for (int x = -distance; x < distance + 1; x+= 2 * distance) {
+                for (int x = -distance; x < upperBound; x+= twiceDistance) {
                     for (int y = -(distance - 1); y < distance; y++) {
                         NSInteger indexTest = index + x + y * width;
                         if(doesNotJumpLine(index, indexTest, width, height, total, distance) == YES){

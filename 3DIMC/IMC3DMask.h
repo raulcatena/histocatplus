@@ -64,6 +64,7 @@ typedef enum{
 -(void)passToHandlerChannels:(NSIndexSet *)channels;
 -(void)deleteSelf;
 
--(BOOL)flockWithChannelindexes:(NSIndexSet *)indexSet;
+-(void)distanceToOtherMask:(IMC3DMask *)otherMask;
+-(void)interactionAnalysis:(NSInteger)clusteringChannel;
 
 @end

@@ -113,7 +113,8 @@
     
     NSPopUpButton *input = [[NSPopUpButton alloc] initWithFrame:NSMakeRect(0, 0, 200, 24)];
     for (NSString *value in values) {
-        [input addItemWithTitle:value];
+        [input addItemWithTitle:@"blah"];
+        [[input lastItem]setTitle:value.copy];
     }
 
     [alert setAccessoryView:input];

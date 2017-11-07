@@ -10,6 +10,8 @@
 #import "IMCComputationOnMask.h"
 #import "NSArray+Statistics.h"
 #import "IMCPixelClassification.h"
+#import "IMCWorkSpace.h"
+#import "IMC3DMask.h"
 
 @interface IMCTableDelegate()
 @property (nonatomic, strong) NSMutableArray *amountsPerFile;
@@ -18,7 +20,12 @@
 @implementation IMCTableDelegate
 
 -(NSInteger)numberOfRowsInTableView:(NSTableView *)tableView{
-    if(!self.amountsPerFile)self.amountsPerFile = @[].mutableCopy;
+    
+    if([(IMCWorkSpace *)self.delegate inScope3DMask])
+        return [(IMCWorkSpace *)self.delegate inScope3DMask].segmentedUnits;
+    
+    if(!self.amountsPerFile)
+        self.amountsPerFile = @[].mutableCopy;
     [self.amountsPerFile removeAllObjects];
     NSInteger inter = 0;
     for (IMCComputationOnMask *compo in [self.delegate computations]) {
@@ -36,6 +43,9 @@
         if(compo.channels.count > winner.channels.count)
             winner = compo;
     }
+    
+    if(!winner)
+        winner = [(IMCWorkSpace *)self.delegate inScope3DMask];
     
     while([[tableView tableColumns] count] > 0) {
         NSTableColumn *col = [[tableView tableColumns]lastObject];
@@ -77,13 +87,17 @@
 }
 
 -(id)tableView:(NSTableView *)tableView objectValueForTableColumn:(nullable NSTableColumn *)tableColumn row:(NSInteger)row{
-    IMCComputationOnMask *comp = [self whichComp:row];
+    IMCComputationOnMask *comp = [(IMCWorkSpace *)self.delegate inScope3DMask]?[(IMCWorkSpace *)self.delegate inScope3DMask] : [self whichComp:row];
     if(!comp || !comp.isLoaded)return @"";
     float **data = comp.computedData;
     NSInteger indexCol = [[tableView tableColumns]indexOfObject:tableColumn];
     
     if(indexCol == 0)
         return [NSNumber numberWithInteger:[[self.delegate computations]indexOfObject:comp]];
+    
+    if([(IMCWorkSpace *)self.delegate inScope3DMask])
+        return [NSNumber numberWithFloat:data[indexCol - 1][row]];
+    
     return [NSNumber numberWithFloat:data[indexCol - 1][row - [self offSetForRow:[[self.delegate computations]indexOfObject:comp]]]];
 }
 

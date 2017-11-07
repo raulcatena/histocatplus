@@ -104,7 +104,9 @@
     }
     
     for (IMCChannelWrapper *num in channels) {
-        for(IMCComputationOnMask *comp in computations)
+        for(IMCComputationOnMask *comp in computations){
+            if(!comp.computedData)
+                continue;
             if(comp.channels.count <= num.index){//Fill with zeroes
                 float * bytes = (float *)calloc(comp.segmentedUnits, sizeof(float));
                 [data appendBytes:bytes length:comp.segmentedUnits * sizeof(float)];
@@ -112,6 +114,7 @@
             }
             else
                 [data appendBytes:comp.computedData[num.index] length:comp.segmentedUnits * sizeof(float)];
+        }
         
     }
     

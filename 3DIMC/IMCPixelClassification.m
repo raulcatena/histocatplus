@@ -56,9 +56,6 @@
                 NSLog(@"Error %@", error);
         }
 }
--(NSString *)itemSubName{
-    return self.imageStack.itemName;
-}
 -(NSString *)label{
     return self.imageStack.itemName;
 }

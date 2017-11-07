@@ -35,6 +35,7 @@
 -(float)maxForIndex:(NSInteger)index;
 -(float *)xCentroids;
 -(float *)yCentroids;
+-(float *)zCentroids;
 -(IMCChannelWrapper *)wrappedChannelAtIndex:(NSInteger)index;
 -(NSString *)descriptionWithIndexes:(NSIndexSet *)indexSet;
 //Buffer operations
