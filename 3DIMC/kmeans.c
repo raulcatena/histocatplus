@@ -119,7 +119,8 @@ void kmeans(float *data, unsigned int n, unsigned int d, unsigned int k, unsigne
       });
       
         num_iterations++;
-        (*clusteringCursor)++;
+        if(clusteringCursor)
+            (*clusteringCursor)++;
     }
     
     // Calculate the final cost
@@ -144,7 +145,8 @@ void kmeans(float *data, unsigned int n, unsigned int d, unsigned int k, unsigne
   }
   
     int *iteri = clusteringCursor;
-    (*iteri)++;
+    if(clusteringCursor)
+        (*iteri)++;
     
   free(centroids);
   free(assignment_changed);

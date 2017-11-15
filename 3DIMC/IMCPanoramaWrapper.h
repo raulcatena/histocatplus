@@ -11,6 +11,8 @@
 @interface IMCPanoramaWrapper : IMCNodeWrapper
 
 @property (nonatomic, strong) NSImage *panoramaImage;
+@property (nonatomic, strong) NSImage *afterPanoramaImage;
+@property (nonatomic, assign) BOOL after;
 
 -(BOOL)isPanorama;
 -(NSString *)panoramaName;

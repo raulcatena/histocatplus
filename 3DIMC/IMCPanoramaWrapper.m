@@ -13,6 +13,7 @@
     
 }
 @property (nonatomic, assign) UInt8 * panoramaData;
+
 @end
 
 @implementation IMCPanoramaWrapper
@@ -58,7 +59,7 @@
             free(self.panoramaData);
         }
     }
-    return _panoramaImage;
+    return self.after == YES ? _afterPanoramaImage : _panoramaImage;
 }
 
 #pragma mark others

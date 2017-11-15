@@ -45,6 +45,13 @@
     [alert addButtonWithTitle:@"OK"];
     return [alert runModal];
 }
++(NSInteger)runHelpModalWithMessage:(NSString *)message andTitle:(NSString *)title{
+    NSAlert *alert = [[NSAlert alloc]init];
+    alert.messageText = title;
+    alert.informativeText = message;
+    [alert addButtonWithTitle:@"OK"];
+    return [alert runModal];
+}
 
 +(void)drawIntAsString:(float)number WithFontName:(NSString *)fontName size:(float)size rect:(CGRect)rect{
 

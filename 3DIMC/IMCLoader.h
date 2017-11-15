@@ -20,6 +20,7 @@
 @protocol DataCoordinator <NSObject>
 
 -(NSURL *)fileURL;
+-(void)saveActionFromCoordinator;
 
 @end
 

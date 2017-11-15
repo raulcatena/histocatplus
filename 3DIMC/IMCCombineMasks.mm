@@ -289,7 +289,7 @@
         [compOr loadLayerDataWithBlock:nil];
     while (!compOr.isLoaded);
     
-    results = [IMCMasks distanceToMasks:[compOr xCentroids] yCentroids:[compOr yCentroids] destMask:pixStruct->mask max:compOr.mask.numberOfSegments width:compOr.mask.imageStack.width height:compOr.mask.imageStack.height filterLabel:self.whichLabels.selectedSegment == 1?self.specificlabel.intValue:NSNotFound];
+    results = [IMCMasks distanceToMasksEuclidean:[compOr xCentroids] yCentroids:[compOr yCentroids] destMask:pixStruct->mask max:compOr.mask.numberOfSegments width:compOr.mask.imageStack.width height:compOr.mask.imageStack.height filterLabel:self.whichLabels.selectedSegment == 1?self.specificlabel.intValue:NSNotFound];
     
     if(self.calculation.indexOfSelectedItem == 1)
         [IMCMasks invertToProximity:results cells:compOr.mask.numberOfSegments];

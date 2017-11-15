@@ -65,6 +65,9 @@
 //GLK
 #import "Matrix4.h"
 
+//Help
+#import "Help.h"
+
 @interface IMCWorkSpace (){
     dispatch_queue_t threadPainting;
 }
@@ -400,10 +403,17 @@
             [self refresh];
             [self.dataCoordinator updateOrderedImageList];
         }];
-    else
-        [anobj unLoadLayerDataWithBlock:^{
+    else{
+        if([anobj isMemberOfClass:[IMCPanoramaWrapper class]]){
+            IMCPanoramaWrapper *pan = (IMCPanoramaWrapper *)anobj;
+            pan.after = !pan.after;
             [self refresh];
-        }];
+        }
+        else
+            [anobj unLoadLayerDataWithBlock:^{
+                [self refresh];
+            }];
+    }
 }
 -(void)openFileWrapper:(IMCNodeWrapper *)item{
     if([item isMemberOfClass:[IMCFileWrapper class]]){
@@ -1220,7 +1230,7 @@
         if(chosen != NSNotFound){
             IMC3DMask * chosenMask = possibles[chosen];
             if(chosenMask){
-                [self.inScope3DMask distanceToOtherMask:chosenMask];
+                [self.inScope3DMask distanceToOtherMaskEuclidean:chosenMask];
             }
         }
     }
@@ -1717,7 +1727,8 @@
         //[IMCVideoCreator writeImagesAsMovie:allImages toPath:fullPath size:[self sizeFrame] duration:50];
         dispatch_async(dispatch_get_main_queue(), ^{
             [IMCVideoCreator writeImagesAsMovieWithBuffers:allData images:STEPS toPath:fullPath size:[self sizeFrame] duration:50];
-            for(int i = 0; i < STEPS; i++)free(allData[i]);
+            for(int i = 0; i < STEPS; i++)
+                free(allData[i]);
             free(allData);
         });
     });
@@ -2101,7 +2112,11 @@
         [IMCComputationOnMask flockForComps:self.inScopeComputations indexes:self.channels.selectedRowIndexes.copy];
 }
 -(void)clusterKMeans:(id)sender{
-
+    if(self.inScope3DMask)
+        //[self.inScope3DMask flockWithChannelindexes:self.channels.selectedRowIndexes.copy];
+        [IMCComputationOnMask kMeansForComps:self.inScope3DMasks indexes:self.channels.selectedRowIndexes.copy];
+    else
+        [IMCComputationOnMask kMeansForComps:self.inScopeComputations indexes:self.channels.selectedRowIndexes.copy];
 }
 
 #pragma mark analytics
@@ -2163,5 +2178,15 @@
     }
 }
 
+#pragma mark help
+-(void)helpHC:(NSButton *)sender{
+    NSLog(@"Call help for %@", sender.description);
+    [Help helpWithIdentifier:sender.identifier];
+}
+
+#pragma mark save
+-(void)saveActionFromCoordinator{
+    [self saveDocument:nil];
+}
 
 @end

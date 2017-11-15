@@ -348,7 +348,7 @@
     
     return candidates;
 }
--(int)checkCandidates:(NSInteger)testIndex fullMaskLength:(NSInteger)fullMaskLength planLength:(NSInteger)plane width:(NSInteger)width{
+-(int)checkCandidates:(NSInteger)testIndex fullMaskLength:(NSInteger)fullMaskLength planLength:(NSInteger)plane width:(NSInteger)width once:(BOOL)once{
     int candidatesCount = 0;
     
     NSMutableArray *arr = @[].mutableCopy;
@@ -380,8 +380,9 @@
     }
     while (inScopeNumber);
     
-    for (NSNumber *num in visited)
-        maskIds[num.integerValue] = -1;
+    if(!once)
+        for (NSNumber *num in visited)
+            maskIds[num.integerValue] = -1;
     
     return candidatesCount;
 }
@@ -395,7 +396,7 @@
                 if(test > 0 && test < fullMaskLength)
                     if(maskIds[test] == -1 && testIndex != test){
                         maskIds[test] = 0;
-                        return 1 + [self checkCandidates:test fullMaskLength:fullMaskLength planLength:plane width:width];
+                        return 1 + [self recursiveCheckCandidates:test fullMaskLength:fullMaskLength planLength:plane width:width];
                     }
             }
         }
@@ -477,7 +478,7 @@
                             if(mask[j] == false)
                                 continue;
                             if(maskIds[offset + j] == -1){
-                                int qual = [self checkCandidates:offset + j fullMaskLength:fullMask planLength:allLength width:self.width];
+                                int qual = [self checkCandidates:offset + j fullMaskLength:fullMask planLength:allLength width:self.width once:NO];
                                 if(qual >= self.minKernel){//Promote all
                                     [self assignId:cellId toIndex:offset + j fullMaskLength:fullMask planLength:allLength width:self.width];
                                     cellId++;
@@ -513,9 +514,10 @@
                 if(handler.allBuffer[i][channel])
                     for (NSInteger j = 0; j < allLength; j++)
                         if(maskIds[offset + j] == -1){
-                            int qual = [self checkCandidates:offset + j fullMaskLength:fullMask planLength:allLength width:self.width];
+                            int qual = [self checkCandidates:offset + j fullMaskLength:fullMask planLength:allLength width:self.width once:NO];
                             if(qual >= self.minKernel){//Promote all
                                 [self assignId:self.type == MASK3D_THRESHOLD_SEGMENT?cellId:1 toIndex:offset + j fullMaskLength:fullMask planLength:allLength width:self.width];
+                                NSLog(@"ID %i", cellId);
                                 cellId++;
                             }
                         }
@@ -1225,7 +1227,7 @@
     }
 }
 
--(void)distanceToOtherMask:(IMC3DMask *)otherMask{
+-(void)distanceToOtherMaskBlock:(IMC3DMask *)otherMask{
     if(otherMask.width == self.width && otherMask.height == self.height && otherMask.slices == self.slices){
         [otherMask openIfNecessaryAndPerformBlock:^{
             NSInteger max = self.segmentedUnits;
@@ -1324,6 +1326,96 @@
             }
             free(visited);
             free(indexes);
+            
+            [self addBuffer:results withName:[NSString stringWithFormat:@"Distance to %@", otherMask.itemName] atIndex:NSNotFound];
+        }];
+    }
+}
+
+
+-(void)distanceToOtherMaskEuclidean:(IMC3DMask *)otherMask{
+    if(otherMask.width == self.width && otherMask.height == self.height && otherMask.slices == self.slices){
+        [otherMask openIfNecessaryAndPerformBlock:^{
+            NSInteger max = self.segmentedUnits;
+            
+            float *results = calloc(max, sizeof(float));
+            for(NSInteger c = 0; c < max; c++)
+                results[c] = CGFLOAT_MAX;
+            bool *visited = calloc(max, sizeof(bool));
+            
+            NSInteger width = self.width;
+            NSInteger height = self.height;
+            NSInteger slices = self.slices;
+            NSInteger plane = width * height;
+            NSInteger total = plane * slices;
+            
+            float * xCentroids = [self xCentroids];
+            float * yCentroids = [self yCentroids];
+            float * zCentroids = [self zCentroids];
+            
+            int * maskDestination = otherMask->maskIds;
+            
+            //Initial visit (for those that are already in mask)
+            for (NSInteger i = 0; i < max; i++) {
+                NSInteger index = round(zCentroids[i]) * plane + round(yCentroids[i]) * width + round(xCentroids[i]);
+                if(maskDestination[index] > 0){
+                    visited[i] = true;
+                    results[i] = .0f;
+                }
+            }
+            
+            NSMutableArray *edges = @[].mutableCopy;
+            //Remove non edges
+            for (NSInteger i = 0; i < total; i++) {
+                if(maskDestination[i] > 0){
+                    NSInteger tests[6] = {
+                        i + 1,
+                        i - 1,
+                        i + width,
+                        i - width,
+                        i + plane,
+                        i - plane
+                    };
+                    BOOL isEdge = NO;
+                    for (int j = 0; j < 6; j++) {
+                        NSInteger test = tests[j];
+                        if(test >= 0 && test < total){
+                            if(maskDestination[test] == 0){
+                                isEdge = YES;
+                                break;
+                            }
+                        }
+                    }
+                    if(isEdge)
+                        [edges addObject:@(i)];
+                }
+            }
+            
+            NSLog(@"Edges %li", edges.count);
+            for (NSNumber *index in edges) {
+                NSInteger cIndex = index.integerValue;
+                NSInteger xEdge = cIndex%width;
+                NSInteger yEdge = (cIndex%plane)/width;
+                NSInteger zEdge = cIndex/plane;
+                for (NSInteger c = 0; c < max; c++) {
+                    if(visited[c] == false){
+                        float difX = xCentroids[c] - xEdge;
+                        float difY = yCentroids[c] - yEdge;
+                        float difZ = zCentroids[c] - zEdge;
+                        float dist = difX * difX + difY * difY + difZ * difZ * 4;//Hardcoded for 2 micron
+                        if(dist < results[c])
+                            results[c] = dist;//
+                    }
+                }
+            }
+            NSLog(@"Done");
+            //Do expensive square roots
+            for (NSInteger i = 0; i < max; i++) {
+                if(results[i] > 0)
+                    results[i] = sqrtf(results[i]);
+            }
+            NSLog(@"Finished");
+            free(visited);
             
             [self addBuffer:results withName:[NSString stringWithFormat:@"Distance to %@", otherMask.itemName] atIndex:NSNotFound];
         }];

@@ -297,7 +297,9 @@ void invertMask(int *mask, int width, int height){
 }
 
 float distanceFromPointAToXAndYWidhWidth(NSInteger indexA, float x, float y, NSInteger width){
-    float calcDist = sqrtf(pow(x - (indexA + width)%width, 2) + pow(y - indexA/width, 2));
+    float diffX = x - (indexA + width)%width;
+    float diffY = y - indexA/width;
+    float calcDist = sqrtf(diffX * diffX + diffY * diffY);
     return calcDist;
 }
 
@@ -382,7 +384,64 @@ float distanceFromPointAToXAndYWidhWidth(NSInteger indexA, float x, float y, NSI
     return results;
 }
 
-+(float *)distanceToMasks:(float *)xCentroids yCentroids:(float *)yCentroids destMask:(int *)maskDestination max:(NSInteger)max width:(NSInteger)width height:(NSInteger)height filterLabel:(NSInteger)filterLabel{
++(float *)distanceToMasksEuclidean:(float *)xCentroids yCentroids:(float *)yCentroids destMask:(int *)maskDestination max:(NSInteger)max width:(NSInteger)width height:(NSInteger)height filterLabel:(NSInteger)filterLabel{
+    
+    float *results = calloc(max, sizeof(float));
+    NSInteger total = width * height;
+    float bounds = sqrt(width * width + height * height)/2;
+    for (NSInteger i = 0; i < max; i++) {
+        //printf("cell %li of %li\n", (long)i, (long)max);
+        NSInteger index = (NSInteger)xCentroids[i] + width * (NSInteger)yCentroids[i];
+        
+        BOOL found = NO;
+        int distance = 1;
+        while (found == NO) {
+            if (distance > bounds) {
+                break;
+            }
+            NSInteger foundIndex = -1;
+
+            int upperBound = distance + 1;
+            int twiceDistance = 2 * distance;
+            for (int x = -distance; x < upperBound; x++) {
+                for (int y = -distance; y < upperBound; y++) {
+                    
+                    NSInteger indexTest = index + x + y * width;
+                    if(doesNotJumpLine(index, indexTest, width, height, total, distance) == YES){
+                        if(filterLabel == NSNotFound){
+                            if (maskDestination[indexTest] != 0) {
+                                foundIndex = indexTest;
+                                break;
+                            }
+                        }else{
+                            if (maskDestination[indexTest] == filterLabel) {
+                                foundIndex = indexTest;
+                                break;
+                            }
+                        }
+                    }
+                    
+                    if(abs(x) != distance){
+                        y += twiceDistance;
+                    }
+                }
+                if(foundIndex >= 0)break;
+            }
+            
+            if(foundIndex >= 0){
+                results[i] = distanceFromPointAToXAndYWidhWidth(foundIndex, xCentroids[i], yCentroids[i], width);
+                found = YES;
+                break;
+            }
+            
+            distance++;
+        }
+    }
+    
+    return results;
+}
+
++(float *)distanceToMasksBlock:(float *)xCentroids yCentroids:(float *)yCentroids destMask:(int *)maskDestination max:(NSInteger)max width:(NSInteger)width height:(NSInteger)height filterLabel:(NSInteger)filterLabel{
     
     float *results = calloc(max, sizeof(float));
     bool *visited = calloc(max, sizeof(bool));
@@ -647,7 +706,7 @@ void bordersOnlyMask(int * mask, NSInteger width, NSInteger height){
 void noBordersMask(int * mask, NSInteger width, NSInteger height){
     int * newMask = calloc(width * height, sizeof(int));
     NSInteger total = width * height;
-    for (NSInteger i = 0; i<width * height; i++) {
+    for (NSInteger i = 0; i < total; i++) {
         if(mask[i] != 0){
             newMask[i] = mask[i];//MAX(mask[i]%17, 1);
             for (NSInteger j = i - width - 1; j< i - width + 2; j++) {

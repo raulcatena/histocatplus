@@ -14,19 +14,31 @@
 @implementation IMC_MCDLoader
 
 
-+(void)selectedPanorama:(NSDictionary *)panDict andData:(NSData *)data panWrapper:(IMCPanoramaWrapper *)panWrapper{
++(void)selectedPanorama:(NSDictionary *)panDict andData:(NSData *)data panWrapper:(IMCPanoramaWrapper *)panWrapper roiOrDict:(NSDictionary *)acq{
     
-    NSInteger beggining = [[panDict valueForKey:@"ImageStartOffset"]integerValue];
-    NSInteger end = [[panDict valueForKey:@"ImageEndOffset"]integerValue];
+    //Before Fludigim changed this
+    //NSInteger beggining = [[panDict valueForKey:@"ImageStartOffset"]integerValue];
+    //NSInteger end = [[panDict valueForKey:@"ImageEndOffset"]integerValue];
+    
+    NSInteger beggining = [[acq valueForKey:@"BeforeAblationImageStartOffset"]integerValue];
+    NSInteger end = [[acq valueForKey:@"BeforeAblationImageEndOffset"]integerValue];
+    
+    NSInteger begginingAfter = [[acq valueForKey:@"AfterAblationImageStartOffset"]integerValue];
+    NSInteger endAfter = [[acq valueForKey:@"AfterAblationImageEndOffset"]integerValue];
+    
     //CGFloat prop = (CGFloat)width/height;//a = w * h // a = w * w/prop //w^2 = a * prop // w = sqrt(a * prop)
     beggining += 161;
-    panWrapper.panoramaImage = [[NSImage alloc]initWithData:[data subdataWithRange:NSMakeRange(beggining, end - beggining)]];
-    panWrapper.jsonDictionary[JSON_DICT_CONT_PANORAMA_COEF] = [panDict valueForKey:@"PixelScaleCoef"];
-    if(!panWrapper.jsonDictionary[JSON_DICT_CONT_PANORAMA_W] || [panWrapper.jsonDictionary[JSON_DICT_CONT_PANORAMA_W]integerValue] == 0)
-        panWrapper.jsonDictionary[JSON_DICT_CONT_PANORAMA_W] = [NSNumber numberWithFloat:panWrapper.panoramaImage.size.width];
-    if(!panWrapper.jsonDictionary[JSON_DICT_CONT_PANORAMA_H] || [panWrapper.jsonDictionary[JSON_DICT_CONT_PANORAMA_H]integerValue] == 0)
-        panWrapper.jsonDictionary[JSON_DICT_CONT_PANORAMA_H] = [NSNumber numberWithFloat:panWrapper.panoramaImage.size.height];
+    begginingAfter += 161;
     
+    if(end > beggining && end < data.length){
+        panWrapper.panoramaImage = [[NSImage alloc]initWithData:[data subdataWithRange:NSMakeRange(beggining, end - beggining)]];
+        panWrapper.afterPanoramaImage = [[NSImage alloc]initWithData:[data subdataWithRange:NSMakeRange(begginingAfter, endAfter - begginingAfter)]];
+        panWrapper.jsonDictionary[JSON_DICT_CONT_PANORAMA_COEF] = [panDict valueForKey:@"PixelScaleCoef"];
+        if(!panWrapper.jsonDictionary[JSON_DICT_CONT_PANORAMA_W] || [panWrapper.jsonDictionary[JSON_DICT_CONT_PANORAMA_W]integerValue] == 0)
+            panWrapper.jsonDictionary[JSON_DICT_CONT_PANORAMA_W] = [NSNumber numberWithFloat:panWrapper.panoramaImage.size.width];
+        if(!panWrapper.jsonDictionary[JSON_DICT_CONT_PANORAMA_H] || [panWrapper.jsonDictionary[JSON_DICT_CONT_PANORAMA_H]integerValue] == 0)
+            panWrapper.jsonDictionary[JSON_DICT_CONT_PANORAMA_H] = [NSNumber numberWithFloat:panWrapper.panoramaImage.size.height];
+    }
 }
 
 +(BOOL)loadMCD:(NSData *)data toIMCFileWrapper:(IMCFileWrapper *)wrapper{
@@ -112,8 +124,8 @@
                     if(![[panWrapper images]containsObject:imageDict]){
                         [[panWrapper images]addObject:imageDict];
                     }
-                    
-                    [IMC_MCDLoader selectedPanorama:pan andData:data panWrapper:panWrapper];
+
+                    [IMC_MCDLoader selectedPanorama:pan andData:data panWrapper:panWrapper roiOrDict:acqs[0]];
                 }
             }
         }

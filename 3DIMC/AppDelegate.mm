@@ -22,8 +22,15 @@
     
     if(!VIEWER_ONLY && !VIEWER_HISTO)
         [[[NSApplication sharedApplication] mainMenu]removeItemAtIndex:6];
-    else
+    else{
+        NSArray *allItems = [[[NSApplication sharedApplication]mainMenu]itemArray];
+        for (NSMenuItem *item in allItems)
+            for (NSMenuItem *subitem in item.submenu.itemArray)
+                if(subitem.tag == 1)
+                    subitem.hidden = YES;
         [[[NSApplication sharedApplication] mainMenu]removeItemAtIndex:5];
+    }
+    
     
     [[NSColorPanel sharedColorPanel]setShowsAlpha:YES];
 }

@@ -338,6 +338,9 @@
 		0D15576F1E5D876900C27064 /* libopencv_xfeatures2d.3.2.0.dylib in Resources */ = {isa = PBXBuildFile; fileRef = 0DF89F721E4BCA3D008226D3 /* libopencv_xfeatures2d.3.2.0.dylib */; };
 		0D1557701E5D876900C27064 /* libopencv_xfeatures2d.3.2.dylib in Resources */ = {isa = PBXBuildFile; fileRef = 0DF89F731E4BCA3D008226D3 /* libopencv_xfeatures2d.3.2.dylib */; };
 		0D1557711E5D876900C27064 /* libopencv_xfeatures2d.dylib in Resources */ = {isa = PBXBuildFile; fileRef = 0DF89F741E4BCA3D008226D3 /* libopencv_xfeatures2d.dylib */; };
+		0D1FD2A41FB5AC3700304C27 /* Help.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D1FD2A31FB5AC3700304C27 /* Help.m */; };
+		0D1FD2A51FB5AC3700304C27 /* Help.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D1FD2A31FB5AC3700304C27 /* Help.m */; };
+		0D1FD2A61FB5AC3700304C27 /* Help.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D1FD2A31FB5AC3700304C27 /* Help.m */; };
 		0D21D9471F5696D7003EF354 /* IMCAirLabClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D21D9461F5696D7003EF354 /* IMCAirLabClient.m */; };
 		0D21D9481F569723003EF354 /* IMCAirLabClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D21D9461F5696D7003EF354 /* IMCAirLabClient.m */; };
 		0D21D9491F569724003EF354 /* IMCAirLabClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D21D9461F5696D7003EF354 /* IMCAirLabClient.m */; };
@@ -918,6 +921,8 @@
 		0D0D84001FA138360044EDC1 /* IMCPCAOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IMCPCAOperation.m; sourceTree = "<group>"; };
 		0D0D840B1FA14A9E0044EDC1 /* IMCBiaxialZero.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IMCBiaxialZero.h; sourceTree = "<group>"; };
 		0D0D840C1FA14A9E0044EDC1 /* IMCBiaxialZero.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IMCBiaxialZero.m; sourceTree = "<group>"; };
+		0D1FD2A21FB5AC3700304C27 /* Help.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Help.h; sourceTree = "<group>"; };
+		0D1FD2A31FB5AC3700304C27 /* Help.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Help.m; sourceTree = "<group>"; };
 		0D21D9451F5696D7003EF354 /* IMCAirLabClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IMCAirLabClient.h; sourceTree = "<group>"; };
 		0D21D9461F5696D7003EF354 /* IMCAirLabClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IMCAirLabClient.m; sourceTree = "<group>"; };
 		0D4336431E4DEE4E0096371D /* NSOpenGLView+Utilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSOpenGLView+Utilities.h"; sourceTree = "<group>"; };
@@ -2115,6 +2120,8 @@
 				0DB400461E530B3E00179ECB /* IMCBrushTools.xib */,
 				0DB400481E530BB600179ECB /* IMCBrushBullet.h */,
 				0DB400491E530BB600179ECB /* IMCBrushBullet.m */,
+				0D1FD2A21FB5AC3700304C27 /* Help.h */,
+				0D1FD2A31FB5AC3700304C27 /* Help.m */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -2677,6 +2684,7 @@
 				0D00ABDD1E64D53400887057 /* RegistrationOCV.cpp in Sources */,
 				0DA2B8101E6D966A00EAA438 /* IMCSegmentationBatch.m in Sources */,
 				0D00ABDE1E64D53400887057 /* IMCScrollView.m in Sources */,
+				0D1FD2A51FB5AC3700304C27 /* Help.m in Sources */,
 				0D00ABDF1E64D53400887057 /* NSString+MD5.m in Sources */,
 				0D0D84051FA138360044EDC1 /* IMCPCAOperation.m in Sources */,
 				0D00ABE01E64D53400887057 /* IMC_BIMCLoader.m in Sources */,
@@ -2811,6 +2819,7 @@
 				0D9F30851EF909CF00E1E083 /* IMCSegmentationBatch.m in Sources */,
 				0D9F30861EF909CF00E1E083 /* IMCScrollView.m in Sources */,
 				0D9F30871EF909CF00E1E083 /* NSString+MD5.m in Sources */,
+				0D1FD2A61FB5AC3700304C27 /* Help.m in Sources */,
 				0D9F30881EF909CF00E1E083 /* IMC_BIMCLoader.m in Sources */,
 				0D0D84061FA138360044EDC1 /* IMCPCAOperation.m in Sources */,
 				0D9F30891EF909CF00E1E083 /* XMLDictionary.m in Sources */,
@@ -2945,6 +2954,7 @@
 				0DA6304E1F5EE60A0032E102 /* Matrix4.m in Sources */,
 				0DB37D1A1E32ADD1002975E2 /* IMC_MCDLoader.m in Sources */,
 				0DFB2D641E473D5C0065AC61 /* RegistrationOCV.cpp in Sources */,
+				0D1FD2A41FB5AC3700304C27 /* Help.m in Sources */,
 				0DA2B80F1E6D966A00EAA438 /* IMCSegmentationBatch.m in Sources */,
 				0DB37D351E34B4DE002975E2 /* IMCScrollView.m in Sources */,
 				0DB37D101E30C90F002975E2 /* NSString+MD5.m in Sources */,

@@ -31,7 +31,8 @@ void invertMask(int *mask, int width, int height);
 //Combining masks
 //int * extractFromMaskWithMask(int * mask1, int * mask2, int width, int height, float tolerance);
 +(int *)extractFromMask:(int *)mask1 withMask:(int *)mask2 width:(NSInteger)width height:(NSInteger)height tolerance:(float)tolerance exclude:(BOOL)exclude filterLabel:(NSInteger)filterLabel;
-+(float *)distanceToMasks:(float *)xCentroids yCentroids:(float *)yCentroids  destMask:(int *)maskDestination max:(NSInteger)max width:(NSInteger)width height:(NSInteger)height filterLabel:(NSInteger)filterLabel;
++(float *)distanceToMasksEuclidean:(float *)xCentroids yCentroids:(float *)yCentroids  destMask:(int *)maskDestination max:(NSInteger)max width:(NSInteger)width height:(NSInteger)height filterLabel:(NSInteger)filterLabel;
++(float *)distanceToMasksBlock:(float *)xCentroids yCentroids:(float *)yCentroids  destMask:(int *)maskDestination max:(NSInteger)max width:(NSInteger)width height:(NSInteger)height filterLabel:(NSInteger)filterLabel;
 +(void)invertToProximity:(float *)distances cells:(NSInteger)cells;
 +(void)idMask:(int *)extracted target:(int *)target size:(CGSize)size;
 BOOL doesNotJumpLine(NSInteger index, NSInteger indexTest, NSInteger width, NSInteger height, NSInteger total, NSInteger expectedDistance);

@@ -257,5 +257,8 @@
 -(IBAction)clusterKMeans:(id)sender;
 -(IBAction)clusterFlock:(id)sender;
 
+//Help
+-(IBAction)helpHC:(NSButton *)sender;
+
 @end
 

@@ -14,6 +14,7 @@
 #import "IMCFileWrapper.h"
 #import "NSMutableArrayAdditions.h"
 #import "flock.h"
+#import "kmeans.h"
 
 @class IMCMaskTraining;
 
@@ -720,15 +721,31 @@
     
     NSInteger pixs = self.mask.imageStack.numberOfPixels;
     
+
+//    float preCalcFactor = (float)(settings[5] * settings[0]);
+//    for (NSInteger i = 0; i < pixs; i++) {
+//        float val = vals[i];
+//        if(settings[4] == 1.0f)val = logf(val);
+//        if(settings[4] == 2.0f)val = asinhf(val/5.0f);
+//        UInt8 bitValue = MIN(255, (val/preCalcFactor * 255)*settings[2]);
+//        if(bitValue < settings[1] * 255)bitValue = 0;
+//        cachedValues[index][i] = bitValue;
+//    }
+    
+    //Faster
+    
     float preCalcFactor = (float)(settings[5] * settings[0]);
+    float preCalcFactor2 = 255 * settings[2] / preCalcFactor;
+    
     for (NSInteger i = 0; i < pixs; i++) {
         float val = vals[i];
         if(settings[4] == 1.0f)val = logf(val);
         if(settings[4] == 2.0f)val = asinhf(val/5.0f);
-        UInt8 bitValue = MIN(255, (val/preCalcFactor * 255)*settings[2]);
+        UInt8 bitValue = MIN(255, val * preCalcFactor2);
         if(bitValue < settings[1] * 255)bitValue = 0;
         cachedValues[index][i] = bitValue;
     }
+    
     if(settings[3] > 0)
         applyFilterToPixelData(cachedValues[index], self.mask.imageStack.width, self.mask.imageStack.height, 0, settings[3], 2, 1);
     
@@ -781,6 +798,7 @@
     if(data == NULL)return NULL;
     
     NSInteger pix = self.mask.imageStack.numberOfPixels;
+    
     for (NSInteger i = 0; i < pix; i++) {
         if(copy[i] == 0)continue;
         NSInteger index = abs(copy[i]) - 1;
@@ -1133,7 +1151,32 @@
 
 #pragma mark prep data various samples
 
+typedef enum{
+    CLUSTER_K_MEANS,
+    CLUSTER_FLOCK,
+}ClusterType;
+
 +(BOOL)flockForComps:(NSArray<IMCComputationOnMask *> *)comps indexes:(NSIndexSet *)indexSet{
+    return [IMCComputationOnMask clusterComps:comps indexes:indexSet method:CLUSTER_FLOCK r:NSNotFound clusters:NSNotFound];
+}
++(BOOL)kMeansForComps:(NSArray<IMCComputationOnMask *> *)comps indexes:(NSIndexSet *)indexSet{
+    NSString *repetitions = [IMCUtils input:@"How many repetitions do you want k-Means to perform?" defaultValue:@"15"];
+    if(repetitions.integerValue != NSNotFound){
+        NSInteger reps = repetitions.integerValue;
+        if(reps != NSNotFound){
+            NSString *clusters = [IMCUtils input:@"How many clusters do you want k-Means to calculate?" defaultValue:@"12"];
+            if(clusters.integerValue != NSNotFound){
+                NSInteger clusts = clusters.integerValue;
+                if(clusts != NSNotFound){
+                    return [IMCComputationOnMask clusterComps:comps indexes:indexSet method:CLUSTER_K_MEANS r:reps clusters:clusts];
+                }
+            }
+        }
+    }
+    return NO;
+}
+
++(BOOL)clusterComps:(NSArray<IMCComputationOnMask *> *)comps indexes:(NSIndexSet *)indexSet method:(ClusterType)method r:(NSInteger)repetitions clusters:(NSInteger)clustersIndicated{
     BOOL success = YES;
     
     //Perform checks
@@ -1185,7 +1228,25 @@
             }];
             offSetCells += cellsComp;
         }
-        directMethod(indexSet.count, allCells, data, clusters);
+        if(method == CLUSTER_FLOCK){
+            directMethod(indexSet.count, allCells, data, clusters);
+            //Flock takes care of freeing the memory
+        }
+        if(method == CLUSTER_K_MEANS){
+            float *kMeansData = calloc(allCells * indexSet.count, sizeof(float));
+            NSInteger counter = 0;
+            for(NSInteger cell = 0; cell < allCells; cell++)
+                for (NSInteger channel = 0; channel < channsToAnalyze; channel++) {
+                    kMeansData[counter] = data[cell][channel];
+                    counter++;
+                }
+            kmeans(kMeansData, (int)allCells, (int)indexSet.count, (int)repetitions, (int)clustersIndicated, clusters, NULL);
+            //K means will not clean the memory
+            free(kMeansData);
+            for(NSInteger cell = 0; cell < allCells; cell++)
+                free(data[cell]);
+            free(data);
+        }
         
         NSUInteger highest = 0;
         for (int i =0 ; i < allCells; i++) {
@@ -1195,7 +1256,7 @@
         
         offSetCells = 0;
         NSString *stamp = [NSString stringWithFormat:@"%f", [NSDate timeIntervalSinceReferenceDate]];
-        NSString *opName = [@"Flock_" stringByAppendingString:stamp];
+        NSString *opName = [method == CLUSTER_FLOCK ? @"Flock_": @"KMeans" stringByAppendingString:stamp];
         
         for (IMCComputationOnMask *comp in comps) {
             NSInteger cellsComp = comp.segmentedUnits;

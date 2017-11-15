@@ -8,6 +8,18 @@
 
 #import "IMCVideoCreator.h"
 
+@interface IMCVideoCreator(){
+    NSInteger images;
+    int duration;
+    CGSize size;
+    
+    AVAssetWriter *videoWriter;
+    AVAssetWriterInputPixelBufferAdaptor *adaptor;
+    AVAssetWriterInput* writerInput;
+}
+
+@end
+
 @implementation IMCVideoCreator
 
 
@@ -255,6 +267,61 @@
     }];
 }
 
+-(instancetype)initWithSize:(CGSize)sizePassed duration:(int)durationFrame path:(NSString *)path{
+    if(self = [self init]){
+        duration = durationFrame;
+        size = sizePassed;
+        
+        NSError *error = nil;
+        videoWriter = [[AVAssetWriter alloc] initWithURL:[NSURL fileURLWithPath:path]
+                                                               fileType:AVFileTypeQuickTimeMovie
+                                                                  error:&error];
+        NSParameterAssert(videoWriter);
+        
+        NSDictionary *videoSettings = [NSDictionary dictionaryWithObjectsAndKeys:
+                                       AVVideoCodecAppleProRes4444, AVVideoCodecKey,
+                                       [NSNumber numberWithInt:size.width], AVVideoWidthKey,
+                                       [NSNumber numberWithInt:size.height], AVVideoHeightKey,
+                                       nil];
+        
+        writerInput = [AVAssetWriterInput assetWriterInputWithMediaType:AVMediaTypeVideo
+                                                                             outputSettings:videoSettings];
+        
+        writerInput.expectsMediaDataInRealTime = YES;
+        
+        NSDictionary* bufferAttributes=[NSDictionary dictionaryWithObjectsAndKeys:
+                                        [NSNumber numberWithInt:kCVPixelFormatType_32ARGB], kCVPixelBufferPixelFormatTypeKey,nil];
+        
+        adaptor = [AVAssetWriterInputPixelBufferAdaptor assetWriterInputPixelBufferAdaptorWithAssetWriterInput:writerInput sourcePixelBufferAttributes:bufferAttributes];
+        
+        NSParameterAssert(writerInput);
+        NSParameterAssert([videoWriter canAddInput:writerInput]);
+        [videoWriter addInput:writerInput];
+        
+        //Start a session:
+        [videoWriter startWriting];
+        [videoWriter startSessionAtSourceTime:kCMTimeZero];
+        
+    }
+    return self;
+}
+
+-(void)addBuffer:(UInt8 *)bufferFrame{
+    CVPixelBufferRef buffer = NULL;
+    
+    buffer = [IMCVideoCreator pixelBufferWithData:bufferFrame width:(NSInteger)size.width height:(NSInteger)size.height];
+    CVPixelBufferPoolCreatePixelBuffer (NULL, adaptor.pixelBufferPool, &buffer);
+    [adaptor appendPixelBuffer:buffer withPresentationTime:images == 0 ? kCMTimeZero : CMTimeMake(images, duration)];
+    while (!writerInput.readyForMoreMediaData);
+    CVBufferRelease(buffer);
+}
+
+-(void)finishVideo{
+    [writerInput markAsFinished];
+    [videoWriter finishWritingWithCompletionHandler:^{
+        CVPixelBufferPoolRelease(adaptor.pixelBufferPool);
+    }];
+}
 
 //+(void)writeImages:(NSArray *)array toPathFolder:(NSString*)path size:(CGSize)size
 //{

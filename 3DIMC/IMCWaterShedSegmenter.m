@@ -19,7 +19,24 @@
 @implementation IMCWaterShedSegmenter
 
 +(void)wizard2DWatershedIndexes:(NSArray *)inOrderIndexes scopeImage:(IMCImageStack *)inScopeImage scopeImages:(NSArray<IMCImageStack *>*)inScopeImages{
+    
+    if(inOrderIndexes.count == 0 || !inScopeImage || inScopeImages.count == 0){
+        [General runAlertModalWithMessage:@"You must select at least one image and one channel to proceed"];
+        return;
+    }
+    
     NSString *input;
+    
+    NSMutableString *chanNames = @"".mutableCopy;
+    for (NSNumber *chan in inOrderIndexes)
+        [chanNames appendFormat:@"%@, ", inScopeImage.channels[chan.integerValue]];
+    
+    [chanNames deleteCharactersInRange:NSMakeRange(chanNames.length - 1, 1)];
+    
+    NSInteger go = [General runAlertModalWithMessage:[NSString stringWithFormat:
+                                                      @"Do you want to segment the selected %li image%@ using the selected channels %@ ?", inScopeImages.count, inScopeImages.count == 1 ? @"":@"s", chanNames]];
+    if(go == NSAlertSecondButtonReturn)
+        return;
     
     int kernel = 0;
     do{

@@ -135,15 +135,21 @@
         
         imageStack.width = initialWidth;
         imageStack.height = initialHeight;
+                
+        if(!imageStack.channels || imageStack.channels.count < channs.count)
+            for (int i = 0; i < channs.count - imageStack.channels.count; i++)
+                [imageStack.channels addObject:[NSString stringWithFormat:@"Unknown channel %i", i + 1]];
+        if(!imageStack.origChannels || imageStack.origChannels.count < channs.count)
+            for (int i = 0; i < channs.count - imageStack.origChannels.count; i++)
+                [imageStack.origChannels addObject:[NSString stringWithFormat:@"Unknown channel %i", i + 1]];
         
-        if(!imageStack.channels || imageStack.channels.count != channs.count)
-            imageStack.channels = channs;
-        if(!imageStack.origChannels || imageStack.origChannels.count != channs.count)
-            imageStack.origChannels = channs.mutableCopy;
+        if(!imageStack.channels || imageStack.channels.count > channs.count)
+            imageStack.channels = [[imageStack.channels subarrayWithRange:NSMakeRange(0, channs.count)]mutableCopy];
+        if(!imageStack.origChannels || imageStack.origChannels.count > channs.count)
+            imageStack.origChannels = [[imageStack.origChannels subarrayWithRange:NSMakeRange(0, channs.count)]mutableCopy];
         
         [imageStack clearBuffers];
         [imageStack allocateBufferWithPixels:imageStack.numberOfPixels];
-        
         
         for (NSBitmapImageRep *rep in images) {
             NSInteger indexChannel = [images indexOfObject:rep];

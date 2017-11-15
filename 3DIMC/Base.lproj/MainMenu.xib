@@ -159,12 +159,12 @@
                                     <action selector="cut:" target="-1" id="YJe-68-I9s"/>
                                 </connections>
                             </menuItem>
-                            <menuItem title="Copy" keyEquivalent="c" id="x3v-GG-iWU">
+                            <menuItem title="Copy" keyEquivalent="c" toolTip="Copy the whole image on screen (even if you have zoomed, the whole image will be copied)" id="x3v-GG-iWU">
                                 <connections>
                                     <action selector="copy:" target="-1" id="G1f-GL-Joy"/>
                                 </connections>
                             </menuItem>
-                            <menuItem title="Copy visible area" keyEquivalent="c" id="kTu-dg-q9b">
+                            <menuItem title="Copy visible area" keyEquivalent="c" toolTip="Copy the portion of the image on screen (if you have zoomed, the visible area only will be copied)" id="kTu-dg-q9b">
                                 <modifierMask key="keyEquivalentModifierMask" option="YES" command="YES"/>
                                 <connections>
                                     <action selector="copyCurrentVisible:" target="-1" id="TsV-zs-iAh"/>
@@ -195,11 +195,12 @@
                             <menuItem isSeparatorItem="YES" id="uyl-h8-XO2"/>
                             <menuItem title="Clean up channel names with Airlab..." id="dkQ-mJ-lqa" userLabel="AirlabClean">
                                 <modifierMask key="keyEquivalentModifierMask"/>
+                                <string key="toolTip">If you have generated the panel with airlab, you will see that the channel names contain identifiers between parenthesis. By using this command you can retrieve all the information for the clone/antibody used and quickly clean up the channel names</string>
                                 <connections>
                                     <action selector="cleanUpNamesWithAirlab:" target="-1" id="qnP-sX-4Wb"/>
                                 </connections>
                             </menuItem>
-                            <menuItem title="Compensation Matrix..." id="A01-Vz-uED" userLabel="Compensation">
+                            <menuItem title="Compensation Matrix..." tag="1" toolTip="Modify the compensation matrix" id="A01-Vz-uED" userLabel="Compensation">
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <connections>
                                     <action selector="compensationMatrix:" target="-1" id="PpZ-Af-cMZ"/>
@@ -834,25 +835,25 @@
                     <modifierMask key="keyEquivalentModifierMask"/>
                     <menu key="submenu" title="Analysis" identifier="part" id="lFX-wf-QeE">
                         <items>
-                            <menuItem title="New Mask (ML)..." id="hkf-sx-j4t" userLabel="Pixel Classification...">
+                            <menuItem title="New Mask (ML)..." toolTip="Create a pixel mask by using the random forests machine learning technique" id="hkf-sx-j4t" userLabel="Pixel Classification...">
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <connections>
                                     <action selector="pixelClassify:" target="-1" id="vhf-15-snR"/>
                                 </connections>
                             </menuItem>
-                            <menuItem title="New Mask by Thresholding..." id="YsM-j6-We2" userLabel="Pixel Classification...">
+                            <menuItem title="New Mask by Thresholding..." toolTip="Generate a mask by thresholding one marker" id="YsM-j6-We2" userLabel="Pixel Classification...">
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <connections>
                                     <action selector="thresholdMask:" target="-1" id="BkW-tM-33r"/>
                                 </connections>
                             </menuItem>
-                            <menuItem title="New Manual Mask..." id="hmE-xS-cbC" userLabel="Pixel Classification...">
+                            <menuItem title="New Manual Mask..." toolTip="Paint a mask" id="hmE-xS-cbC" userLabel="Pixel Classification...">
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <connections>
                                     <action selector="manualMask:" target="-1" id="JoQ-jV-c3O"/>
                                 </connections>
                             </menuItem>
-                            <menuItem title="New Cell Classification..." id="aWS-yk-k6f" userLabel="Pixel Classification...">
+                            <menuItem title="New Cell Classification..." toolTip="Classify cells using random forests" id="aWS-yk-k6f" userLabel="Pixel Classification...">
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <connections>
                                     <action selector="cellClassification:" target="-1" id="bFh-ZQ-7ff"/>
@@ -861,6 +862,7 @@
                             <menuItem isSeparatorItem="YES" id="kMk-jI-Fbo"/>
                             <menuItem title="2D Watershed..." id="4So-Je-h8m" userLabel="2D Watershed">
                                 <modifierMask key="keyEquivalentModifierMask"/>
+                                <string key="toolTip">Quickly segment the image with watershed. The segmentation will occur on those images selected in the first table, and using the signal from the channels selected on the second column for the watershed. Normally you select the nuclear marker here You can also select a "framing channel", normally a membranous marker is useful for this. You may also mofidy the watershed gradient, lower limit to stop flooding, minimum amount of pixels to call a nucleus, and expansion of the mask in pixels.</string>
                                 <connections>
                                     <action selector="watershed2D:" target="-1" id="Ukj-gQ-ljD"/>
                                 </connections>
@@ -868,30 +870,33 @@
                             <menuItem isSeparatorItem="YES" id="TRa-el-eSZ"/>
                             <menuItem title="Mask (ML) Batch..." id="ckp-Y9-2Q7" userLabel="Pixel Classification Batch...">
                                 <modifierMask key="keyEquivalentModifierMask"/>
+                                <string key="toolTip">If you have generated a Mask by ML (First menu) you can now classify the pixels in all the images in the workspace with the same training.</string>
                                 <connections>
                                     <action selector="pixelClassificatonBatch:" target="-1" id="S3g-BQ-yg7"/>
                                 </connections>
                             </menuItem>
                             <menuItem title="Threshold Masks Batch..." id="Yna-Lr-zTA" userLabel="Pixel Classification Batch...">
                                 <modifierMask key="keyEquivalentModifierMask"/>
+                                <string key="toolTip">If you have generated a mask by thresholding, you can now do the proccess in batch mode for all the images in the workspace by propagating the settings.</string>
                                 <connections>
                                     <action selector="thresholdMaskBatch:" target="-1" id="Ir2-tl-MTf"/>
                                 </connections>
                             </menuItem>
                             <menuItem title="Cell Classification Batch..." id="dYp-N1-g4R" userLabel="Pixel Classification Batch...">
                                 <modifierMask key="keyEquivalentModifierMask"/>
+                                <string key="toolTip">If you have done a cell classification by ML (Fourth menu) you can now classify the cells in all the cell data stacks in the workspace with the same training.</string>
                                 <connections>
                                     <action selector="cellClassificationBatch:" target="-1" id="eVC-Pe-khb"/>
                                 </connections>
                             </menuItem>
                             <menuItem isSeparatorItem="YES" id="4Sg-Ys-XYn"/>
-                            <menuItem title="Combine Masks..." id="0wm-9z-kF3" userLabel="Combine Masks">
+                            <menuItem title="Combine Masks..." toolTip="Combine masks to subset, or calculate distances." id="0wm-9z-kF3" userLabel="Combine Masks">
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <connections>
                                     <action selector="combineMasks:" target="-1" id="dxz-7g-pvz"/>
                                 </connections>
                             </menuItem>
-                            <menuItem title="Cell Analysis Algorithms (tSNE, Clustering, etc)..." id="de1-vb-Mv0" userLabel="Cell Analysis Algorithms">
+                            <menuItem title="Cell Analysis Algorithms (tSNE, Clustering, etc)..." tag="1" id="de1-vb-Mv0" userLabel="Cell Analysis Algorithms">
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <connections>
                                     <action selector="cellBasicAlgorithms:" target="-1" id="XEz-YX-E3M"/>
@@ -899,7 +904,7 @@
                             </menuItem>
                             <menuItem title="Clustering" id="Q8U-Gr-IB0">
                                 <modifierMask key="keyEquivalentModifierMask"/>
-                                <menu key="submenu" title="Clustering" id="haN-XQ-yEs">
+                                <menu key="submenu" title="Clustering" identifier="Perform clustering analysis" id="haN-XQ-yEs">
                                     <items>
                                         <menuItem title="k-Means" id="dPs-ak-9ut">
                                             <modifierMask key="keyEquivalentModifierMask"/>

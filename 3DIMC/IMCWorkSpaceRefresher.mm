@@ -86,6 +86,7 @@
         for(IMCImageStack *im in pan.children)
             [arr addObject:im];
         self.parent.scrollViewBlends.imageView.stacks = arr;
+        [self.parent.scrollViewBlends setNeedsDisplay:YES];
         return;
     }
     

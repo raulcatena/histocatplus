@@ -61,5 +61,6 @@
 -(NSString *)simpsonForCountStatsArray:(NSArray *)countStatsArray;
 
 +(BOOL)flockForComps:(NSArray<IMCComputationOnMask *> *)comps indexes:(NSIndexSet *)indexSet;
++(BOOL)kMeansForComps:(NSArray<IMCComputationOnMask *> *)comps indexes:(NSIndexSet *)indexSet;
 
 @end

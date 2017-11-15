@@ -78,21 +78,15 @@
                 default:
                     break;
             }
-            stack.fileWrapper.hasChanges = YES;
-            
-            if(![stack.fileWrapper.fileType hasPrefix:EXTENSION_TIFF_PREFIX] && ![stack.fileWrapper hasTIFFBackstore]){
-                [stack.fileWrapper saveTIFFAtPath:[stack.fileWrapper backStoreTIFFPath]];
-                if([closedFiles containsObject:stack.fileWrapper]){
-                    [stack.fileWrapper unLoadLayerDataWithBlock:nil];
-                    [closedFiles removeObject:stack.fileWrapper];
-                }
-            }
+            [stack.fileWrapper saveTIFFAtPath:[stack.fileWrapper backStoreTIFFPath]];
             if([closedFiles containsObject:stack.fileWrapper]){
-                [stack.fileWrapper save];
                 [stack.fileWrapper unLoadLayerDataWithBlock:nil];
+                [closedFiles removeObject:stack.fileWrapper];
             }
         }
-        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [images.firstObject.fileWrapper.coordinator.delegate saveActionFromCoordinator];
+        });
         if(block)
             dispatch_async(dispatch_get_main_queue(), ^{block();});
     });
@@ -136,6 +130,9 @@
             if(!maskWasLoaded)
                 [comp.mask unLoadLayerDataWithBlock:nil];
         }
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [comps.firstObject.fileWrapper.coordinator.delegate saveActionFromCoordinator];
+        });
         dispatch_async(dispatch_get_main_queue(), ^{
             if(block)block();//Don't know why always crashes if I do it in the main thread. It should not, and I usually call refresh in this block. I leave it like this as it fixes the bug but am not convinced
         });

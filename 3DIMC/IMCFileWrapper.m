@@ -94,14 +94,9 @@
     self.hasChanges = !success;
 }
 -(void)saveTIFFAtPath:(NSString *)path{
-    BOOL isLoaded = self.isLoaded;
-    if(!isLoaded)
-        [self loadFileWithBlock:nil];
-    while (!self.isLoaded);
-    [IMCFileExporter saveMultipageTiffAllChannels:(IMCImageStack *)self.children.firstObject.children.firstObject path:path];
-    if(!isLoaded)
-        [self unLoadLayerDataWithBlock:nil];
-    self.hasChanges = NO;
+    [self openIfNecessaryAndPerformBlock:^{
+        [IMCFileExporter saveMultipageTiffAllChannels:(IMCImageStack *)self.children.firstObject.children.firstObject path:path];
+    }];
 }
 -(void)save{
     if([self hasTIFFBackstore]){

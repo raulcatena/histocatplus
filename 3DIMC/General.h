@@ -14,6 +14,7 @@
 +(NSInteger)runAlertModalAreYouSure;
 +(NSInteger)runAlertModalAreYouSureWithMessage:(NSString *)message;
 +(NSInteger)runAlertModalWithMessage:(NSString *)message;
++(NSInteger)runHelpModalWithMessage:(NSString *)message andTitle:(NSString *)title;
 +(void)drawIntAsString:(float)number WithFontName:(NSString *)fontName size:(float)size rect:(CGRect)rect;
 +(void)checkAndCreateDirectory:(NSString *)path;
 

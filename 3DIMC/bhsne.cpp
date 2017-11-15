@@ -131,7 +131,7 @@ void BHSNE::run(double* X, int N, int D, double* Y, int no_dims, double perplexi
     else printf("Input similarities computed in %4.2f seconds (sparsity = %f)!\nLearning embedding...\n", (float) (end - start) / CLOCKS_PER_SEC, (double) row_P[N] / ((double) N * (double) N));
     start = clock();
 	for(int iter = 0; iter < max_iter; iter++) {
-        
+
         // Compute (approximate) gradient
         if(exact) computeExactGradient(P, Y, N, no_dims, dY);
         else computeGradient(P, row_P, col_P, val_P, Y, N, no_dims, dY, theta);
@@ -189,7 +189,6 @@ void BHSNE::run(double* X, int N, int D, double* Y, int no_dims, double perplexi
 // Compute gradient of the t-SNE cost function (using Barnes-Hut algorithm)
 void BHSNE::computeGradient(double* P, unsigned int* inp_row_P, unsigned int* inp_col_P, double* inp_val_P, double* Y, int N, int D, double* dC, double theta)
 {
-    
     // Construct space-partitioning tree on current map
     SPTree* tree = new SPTree(D, Y, N);
     
@@ -202,7 +201,8 @@ void BHSNE::computeGradient(double* P, unsigned int* inp_row_P, unsigned int* in
     for(int n = 0; n < N; n++) tree->computeNonEdgeForces(n, theta, neg_f + n * D, &sum_Q);
     
     // Compute final t-SNE gradient
-    for(int i = 0; i < N * D; i++) {
+    long nByD = N * D;
+    for(int i = 0; i < nByD; i++) {
         dC[i] = pos_f[i] - (neg_f[i] / sum_Q);
     }
     free(pos_f);
@@ -212,7 +212,7 @@ void BHSNE::computeGradient(double* P, unsigned int* inp_row_P, unsigned int* in
 
 // Compute gradient of the t-SNE cost function (exact)
 void BHSNE::computeExactGradient(double* P, double* Y, int N, int D, double* dC) {
-	
+    
 	// Make sure the current gradient contains zeros
 	for(int i = 0; i < N * D; i++) dC[i] = 0.0;
     
