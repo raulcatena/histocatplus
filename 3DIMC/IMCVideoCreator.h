@@ -14,4 +14,9 @@
 +(void)writeImagesAsMovie:(NSArray *)array toPath:(NSString*)path size:(CGSize)size duration:(int)duration;
 +(void)writeImagesAsMovieWithBuffers:(UInt8 **)data  images:(NSInteger)images toPath:(NSString*)path size:(CGSize)size duration:(int)duration;
 //+(void)writeImages:(NSArray *)array toPathFolder:(NSString*)path size:(CGSize)size;
+
+-(instancetype)initWithSize:(CGSize)sizePassed duration:(int)durationFrame path:(NSString *)path;
+-(void)addBuffer:(UInt8 *)bufferFrame;
+-(void)finishVideo;
+
 @end

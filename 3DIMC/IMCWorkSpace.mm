@@ -1712,25 +1712,31 @@
     dispatch_queue_t aQ = dispatch_queue_create("aQQQ", NULL);
     dispatch_async(aQ, ^{
         //NSMutableArray *allImages = [NSMutableArray arrayWithCapacity:STEPS];
-        UInt8 ** allData = (UInt8 **)malloc(STEPS * sizeof(UInt8 *));
+        //UInt8 ** allData = (UInt8 **)malloc(STEPS * sizeof(UInt8 *));
+        NSString *fullPath = [NSString stringWithFormat:@"%@%@.mp4", self.fileURL.path, [NSDate date].description];
+        IMCVideoCreator *videoRecorder = [[IMCVideoCreator alloc]initWithSize:[self sizeFrame] duration:50 path:fullPath];
         for (int i = 0; i<STEPS; i++) {
             [self.metalView rotateX:0 Y:2*M_PI/STEPS Z:0];
             self.metalView.refresh = YES;
             while (self.metalView.refresh);
             id<MTLTexture> old = self.metalView.lastRenderedTexture;
             while (old == self.metalView.lastRenderedTexture);
-            allData[i] = (UInt8 *)[self.metalView captureData];
+            //allData[i] = (UInt8 *)[self.metalView captureData];
+            UInt8 * frameBuffer = (UInt8 *)[self.metalView captureData];
+            [videoRecorder addBuffer:frameBuffer];
+            free(frameBuffer);
             //[allImages addObject:(id)[self imageForVideo]];//Careful, we are passing a CF type to NSArray. Cast to avoid warning. Handle with care
         }
-        NSString *fullPath = [NSString stringWithFormat:@"%@%@.mp4", self.fileURL.path, [NSDate date].description];
+        [videoRecorder finishVideo];
+        
         //NSString *fullPathB = [NSString stringWithFormat:@"%@%@_b.mp4", self.fileURL.path, [NSDate date].description];
         //[IMCVideoCreator writeImagesAsMovie:allImages toPath:fullPath size:[self sizeFrame] duration:50];
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [IMCVideoCreator writeImagesAsMovieWithBuffers:allData images:STEPS toPath:fullPath size:[self sizeFrame] duration:50];
-            for(int i = 0; i < STEPS; i++)
-                free(allData[i]);
-            free(allData);
-        });
+//        dispatch_async(dispatch_get_main_queue(), ^{
+//            [IMCVideoCreator writeImagesAsMovieWithBuffers:allData images:STEPS toPath:fullPath size:[self sizeFrame] duration:50];
+//            for(int i = 0; i < STEPS; i++)
+//                free(allData[i]);
+//            free(allData);
+//        });
     });
 }
 -(void)recordStackVideo{

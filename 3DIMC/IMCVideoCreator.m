@@ -12,11 +12,12 @@
     NSInteger images;
     int duration;
     CGSize size;
-    
-    AVAssetWriter *videoWriter;
-    AVAssetWriterInputPixelBufferAdaptor *adaptor;
-    AVAssetWriterInput* writerInput;
+    CVPixelBufferRef buffer;
 }
+
+@property (nonatomic, strong) AVAssetWriter *videoWriter;
+@property (nonatomic, strong) AVAssetWriterInputPixelBufferAdaptor *adaptor;
+@property (nonatomic, strong) AVAssetWriterInput* writerInput;
 
 @end
 
@@ -273,53 +274,59 @@
         size = sizePassed;
         
         NSError *error = nil;
-        videoWriter = [[AVAssetWriter alloc] initWithURL:[NSURL fileURLWithPath:path]
+        _videoWriter = [[AVAssetWriter alloc] initWithURL:[NSURL fileURLWithPath:path]
                                                                fileType:AVFileTypeQuickTimeMovie
                                                                   error:&error];
-        NSParameterAssert(videoWriter);
+        NSParameterAssert(_videoWriter);
         
         NSDictionary *videoSettings = [NSDictionary dictionaryWithObjectsAndKeys:
-                                       AVVideoCodecAppleProRes4444, AVVideoCodecKey,
+                                       AVVideoCodecAppleProRes422, AVVideoCodecKey,//AVVideoCodecJPEG Low //AVVideoCodecAppleProRes4444 High
                                        [NSNumber numberWithInt:size.width], AVVideoWidthKey,
                                        [NSNumber numberWithInt:size.height], AVVideoHeightKey,
                                        nil];
         
-        writerInput = [AVAssetWriterInput assetWriterInputWithMediaType:AVMediaTypeVideo
+        _writerInput = [AVAssetWriterInput assetWriterInputWithMediaType:AVMediaTypeVideo
                                                                              outputSettings:videoSettings];
         
-        writerInput.expectsMediaDataInRealTime = YES;
+        _writerInput.expectsMediaDataInRealTime = YES;
         
         NSDictionary* bufferAttributes=[NSDictionary dictionaryWithObjectsAndKeys:
                                         [NSNumber numberWithInt:kCVPixelFormatType_32ARGB], kCVPixelBufferPixelFormatTypeKey,nil];
         
-        adaptor = [AVAssetWriterInputPixelBufferAdaptor assetWriterInputPixelBufferAdaptorWithAssetWriterInput:writerInput sourcePixelBufferAttributes:bufferAttributes];
+        _adaptor = [AVAssetWriterInputPixelBufferAdaptor assetWriterInputPixelBufferAdaptorWithAssetWriterInput:_writerInput sourcePixelBufferAttributes:bufferAttributes];
         
-        NSParameterAssert(writerInput);
-        NSParameterAssert([videoWriter canAddInput:writerInput]);
-        [videoWriter addInput:writerInput];
+        NSParameterAssert(_writerInput);
+        NSParameterAssert([_videoWriter canAddInput:_writerInput]);
+        [_videoWriter addInput:_writerInput];
         
         //Start a session:
-        [videoWriter startWriting];
-        [videoWriter startSessionAtSourceTime:kCMTimeZero];
+        [_videoWriter startWriting];
+        [_videoWriter startSessionAtSourceTime:kCMTimeZero];
         
+        images = 0;
     }
     return self;
 }
 
 -(void)addBuffer:(UInt8 *)bufferFrame{
-    CVPixelBufferRef buffer = NULL;
+    
+    if(images == 0)
+        buffer = NULL;
     
     buffer = [IMCVideoCreator pixelBufferWithData:bufferFrame width:(NSInteger)size.width height:(NSInteger)size.height];
-    CVPixelBufferPoolCreatePixelBuffer (NULL, adaptor.pixelBufferPool, &buffer);
-    [adaptor appendPixelBuffer:buffer withPresentationTime:images == 0 ? kCMTimeZero : CMTimeMake(images, duration)];
-    while (!writerInput.readyForMoreMediaData);
+    if(images == 0)
+        CVPixelBufferPoolCreatePixelBuffer (NULL, _adaptor.pixelBufferPool, &buffer);
+    [_adaptor appendPixelBuffer:buffer withPresentationTime:images == 0 ? kCMTimeZero : CMTimeMake(images, duration)];
+    while (!_writerInput.readyForMoreMediaData);
     CVBufferRelease(buffer);
+    
+    images++;
 }
 
 -(void)finishVideo{
-    [writerInput markAsFinished];
-    [videoWriter finishWritingWithCompletionHandler:^{
-        CVPixelBufferPoolRelease(adaptor.pixelBufferPool);
+    [_writerInput markAsFinished];
+    [_videoWriter finishWritingWithCompletionHandler:^{
+        CVPixelBufferPoolRelease(_adaptor.pixelBufferPool);
     }];
 }
 
