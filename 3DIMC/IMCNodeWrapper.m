@@ -78,6 +78,17 @@
             if(block)block();
         });
 }
+-(void)setIsLoaded:(BOOL)isLoaded{
+    _isLoaded = isLoaded;
+    if(isLoaded)self.loading = !isLoaded;
+}
+-(BOOL)canLoad{
+    BOOL canLoadResult = (!self.isLoaded && !self.loading);
+    NSLog(@"ILd %li ILg %li", self.isLoaded, self.loading);
+    if(canLoadResult)
+        self.loading = YES;
+    return canLoadResult;
+}
 -(void)unLoadLayerDataWithBlock:(void(^)())block;{
     if([self isMemberOfClass:[IMCFileWrapper class]])
         for (IMCNodeWrapper *pan in self.children){

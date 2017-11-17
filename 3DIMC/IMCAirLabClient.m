@@ -75,7 +75,7 @@
 
 
 +(void)getMetalForConjugates:(NSArray <IMCImageStack *>*)stacks{
-    __block int counter = 0;
+    //__block int counter = 0;
     
     
     NSMutableDictionary *collect = @{}.mutableCopy;
@@ -91,44 +91,36 @@
     
     NSLog(@"Args %@", arg);
     
-//    NSURLSession *session = [NSURLSession sharedSession];
-//    [[session dataTaskWithURL:[NSURL URLWithString:
-//                               [NSString stringWithFormat:@"https://airlab-1118.appspot.com/apiLabPad/api/getInfoForClones/%@", arg]]
-//            completionHandler:^(NSData *data, NSURLResponse *response, NSError *error){}];
     
-    NSMutableURLRequest *req = [NSMutableURLRequest
-                                requestWithURL:
-                                [NSURL URLWithString:
-                                 [NSString stringWithFormat:@"https://airlab-1118.appspot.com/apiLabPad/api/getInfoForConjugates/%@", arg]]];
+    NSURLSession *session = [NSURLSession sharedSession];
+    [[session dataTaskWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"https://airlab-1118.appspot.com/apiLabPad/api/getInfoForClones/%@", arg]]
+                                           completionHandler:^(NSData *data, NSURLResponse *response, NSError *error){
+           if (data) {
+               NSArray *infoConjs =[NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
+               NSLog(@"Info Conjugates %@", infoConjs);
+               //            if(infoClones){
+               //                NSMutableArray *copyChannels = self.channels.mutableCopy;
+               //                for (NSDictionary *infoClone in infoClones) {
+               //                    if(infoClone == 0)continue;
+               //                    NSString *nameProt;
+               //                    if([infoClone valueForKey:@"proName"])nameProt = [infoClone valueForKey:@"proName"];
+               //
+               //                    if ([[infoClone valueForKey:@"cloIsPhospho"]intValue] == 1 && nameProt) {
+               //                        nameProt = [@"p" stringByAppendingString:nameProt];
+               //                    }
+               //                    if (nameProt) {
+               //                        [[cleanStrings valueForKey:[infoClone valueForKey:@"cloCloneId"]]addObject:nameProt];
+               //
+               //                        NSInteger index = [self.originalChannels indexOfObjectIdenticalTo:[[cleanStrings valueForKey:[infoClone valueForKey:@"cloCloneId"]]firstObject]];
+               //                        [copyChannels removeObjectAtIndex:index];
+               //                        [copyChannels insertObject:nameProt atIndex:index];
+               //                    }
+               //                }
+               //                self.channels = [NSArray arrayWithArray:copyChannels];
+               //            }
+               }
+    }]resume];
     
-    [NSURLConnection sendAsynchronousRequest:req queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *error){
-        counter++;
-        
-        if (data) {
-            NSArray *infoConjs =[NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
-            NSLog(@"Info Conjugates %@", infoConjs);
-            //            if(infoClones){
-            //                NSMutableArray *copyChannels = self.channels.mutableCopy;
-            //                for (NSDictionary *infoClone in infoClones) {
-            //                    if(infoClone == 0)continue;
-            //                    NSString *nameProt;
-            //                    if([infoClone valueForKey:@"proName"])nameProt = [infoClone valueForKey:@"proName"];
-            //
-            //                    if ([[infoClone valueForKey:@"cloIsPhospho"]intValue] == 1 && nameProt) {
-            //                        nameProt = [@"p" stringByAppendingString:nameProt];
-            //                    }
-            //                    if (nameProt) {
-            //                        [[cleanStrings valueForKey:[infoClone valueForKey:@"cloCloneId"]]addObject:nameProt];
-            //
-            //                        NSInteger index = [self.originalChannels indexOfObjectIdenticalTo:[[cleanStrings valueForKey:[infoClone valueForKey:@"cloCloneId"]]firstObject]];
-            //                        [copyChannels removeObjectAtIndex:index];
-            //                        [copyChannels insertObject:nameProt atIndex:index];
-            //                    }
-            //                }
-            //                self.channels = [NSArray arrayWithArray:copyChannels];
-            //            }
-        }
-    }];
 }
 
 @end

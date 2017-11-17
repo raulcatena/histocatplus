@@ -690,6 +690,8 @@
 }
 -(void)loadLayerDataWithBlock:(void (^)())block{
     
+    if(![self canLoad])return;
+    
     NSString *path = [self pathFile];
     NSData *data = [NSData dataWithContentsOfFile:path];
     
@@ -715,8 +717,6 @@
         }
     }
     [self passToHandler];
-    self.isLoaded = YES;
-    
     
     NSData *cellData = [NSData dataWithContentsOfFile:[self pathCellDataFile]];
     if(cellData){
@@ -745,7 +745,8 @@
         
         if(input == NSAlertFirstButtonReturn)
             [self extractCellData];
-    }    
+    }
+    self.isLoaded = YES;
 }
 -(void)unLoadLayerDataWithBlock:(void (^)())block{
     [self releaseMask];

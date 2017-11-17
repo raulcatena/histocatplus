@@ -800,6 +800,9 @@
 		0DC508D51F5F4F6B00C1E9D8 /* AAPLMathUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DC508D21F5F4F6B00C1E9D8 /* AAPLMathUtilities.m */; };
 		0DEA0B3D1EE976FF004E80C9 /* IMCMetadataTableDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DEA0B3C1EE976FF004E80C9 /* IMCMetadataTableDelegate.m */; };
 		0DEA0B3E1EE976FF004E80C9 /* IMCMetadataTableDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DEA0B3C1EE976FF004E80C9 /* IMCMetadataTableDelegate.m */; };
+		0DF81F101FBD9801000260F5 /* IMC3DVideoPrograms.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DF81F0F1FBD9801000260F5 /* IMC3DVideoPrograms.m */; };
+		0DF81F111FBD9801000260F5 /* IMC3DVideoPrograms.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DF81F0F1FBD9801000260F5 /* IMC3DVideoPrograms.m */; };
+		0DF81F121FBD9801000260F5 /* IMC3DVideoPrograms.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DF81F0F1FBD9801000260F5 /* IMC3DVideoPrograms.m */; };
 		0DF89F751E4BCA3D008226D3 /* libopencv_xfeatures2d.3.2.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 0DF89F721E4BCA3D008226D3 /* libopencv_xfeatures2d.3.2.0.dylib */; };
 		0DF89F761E4BCA3D008226D3 /* libopencv_xfeatures2d.3.2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 0DF89F731E4BCA3D008226D3 /* libopencv_xfeatures2d.3.2.dylib */; };
 		0DF89F771E4BCA3D008226D3 /* libopencv_xfeatures2d.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 0DF89F741E4BCA3D008226D3 /* libopencv_xfeatures2d.dylib */; };
@@ -1193,6 +1196,8 @@
 		0DC508D21F5F4F6B00C1E9D8 /* AAPLMathUtilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AAPLMathUtilities.m; sourceTree = "<group>"; };
 		0DEA0B3B1EE976FF004E80C9 /* IMCMetadataTableDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IMCMetadataTableDelegate.h; sourceTree = "<group>"; };
 		0DEA0B3C1EE976FF004E80C9 /* IMCMetadataTableDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IMCMetadataTableDelegate.m; sourceTree = "<group>"; };
+		0DF81F0E1FBD9801000260F5 /* IMC3DVideoPrograms.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IMC3DVideoPrograms.h; sourceTree = "<group>"; };
+		0DF81F0F1FBD9801000260F5 /* IMC3DVideoPrograms.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IMC3DVideoPrograms.m; sourceTree = "<group>"; };
 		0DF89F721E4BCA3D008226D3 /* libopencv_xfeatures2d.3.2.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_xfeatures2d.3.2.0.dylib; path = /usr/local/lib/libopencv_xfeatures2d.3.2.0.dylib; sourceTree = "<absolute>"; };
 		0DF89F731E4BCA3D008226D3 /* libopencv_xfeatures2d.3.2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_xfeatures2d.3.2.dylib; path = /usr/local/lib/libopencv_xfeatures2d.3.2.dylib; sourceTree = "<absolute>"; };
 		0DF89F741E4BCA3D008226D3 /* libopencv_xfeatures2d.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_xfeatures2d.dylib; path = /usr/local/lib/libopencv_xfeatures2d.dylib; sourceTree = "<absolute>"; };
@@ -1871,6 +1876,8 @@
 				0DC508BF1F5F35C500C1E9D8 /* Vertex.swift */,
 				0DC508BA1F5F35C400C1E9D8 /* histoCAT++-Bridging-Header.h */,
 				0DC508BB1F5F35C400C1E9D8 /* histoCAT++3D-Bridging-Header.h */,
+				0DF81F0E1FBD9801000260F5 /* IMC3DVideoPrograms.h */,
+				0DF81F0F1FBD9801000260F5 /* IMC3DVideoPrograms.m */,
 			);
 			name = 3D;
 			sourceTree = "<group>";
@@ -2690,6 +2697,7 @@
 				0D00ABE01E64D53400887057 /* IMC_BIMCLoader.m in Sources */,
 				0D0D83D11FA12C670044EDC1 /* IMCTestCPP.cpp in Sources */,
 				0D0D83E61FA12D410044EDC1 /* IMCGeneralPlot.m in Sources */,
+				0DF81F111FBD9801000260F5 /* IMC3DVideoPrograms.m in Sources */,
 				0D00ABE21E64D53400887057 /* XMLDictionary.m in Sources */,
 				0DA2B81E1E70023C00EAA438 /* IMCThresholder.mm in Sources */,
 				0D00ABE31E64D53400887057 /* OpenGLView.m in Sources */,
@@ -2825,6 +2833,7 @@
 				0D9F30891EF909CF00E1E083 /* XMLDictionary.m in Sources */,
 				0D0D83D21FA12C670044EDC1 /* IMCTestCPP.cpp in Sources */,
 				0D0D83E71FA12D410044EDC1 /* IMCGeneralPlot.m in Sources */,
+				0DF81F121FBD9801000260F5 /* IMC3DVideoPrograms.m in Sources */,
 				0D9F308A1EF909CF00E1E083 /* IMCThresholder.mm in Sources */,
 				0D9F308B1EF909CF00E1E083 /* OpenGLView.m in Sources */,
 				0D9F308C1EF909CF00E1E083 /* NSMutableArray-RowMoving.m in Sources */,
@@ -2960,6 +2969,7 @@
 				0DB37D101E30C90F002975E2 /* NSString+MD5.m in Sources */,
 				0D0D84041FA138360044EDC1 /* IMCPCAOperation.m in Sources */,
 				0DB37D321E34B17F002975E2 /* IMC_BIMCLoader.m in Sources */,
+				0DF81F101FBD9801000260F5 /* IMC3DVideoPrograms.m in Sources */,
 				0D0D83D01FA12C670044EDC1 /* IMCTestCPP.cpp in Sources */,
 				0DBB87641FA2200100F468DA /* flock.c in Sources */,
 				0D0D83E51FA12D410044EDC1 /* IMCGeneralPlot.m in Sources */,

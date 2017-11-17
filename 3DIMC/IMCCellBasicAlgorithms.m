@@ -60,6 +60,13 @@
     return [super initWithWindowNibName:NSStringFromClass([IMCCellBasicAlgorithms class]) owner:self];
 }
 
+-(BOOL)containsComputations:(NSArray<IMCComputationOnMask *> *)computations{
+    for(IMCComputationOnMask *comp in computations)
+        if(comp == self.computation)
+            return YES;
+    return NO;
+}
+
 -(void)assembleDashboards{
     if(!self.tsneDashboard)
         self.tsneDashboard = (IMCTsneDashboard *)[NSView loadWithNibNamed:NSStringFromClass([IMCTsneDashboard class]) owner:self class:[IMCTsneDashboard class]];
@@ -85,6 +92,8 @@
 }
 -(void)awakeFromNib{
     [super awakeFromNib];
+    self.window.title = self.computation.itemName;
+    [self.computation loadLayerDataWithBlock:nil];
 }
 -(void)setChannelsInLists{
     if(self.colorVariable && self.colorVariable2 && self.colorVariable3){

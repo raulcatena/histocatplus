@@ -62,6 +62,7 @@
 }
 
 -(void)loadLayerDataWithBlock:(void (^)())block{
+    if(![self canLoad])return;
     
     NSData *data = [NSData dataWithContentsOfFile:self.absolutePath];
     NSInteger pix = self.imageStack.numberOfPixels;

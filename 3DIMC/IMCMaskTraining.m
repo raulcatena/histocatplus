@@ -55,6 +55,7 @@
         [self loadBufferAction];
 }
 -(void)loadLayerDataWithBlock:(void (^)())block{
+    if(![self canLoad])return;
     [self loadBuffer];
     IMCCellTrainerTool *tool = [[IMCCellTrainerTool alloc]initWithComputation:self.computation andTraining:self];
     [[tool window] makeKeyAndOrderFront:tool];

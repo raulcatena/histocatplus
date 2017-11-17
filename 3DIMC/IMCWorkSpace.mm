@@ -32,7 +32,7 @@
 #import "IMCRegistrationOCV.h"
 //Video
 #import "NSOpenGLView+Utilities.h"
-#import "IMCVideoCreator.h"
+#import "IMC3DVideoPrograms.h"
 //Segment and Pixel classif. ML
 #import "IMCCellSegmentation.h"
 #import "IMCPixelClassificationTool.h"
@@ -70,6 +70,7 @@
 
 @interface IMCWorkSpace (){
     dispatch_queue_t threadPainting;
+    BOOL recordingVideo;
 }
 
 @property (nonatomic, strong) IMCWorkspaceSelector *workSpaceHandler;
@@ -80,7 +81,8 @@
 @property (nonatomic, strong) IMCMetalViewAndRenderer *metalViewDelegate;
 @property (nonatomic, assign) NSModalSession compensationSession;
 @property (nonatomic, strong) IMCCompensation * compensationHandler;
-@property (nonatomic, strong) IMCCellBasicAlgorithms * cellAnalysis;
+@property (nonatomic, strong) NSMutableArray<IMCCellBasicAlgorithms *> * cellAnalyses;
+@property (nonatomic, strong) IMCCellBasicAlgorithms *currentCellAnalysis;
 
 @end
 
@@ -1674,148 +1676,25 @@
     return self.threeDHandler.indexesArranged;
 }
 #pragma mark record video
-#define STEPS 360
-
--(CGImageRef)imageForVideo{
-    NSImage *someImage = [self.openGlViewPort imageFromViewOld];
-    if(someImage == nil && self.metalView)
-        return [self.metalView captureImageRef];
-    
-    NSGraphicsContext *context = [NSGraphicsContext currentContext];
-    CGRect imageCGRect = CGRectMake(0, 0, someImage.size.width, someImage.size.height);
-    NSRect imageRect = NSRectFromCGRect(imageCGRect);
-    CGImageRef imageRef = [someImage CGImageForProposedRect:&imageRect context:context hints:nil];
-    return imageRef;
-}
-
--(NSSize)sizeFrame{
-    NSSize size;
-    if(self.openGlViewPort)
-        size = self.openGlViewPort.bounds.size;
-    if(self.metalView)
-        size = NSMakeSize(self.metalView.lastRenderedTexture.width, self.metalView.lastRenderedTexture.height);
-    return size;
-}
 
 -(void)recordVideo:(NSButton *)sender{
-    if(self.videoType.indexOfSelectedItem == 0)
-        [self recordYVideo];
-    if(self.videoType.indexOfSelectedItem == 1)
-        [self recordStackVideo];
-    if(self.videoType.indexOfSelectedItem == 2)
-        [self recordSliceVideo];
-    if(self.videoType.indexOfSelectedItem == 3)
-        [self recordRockVideo];
-}
-
--(void)recordYVideo{
-    dispatch_queue_t aQ = dispatch_queue_create("aQQQ", NULL);
-    dispatch_async(aQ, ^{
-        //NSMutableArray *allImages = [NSMutableArray arrayWithCapacity:STEPS];
-        //UInt8 ** allData = (UInt8 **)malloc(STEPS * sizeof(UInt8 *));
+    sender.tag = !(BOOL)sender.tag;
+    sender.title = sender.tag == 0 ? @"Record Video" : @"Stop!";
+    recordingVideo = (BOOL)sender.tag;
+    
+    if(recordingVideo){
+        NSSize size = NSMakeSize(self.metalView.lastRenderedTexture.width, self.metalView.lastRenderedTexture.height);
         NSString *fullPath = [NSString stringWithFormat:@"%@%@.mp4", self.fileURL.path, [NSDate date].description];
-        IMCVideoCreator *videoRecorder = [[IMCVideoCreator alloc]initWithSize:[self sizeFrame] duration:50 path:fullPath];
-        for (int i = 0; i<STEPS; i++) {
-            [self.metalView rotateX:0 Y:2*M_PI/STEPS Z:0];
-            self.metalView.refresh = YES;
-            while (self.metalView.refresh);
-            id<MTLTexture> old = self.metalView.lastRenderedTexture;
-            while (old == self.metalView.lastRenderedTexture);
-            //allData[i] = (UInt8 *)[self.metalView captureData];
-            UInt8 * frameBuffer = (UInt8 *)[self.metalView captureData];
-            [videoRecorder addBuffer:frameBuffer];
-            free(frameBuffer);
-            //[allImages addObject:(id)[self imageForVideo]];//Careful, we are passing a CF type to NSArray. Cast to avoid warning. Handle with care
-        }
-        [videoRecorder finishVideo];
         
-        //NSString *fullPathB = [NSString stringWithFormat:@"%@%@_b.mp4", self.fileURL.path, [NSDate date].description];
-        //[IMCVideoCreator writeImagesAsMovie:allImages toPath:fullPath size:[self sizeFrame] duration:50];
-//        dispatch_async(dispatch_get_main_queue(), ^{
-//            [IMCVideoCreator writeImagesAsMovieWithBuffers:allData images:STEPS toPath:fullPath size:[self sizeFrame] duration:50];
-//            for(int i = 0; i < STEPS; i++)
-//                free(allData[i]);
-//            free(allData);
-//        });
-    });
-}
--(void)recordStackVideo{
-    NSIndexSet *indexes = self.filesTree.selectedRowIndexes.copy;
-    NSInteger count = indexes.count;
-    NSMutableIndexSet *cursorSet = [NSMutableIndexSet indexSet];
-    NSMutableArray *allImages = [NSMutableArray arrayWithCapacity:count];
-    
-    dispatch_queue_t aQ = dispatch_queue_create("aQQQ", NULL);
-    dispatch_async(aQ, ^{
-        [indexes enumerateIndexesUsingBlock:^(NSUInteger index, BOOL *stop){
-            id<MTLTexture> old = self.metalView.lastRenderedTexture;
-            [cursorSet addIndex:index];
-            [self.filesTree selectRowIndexes:cursorSet byExtendingSelection:NO];
-            self.metalView.refresh = YES;
-            self.metalViewDelegate.forceColorBufferRecalculation = YES;
-            while (self.metalViewDelegate.forceColorBufferRecalculation);
-            while (old == self.metalView.lastRenderedTexture);
-            [allImages addObject:(id)[self imageForVideo]];//Careful, we are passing a CF type to NSArray. Cast to avoid warning. Handle with care
-        }];
-        NSString *fullPath = [NSString stringWithFormat:@"%@%@.mp4", self.fileURL.path, [NSDate date].description];
-        [IMCVideoCreator writeImagesAsMovie:allImages toPath:fullPath size:[self sizeFrame] duration:16];
-    });
-}
-
--(void)recordSliceVideo{
-    NSIndexSet *indexes = self.filesTree.selectedRowIndexes.copy;
-    NSInteger count = indexes.count;
-    NSMutableIndexSet *cursorSet = [NSMutableIndexSet indexSet];
-    NSMutableArray *allImages = [NSMutableArray arrayWithCapacity:count];
-    
-    dispatch_queue_t aQ = dispatch_queue_create("aQQQ", NULL);
-    dispatch_async(aQ, ^{
-        [indexes enumerateIndexesUsingBlock:^(NSUInteger index, BOOL *stop){
-            id<MTLTexture> old = self.metalView.lastRenderedTexture;
-            [cursorSet addIndex:index];
-            [self.filesTree selectRowIndexes:[NSIndexSet indexSetWithIndex:index] byExtendingSelection:NO];
-            self.metalView.refresh = YES;
-            self.metalViewDelegate.forceColorBufferRecalculation = YES;
-            while (self.metalViewDelegate.forceColorBufferRecalculation);
-            while (old == self.metalView.lastRenderedTexture);
-            [allImages addObject:(id)[self imageForVideo]];//Careful, we are passing a CF type to NSArray. Cast to avoid warning. Handle with care
-        }];
-        NSString *fullPath = [NSString stringWithFormat:@"%@%@.mp4", self.fileURL.path, [NSDate date].description];
-        [IMCVideoCreator writeImagesAsMovie:allImages toPath:fullPath size:[self sizeFrame] duration:16];
-    });
-}
-
--(void)recordRockVideo{
-    dispatch_queue_t aQ = dispatch_queue_create("aQQQ", NULL);
-    dispatch_async(aQ, ^{
-        //NSMutableArray *allImages = [NSMutableArray arrayWithCapacity:STEPS];
-        UInt8 ** allData = (UInt8 **)malloc(STEPS * sizeof(UInt8 *));
-        float stepSize = 2 * M_PI/1000;
-        NSInteger stepsToTake = 80;
-        for (int i = 0; i< stepsToTake; i++) {
-            if(i < stepsToTake/4)
-                [self.metalView rotateX:0 Y:stepSize Z:-stepSize];
-            else if(i < stepsToTake/2)
-                [self.metalView rotateX:stepSize Y:0 Z:stepSize];
-            else if(i < stepsToTake/4 * 3)
-                [self.metalView rotateX:0 Y:-stepSize Z:stepSize];
-            else
-                [self.metalView rotateX:-stepSize Y:0 Z:-stepSize];
-            self.metalView.refresh = YES;
-            while (self.metalView.refresh);
-            id<MTLTexture> old = self.metalView.lastRenderedTexture;
-            while (old == self.metalView.lastRenderedTexture);
-            allData[i] = (UInt8 *)[self.metalView captureData];
-        }
-        NSString *fullPath = [NSString stringWithFormat:@"%@%@.mp4", self.fileURL.path, [NSDate date].description];
-
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [IMCVideoCreator writeImagesAsMovieWithBuffers:allData images:stepsToTake toPath:fullPath size:[self sizeFrame] duration:50];
-            for(int i = 0; i < stepsToTake; i++)
-                free(allData[i]);
-            free(allData);
-        });
-    });
+        if(self.videoType.indexOfSelectedItem == 0)
+            [IMC3DVideoPrograms recordYVideoWithPath:fullPath size:size framDuration:50 metalView:self.metalView active:&recordingVideo];
+        if(self.videoType.indexOfSelectedItem == 1)
+            [IMC3DVideoPrograms recordStackVideoWithPath:fullPath size:size framDuration:16 metalView:self.metalView slices:self.threeDHandler.images active:&recordingVideo];
+        if(self.videoType.indexOfSelectedItem == 2)
+            [IMC3DVideoPrograms recordSliceVideoWithPath:fullPath size:size framDuration:16 metalView:self.metalView slices:self.threeDHandler.images active:&recordingVideo];
+        if(self.videoType.indexOfSelectedItem == 3)
+            [IMC3DVideoPrograms recordRockVideoWithPath:fullPath size:size framDuration:16 metalView:self.metalView active:&recordingVideo];
+    }
 }
 
 #pragma mark Segment Cells and pixel classification
@@ -2158,13 +2037,23 @@
 #pragma mark cell basic algorithms
 
 -(void)cellBasicAlgorithms:(id)sender{//TODO, have several possibilities, and combine Comps
-    if(!self.cellAnalysis){
-        if(self.inScopeComputation)
-            self.cellAnalysis = [[IMCCellBasicAlgorithms alloc]initWithComputation:self.inScopeComputation];
-        else if(self.inScope3DMask)
-            self.cellAnalysis = [[IMCCellBasicAlgorithms alloc]initWith3DMask:self.inScope3DMask];
+    
+    IMCComputationOnMask *whichComp = self.inScopeComputation;
+    if(!whichComp)
+        whichComp = self.inScope3DMask;
+    if(whichComp){
+        _currentCellAnalysis = NULL;
+        if(!self.cellAnalyses)
+            self.cellAnalyses = @[].mutableCopy;
+        for(IMCCellBasicAlgorithms *analys in self.cellAnalyses)
+            if([analys containsComputations:@[whichComp]])
+                _currentCellAnalysis = analys;
+        if(!_currentCellAnalysis){
+            _currentCellAnalysis = [[IMCCellBasicAlgorithms alloc]initWithComputation:whichComp];
+            [self.cellAnalyses addObject:_currentCellAnalysis];
+        }
+        [[_currentCellAnalysis window] makeKeyAndOrderFront:_currentCellAnalysis];
     }
-    [[self.cellAnalysis window] makeKeyAndOrderFront:self.cellAnalysis];
 }
 
 #pragma mark

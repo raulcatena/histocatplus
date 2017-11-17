@@ -9,8 +9,15 @@
 #import "IMCBhSNEOperation.h"
 #import "bhsne.h"
 
+@interface IMCBhSNEOperation(){
+    float *stagingBuffer;
+}
+
+@end
 
 @implementation IMCBhSNEOperation
+
+@synthesize outputData = _outputData;
 
 -(NSString *)nameGiven{
     if(!_nameGiven){
@@ -25,14 +32,16 @@
 }
 
 -(float *)outputData{
-    float *trans = (float *)calloc(self.numberOfValues * 2, sizeof(float));
-    for(NSInteger i = 0; i < self.numberOfValues * 2; i++)trans[i] = (float)self.outputDataDouble[i];
-    return trans;
+    if(!_outputData)
+        _outputData = (float *)calloc(self.numberOfValues * 2, sizeof(float));
+    NSInteger values = self.numberOfValues * 2;
+    for(NSInteger i = 0; i < values; i++)_outputData[i] = (float)self.outputDataDouble[i];
+    return _outputData;
 }
 
 -(void)main{
     @autoreleasepool {
-
+        stagingBuffer = NULL;
         BHSNE bh;
         bh.run(self.inputDataDouble, (unsigned int)self.numberOfValues, (int)self.numberOfVariables, self.outputDataDouble, (int)self.numberOfOutputVariables, self.perplexity, self.thetha, &_iterationCursor, self.numberOfCycles, self.cyclesLying);
         

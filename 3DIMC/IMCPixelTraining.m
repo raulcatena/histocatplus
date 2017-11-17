@@ -59,7 +59,8 @@
 }
 
 -(void)loadLayerDataWithBlock:(void (^)())block{
-
+    if(![self canLoad])return;
+    
     [self loadBuffer];
     
     IMCPixelClassificationTool *tool;
@@ -70,7 +71,6 @@
     
     [[tool window] makeKeyAndOrderFront:tool];
     [super loadLayerDataWithBlock:block];    
-
 }
 -(void)loadBuffer{
     

@@ -70,6 +70,7 @@
 }
 
 -(void)loadLayerDataWithBlock:(void (^)())block{
+    if(![self canLoad])return;
     self.isLoaded = YES;
     [self.parent loadLayerDataWithBlock:block];
 }

@@ -57,4 +57,6 @@
 -(instancetype)initWithComputation:(IMCComputationOnMask *)computation;
 -(instancetype)initWith3DMask:(IMC3DMask *)computation;
 
+-(BOOL)containsComputations:(NSArray<IMCComputationOnMask *>*)computations;
+
 @end

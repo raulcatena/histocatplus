@@ -774,11 +774,15 @@
 #pragma mark load unload
 
 -(void)loadLayerDataWithBlock:(void (^)())block{
-    [self.fileWrapper loadLayerDataWithBlock:block];
+    if(![self canLoad])return;
+    [self.fileWrapper loadLayerDataWithBlock:^{
+        [super loadLayerDataWithBlock:block];
+    }];
 }
 -(void)unLoadLayerDataWithBlock:(void (^)())block{
     [self clearBuffers];
     self.isLoaded = NO;
+    self.fileWrapper.isLoaded = NO;
     [super unLoadLayerDataWithBlock:block];
 }
 

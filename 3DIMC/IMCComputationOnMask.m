@@ -154,6 +154,9 @@
 }
 
 -(void)loadLayerDataWithBlock:(void (^)())block{
+    
+    if(![self canLoad])return;
+    
     if(!self.mask.isLoaded)
         [self.mask loadLayerDataWithBlock:nil];
     while (!self.mask.isDual);

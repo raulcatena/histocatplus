@@ -21,6 +21,7 @@
 @property (nonatomic, readonly) IMCFileWrapper * fileWrapper;
 @property (nonatomic, assign) BOOL hasChanges;
 @property (nonatomic, assign) BOOL isLoaded;
+@property (nonatomic, assign) BOOL loading;
 
 
 //File handling
@@ -45,5 +46,7 @@
 -(void)unLoadLayerDataWithBlock:(void(^)())block;//To always override
 
 -(void)openIfNecessaryAndPerformBlock:(void(^)())block;
+
+-(BOOL)canLoad;
 
 @end

@@ -98,6 +98,8 @@
 #pragma mark load and deliver masks
 
 -(void)loadLayerDataWithBlock:(void (^)())block{
+    if(![self canLoad])return;
+    
     dispatch_async(dispatch_queue_create("load_mask", NULL), ^{
         [self loadMask];
         [self loadNuclearMask];
