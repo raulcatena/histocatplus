@@ -1538,49 +1538,63 @@
                 return;
             
             NSIndexSet *channs = self.channels.selectedRowIndexes.copy;
-            NSInteger total = self.filesTree.selectedRowIndexes.count;
+            NSIndexSet * objects = self.filesTree.selectedRowIndexes.copy;
+            NSMutableArray *visitedExternals = @[].mutableCopy;
+            __block NSInteger ongoing = 0;
             
-            [self.filesTree.selectedRowIndexes.copy enumerateIndexesUsingBlock:^(NSUInteger fileIdx, BOOL *stop){
-                IMCNodeWrapper *anobj;
-                anobj= [self.filesTree itemAtRow:fileIdx];
+            [objects enumerateIndexesUsingBlock:^(NSUInteger fileIdx, BOOL *stop){
+                while (ongoing > 3);
+                ongoing++;
                 
-                IMCImageStack *stack;
-                IMCComputationOnMask *comp;
-                IMCPixelClassification *mask;
-                
-                if([anobj isMemberOfClass:[IMCImageStack class]])
-                    stack = (IMCImageStack *)anobj;
-                if([anobj isMemberOfClass:[IMCFileWrapper class]])
-                    stack = [(IMCFileWrapper *)anobj allStacks].firstObject;
-                if([anobj isMemberOfClass:[IMCPanoramaWrapper class]])
-                    stack = (IMCImageStack *)[(IMCPanoramaWrapper *)anobj children].firstObject;
-                if([anobj isMemberOfClass:[IMCComputationOnMask class]]){
-                    comp = (IMCComputationOnMask *)anobj;
-                    stack = comp.mask.imageStack;
-                }
-                if([anobj isMemberOfClass:[IMCPixelClassification class]])
-                    mask = (IMCPixelClassification *)anobj;
-                
-                if(stack && !comp){
-                    [stack openIfNecessaryAndPerformBlock:^{
-                        [channs enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop){
-                            [self.threeDHandler addImageStackatIndex:fileIdx channel:idx];
-                        }];
-                    }];
+                dispatch_queue_t internalQueue = dispatch_queue_create("loadRender", NULL);
+                dispatch_async(internalQueue, ^{
                     
-                }else if(mask){
-                    [mask openIfNecessaryAndPerformBlock:^{
-                        [self.threeDHandler addMask:mask atIndexOfStack:fileIdx maskOption:(MaskOption)self.maskVisualizeSelector.selectedSegment maskType:(MaskType)self.maskPartsSelector.selectedSegment];
-                    }];
-                }else if(comp){
-                    [comp openIfNecessaryAndPerformBlock:^{
-                        [channs enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop){
-                            [self.threeDHandler addComputationAtIndex:fileIdx channel:idx maskOption:(MaskOption)self.maskVisualizeSelector.selectedSegment maskType:(MaskType)self.maskPartsSelector.selectedSegment];
-                        }];
-                    }];
-                }
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    self.threeDProcessesIndicator.doubleValue += 100.f/total;
+                    NSInteger external = [self.threeDHandler externalSliceIndexForInternal:fileIdx];
+                    if(![visitedExternals containsObject:@(external)]){
+                        [visitedExternals addObject:@(external)];
+                        IMCNodeWrapper *anobj;
+                        anobj= [self.filesTree itemAtRow:fileIdx];
+                        
+                        IMCImageStack *stack;
+                        IMCComputationOnMask *comp;
+                        IMCPixelClassification *mask;
+                        
+                        if([anobj isMemberOfClass:[IMCImageStack class]])
+                            stack = (IMCImageStack *)anobj;
+                        if([anobj isMemberOfClass:[IMCFileWrapper class]])
+                            stack = [(IMCFileWrapper *)anobj allStacks].firstObject;
+                        if([anobj isMemberOfClass:[IMCPanoramaWrapper class]])
+                            stack = (IMCImageStack *)[(IMCPanoramaWrapper *)anobj children].firstObject;
+                        if([anobj isMemberOfClass:[IMCComputationOnMask class]]){
+                            comp = (IMCComputationOnMask *)anobj;
+                            stack = comp.mask.imageStack;
+                        }
+                        if([anobj isMemberOfClass:[IMCPixelClassification class]])
+                            mask = (IMCPixelClassification *)anobj;
+                        
+                        if(stack && !comp){
+                            [stack openIfNecessaryAndPerformBlock:^{
+                                [channs enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop){
+                                    [self.threeDHandler addImageStackatIndex:fileIdx channel:idx];
+                                }];
+                            }];
+                            
+                        }else if(mask){
+                            [mask openIfNecessaryAndPerformBlock:^{
+                                [self.threeDHandler addMask:mask atIndexOfStack:fileIdx maskOption:(MaskOption)self.maskVisualizeSelector.selectedSegment maskType:(MaskType)self.maskPartsSelector.selectedSegment];
+                            }];
+                        }else if(comp){
+                            [comp openIfNecessaryAndPerformBlock:^{
+                                [channs enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop){
+                                    [self.threeDHandler addComputationAtIndex:fileIdx channel:idx maskOption:(MaskOption)self.maskVisualizeSelector.selectedSegment maskType:(MaskType)self.maskPartsSelector.selectedSegment];
+                                }];
+                            }];
+                        }
+                    }
+                    ongoing--;
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        self.threeDProcessesIndicator.doubleValue += 100.f/objects.count;
+                    });
                 });
             }];
             [self.threeDHandler meanBlurModelWithKernel:3 forChannels:channs mode:self.cleanUpMode.indexOfSelectedItem];
