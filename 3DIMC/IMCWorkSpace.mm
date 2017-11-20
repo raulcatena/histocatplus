@@ -79,6 +79,8 @@
 @property (nonatomic, strong) NSMutableArray *batchWindows;
 @property (nonatomic, strong) IMCMiniRConsole *rMiniConsole;
 @property (nonatomic, strong) IMCMetalViewAndRenderer *metalViewDelegate;
+@property (nonatomic, strong) IMCMetalSphereRenderer *sphereMetalViewDelegate;
+@property (nonatomic, strong) IMCMetalSphereRenderer *stripedSphereMetalViewDelegate;
 @property (nonatomic, assign) NSModalSession compensationSession;
 @property (nonatomic, strong) IMCCompensation * compensationHandler;
 @property (nonatomic, strong) NSMutableArray<IMCCellBasicAlgorithms *> * cellAnalyses;
@@ -146,15 +148,18 @@
 }
 -(void)checkWhich3DtechnologyForceLegacy:(BOOL)force{
 
-    
     self.metalView.device = MTLCreateSystemDefaultDevice();
     
     if(self.metalView.device && force == NO){
         [self.openGlViewPort removeFromSuperview];
         self.openGlViewPort = nil;
         self.metalViewDelegate = [[IMCMetalViewAndRenderer alloc]init];
+        self.sphereMetalViewDelegate = [[IMCMetalSphereRenderer alloc]init];
+        self.stripedSphereMetalViewDelegate = [[IMCMetalSphereRenderer alloc]init];
         self.metalView.delegate = self.metalViewDelegate;
         self.metalViewDelegate.delegate = self;
+        self.sphereMetalViewDelegate.delegate = self;
+        self.stripedSphereMetalViewDelegate.delegate = self;
     }else{
         [self.metalView removeFromSuperview];
         self.metalView = nil;
@@ -261,6 +266,8 @@
     if(inScope3DMask && self.inOrderIndexes.count == 0)
         self.inOrderIndexes = @[@(0)].mutableCopy;
     inScope3DMask.blurMode = self.cleanUpMode.indexOfSelectedItem;
+    self.sphereMetalViewDelegate.computation = inScope3DMask;
+    self.stripedSphereMetalViewDelegate.computation = inScope3DMask;
 }
 
 #pragma mark File Handling
@@ -967,6 +974,8 @@
 -(NSArray *)channelsForCell{
     if(self.inScopeComputations.count > 0)
         return self.inScopeComputation.channels;
+    else if(self.inScope3DMask)
+        return self.inScope3DMask.channels;
     else
         return self.inScopeImage.channels;
 }
@@ -1499,11 +1508,30 @@
         [General runAlertModalWithMessage:@"You can render only from the stacks, measurements, or 3d Masks views"];
         return NO;
     }
+    if(self.filesTree.selectedRowIndexes.count == 0 || self.channels.selectedRowIndexes.count == 0){
+        [General runAlertModalWithMessage:@"Select slices and channels"];
+        return NO;
+    }
     return YES;
 }
 -(void)stepperZChanged:(id)sender{
     self.labelStepperDefaultZ.stringValue = [NSString stringWithFormat:@"%.2f", self.stepperDefaultZ.floatValue];
     self.threeDHandler.defaultZ = self.stepperDefaultZ.floatValue;
+}
+-(void)typeOf3DMesh:(NSPopUpButton *)sender{
+    if(sender.indexOfSelectedItem == 0)self.metalView.delegate = self.metalViewDelegate;
+    if(sender.indexOfSelectedItem == 1)self.metalView.delegate = self.sphereMetalViewDelegate;
+    if(sender.indexOfSelectedItem == 2)self.metalView.delegate = self.stripedSphereMetalViewDelegate;
+    if(sender.indexOfSelectedItem == 3){
+        //TODO
+        [sender selectItemAtIndex:0];
+        self.metalView.delegate = self.metalViewDelegate;
+        [General runAlertModalWithMessage:@"Funcion not yet implemented, reset to voxels"];
+        
+    }
+    self.metalViewDelegate.forceColorBufferRecalculation = YES;
+    self.sphereMetalViewDelegate.forceColorBufferRecalculation = YES;
+    self.stripedSphereMetalViewDelegate.forceColorBufferRecalculation = YES;
 }
 -(void)start3Dreconstruction:(NSButton *)sender{
     if([self canRender]){
@@ -1541,6 +1569,7 @@
             NSIndexSet * objects = self.filesTree.selectedRowIndexes.copy;
             NSMutableArray *visitedExternals = @[].mutableCopy;
             __block NSInteger ongoing = 0;
+            __block NSInteger completed = 0;
             
             [objects enumerateIndexesUsingBlock:^(NSUInteger fileIdx, BOOL *stop){
                 while (ongoing > 3);
@@ -1592,11 +1621,13 @@
                         }
                     }
                     ongoing--;
+                    completed++;
                     dispatch_async(dispatch_get_main_queue(), ^{
                         self.threeDProcessesIndicator.doubleValue += 100.f/objects.count;
                     });
                 });
             }];
+            while (completed < objects.count);
             [self.threeDHandler meanBlurModelWithKernel:3 forChannels:channs mode:self.cleanUpMode.indexOfSelectedItem];
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self calculateMemory];
@@ -1675,6 +1706,9 @@
 }
 -(float *)thicknesses{
     return [self.threeDHandler thicknesses];
+}
+-(float)defaultThicknessValue{
+    return self.stepperDefaultZ.floatValue;
 }
 -(float)totalThickness{
     return [self.threeDHandler totalThickness];
@@ -2056,17 +2090,20 @@
     if(!whichComp)
         whichComp = self.inScope3DMask;
     if(whichComp){
-        _currentCellAnalysis = NULL;
-        if(!self.cellAnalyses)
-            self.cellAnalyses = @[].mutableCopy;
-        for(IMCCellBasicAlgorithms *analys in self.cellAnalyses)
-            if([analys containsComputations:@[whichComp]])
-                _currentCellAnalysis = analys;
-        if(!_currentCellAnalysis){
-            _currentCellAnalysis = [[IMCCellBasicAlgorithms alloc]initWithComputation:whichComp];
-            [self.cellAnalyses addObject:_currentCellAnalysis];
-        }
-        [[_currentCellAnalysis window] makeKeyAndOrderFront:_currentCellAnalysis];
+        [whichComp openIfNecessaryAndPerformBlock:^{
+            _currentCellAnalysis = NULL;
+            if(!self.cellAnalyses)
+                self.cellAnalyses = @[].mutableCopy;
+            for(IMCCellBasicAlgorithms *analys in self.cellAnalyses)
+                if([analys containsComputations:@[whichComp]])
+                    _currentCellAnalysis = analys;
+            if(!_currentCellAnalysis){
+                _currentCellAnalysis = [[IMCCellBasicAlgorithms alloc]initWithComputation:whichComp];
+                _currentCellAnalysis.mainURL = self.fileURL.path;
+                [self.cellAnalyses addObject:_currentCellAnalysis];
+            }
+            [[_currentCellAnalysis window] makeKeyAndOrderFront:_currentCellAnalysis];
+        }];
     }
 }
 

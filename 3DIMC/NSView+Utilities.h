@@ -13,5 +13,6 @@
 -(NSImage *)getImageBitMapFromRect:(CGRect)rect;
 -(NSImage *)getImageBitMapFull;
 + (NSView *)loadWithNibNamed:(NSString *)nibNamed owner:(id)owner class:(Class)loadClass ;
+- (UInt8 *)bufferForView ;
 
 @end

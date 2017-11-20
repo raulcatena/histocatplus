@@ -203,7 +203,7 @@
     [self allocateMask];
 }
 -(void)allocateMask{
-    NSLog(@"---%@", NSStringFromRect(_interestProportions));
+    
     [self cleanMaskMemory];
     self.showMask = (bool *)calloc(self.width * self.height, sizeof(bool));
     NSInteger total = self.width * self.height;

@@ -953,28 +953,48 @@
 }
 -(int)xIndexInArray:(NSArray *)array{
     int xIndex = -1;
-    for (NSString *str in array) {
-        if ([str isEqualToString:@"X"] || [str isEqualToString:@"avg_X"] || [str isEqualToString:@"cell_avg_X"])
+    for (NSInteger i = array.count - 1; i >=0; i--) {
+        NSString *str = array[i];
+        if ([str isEqualToString:@"X"] || [str isEqualToString:@"avg_X"] || [str isEqualToString:@"cell_avg_X"]){
             xIndex = (int)[self.channels indexOfObject:str];
+            break;
+        }
     }
     return xIndex;
 }
 
 -(int)yIndexInArray:(NSArray *)array{
     int yIndex = -1;
-    for (NSString *str in array) {
-        if ([str isEqualToString:@"Y"] || [str isEqualToString:@"avg_Y"] || [str isEqualToString:@"cell_avg_Y"])
+    for (NSInteger i = array.count - 1; i >=0; i--) {
+        NSString *str = array[i];
+        if ([str isEqualToString:@"Y"] || [str isEqualToString:@"avg_Y"] || [str isEqualToString:@"cell_avg_Y"]){
             yIndex = (int)[self.channels indexOfObject:str];
+            break;
+        }
     }
     return yIndex;
 }
 -(int)zIndexInArray:(NSArray *)array{
     int zIndex = -1;
-    for (NSString *str in array) {
-        if ([str isEqualToString:@"Z"] || [str isEqualToString:@"avg_Z"] || [str isEqualToString:@"cell_avg_Z"])
+    for (NSInteger i = array.count - 1; i >=0; i--) {
+        NSString *str = array[i];
+        if ([str isEqualToString:@"Z"] || [str isEqualToString:@"avg_Z"] || [str isEqualToString:@"cell_avg_Z"]){
             zIndex = (int)[self.channels indexOfObject:str];
+            break;
+        }
     }
     return zIndex;
+}
+-(int)sizesInArray:(NSArray *)array{
+    int sizes = -1;
+    for (NSInteger i = array.count - 1; i >=0; i--) {
+        NSString *str = array[i];
+        if ([str isEqualToString:@"Size"]){
+            sizes = (int)[self.channels indexOfObject:str];
+            break;
+        }
+    }
+    return sizes;
 }
 -(NSArray *)centroidsForChannel:(NSInteger)channel{
     int xIndex = [self xIndexInArray:self.channels];
@@ -992,15 +1012,27 @@
 }
 -(float *)xCentroids{
     int xIndex = [self xIndexInArray:self.channels];
-    return self.computedData[xIndex];
+    if(xIndex >=0 && xIndex < self.channels.count)
+        return self.computedData[xIndex];
+    return NULL;
 }
 -(float *)yCentroids{
     int yIndex = [self yIndexInArray:self.channels];
-    return self.computedData[yIndex];
+    if(yIndex >=0 && yIndex < self.channels.count)
+        return self.computedData[yIndex];
+    return NULL;
 }
 -(float *)zCentroids{
     int zIndex = [self zIndexInArray:self.channels];
-    return self.computedData[zIndex];
+    if(zIndex >=0 && zIndex < self.channels.count)
+        return self.computedData[zIndex];
+    return NULL;
+}
+-(float *)sizes{
+    int sizes = [self sizesInArray:self.channels];
+    if(sizes >=0 && sizes < self.channels.count)
+        return self.computedData[sizes];
+    return NULL;
 }
 -(NSString *)descriptionWithIndexes:(NSIndexSet *)indexSet{
     NSMutableString *str = @"".mutableCopy;
@@ -1320,6 +1352,7 @@ typedef enum{
         cachedSettings = NULL;
     }
 }
+
 -(NSUInteger)usedMegaBytes{
     
     NSUInteger bytes = 0;
@@ -1332,6 +1365,83 @@ typedef enum{
     
     return bytes;
 }
+
+#pragma mark utility measurements
+
+-(float)maxChannel:(NSInteger)channel{
+    
+    if(self.isLoaded && channel < self.channels.count && channel >= 0){
+        float * data = self.computedData[channel];
+        float max = .0f;
+        NSInteger segments = self.segmentedUnits;
+        for (NSInteger i = 0; i < segments; i++) {
+            if(data[i] > max)
+                max = data[i];
+        }
+        return max;
+    }
+    return .0f;
+}
+
+-(float)halfDimension:(NSInteger)dimension{
+    
+    if(self.isLoaded && dimension < 3){
+        float *centroids = NULL;
+        switch (dimension) {
+            case 0:
+                centroids = [self xCentroids];
+                break;
+            case 1:
+                centroids = [self yCentroids];
+                break;
+            case 2:
+                centroids = [self zCentroids];
+                break;
+            default:
+                break;
+        }
+        float min = 10000000000.f, max = .0f;
+        NSInteger segments = self.segmentedUnits;
+        for (NSInteger i = 0; i < segments; i++) {
+            if(centroids[i] > max)
+                max = centroids[i];
+            if(centroids[i] < min)
+                min = centroids[i];
+        }
+        return (max - min) / 2;
+    }
+    return .0f;
+}
+-(float)minDimension:(NSInteger)dimension{
+    
+    if(self.isLoaded && dimension < 3){
+        float *centroids = NULL;
+        switch (dimension) {
+            case 0:
+                centroids = [self xCentroids];
+                break;
+            case 1:
+                centroids = [self yCentroids];
+                break;
+            case 2:
+                centroids = [self zCentroids];
+                break;
+            default:
+                break;
+        }
+        float min = 10000000000.f;//ridiculously high number
+        NSInteger segments = self.segmentedUnits;
+        for (NSInteger i = 0; i < segments; i++) {
+            
+            if(centroids[i] < min)
+                min = centroids[i];
+        }
+        return min;
+    }
+    return .0f;
+}
+
+
 -(void)dealloc{
     NSLog(@"_____DEALLOCING MASK COMPS");
     [self release_computedData];

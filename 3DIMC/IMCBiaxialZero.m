@@ -7,14 +7,25 @@
 //
 
 #import "IMCBiaxialZero.h"
+#import "NSArray+Statistics.h"
 
 @implementation IMCBiaxialZero
+
+int fltcompare(const void *a,const void *b) {
+    float fa, fb;
+    fa = * ((float *) a);
+    fb = * ((float *) b);
+    if(fa > fb) return 1;
+    if(fa < fb) return -1;
+    return 0;
+}
 
 -(void)drawPoints:(CGContextRef)ctx dirtyRect:(CGRect)dirtyRect{
     
     float *theBiaxialData = [self.delegatePlot floatBiaxialData];
     if(!theBiaxialData)return;
     int dataSize = [self.delegatePlot sizeOfData];
+    int elements = dataSize/2;
     float width = dirtyRect.size.width * 0.9;
     float height = dirtyRect.size.height * 0.9;
     
@@ -24,15 +35,48 @@
                                self.pointsColor.blueComponent,
                                self.transparencyPoints);
     
-    self.maxX = 0; self.maxY = 0; self.minX = 0; self.minY = 0;
-    for (NSInteger x = 0; x<dataSize; x+=2) {
-        if(isnan(theBiaxialData[x]) || isinf(ABS(theBiaxialData[x])))continue;
-        if(theBiaxialData[x] > self.maxX)self.maxX = theBiaxialData[x];
-        if(theBiaxialData[x] < self.minX)self.minX = theBiaxialData[x];
-        if(isnan(theBiaxialData[x + 1]) || isinf(ABS(theBiaxialData[x + 1])))continue;
-        if(theBiaxialData[x+1] > self.maxY)self.maxY = theBiaxialData[x+1];
-        if(theBiaxialData[x+1] < self.minY)self.minY = theBiaxialData[x+1];
+    
+    float * x = malloc(elements * sizeof(float));
+    float * y = malloc(elements * sizeof(float));
+    for (NSInteger i = 0; i < dataSize; i+= 2) {
+        x[i/2] = theBiaxialData[i];
+        y[i/2] = theBiaxialData[i + 1];
     }
+    NSInteger validX = 0, validY = 0;
+    for (NSInteger i = 0; i < elements; i++) {
+        if(!isnan(x[i]) || !isinf(ABS(x[i])))validX++;
+        if(!isnan(y[i]) || !isinf(ABS(y[i])))validY++;
+    }
+    qsort (x, elements, sizeof(float), fltcompare);
+    qsort (y, elements, sizeof(float), fltcompare);
+    
+    NSInteger pre = (NSInteger)validX * 100;
+    NSInteger preIndex = pre / 10000;
+    NSInteger post = (NSInteger)validY * 9900;
+    NSInteger postIndex = post / 10000;
+    
+    
+    self.minX = x[preIndex];
+    self.minY = y[preIndex];
+    self.maxX = x[postIndex];
+    self.maxY = y[postIndex];
+
+    free(x);
+    free(y);
+    
+//    self.maxX = 0; self.maxY = 0; self.minX = 0; self.minY = 0;
+    
+//    NSLog(@"MX MY MxX MxY %f %f %f %f", self.minX, self.minY, self.maxX, self.maxY);
+//    for (NSInteger x = 0; x<dataSize; x+=2) {
+//        if(isnan(theBiaxialData[x]) || isinf(ABS(theBiaxialData[x])))continue;
+//        if(theBiaxialData[x] > self.maxX)self.maxX = theBiaxialData[x];
+//        if(theBiaxialData[x] < self.minX)self.minX = theBiaxialData[x];
+//        if(isnan(theBiaxialData[x + 1]) || isinf(ABS(theBiaxialData[x + 1])))continue;
+//        if(theBiaxialData[x+1] > self.maxY)self.maxY = theBiaxialData[x+1];
+//        if(theBiaxialData[x+1] < self.minY)self.minY = theBiaxialData[x+1];
+//    }
+//    
+//    NSLog(@"-MX MY MxX MxY %f %f %f %f", self.minX, self.minY, self.maxX, self.maxY);
 
     float plotableX = (width - 1.2 * self.cornerMargin);
     float plotableY = (height - 1.2 * self.cornerMargin);
@@ -88,17 +132,18 @@
         //CGContextSaveGState(ctx);
         float posX = self.cornerMargin * 1.2 + internalX + theBiaxialData[x] * plotableX/rangeX;
         float posY = self.cornerMargin * 1.2 + internalY + theBiaxialData[x+1] * plotableY/rangeY;
-        //printf("%f x %f y %f plotable %f plotY\n", posX, posY, plotableX, plotableY);
-        CGContextAddArc(ctx,
-                        posX,
-                        posY,
-                        self.sizePoints,
-                        0.0f,
-                        M_PI*2,
-                        YES);
-        CGContextStrokePath(ctx);
-        CGContextFillPath(ctx);
         
+        //if(posX < self.maxX && posX > self.minX && posY < self.maxY && posY > self.minY){
+            CGContextAddArc(ctx,
+                            posX,
+                            posY,
+                            self.sizePoints,
+                            0.0f,
+                            M_PI*2,
+                            YES);
+            CGContextStrokePath(ctx);
+            CGContextFillPath(ctx);
+        //}
     }
     [self maxLabels:ctx];
 }

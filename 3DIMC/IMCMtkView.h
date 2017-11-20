@@ -28,6 +28,8 @@
 @property (nonatomic, assign) float nearZOffset;
 @property (nonatomic, assign) float farZOffset;
 
+@property (nonatomic, strong) NSMutableArray *labels;
+
 -(void)rotateX:(float)angleX Y:(float)angleY Z:(float)angleZ;
 
 -(CGImageRef)captureImageRef;

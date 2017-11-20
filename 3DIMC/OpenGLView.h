@@ -43,6 +43,7 @@ typedef enum
 -(ColoringType)coloringType;//0 Diffuse light 1 Emissive color
 -(float *)zValues;
 -(float *)thicknesses;
+-(float)defaultThicknessValue;
 -(float)totalThickness;
 -(NSPoint)centerInterestArea;
 -(AlphaMode)alphaMode;

@@ -11,27 +11,11 @@
 #import <QuartzCore/QuartzCore.h>
 #import "Matrix4.h"
 #import "IMCMtkView.h"
-#import "IMCImageGenerator.h"
 
 @interface IMCMetalViewAndRenderer(){
-    Matrix4 * projectionMatrix;
-    float zoom;
     NSInteger voxelsToRenderCounter;
 }
 
-@property (nonatomic, strong) CAMetalLayer* metalLayer;
-@property (nonatomic, strong) id<MTLBuffer> vertexBuffer;
-@property (nonatomic, strong) id<MTLBuffer> uniformsBuffer;
-@property (nonatomic, strong) id<MTLBuffer> positionalBuffer;
-@property (nonatomic, strong) id<MTLBuffer> maskBuffer;
-//@property (nonatomic, strong) id<MTLBuffer> layerIndexesBuffer;
-@property (nonatomic, strong) id<MTLBuffer> colorBuffer;
-@property (nonatomic, strong) id<MTLBuffer> heightDescriptor;
-@property (nonatomic, strong) id<MTLRenderPipelineState> pipelineState;
-@property (nonatomic, strong) id<MTLCommandQueue> commandQueue;
-@property (nonatomic, strong) id<MTLDepthStencilState> stencilState;
-@property (nonatomic, strong) NSArray *colorsObtained;
-@property (strong, nonatomic) NSArray *indexesObtained;
 @property (strong, nonatomic) NSIndexSet *slicesObtained;
 @property (assign, nonatomic) NSInteger renderWidth;
 @property (assign, nonatomic) NSInteger renderHeight;
@@ -39,36 +23,9 @@
 
 @end
 
-typedef struct{
-    GLKMatrix4 baseModelMatrix;
-    GLKMatrix4 modelViewMatrix;
-    GLKMatrix4 projectionMatrix;
-    GLKMatrix4 premultipliedMatrix;
-    GLKMatrix3 normalMatrix;
-} Constants;
-
-typedef struct{
-    float leftX;
-    float rightX;
-    float upperY;
-    float lowerY;
-    float nearZ;
-    float farZ;
-    float halfTotalThickness;
-    uint32 totalLayers;
-    uint32 widthModel;
-    uint32 heightModel;
-    uint32 areaModel;
-} PositionalData;
-
-float vertexData[] = {0.0, 1.0, 0.0,
-                      -1.0, -1.0, 0.0,
-                      1.0, -1.0, 0.0
-};
-
-typedef struct{
-    float x, y, z, w;
-} Vertex;
+//typedef struct{
+//    float x, y, z, w;
+//} Vertex;
 
 #define A -0.5, 0.5, 0.5
 #define B -0.5, -0.5, 0.5
@@ -351,8 +308,8 @@ bool heightDescriptor[] = {
                 }
             }
             voxelsToRenderCounter = cleanIndex/stride;
-            if(cleanIndex * sizeof(float) < 1024000000)
-                self.colorBuffer = [self.device newBufferWithBytes:cleanBuffer length:cleanIndex * sizeof(float) options:MTLResourceOptionCPUCacheModeDefault];
+            if((cleanIndex + stride) * sizeof(float) < 1024000000)
+                self.colorBuffer = [self.device newBufferWithBytes:cleanBuffer length:(cleanIndex + stride) * sizeof(float) options:MTLResourceOptionCPUCacheModeDefault];
             else
                 self.colorBuffer = nil;
             
@@ -640,6 +597,42 @@ bool heightDescriptor[] = {
     desc.depthCompareFunction = MTLCompareFunctionLess;
     desc.depthWriteEnabled = YES;
     self.stencilState = [self.device newDepthStencilStateWithDescriptor:desc];
+}
+
+
+-(void)addLabelsOverlayed:(IMCMtkView *)view{
+    
+    if([[self.delegate legends]state] == NSOnState){
+        NSArray *colorsObtained = [self.delegate colors];
+        NSArray *channsObtained = [self.delegate channelsForCell];
+        NSArray *indexesObtained = [self.delegate inOrderIndexes];
+        CGFloat width = view.bounds.size.width;
+        CGFloat heigthLabel = 30;
+        
+        if(colorsObtained.count == indexesObtained.count || colorsObtained.count == 0){
+            int index = 0;
+            for (NSNumber *chann in indexesObtained) {
+                NSTextField *field = index < view.labels.count ? view.labels[index] : [[NSTextField alloc]initWithFrame:CGRectZero];
+                if(![view.labels containsObject:field]){
+                    [view.labels addObject:field];
+                    [view addSubview:field];
+                }
+                NSString * str = [channsObtained objectAtIndex:chann.integerValue];
+                field.frame = NSMakeRect(10.0f, heigthLabel * index, width, heigthLabel);
+                field.textColor = colorsObtained.count == 0 ? [NSColor whiteColor] : [colorsObtained objectAtIndex:index];
+                field.backgroundColor = [NSColor clearColor];
+                field.font = [NSFont systemFontOfSize:25.0f];
+                field.bordered = NO;
+                field.refusesFirstResponder = YES;
+                [field setStringValue:str];
+                //[view addSubview:field];
+                index++;
+            }
+            for (NSInteger i = index; i < view.labels.count; i++) {
+                [(NSView *)view.labels[i] setFrame:CGRectZero];
+            }
+        }
+    }
 }
 
 @end

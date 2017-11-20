@@ -79,12 +79,12 @@ void applySmoothingFilterToPixelData(UInt8 * pixelData, NSInteger width, NSInteg
 BOOL doesJumpLineTest(NSInteger index, NSInteger indexTest, NSInteger width, NSInteger height, NSInteger total, NSInteger expectedDistance){
     if(indexTest>=total || indexTest < 0)
         return YES;
-    if(labs((indexTest+width)%width - (index+width)%width) > expectedDistance)
-        return YES;
+//    if(labs(indexTest%width - index%width) > expectedDistance)
+//        return YES;
     return NO;
 }
 
-void denoiseOrMeanFilter(NSInteger pix, NSInteger width, NSInteger planePixels, UInt8 *prevLayer, UInt8 *layer, UInt8 *postLayer, bool denoiseOrMean, UInt8 * temp1Buffer[2], NSInteger tempBufferUse){
+void denoiseOrMeanFilter(NSInteger pix, NSInteger width, NSInteger height, NSInteger planePixels, UInt8 *prevLayer, UInt8 *layer, UInt8 *postLayer, bool denoiseOrMean, UInt8 * temp1Buffer[2], NSInteger tempBufferUse){
     
     NSInteger blurCounter = 0;
     float sum = 0;
@@ -92,8 +92,9 @@ void denoiseOrMeanFilter(NSInteger pix, NSInteger width, NSInteger planePixels, 
     for (NSInteger x = -1; x < 2; x++) {
         for (NSInteger y = -1; y < 2; y++) {
             NSInteger index = pix + x + width * y;
-            //if( doesJumpLineTest(pix, index, width, height, planePixels, 2))
-            if(index < 0 || index >= planePixels)
+            
+            if( doesJumpLineTest(pix, index, width, height, planePixels, 1))
+            //if(index < 0 || index >= planePixels)
                 continue;
             
             if(prevLayer){
@@ -128,7 +129,7 @@ int gaussian [9][3] = {
     {1, 1, 1}
 };
 
-void gaussianFilter(NSInteger pix, NSInteger width, NSInteger planePixels, UInt8 *prevLayer, UInt8 *layer, UInt8 *postLayer, bool denoiseOrMean, UInt8 * temp1Buffer[2], NSInteger tempBufferUse){
+void gaussianFilter(NSInteger pix, NSInteger width, NSInteger height, NSInteger planePixels, UInt8 *prevLayer, UInt8 *layer, UInt8 *postLayer, bool denoiseOrMean, UInt8 * temp1Buffer[2], NSInteger tempBufferUse){
     
     NSInteger blurCounter = 0;
     float sum = 0;
@@ -136,8 +137,8 @@ void gaussianFilter(NSInteger pix, NSInteger width, NSInteger planePixels, UInt8
     for (int i = 0; i < 9; i++) {
         NSInteger index = pix + gaussian[i][0] + width * gaussian[i][1];
         //TODO jumper
-        //if( doesJumpLineTest(pix, index, width, height, planePixels, 2))
-        if(index < 0 || index >= planePixels)
+        if( doesJumpLineTest(pix, index, width, height, planePixels, 1))
+        //if(index < 0 || index >= planePixels)
             continue;
         
         if(prevLayer){
@@ -156,15 +157,18 @@ void gaussianFilter(NSInteger pix, NSInteger width, NSInteger planePixels, UInt8
     }
     temp1Buffer[tempBufferUse][pix] = MIN(255, (UInt8)(sum/blurCounter));
 }
-void modeFilter(NSInteger pix, NSInteger width, NSInteger planePixels, UInt8 *prevLayer, UInt8 *layer, UInt8 *postLayer, bool denoiseOrMean, UInt8 * temp1Buffer[2], NSInteger tempBufferUse){
-    
+void modeFilter(NSInteger pix, NSInteger width, NSInteger height, NSInteger planePixels, UInt8 *prevLayer, UInt8 *layer, UInt8 *postLayer, bool denoiseOrMean, UInt8 * temp1Buffer[2], NSInteger tempBufferUse){
+    if(layer[pix] == 0){
+        temp1Buffer[tempBufferUse][pix] = 0;
+        return;
+    }
     UInt8 * bins = calloc(256, sizeof(UInt8));
     
     for (int i = 0; i < 9; i++) {
         NSInteger index = pix + gaussian[i][0] + width * gaussian[i][1];
         //TODO jumper
-        //if( doesJumpLineTest(pix, index, width, height, planePixels, 2))
-        if(index < 0 || index >= planePixels)
+        if( doesJumpLineTest(pix, index, width, height, planePixels, 1))
+        //if(index < 0 || index >= planePixels)
             continue;
         
         if(prevLayer)
@@ -174,12 +178,12 @@ void modeFilter(NSInteger pix, NSInteger width, NSInteger planePixels, UInt8 *pr
             bins[postLayer[index]]++;
     }
     UInt8 winnerIndex = 0;
-    //NSInteger mostCommon = 0;
-    for (int i = 0; i < 256; i++) {
-        if(bins[i] > bins[winnerIndex]){
+    
+    for (int i = 0; i < 256; i++)
+        if(bins[i] > bins[winnerIndex])
             winnerIndex = i;
-        }
-    }
+        
+    
     free(bins);
     temp1Buffer[tempBufferUse][pix] = winnerIndex;
 }
@@ -196,7 +200,7 @@ int sharpen [9][3] = {
     {1, 1, 0}
 };
 
-void sharpenFilter(NSInteger pix, NSInteger width, NSInteger planePixels, UInt8 *prevLayer, UInt8 *layer, UInt8 *postLayer, bool denoiseOrMean, UInt8 * temp1Buffer[2], NSInteger tempBufferUse){
+void sharpenFilter(NSInteger pix, NSInteger width, NSInteger height, NSInteger planePixels, UInt8 *prevLayer, UInt8 *layer, UInt8 *postLayer, bool denoiseOrMean, UInt8 * temp1Buffer[2], NSInteger tempBufferUse){
     
     NSInteger blurCounter = 0;
     float sum = 0;
@@ -204,8 +208,8 @@ void sharpenFilter(NSInteger pix, NSInteger width, NSInteger planePixels, UInt8 
     for (int i = 0; i < 9; i++) {
         NSInteger index = pix + sharpen[i][0] + width * sharpen[i][1];
         //TODO jumper
-        //if( doesJumpLineTest(pix, index, width, height, planePixels, 2))
-        if(index < 0 || index >= planePixels)
+        if( doesJumpLineTest(pix, index, width, height, planePixels, 1))
+        //if(index < 0 || index >= planePixels)
             continue;
         
         if(prevLayer){
@@ -253,7 +257,7 @@ void applyFilterToChannel(NSInteger chann, NSInteger images, NSInteger planePixe
             layer = data[stack][chann];
         
         if(stack < images - 1)
-            postLayer = data[stack][chann];
+            postLayer = data[stack + 1][chann];
         else
             postLayer = NULL;
         
@@ -266,13 +270,13 @@ void applyFilterToChannel(NSInteger chann, NSInteger images, NSInteger planePixe
                 continue;
             
             if(mode < 3)
-                denoiseOrMeanFilter(pix, width, planePixels, prevLayer, layer, postLayer, (bool)(mode - 1), temp1Buffer, tempBufferUse);
+                denoiseOrMeanFilter(pix, width, height, planePixels, prevLayer, layer, postLayer, (bool)(mode - 1), temp1Buffer, tempBufferUse);
             if(mode == 3)
-                gaussianFilter(pix, width, planePixels, prevLayer, layer, postLayer, (bool)(mode - 1), temp1Buffer, tempBufferUse);
+                gaussianFilter(pix, width, height, planePixels, prevLayer, layer, postLayer, (bool)(mode - 1), temp1Buffer, tempBufferUse);
             if(mode == 4)
-                sharpenFilter(pix, width, planePixels, prevLayer, layer, postLayer, (bool)(mode - 1), temp1Buffer, tempBufferUse);
+                sharpenFilter(pix, width, height, planePixels, prevLayer, layer, postLayer, (bool)(mode - 1), temp1Buffer, tempBufferUse);
             if(mode == 5)
-                modeFilter(pix, width, planePixels, prevLayer, layer, postLayer, (bool)(mode - 1), temp1Buffer, tempBufferUse);
+                modeFilter(pix, width, height,planePixels, prevLayer, layer, postLayer, (bool)(mode - 1), temp1Buffer, tempBufferUse);
         }
         tempBufferUse = (NSInteger)!tempBufferUse;
         
@@ -310,6 +314,14 @@ void threeDMeanBlur(UInt8 *** data, NSInteger width, NSInteger height, NSInteger
         }
         if(mode == 7){
             applyFilterToChannel(chann, images, planePixels, data, width, height, mask, 5, deltas_z);
+        }
+        if(mode == 8){
+            applyFilterToChannel(chann, images, planePixels, data, width, height, mask, 5, deltas_z);
+            applyFilterToChannel(chann, images, planePixels, data, width, height, mask, 3, deltas_z);
+        }
+        if(mode == 9){
+            applyFilterToChannel(chann, images, planePixels, data, width, height, mask, 5, deltas_z);
+            applyFilterToChannel(chann, images, planePixels, data, width, height, mask, 2, deltas_z);
         }
     }];
 }
@@ -740,9 +752,10 @@ void threeDMeanBlur(UInt8 *** data, NSInteger width, NSInteger height, NSInteger
     CGContextRef context = CGBitmapContextCreate(rawData, width, height,
                                                  bitsPerComponent, bytesPerRow, colorSpace,
                                                  kCGImageAlphaPremultipliedLast | kCGBitmapByteOrder32Big);
-    CGColorSpaceRelease(colorSpace);
     
     CGContextDrawImage(context, CGRectMake(0, 0, width, height), imageRef);
+    
+    CGColorSpaceRelease(colorSpace);
     CGContextRelease(context);
     
     return rawData;

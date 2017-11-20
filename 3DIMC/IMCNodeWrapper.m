@@ -84,7 +84,6 @@
 }
 -(BOOL)canLoad{
     BOOL canLoadResult = (!self.isLoaded && !self.loading);
-    NSLog(@"ILd %li ILg %li", self.isLoaded, self.loading);
     if(canLoadResult)
         self.loading = YES;
     return canLoadResult;

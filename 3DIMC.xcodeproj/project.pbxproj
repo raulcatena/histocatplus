@@ -803,6 +803,12 @@
 		0DF81F101FBD9801000260F5 /* IMC3DVideoPrograms.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DF81F0F1FBD9801000260F5 /* IMC3DVideoPrograms.m */; };
 		0DF81F111FBD9801000260F5 /* IMC3DVideoPrograms.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DF81F0F1FBD9801000260F5 /* IMC3DVideoPrograms.m */; };
 		0DF81F121FBD9801000260F5 /* IMC3DVideoPrograms.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DF81F0F1FBD9801000260F5 /* IMC3DVideoPrograms.m */; };
+		0DF81F1E1FC0D8F2000260F5 /* IMCMetalSphereRenderer.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DF81F141FC0816C000260F5 /* IMCMetalSphereRenderer.m */; };
+		0DF81F1F1FC0D971000260F5 /* IMCMetalSphereRenderer.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DF81F141FC0816C000260F5 /* IMCMetalSphereRenderer.m */; };
+		0DF81F201FC0D972000260F5 /* IMCMetalSphereRenderer.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DF81F141FC0816C000260F5 /* IMCMetalSphereRenderer.m */; };
+		0DF81F231FC2C69E000260F5 /* IMCMetalSphereStripedRenderer.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DF81F221FC2C69D000260F5 /* IMCMetalSphereStripedRenderer.m */; };
+		0DF81F241FC2C69E000260F5 /* IMCMetalSphereStripedRenderer.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DF81F221FC2C69D000260F5 /* IMCMetalSphereStripedRenderer.m */; };
+		0DF81F251FC2C69E000260F5 /* IMCMetalSphereStripedRenderer.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DF81F221FC2C69D000260F5 /* IMCMetalSphereStripedRenderer.m */; };
 		0DF89F751E4BCA3D008226D3 /* libopencv_xfeatures2d.3.2.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 0DF89F721E4BCA3D008226D3 /* libopencv_xfeatures2d.3.2.0.dylib */; };
 		0DF89F761E4BCA3D008226D3 /* libopencv_xfeatures2d.3.2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 0DF89F731E4BCA3D008226D3 /* libopencv_xfeatures2d.3.2.dylib */; };
 		0DF89F771E4BCA3D008226D3 /* libopencv_xfeatures2d.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 0DF89F741E4BCA3D008226D3 /* libopencv_xfeatures2d.dylib */; };
@@ -1198,6 +1204,11 @@
 		0DEA0B3C1EE976FF004E80C9 /* IMCMetadataTableDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IMCMetadataTableDelegate.m; sourceTree = "<group>"; };
 		0DF81F0E1FBD9801000260F5 /* IMC3DVideoPrograms.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IMC3DVideoPrograms.h; sourceTree = "<group>"; };
 		0DF81F0F1FBD9801000260F5 /* IMC3DVideoPrograms.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IMC3DVideoPrograms.m; sourceTree = "<group>"; };
+		0DF81F131FC0816C000260F5 /* IMCMetalSphereRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IMCMetalSphereRenderer.h; sourceTree = "<group>"; };
+		0DF81F141FC0816C000260F5 /* IMCMetalSphereRenderer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IMCMetalSphereRenderer.m; sourceTree = "<group>"; };
+		0DF81F1D1FC0D861000260F5 /* sphere.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sphere.h; sourceTree = "<group>"; };
+		0DF81F211FC2C69D000260F5 /* IMCMetalSphereStripedRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IMCMetalSphereStripedRenderer.h; sourceTree = "<group>"; };
+		0DF81F221FC2C69D000260F5 /* IMCMetalSphereStripedRenderer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IMCMetalSphereStripedRenderer.m; sourceTree = "<group>"; };
 		0DF89F721E4BCA3D008226D3 /* libopencv_xfeatures2d.3.2.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_xfeatures2d.3.2.0.dylib; path = /usr/local/lib/libopencv_xfeatures2d.3.2.0.dylib; sourceTree = "<absolute>"; };
 		0DF89F731E4BCA3D008226D3 /* libopencv_xfeatures2d.3.2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_xfeatures2d.3.2.dylib; path = /usr/local/lib/libopencv_xfeatures2d.3.2.dylib; sourceTree = "<absolute>"; };
 		0DF89F741E4BCA3D008226D3 /* libopencv_xfeatures2d.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_xfeatures2d.dylib; path = /usr/local/lib/libopencv_xfeatures2d.dylib; sourceTree = "<absolute>"; };
@@ -1867,6 +1878,11 @@
 				0DC508D21F5F4F6B00C1E9D8 /* AAPLMathUtilities.m */,
 				0DA630471F5EDE100032E102 /* IMCMetalViewAndRenderer.h */,
 				0DA630481F5EDE100032E102 /* IMCMetalViewAndRenderer.m */,
+				0DF81F1D1FC0D861000260F5 /* sphere.h */,
+				0DF81F131FC0816C000260F5 /* IMCMetalSphereRenderer.h */,
+				0DF81F141FC0816C000260F5 /* IMCMetalSphereRenderer.m */,
+				0DF81F211FC2C69D000260F5 /* IMCMetalSphereStripedRenderer.h */,
+				0DF81F221FC2C69D000260F5 /* IMCMetalSphereStripedRenderer.m */,
 				0DC508CC1F5F3B3400C1E9D8 /* IMCMtkView.h */,
 				0DC508CD1F5F3B3400C1E9D8 /* IMCMtkView.m */,
 				0DA630511F5EE7D20032E102 /* shaders.metal */,
@@ -2680,6 +2696,7 @@
 				0D00ABD51E64D53400887057 /* IMCImageView.m in Sources */,
 				0D00ABD61E64D53400887057 /* IMCPixelTraining.m in Sources */,
 				0D00ABD71E64D53400887057 /* NSTableView+ContextMenu.m in Sources */,
+				0DF81F241FC2C69E000260F5 /* IMCMetalSphereStripedRenderer.m in Sources */,
 				0D00ABD81E64D53400887057 /* IMCTsneOperation.m in Sources */,
 				0D00ABD91E64D53400887057 /* Base64.m in Sources */,
 				0D0D83F41FA12D650044EDC1 /* IMCKMeansOperation.m in Sources */,
@@ -2772,6 +2789,7 @@
 				0D00AC091E64D53400887057 /* IMCPreferencesController.m in Sources */,
 				0D00AC0A1E64D53400887057 /* IMCRegistration.m in Sources */,
 				0D00AC0B1E64D53400887057 /* IMC_MatlabLoader.m in Sources */,
+				0DF81F1F1FC0D971000260F5 /* IMCMetalSphereRenderer.m in Sources */,
 				0D00AC0C1E64D53400887057 /* NSMutableArrayAdditions.m in Sources */,
 				0D00AC0D1E64D53400887057 /* tsne_c.c in Sources */,
 				0D00AC0E1E64D53400887057 /* IMCVideoCreator.m in Sources */,
@@ -2816,6 +2834,7 @@
 				0D9F307C1EF909CF00E1E083 /* IMCPixelTraining.m in Sources */,
 				0D9F307D1EF909CF00E1E083 /* NSTableView+ContextMenu.m in Sources */,
 				0D9F307E1EF909CF00E1E083 /* IMCTsneOperation.m in Sources */,
+				0DF81F251FC2C69E000260F5 /* IMCMetalSphereStripedRenderer.m in Sources */,
 				0D9F307F1EF909CF00E1E083 /* Base64.m in Sources */,
 				0D9F30801EF909CF00E1E083 /* IMCChannelSettings.m in Sources */,
 				0D0D83F51FA12D650044EDC1 /* IMCKMeansOperation.m in Sources */,
@@ -2908,6 +2927,7 @@
 				0D9F30C01EF909CF00E1E083 /* IMCPreferencesController.m in Sources */,
 				0D9F30C11EF909CF00E1E083 /* IMCRegistration.m in Sources */,
 				0D9F30C21EF909CF00E1E083 /* IMC_MatlabLoader.m in Sources */,
+				0DF81F1E1FC0D8F2000260F5 /* IMCMetalSphereRenderer.m in Sources */,
 				0D9F30C31EF909CF00E1E083 /* NSMutableArrayAdditions.m in Sources */,
 				0D9F30C41EF909CF00E1E083 /* tsne_c.c in Sources */,
 				0D9F30C51EF909CF00E1E083 /* IMCVideoCreator.m in Sources */,
@@ -2952,6 +2972,7 @@
 				0D0D84011FA138360044EDC1 /* pca.c in Sources */,
 				0DB37D231E32AE6D002975E2 /* IMC_DataLoader.m in Sources */,
 				0D43364B1E4E7EF30096371D /* IMCImageView.m in Sources */,
+				0DF81F231FC2C69E000260F5 /* IMCMetalSphereStripedRenderer.m in Sources */,
 				0DAA1EE81E55DC1800579003 /* IMCPixelTraining.m in Sources */,
 				0DB37D161E3258D3002975E2 /* NSTableView+ContextMenu.m in Sources */,
 				0DB4005A1E534D2E00179ECB /* IMCTsneOperation.m in Sources */,
@@ -3044,6 +3065,7 @@
 				0DFB2EBB1E48848B0065AC61 /* IMCRegistration.m in Sources */,
 				0DA268841E512B65007E6EDD /* IMC_MatlabLoader.m in Sources */,
 				0DA2689C1E512F39007E6EDD /* NSMutableArrayAdditions.m in Sources */,
+				0DF81F201FC0D972000260F5 /* IMCMetalSphereRenderer.m in Sources */,
 				0DB4005D1E534D6E00179ECB /* tsne_c.c in Sources */,
 				0D6627311E697C0F00BC2C92 /* IMCPixelTrainer.mm in Sources */,
 				0D4336481E4DEE920096371D /* IMCVideoCreator.m in Sources */,

@@ -36,6 +36,7 @@
 -(float *)xCentroids;
 -(float *)yCentroids;
 -(float *)zCentroids;
+-(float *)sizes;
 -(IMCChannelWrapper *)wrappedChannelAtIndex:(NSInteger)index;
 -(NSString *)descriptionWithIndexes:(NSIndexSet *)indexSet;
 //Buffer operations
@@ -62,5 +63,10 @@
 
 +(BOOL)flockForComps:(NSArray<IMCComputationOnMask *> *)comps indexes:(NSIndexSet *)indexSet;
 +(BOOL)kMeansForComps:(NSArray<IMCComputationOnMask *> *)comps indexes:(NSIndexSet *)indexSet;
+
+//Utility meaurements
+-(float)maxChannel:(NSInteger)channel;
+-(float)halfDimension:(NSInteger)dimension;
+-(float)minDimension:(NSInteger)dimension;
 
 @end

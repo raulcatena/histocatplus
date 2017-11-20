@@ -39,6 +39,7 @@
 @property (nonatomic, weak) IBOutlet NSTextField *overrideTitleGraph;
 @property (nonatomic, strong) IMCTsneDashboard *tsneDashboard;
 @property (nonatomic, strong) IMCKMeansDashboard *kmenasDashboard;
+@property (nonatomic, strong) NSString *mainURL;
 
 -(IBAction)runReducer:(id)sender;
 -(IBAction)runClusterer:(id)sender;
@@ -53,6 +54,8 @@
 -(IBAction)changedChoice:(NSPopUpButton *)sender;
 -(IBAction)addDR:(id)sender;
 -(IBAction)addClust:(id)sender;
+
+-(IBAction)startStopCreateVideo:(NSButton *)sender;
 
 -(instancetype)initWithComputation:(IMCComputationOnMask *)computation;
 -(instancetype)initWith3DMask:(IMC3DMask *)computation;

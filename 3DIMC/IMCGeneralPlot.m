@@ -83,11 +83,11 @@
         
         
         
-        attrs = @{
-                  NSForegroundColorAttributeName: self.axesColor,
-                  NSFontAttributeName: font,
-                  NSParagraphStyleAttributeName: style
-                  };
+//        attrs = @{
+//                  NSForegroundColorAttributeName: self.axesColor,
+//                  NSFontAttributeName: font,
+//                  NSParagraphStyleAttributeName: style
+//                  };
         
         if(title)[title drawInRect:NSMakeRect(
                                     self.cornerMargin,
@@ -171,7 +171,7 @@
 -(void)setBackGroundColor:(CGContextRef)ctx dirtyRect:(CGRect)dirtyRect{
     if(!self.colorSpace)self.colorSpace = [NSColorSpace sRGBColorSpace];
     NSColor *col = [self.backGroundCol colorUsingColorSpace:self.colorSpace];
-    CGContextSetRGBFillColor(ctx, col.redComponent, col.greenComponent, col.blueComponent, 0.8);
+    CGContextSetRGBFillColor(ctx, col.redComponent, col.greenComponent, col.blueComponent, col.alphaComponent);
     CGContextFillRect(ctx, NSRectToCGRect(dirtyRect));
 }
 

@@ -7,6 +7,8 @@
 //
 
 #import "IMCMtkView.h"
+#import "IMCMetalViewAndRenderer.h"
+#import "NSView+Utilities.h"
 
 @interface IMCMtkView()
 
@@ -31,6 +33,7 @@
         self.upperYOffset = .0f;
         self.nearZOffset = .0f;
         self.farZOffset = 1.0f;
+        self.labels = @[].mutableCopy;
     }
     return self;
 }
@@ -171,6 +174,7 @@
 
 - (void)drawRect:(NSRect)dirtyRect {
     [super drawRect:dirtyRect];
+    [(IMCMetalViewAndRenderer *)self.delegate addLabelsOverlayed:self];
     [self.delegate drawInMTKView:self];
 }
 
@@ -232,14 +236,42 @@ static void ReleaseCVPixelBuffer(void *pixel, const void *data, size_t size)
     self.framebufferOnly = NO;
     
     id<MTLTexture> texture = self.lastRenderedTexture;
-    
+    if(!texture)
+        return NULL;
     NSInteger width = texture.width;
     NSInteger height = texture.height;
     
     NSInteger rowBytes = width * 4;
-    UInt8 * p = malloc(width * height * 4);
+    NSInteger bufferLength = width * height * 4;
+    UInt8 * p = malloc(bufferLength);
     
     [texture getBytes:p bytesPerRow:rowBytes fromRegion:MTLRegionMake2D(0, 0, width, height) mipmapLevel:0];
+    
+    UInt8 * buffLayer = [self bufferForView];
+    
+    NSInteger lines = texture.height/2;
+    NSInteger widthSmall = texture.width/2;
+    NSInteger strideRenglonSmall = widthSmall * 4;
+    NSInteger strideRenglonBig = texture.width * 4;
+    NSInteger strideRenglonBig2 = strideRenglonBig * 2;
+    
+    for (NSInteger l = 0; l < lines; l++) {
+        NSInteger baseRenglon = l * strideRenglonSmall;
+        NSInteger baseRenglonBig = l * strideRenglonBig2;
+        
+        for(int r = 0; r < 2; r++){
+            for (NSInteger i = 0; i < strideRenglonSmall; i+=4) {
+                for (NSInteger j = 0; j < 3; j++)
+                    p[baseRenglonBig + i * 2 + j] += buffLayer[baseRenglon + i + j];
+                for (NSInteger j = 0; j < 3; j++)
+                    p[baseRenglonBig + i * 2 + 4 + j] += buffLayer[baseRenglon + i + j];
+            }
+            baseRenglonBig += strideRenglonBig;
+        }
+    }
+    
+    free(buffLayer);
+    
     return p;
 }
 

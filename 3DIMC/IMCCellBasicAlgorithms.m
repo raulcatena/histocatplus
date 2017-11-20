@@ -18,6 +18,8 @@
 #import "IMCComputationOnMask.h"
 #import "IMC3DMask.h"
 #import "flock.h"
+#import "IMCVideoCreator.h"
+#import "NSView+Utilities.h"
 
 @interface IMCCellBasicAlgorithms (){
     int iterationsCursor;
@@ -27,6 +29,8 @@
     int *colorData;
     int nDim;
     int n;
+    
+    BOOL recording;
 }
 @property (nonatomic, strong) IMCComputationOnMask *computation;
 
@@ -286,7 +290,7 @@
     }
     
     [self.timer2 invalidate];
-    self.timer2 = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(checkProgressClusterer) userInfo:nil repeats:YES];
+    self.timer2 = [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(checkProgressClusterer) userInfo:nil repeats:YES];
     [self.timer2 fire];
 }
 
@@ -571,12 +575,46 @@
 #pragma mark copy image
 
 - (IBAction)copy:sender {
-    NSImage *image = [self.plot getImageBitMapFromRect:self.plot.frame];;
+    NSImage *image = [self.plot getImageBitMapFromRect:self.plot.frame];
     if (image != nil) {
         NSPasteboard *pasteboard = [NSPasteboard generalPasteboard];
         [pasteboard clearContents];
         NSArray *copiedObjects = [NSArray arrayWithObject:image];
         [pasteboard writeObjects:copiedObjects];
+    }
+}
+
+#pragma mark
+
+-(IBAction)startStopCreateVideo:(NSButton *)sender{
+    sender.tag = !(BOOL)sender.tag;
+    sender.title = sender.tag == 0 ? @"Record Video" : @"Stop!";
+    recording = (BOOL)sender.tag;
+    
+    if(recording){
+        
+        NSString *fullPath = [NSString stringWithFormat:@"%@/%@.mp4", self.mainURL.stringByDeletingLastPathComponent, [NSDate date].description];
+        
+        [self runReducer:nil];
+        
+        IMCVideoCreator *videoRecorder = [[IMCVideoCreator alloc]initWithSize:self.plot.bounds.size duration:16 path:fullPath];
+        IMCMathOperation *op = self.dimensionalityRedOperations.operations.lastObject;
+        
+        [self.tableDR selectRowIndexes:[NSIndexSet indexSetWithIndex:[self.dimensionalityRedOperations.operations indexOfObject:op]] byExtendingSelection:NO];
+        
+        dispatch_queue_t aQ = dispatch_queue_create("aQQQ", NULL);
+        dispatch_async(aQ, ^{
+            int cycle = op.iterationCursor;
+            while (recording) {
+                while (op.iterationCursor == cycle);
+                dispatch_async(dispatch_get_main_queue(), ^{[self updateGraph:nil];});
+                cycle = op.iterationCursor;
+                UInt8 *buff = [self.plot bufferForView];//NULL
+                [videoRecorder addBuffer:buff];
+                free(buff);
+            }
+            [videoRecorder finishVideo];
+        });
     }
 }
 

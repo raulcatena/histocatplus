@@ -114,11 +114,19 @@
 }
 
 +(void)recordRockVideoWithPath:(NSString *)fullPath size:(CGSize)sizeFrame framDuration:(int)frameDuration metalView:(IMCMtkView *)metalView active:(BOOL *)activeFlag{
+    
+    NSString *perc;
+    do {
+        perc = [IMCUtils input:@"Rock angle amplitude..." defaultValue:@"80"];
+        if(!perc)
+            return;
+    } while (perc.floatValue <= .0f || perc.floatValue >= 180.0f);
+    
     IMCVideoCreator *videoRecorder = [[IMCVideoCreator alloc]initWithSize:sizeFrame duration:16 path:fullPath];
     dispatch_queue_t aQ = dispatch_queue_create("aQQQ", NULL);
     dispatch_async(aQ, ^{
         float stepSize = 2 * M_PI/1000;
-        NSInteger stepsToTake = 80;
+        NSInteger stepsToTake = perc.integerValue;
         for (int i = 0; i< stepsToTake; i++) {
             
             if(*activeFlag == FALSE)

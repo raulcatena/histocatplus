@@ -26,6 +26,8 @@
 #import "IMCThresholdBatch.h"
 #import "IMCMetricsController.h"
 #import "IMCMetalViewAndRenderer.h"
+#import "IMCMetalSphereRenderer.h"
+#import "IMCMetalSphereStripedRenderer.h"
 #import "IMCMtkView.h"
 #import "IMC3dMasking.h"
 
@@ -209,6 +211,8 @@
 -(IBAction)recordVideo:(NSButton *)sender;
 -(IBAction)refresh3D:(id)sender;
 -(IBAction)stepperZChanged:(id)sender;
+-(IBAction)typeOf3DMesh:(NSPopUpButton *)sender;
+
 //Segmentation
 -(IBAction)segmentCells:(id)sender;
 -(IBAction)segmentCellsBatch:(id)sender;

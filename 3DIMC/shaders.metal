@@ -140,4 +140,45 @@ fragment half4 fragmentShader(const VertexOut interpolated [[ stage_in ]]){
     return half4(interpolated.color);
 }
 
+vertex VertexOut sphereVertexShader(
+                              const device packed_float3* vertex_array [[ buffer(0) ]],
+                              constant Constants & uniforms [[ buffer(1) ]],
+                              constant PositionalData & positional [[ buffer(2) ]],
+                              const device float * colors [[ buffer(3) ]],
+                              unsigned int vid [[ vertex_id ]],
+                              unsigned int iid [[ instance_id ]]) {
+    
+    VertexOut out;
+    
+    unsigned int baseIndex = iid * STRIDE_COLOR_ARRAY;
+//    if(colors[baseIndex] == 0.0f)//Precalculated 0 alpha if zero do not process further (optimization)
+//        return out;
+//    if(colors[baseIndex + 4] < positional.leftX)
+//        return out;
+//    if(colors[baseIndex + 4] > positional.rightX)
+//        return out;
+//    if(colors[baseIndex + 5] < positional.upperY)
+//        return out;
+//    if(colors[baseIndex + 5] > positional.lowerY)
+//        return out;
+//    if(colors[baseIndex + 6] < positional.nearZ)
+//        return out;
+//    if(colors[baseIndex + 6] > positional.farZ)
+//        return out;
+
+    float3 pos = float3(vertex_array[vid][0] * colors[baseIndex + 7] + colors[baseIndex + 4] - positional.widthModel,
+                        vertex_array[vid][1] * colors[baseIndex + 7] + colors[baseIndex + 5] - positional.heightModel,
+                        vertex_array[vid][2] * colors[baseIndex + 7] + colors[baseIndex + 6] - positional.halfTotalThickness);
+    
+    
+    out.position = uniforms.premultipliedMatrix * float4(pos, 1);
+    out.color = float4(colors[baseIndex + 1], colors[baseIndex + 2], colors[baseIndex + 3], colors[baseIndex]);
+    
+    return out;    
+}
+
+fragment half4 sphereFragmentShader(const VertexOut interpolated [[ stage_in ]]){
+    return half4(interpolated.color);
+}
+
 
