@@ -30,6 +30,7 @@ struct PositionalData{
     uint widthModel;
     uint heightModel;
     uint areaModel;
+    uint stride;
 };
 
 struct VertexOut{
@@ -173,6 +174,65 @@ vertex VertexOut sphereVertexShader(
     
     out.position = uniforms.premultipliedMatrix * float4(pos, 1);
     out.color = float4(colors[baseIndex + 1], colors[baseIndex + 2], colors[baseIndex + 3], colors[baseIndex]);
+    
+    return out;    
+}
+
+constant unsigned int cum[] = {405, 567, 729, 891, 1053, 1215, 1377, 1539, 1701, 1944};
+
+vertex VertexOut stripedSphereVertexShader(
+                                    const device packed_float3* vertex_array [[ buffer(0) ]],
+                                    constant Constants & uniforms [[ buffer(1) ]],
+                                    constant PositionalData & positional [[ buffer(2) ]],
+                                    const device float * colors [[ buffer(3) ]],
+                                    unsigned int vid [[ vertex_id ]],
+                                    unsigned int iid [[ instance_id ]]) {
+    
+    VertexOut out;
+    //unsigned int cum [] = {405, 567, 729, 891, 1053, 1215, 1377, 1539, 1701, 1944};
+    unsigned int segment = 0;
+    for(int a = 0; a < 10; a++)
+        if(vid >= cum[a]){
+            segment = a + 1;
+        }
+    
+    int stripes = (positional.stride - 4)/4;
+    int color = 1;
+    
+    if(stripes == 1){
+        int pick[] = {0,0,0,0,0,0,0,0,0,0,};
+        color += pick[segment];
+    }
+    if(stripes == 2){
+        int pick[] = {0,0,1,1,1,1,1,1,0,0};
+        color += pick[segment];
+    }
+    if(stripes == 3){
+        int pick[] = {0,0,0,1,1,1,1,2,2,2};
+        color += pick[segment];
+    }
+    if(stripes == 4){
+        int pick[] = {0,0,1,1,1,2,2,2,3,3};
+        color += pick[segment];
+    }
+    if(stripes == 5){
+        int pick[] = {0,0,1,1,2,2,3,3,4,4};
+        color += pick[segment];
+    }
+    if(stripes == 6){
+        int pick[] = {0,1,1,2,2,3,3,4,4,5};
+        color += pick[segment];
+    }
+    
+    unsigned int baseIndex = iid * (positional.stride);
+    
+    float3 pos = float3(vertex_array[vid][0] * colors[baseIndex + 3] + colors[baseIndex + 0] - positional.widthModel,
+                        vertex_array[vid][1] * colors[baseIndex + 3] + colors[baseIndex + 1] - positional.heightModel,
+                        vertex_array[vid][2] * colors[baseIndex + 3] + colors[baseIndex + 2] - positional.halfTotalThickness);
+    
+    
+    out.position = uniforms.premultipliedMatrix * float4(pos, 1);
+    out.color = float4(colors[baseIndex + 4 * color + 1], colors[baseIndex + 4 * color + 2], colors[baseIndex + 4 * color + 3], 1);
     
     return out;    
 }

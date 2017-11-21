@@ -31,6 +31,7 @@ typedef struct{
     uint32 widthModel;
     uint32 heightModel;
     uint32 areaModel;
+    uint32 stride;
 } PositionalData;
 
 @class Matrix4;

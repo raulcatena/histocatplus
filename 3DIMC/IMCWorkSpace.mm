@@ -155,7 +155,7 @@
         self.openGlViewPort = nil;
         self.metalViewDelegate = [[IMCMetalViewAndRenderer alloc]init];
         self.sphereMetalViewDelegate = [[IMCMetalSphereRenderer alloc]init];
-        self.stripedSphereMetalViewDelegate = [[IMCMetalSphereRenderer alloc]init];
+        self.stripedSphereMetalViewDelegate = [[IMCMetalSphereStripedRenderer alloc]init];
         self.metalView.delegate = self.metalViewDelegate;
         self.metalViewDelegate.delegate = self;
         self.sphereMetalViewDelegate.delegate = self;
@@ -268,6 +268,7 @@
     inScope3DMask.blurMode = self.cleanUpMode.indexOfSelectedItem;
     self.sphereMetalViewDelegate.computation = inScope3DMask;
     self.stripedSphereMetalViewDelegate.computation = inScope3DMask;
+    self.customChannelsDelegate.settingsJsonArray = inScope3DMask.channelSettings;
 }
 
 #pragma mark File Handling

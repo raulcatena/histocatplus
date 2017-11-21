@@ -19,7 +19,7 @@
 -(instancetype)initWith3DMask:(IMC3DMask *)mask3D{
     self = [self init];
     if(self){
-    
+        self.stripes = 1;
     }
     return self;
 }
@@ -134,7 +134,7 @@
         return;
     if(!self.computation || !self.computation.isLoaded)
         return;
-    
+    NSLog(@"1");
     view.refresh = NO;
     
     if(!self.device){
@@ -159,6 +159,15 @@
     NSInteger width = [self.delegate witdhModel];
     NSInteger height = [self.delegate heightModel];
     
+    
+    //prepareData
+    if([self checkNeedsUpdate] || self.forceColorBufferRecalculation)
+        [self updateColorBuffer];
+    self.forceColorBufferRecalculation = NO;
+    
+    if(!self.colorBuffer)
+        return;
+    
     //Positional Data
     PositionalData positional;
     positional.lowerY = view.lowerYOffset * height;
@@ -170,17 +179,9 @@
     positional.halfTotalThickness = [self.computation halfDimension:2] * [self.delegate defaultThicknessValue];
     positional.nearZ = view.nearZOffset * positional.halfTotalThickness * 2;
     positional.farZ = view.farZOffset * positional.halfTotalThickness * 2;
+    positional.stride = (uint32)(4 + self.stripes * 4);
     
     self.positionalBuffer = [self.device newBufferWithBytes:&positional length:sizeof(positional) options:MTLResourceOptionCPUCacheModeDefault];
-    
-    //prepareData
-    
-    if([self checkNeedsUpdate] || self.forceColorBufferRecalculation)
-        [self updateColorBuffer];
-    self.forceColorBufferRecalculation = NO;
-    
-    if(!self.colorBuffer)
-        return;
     
     //Get drawable
     id<CAMetalDrawable> drawable = [view currentDrawable];
@@ -222,9 +223,10 @@
     [renderEncoder drawPrimitives:MTLPrimitiveTypeTriangle vertexStart:0 vertexCount:sphereNumVerts instanceCount:_cellsToRender];
     
     [renderEncoder endEncoding];
-    
+    NSLog(@"2");
     [comBuffer addCompletedHandler:^(id<MTLCommandBuffer> buffer){
         view.lastRenderedTexture = text;
+        NSLog(@"3");
     }];
     
     //Commit
@@ -234,12 +236,13 @@
 -(void)mtkView:(MTKView *)view drawableSizeWillChange:(CGSize)size{
     [self projectionMatrixSetup:view];
 }
-
--(void)createMetalStack{
-    
-    //Add VD for cube
+-(void)addSphereVertexBuffer{
     NSInteger dataSize = sizeof(sphereVerts);
     self.vertexBuffer = [self.device newBufferWithBytes:sphereVerts length:dataSize options:MTLResourceOptionCPUCacheModeDefault];
+}
+-(void)createMetalStack{
+    
+    [self addSphereVertexBuffer];
 
     //Create pipeline state
     id<MTLLibrary> defaultLibrary = [self.device newDefaultLibrary];

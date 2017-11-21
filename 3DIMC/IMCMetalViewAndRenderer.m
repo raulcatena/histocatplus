@@ -472,6 +472,7 @@ bool heightDescriptor[] = {
     positional.heightModel = (uint)self.renderHeight;
     positional.totalLayers = (uint)self.slices;
     positional.areaModel = (uint)(self.renderWidth * self.renderHeight);
+    positional.stride = 1;
     
     self.positionalBuffer = [self.device newBufferWithBytes:&positional length:sizeof(positional) options:MTLResourceOptionCPUCacheModeDefault];
     
@@ -623,9 +624,9 @@ bool heightDescriptor[] = {
                 field.backgroundColor = [NSColor clearColor];
                 field.font = [NSFont systemFontOfSize:25.0f];
                 field.bordered = NO;
-                field.refusesFirstResponder = YES;
+                field.selectable = NO;
+                field.editable = NO;
                 [field setStringValue:str];
-                //[view addSubview:field];
                 index++;
             }
             for (NSInteger i = index; i < view.labels.count; i++) {

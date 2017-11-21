@@ -275,12 +275,12 @@
         
         NSError *error = nil;
         _videoWriter = [[AVAssetWriter alloc] initWithURL:[NSURL fileURLWithPath:path]
-                                                               fileType:AVFileTypeQuickTimeMovie
+                                                               fileType:AVFileTypeMPEG4//AVFileTypeQuickTimeMovie
                                                                   error:&error];
         NSParameterAssert(_videoWriter);
         
         NSDictionary *videoSettings = [NSDictionary dictionaryWithObjectsAndKeys:
-                                       AVVideoCodecAppleProRes422, AVVideoCodecKey,//AVVideoCodecJPEG Low //AVVideoCodecAppleProRes4444 High
+                                       AVVideoCodecJPEG, AVVideoCodecKey,//AVVideoCodecJPEG Low //AVVideoCodecAppleProRes4444 High //AVVideoCodecAppleProRes422
                                        [NSNumber numberWithInt:size.width], AVVideoWidthKey,
                                        [NSNumber numberWithInt:size.height], AVVideoHeightKey,
                                        nil];

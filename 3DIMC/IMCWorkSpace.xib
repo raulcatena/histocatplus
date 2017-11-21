@@ -1250,7 +1250,7 @@
                                                         <menuItem title="Spheres" id="9d3-iF-blG">
                                                             <modifierMask key="keyEquivalentModifierMask"/>
                                                         </menuItem>
-                                                        <menuItem title="Spheres" id="5ZH-mf-F99" userLabel="Striped Spheres">
+                                                        <menuItem title="Striped Spheres" id="5ZH-mf-F99" userLabel="Striped Spheres">
                                                             <modifierMask key="keyEquivalentModifierMask"/>
                                                         </menuItem>
                                                         <menuItem title="Poligonized Surface" id="gRn-Ee-3jn">
