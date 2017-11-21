@@ -268,19 +268,32 @@
     }];
 }
 
--(instancetype)initWithSize:(CGSize)sizePassed duration:(int)durationFrame path:(NSString *)path{
+-(instancetype)initWithSize:(CGSize)sizePassed duration:(int)durationFrame path:(NSString *)path videoType:(IMCVideoType)videoType{
     if(self = [self init]){
         duration = durationFrame;
         size = sizePassed;
         
         NSError *error = nil;
+        NSString *fileType = AVFileTypeQuickTimeMovie;
+        if(videoType == IMCVIDEO_TYPE_MPG4)
+            fileType = AVFileTypeMPEG4;
+        
         _videoWriter = [[AVAssetWriter alloc] initWithURL:[NSURL fileURLWithPath:path]
-                                                               fileType:AVFileTypeMPEG4//AVFileTypeQuickTimeMovie
+                                                               fileType:fileType
                                                                   error:&error];
         NSParameterAssert(_videoWriter);
         
+        NSString *codec = AVVideoCodecAppleProRes422;
+        if(videoType == IMCVIDEO_TYPE_MPG4)
+            codec = AVVideoCodecJPEG;
+        
+        if(videoType == IMCVIDEO_TYPE_MPG4)
+            path = [[path stringByDeletingPathExtension]stringByAppendingPathExtension:@"mpg"];
+        if(videoType == IMCVIDEO_TYPE_MPG4)
+            path = [[path stringByDeletingPathExtension]stringByAppendingPathExtension:@"mov"];
+        
         NSDictionary *videoSettings = [NSDictionary dictionaryWithObjectsAndKeys:
-                                       AVVideoCodecJPEG, AVVideoCodecKey,//AVVideoCodecJPEG Low //AVVideoCodecAppleProRes4444 High //AVVideoCodecAppleProRes422
+                                       codec, AVVideoCodecKey,//AVVideoCodecJPEG Low //AVVideoCodecAppleProRes4444 High //AVVideoCodecAppleProRes422
                                        [NSNumber numberWithInt:size.width], AVVideoWidthKey,
                                        [NSNumber numberWithInt:size.height], AVVideoHeightKey,
                                        nil];

@@ -10,12 +10,17 @@
 #import <CoreVideo/CoreVideo.h>
 #import <AVFoundation/AVFoundation.h>
 
+typedef enum {
+    IMCVIDEO_TYPE_MPG4,
+    IMCVIDEO_TYPE_QUICKTIME
+} IMCVideoType;
+
 @interface IMCVideoCreator : NSObject
 +(void)writeImagesAsMovie:(NSArray *)array toPath:(NSString*)path size:(CGSize)size duration:(int)duration;
 +(void)writeImagesAsMovieWithBuffers:(UInt8 **)data  images:(NSInteger)images toPath:(NSString*)path size:(CGSize)size duration:(int)duration;
 //+(void)writeImages:(NSArray *)array toPathFolder:(NSString*)path size:(CGSize)size;
 
--(instancetype)initWithSize:(CGSize)sizePassed duration:(int)durationFrame path:(NSString *)path;
+-(instancetype)initWithSize:(CGSize)sizePassed duration:(int)durationFrame path:(NSString *)path videoType:(IMCVideoType)videoType;
 -(void)addBuffer:(UInt8 *)bufferFrame;
 -(void)finishVideo;
 

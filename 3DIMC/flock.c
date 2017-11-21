@@ -1691,7 +1691,7 @@ void show(double **Matrix, long *cluster_id, long file_Len, long k, long num_dm,
 
 void directMethod(long num_dm, long file_Len, double **input_data, int *results){
     
-    char para_name_string[LINE_LEN];
+    //char para_name_string[LINE_LEN];
     
     //long time_ID=-1;
     long num_bin=0; //the bins I will use on each dimension

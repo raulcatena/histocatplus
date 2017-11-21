@@ -16,7 +16,10 @@
     [videoRecorder addBuffer:frameBuffer];
     free(frameBuffer);
 }
-
++(IMCVideoType)videoFormat{
+    NSInteger format = [IMCUtils inputOptions:@[@"MPG4", @"Apple Quicktime"] prompt:@"Select a video output format"];
+    return format == 0 ? IMCVIDEO_TYPE_MPG4 : IMCVIDEO_TYPE_QUICKTIME;
+}
 +(void)recordYVideoWithPath:(NSString *)fullPath size:(CGSize)sizeFrame framDuration:(int)frameDuration metalView:(IMCMtkView *)metalView active:(BOOL *)activeFlag{
     
     NSString *degrees;
@@ -26,12 +29,14 @@
             return;
     } while (fabs(degrees.floatValue) <= .0f || fabs(degrees.floatValue) >= 90.0f);
     
-
+    
+    IMCVideoCreator *videoRecorder = [[IMCVideoCreator alloc]initWithSize:sizeFrame duration:frameDuration path:fullPath videoType:[IMC3DVideoPrograms videoFormat]];
+    
     dispatch_queue_t aQ = dispatch_queue_create("aQQQ", NULL);
     dispatch_async(aQ, ^{
         
         NSInteger steps = roundf(360.0f / degrees.floatValue);
-        IMCVideoCreator *videoRecorder = [[IMCVideoCreator alloc]initWithSize:sizeFrame duration:frameDuration path:fullPath];
+        
         
         for (int i = 0; i < steps; i++) {
             
@@ -52,7 +57,7 @@
     
     NSInteger invert = [IMCUtils inputOptions:@[@"Top to down", @"Bottom to top"] prompt:@"Select direction"];
     if(invert != NSNotFound){
-        IMCVideoCreator *videoRecorder = [[IMCVideoCreator alloc]initWithSize:sizeFrame duration:frameDuration path:fullPath];
+        IMCVideoCreator *videoRecorder = [[IMCVideoCreator alloc]initWithSize:sizeFrame duration:frameDuration path:fullPath videoType:[IMC3DVideoPrograms videoFormat]];
         
         dispatch_queue_t aQ = dispatch_queue_create("aQQQ", NULL);
         dispatch_async(aQ, ^{
@@ -88,7 +93,7 @@
             return;
     } while (fabs(perc.floatValue) <= .0f || fabs(perc.floatValue) >= 90.0f);
     
-    IMCVideoCreator *videoRecorder = [[IMCVideoCreator alloc]initWithSize:sizeFrame duration:16 path:fullPath];
+    IMCVideoCreator *videoRecorder = [[IMCVideoCreator alloc]initWithSize:sizeFrame duration:16 path:fullPath videoType:[IMC3DVideoPrograms videoFormat]];
     dispatch_queue_t aQ = dispatch_queue_create("aQQQ", NULL);
     dispatch_async(aQ, ^{
         BOOL backwards = perc.floatValue < 0;
@@ -122,7 +127,8 @@
             return;
     } while (perc.floatValue <= .0f || perc.floatValue >= 180.0f);
     
-    IMCVideoCreator *videoRecorder = [[IMCVideoCreator alloc]initWithSize:sizeFrame duration:16 path:fullPath];
+    
+    IMCVideoCreator *videoRecorder = [[IMCVideoCreator alloc]initWithSize:sizeFrame duration:16 path:fullPath videoType:[IMC3DVideoPrograms videoFormat]];
     dispatch_queue_t aQ = dispatch_queue_create("aQQQ", NULL);
     dispatch_async(aQ, ^{
         float stepSize = 2 * M_PI/1000;

@@ -597,7 +597,7 @@
         
         [self runReducer:nil];
         
-        IMCVideoCreator *videoRecorder = [[IMCVideoCreator alloc]initWithSize:self.plot.bounds.size duration:16 path:fullPath];
+        IMCVideoCreator *videoRecorder = [[IMCVideoCreator alloc]initWithSize:self.plot.bounds.size duration:16 path:fullPath videoType:IMCVIDEO_TYPE_MPG4];
         IMCMathOperation *op = self.dimensionalityRedOperations.operations.lastObject;
         
         [self.tableDR selectRowIndexes:[NSIndexSet indexSetWithIndex:[self.dimensionalityRedOperations.operations indexOfObject:op]] byExtendingSelection:NO];

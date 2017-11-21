@@ -1264,7 +1264,7 @@
                                             </connections>
                                         </popUpButton>
                                         <popUpButton verticalHuggingPriority="750" misplaced="YES" id="fWp-Br-tKG">
-                                            <rect key="frame" x="565" y="53" width="102" height="26"/>
+                                            <rect key="frame" x="565" y="52" width="102" height="26"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <popUpButtonCell key="cell" type="push" title="Rotate around Y" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="MPl-ec-ZQX" id="NcY-8B-UXX">
                                                 <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
