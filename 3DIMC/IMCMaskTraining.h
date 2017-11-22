@@ -9,6 +9,7 @@
 #import "IMCNodeWrapper.h"
 
 @class IMCComputationOnMask;
+
 @interface IMCMaskTraining : IMCNodeWrapper
 
 @property (nonatomic, weak) IMCComputationOnMask *computation;

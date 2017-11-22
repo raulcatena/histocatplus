@@ -59,5 +59,6 @@
 //Save stuff
 //-(IBAction)saveTraining:(NSButton *)sender;
 -(IBAction)savePredictions:(NSButton *)sender;
+-(int *)trainingBuff;
 
 @end

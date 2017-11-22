@@ -118,6 +118,7 @@
 #define JSON_DICT_3DS_METADATA_ORIGIN @"json_dict_3ds_met_origin"
 #define JSON_DICT_3DS_METADATA_CHANNEL @"json_dict_3ds_met_chan"
 #define JSON_DICT_3DS_METADATA_CHANNELS @"json_dict_3ds_met_chans"
+#define JSON_DICT_3DS_METADATA_CHANNELS_WS @"json_dict_3ds_met_chans_ws"
 #define JSON_DICT_3DS_METADATA_SUBST_CHANNEL @"json_dict_3ds_met_subchan"
 #define JSON_DICT_3DS_METADATA_THRESHOLD @"json_dict_3ds_met_thres"
 #define JSON_DICT_3DS_METADATA_STEP_WATERSHED @"json_dict_3ds_met_stepwtshd"

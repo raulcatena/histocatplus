@@ -31,6 +31,7 @@ typedef enum{
 @property (nonatomic, readonly) Mask3D_Type type;
 @property (nonatomic, readonly) Mask3D_Origin origin;
 @property (nonatomic, readonly) NSInteger channel;
+@property (nonatomic, readonly) NSArray * channelsWS;
 @property (nonatomic, readonly) NSInteger substractChannel;
 @property (nonatomic, readonly) NSInteger expansion;
 @property (nonatomic, readonly) float threshold;
@@ -40,15 +41,19 @@ typedef enum{
 @property (nonatomic, weak) IMCLoader *coordinator;
 @property (nonatomic, weak) IMC3DHandler *threeDHandler;
 @property (nonatomic, assign) NSInteger blurMode;
+@property (nonatomic, assign) NSInteger width;
+@property (nonatomic, assign) NSInteger height;
 @property (nonatomic, readonly) NSInteger slices;
 @property (nonatomic, readonly) NSMutableArray * channels;
 @property (nonatomic, readonly) NSString * roiMask;
+@property (nonatomic, assign) int * maskIds;
 
 @property (nonatomic, strong) NSMutableArray<IMC3DMaskComputations *> *computationNodes;
 
 -(void)setType:(Mask3D_Type)type;
 -(void)setOrigin:(Mask3D_Origin)origin;
 -(void)setChannel:(NSInteger)channel;
+-(void)setChannelsWS:(NSArray *)channelsWS;
 -(void)setSubstractChannel:(NSInteger)substractChannel;
 -(void)setExpansion:(NSInteger)expansion;
 -(void)setThreshold:(float)threshold;

@@ -619,15 +619,17 @@ bool heightDescriptor[] = {
                     [view addSubview:field];
                 }
                 NSString * str = [channsObtained objectAtIndex:chann.integerValue];
-                field.frame = NSMakeRect(10.0f, heigthLabel * index, width, heigthLabel);
-                field.textColor = colorsObtained.count == 0 ? [NSColor whiteColor] : [colorsObtained objectAtIndex:index];
-                field.backgroundColor = [NSColor clearColor];
-                field.font = [NSFont systemFontOfSize:25.0f];
-                field.bordered = NO;
-                field.selectable = NO;
-                field.editable = NO;
-                [field setStringValue:str];
-                index++;
+                if(str){
+                    field.frame = NSMakeRect(10.0f, heigthLabel * index, width, heigthLabel);
+                    field.textColor = colorsObtained.count == 0 ? [NSColor whiteColor] : [colorsObtained objectAtIndex:index];
+                    field.backgroundColor = [NSColor clearColor];
+                    field.font = [NSFont systemFontOfSize:25.0f];
+                    field.bordered = NO;
+                    field.selectable = NO;
+                    field.editable = NO;
+                    [field setStringValue:str];
+                    index++;
+                }
             }
             for (NSInteger i = index; i < view.labels.count; i++) {
                 [(NSView *)view.labels[i] setFrame:CGRectZero];

@@ -256,11 +256,11 @@
     
     float cumulative = .0f;
     
-    for (int i = 0; i<titles.count; i++) {
+    for (int i = 0; i < titles.count; i++) {
         
-        NSColor * color = [colors objectAtIndex:i];
+        NSColor * color = i < colors.count ? [colors objectAtIndex:i] : nil;
         NSString *channelName = [titles objectAtIndex:i];
- 
+        
         NSTextField *field = [[NSTextField alloc]initWithFrame:CGRectZero];
         
         field.stringValue = channelName;

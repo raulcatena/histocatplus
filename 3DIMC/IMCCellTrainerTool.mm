@@ -23,7 +23,7 @@
 @implementation IMCCellTrainerTool
 
 -(instancetype)initWithComputation:(IMCComputationOnMask *)computation andTraining:(IMCMaskTraining *)training{
-    self = [self initWithWindowNibName:NSStringFromClass([IMCCellTrainerTool class])];
+    self = [self initWithWindowNibName:NSStringFromClass([self class])];
     if(self){
         if(!training){
             training = [[IMCMaskTraining alloc]init];

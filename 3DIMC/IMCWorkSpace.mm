@@ -40,6 +40,7 @@
 #import "IMCPaintMask.h"
 //Cell Classificaton
 #import "IMCCellTrainerTool.h"
+#import "IMCCell3DTrainerTool.h"
 
 //RConsole
 #import "IMCMiniRConsole.h"
@@ -1568,9 +1569,10 @@
             
             NSIndexSet *channs = self.channels.selectedRowIndexes.copy;
             NSIndexSet * objects = self.filesTree.selectedRowIndexes.copy;
-            NSMutableArray *visitedExternals = @[].mutableCopy;
             __block NSInteger ongoing = 0;
             __block NSInteger completed = 0;
+            
+            bool * seen = (bool *)calloc(objects.count, sizeof(bool));
             
             [objects enumerateIndexesUsingBlock:^(NSUInteger fileIdx, BOOL *stop){
                 while (ongoing > 3);
@@ -1580,8 +1582,8 @@
                 dispatch_async(internalQueue, ^{
                     
                     NSInteger external = [self.threeDHandler externalSliceIndexForInternal:fileIdx];
-                    if(![visitedExternals containsObject:@(external)]){
-                        [visitedExternals addObject:@(external)];
+                    if(seen[external] == false){
+                        seen[external] =  true;
                         IMCNodeWrapper *anobj;
                         anobj= [self.filesTree itemAtRow:fileIdx];
                         
@@ -1635,6 +1637,7 @@
                 self.threeDProcessesIndicator.doubleValue = 0.0f;
                 [self.openGlViewPort setNeedsDisplay:YES];
                 sender.enabled = YES;
+                free(seen);
             });
         });
     }
@@ -1829,6 +1832,10 @@
         IMCCellTrainerTool *seg = [[IMCCellTrainerTool alloc]initWithComputation:self.inScopeComputation andTraining:nil];
         [[seg window] makeKeyAndOrderFront:seg];
     }
+    if(self.inScope3DMask.isLoaded){
+        IMCCell3DTrainerTool *seg = [[IMCCell3DTrainerTool alloc]initWithComputation:self.inScope3DMask andTraining:nil];
+        [[seg window] makeKeyAndOrderFront:seg];
+    }
 }
 -(void)cellClassificationBatch:(id)sender{
     IMCCellClassificationBatch *seg;
@@ -1958,7 +1965,7 @@
     [[seg window] makeKeyAndOrderFront:seg];
 }
 -(void)threeDMasking:(Mask3D_Type)type{
-    if(self.inOrderIndexes.count == 1 || self.inOrderIndexes.count == 2){
+    if(self.inOrderIndexes.count > 0){
         IMC3DMask *mask3d = [[IMC3DMask alloc]initWithLoader:self.dataCoordinator andHandler:self.threeDHandler];
         NSMutableArray *array = @[].mutableCopy;
         NSArray *add;
@@ -1973,9 +1980,11 @@
             [array addObject:node.itemHash];
         
         [mask3d setTheComponents:array];
-        mask3d.channel = [self.inOrderIndexes.firstObject integerValue];//self.channels.selectedRow;
-        if(self.inOrderIndexes.count == 2)
-            mask3d.substractChannel = [self.inOrderIndexes.lastObject integerValue];//self.channels.selectedRow;
+        mask3d.channel = [self.inOrderIndexes.firstObject integerValue];
+        mask3d.channelsWS = self.inOrderIndexes.copy;
+        
+//        if(self.inOrderIndexes.count == 2)
+//            mask3d.substractChannel = [self.inOrderIndexes.lastObject integerValue];//self.channels.selectedRow;
         
         mask3d.origin = self.whichTableCoordinator.indexOfSelectedItem == 1? MASK3D_VOXELS : MASK3D_2D_MASKS;
         
