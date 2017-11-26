@@ -361,12 +361,14 @@
     }
     
     NSInteger pixs = self.numberOfPixels;
-        
+    
+    float precalc = settings[2] * 255.0f/(settings[5] * settings[0]);
     for (NSInteger i = 0; i < pixs; i++) {
         float val = vals[i];
         if(settings[4] == 1.0f)val = logf(val);
         if(settings[4] == 2.0f)val = asinhf(val/5.0f);
-        UInt8 bitValue = MIN(255, (val/(float)(settings[5] * settings[0]) * 255)*settings[2]);
+        //UInt8 bitValue = MIN(255, (val/(float)(settings[5] * settings[0]) * 255)*settings[2]);
+        UInt8 bitValue = MIN(255, val * precalc);
         if(bitValue < settings[1] * 255)bitValue = 0;
         cachedValues[index][i] = bitValue;
     }
@@ -769,6 +771,59 @@
 -(void)setUsingCompensated:(BOOL)usingCompensated{
     _usingCompensated = usingCompensated;
     [self clearCacheBuffers];
+}
+
+#pragma mark get Transform
+
+-(CGAffineTransform)affineTransformSuperCanvasW:(NSInteger)widthSuper superCanvasH:(NSInteger)heightSuper{
+    float radians =  [IMCImageGenerator degressToRadians:[self.transform[JSON_DICT_IMAGE_TRANSFORM_ROTATION]floatValue]];
+    NSDictionary *dictTransform = self.transform;
+    CGAffineTransform transform = CGAffineTransformIdentity;
+    transform = CGAffineTransformTranslate(transform, (widthSuper - (float)self.width)/2, (heightSuper -(float)self.height)/2);
+    transform = CGAffineTransformTranslate(transform,
+                                           dictTransform[JSON_DICT_IMAGE_TRANSFORM_OFFSET_X]?
+                                           [dictTransform[JSON_DICT_IMAGE_TRANSFORM_OFFSET_X]floatValue]:0,
+                                           dictTransform[JSON_DICT_IMAGE_TRANSFORM_OFFSET_Y]?
+                                           [dictTransform[JSON_DICT_IMAGE_TRANSFORM_OFFSET_Y]floatValue]:0
+                                           );
+    
+    transform = CGAffineTransformTranslate(transform, (float)self.width/2, (float)self.height/2);
+    transform = CGAffineTransformRotate(transform, radians);
+    transform = CGAffineTransformTranslate(transform, -(float)self.width/2, -(float)self.height/2);
+    return transform;
+}
+
+-(NSInteger *)mapOfIndexesAfterAffineWithSuperCanvasW:(NSInteger)widthSuper superCanvasH:(NSInteger)heightSuper{
+
+    //https://developer.apple.com/documentation/coregraphics/cgaffinetransform
+    //x' = ax + cy + tx
+    //y' = bx + dy + ty
+    CGAffineTransform affine = [self affineTransformSuperCanvasW:widthSuper superCanvasH:heightSuper];
+    NSInteger pixels = self.numberOfPixels;
+    NSInteger leftPadding = (widthSuper - self.width)/2;
+    NSInteger width = self.width;
+    NSInteger height = self.height;
+    CGFloat a = affine.a;
+    CGFloat b = affine.b;
+    CGFloat c = affine.c;
+    CGFloat d = affine.d;
+    CGFloat tx = affine.tx;
+    CGFloat ty = affine.ty;
+    NSInteger total = widthSuper * heightSuper;
+    NSInteger * mapIndexes = calloc(total, sizeof(NSInteger));
+    
+    for (NSInteger i = 0; i < pixels; i++) {
+        NSInteger x = i % width;
+        NSInteger y = height - i / width;
+        
+        x = a * x + c * y + tx;
+        y = b * x + d * y + ty;
+        
+        NSInteger newIndex = (heightSuper - y) * widthSuper + leftPadding + x;
+        if(newIndex >= 0 && newIndex < total)
+            mapIndexes[newIndex] = i;
+    }
+    return mapIndexes;
 }
 
 #pragma mark load unload

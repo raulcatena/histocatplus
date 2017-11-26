@@ -190,6 +190,25 @@
     
 }
 
+-(void)addTopLabels:(NSArray<NSString *>*)topTitles withColors:(NSArray<NSColor *>*)colors size:(CGFloat)size context:(CGContextRef)ctx dirtyRect:(CGRect)dirtyRect{
+    NSFont *font = [NSFont fontWithName:@"Helvetica" size:size];
+    NSInteger index = 0;
+    for (NSString *topTitle in topTitles) {
+        NSMutableParagraphStyle *style  = [[NSMutableParagraphStyle alloc] init];
+        [style setAlignment:NSCenterTextAlignment];
+        NSDictionary *attrs = @{
+                                NSForegroundColorAttributeName: colors[index],
+                                NSFontAttributeName: font,
+                                NSParagraphStyleAttributeName: style
+                                };
+        
+        float segmentSize = dirtyRect.size.width/topTitles.count;
+        
+        [topTitle drawInRect:CGRectMake(segmentSize * index, dirtyRect.size.height - 40, segmentSize, 40) withAttributes:attrs];
+        index++;
+    }
+}
+
 - (void)drawRect:(NSRect)dirtyRect {
     [super drawRect:dirtyRect];
 }

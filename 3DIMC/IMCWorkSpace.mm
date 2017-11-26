@@ -267,6 +267,7 @@
     if(inScope3DMask && self.inOrderIndexes.count == 0)
         self.inOrderIndexes = @[@(0)].mutableCopy;
     inScope3DMask.blurMode = self.cleanUpMode.indexOfSelectedItem;
+    inScope3DMask.noBorders = (BOOL)self.with3Dgaps.indexOfSelectedItem;
     self.sphereMetalViewDelegate.computation = inScope3DMask;
     self.stripedSphereMetalViewDelegate.computation = inScope3DMask;
     self.customChannelsDelegate.settingsJsonArray = inScope3DMask.channelSettings;
@@ -592,7 +593,7 @@
     [panel beginSheetModalForWindow:self.windowForSheet completionHandler:^(NSInteger result){
         if (result == NSFileHandlingPanelOKButton){
             NSArray *ims = self.inScopeImages.copy;
-            dispatch_queue_t saver = dispatch_queue_create("saver", NULL);
+            dispatch_queue_t saver = dispatch_queue_create([IMCUtils randomStringOfLength:5].UTF8String, NULL);
             dispatch_async(saver, ^{
                 for (IMCImageStack *stck in ims) {
                     [stck openIfNecessaryAndPerformBlock:^{
@@ -841,7 +842,7 @@
         
         NSArray *comps = self.inScopeComputations.copy;
         
-        dispatch_queue_t aQ = dispatch_queue_create("metafeatures", NULL);
+        dispatch_queue_t aQ = dispatch_queue_create([IMCUtils randomStringOfLength:5].UTF8String, NULL);
         dispatch_async(aQ, ^{
             
             for (IMCComputationOnMask *comp in comps) {
@@ -1032,7 +1033,7 @@
 }
 -(void)openNodes:(NSMenuItem *)sender{
     NSArray *nodes = [self selectedNodes];
-    dispatch_queue_t loader = dispatch_queue_create("loader", NULL);
+    dispatch_queue_t loader = dispatch_queue_create([IMCUtils randomStringOfLength:5].UTF8String, NULL);
     dispatch_async(loader, ^{
         __block NSInteger counter = 0;
         for (IMCNodeWrapper *node in nodes) {
@@ -1267,7 +1268,7 @@
         __block NSInteger counter = 0;
         NSArray *masks = self.inScopeMasks.copy;
         
-        dispatch_queue_t feat = dispatch_queue_create("feat", NULL);
+        dispatch_queue_t feat = dispatch_queue_create([IMCUtils randomStringOfLength:5].UTF8String, NULL);
         dispatch_async(feat, ^{
             for(IMCPixelClassification *mask in masks){
                 while (counter>3);
@@ -1497,7 +1498,7 @@
 }
 -(void)alignSelected:(NSButton *)sender{
     sender.enabled = NO;
-    dispatch_queue_t aQ = dispatch_queue_create("Al", NULL);
+    dispatch_queue_t aQ = dispatch_queue_create([IMCUtils randomStringOfLength:5].UTF8String, NULL);
     dispatch_async(aQ, ^{
         [self.workSpaceRefresher alignSelected];
         sender.enabled = YES;
@@ -1560,7 +1561,7 @@
 -(void)addBuffersForStackImages:(NSButton *)sender{
     if([self canRender]){
         self.threeDProcessesIndicator.doubleValue = .0f;
-        dispatch_queue_t queue = dispatch_queue_create("loadRender", NULL);
+        dispatch_queue_t queue = dispatch_queue_create([IMCUtils randomStringOfLength:5].UTF8String, NULL);
         dispatch_async(queue, ^{
             if(![self.threeDHandler isReady])
                 return;
@@ -1578,7 +1579,7 @@
                 while (ongoing > 3);
                 ongoing++;
                 
-                dispatch_queue_t internalQueue = dispatch_queue_create("loadRender", NULL);
+                dispatch_queue_t internalQueue = dispatch_queue_create([IMCUtils randomStringOfLength:5].UTF8String, NULL);
                 dispatch_async(internalQueue, ^{
                     
                     NSInteger external = [self.threeDHandler externalSliceIndexForInternal:fileIdx];
@@ -2005,6 +2006,16 @@
             }while (input.floatValue <= 0);
             mask3d.stepWatershed = input.floatValue;
         }
+        
+
+        NSArray *channs = [@[@"None"] arrayByAddingObjectsFromArray:self.inScopeImage.channels.copy];
+        mask3d.substractChannel = [IMCUtils inputOptions:channs prompt:@"Do you want to use a channel to frame the nuclear signal?"];
+        if(mask3d.substractChannel == NSNotFound)
+            return;
+        if(mask3d.substractChannel == 0)
+            mask3d.substractChannel = NSNotFound;
+        else
+            mask3d.substractChannel--;
         
         do{
             input = [IMCUtils input:@"Do you want to add expansion layer? (e.g.: 0-100)" defaultValue:@"2"];

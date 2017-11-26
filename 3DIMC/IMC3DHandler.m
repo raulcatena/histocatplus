@@ -217,8 +217,8 @@
         self.interestProportions = NSMakeRect(0, 0, 1, 1);
         
     for (NSInteger i = 0; i < total; i++){
-        NSInteger y = i / self.height;
-        NSInteger x = i % self.height;
+        NSInteger y = i / self.width;
+        NSInteger x = i % self.width;
         
         if(y > self.height * propOrY
            && y < self.height * (propOrY + propH)

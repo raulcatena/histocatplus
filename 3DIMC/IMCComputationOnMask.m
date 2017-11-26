@@ -574,7 +574,7 @@
             for (int y = -1; y < 2; y++) {
                 if(x == 0 && y == 0)continue;
                 NSInteger testIndex = i + y * width + x;
-                if(doesNotJumpLine(i, testIndex, width, height, total, 3) == YES){
+                if(doesNotJumpLine(i, testIndex, width, height, total, 3) == YES){//RCF will not work with 3
                     int test = mask[testIndex];
                     if (test != 0 && test != cellId){
                         NSMutableArray *neigs = [dic valueForKey:[NSString stringWithFormat:@"%i", cellId]];
@@ -749,8 +749,8 @@
         cachedValues[index][i] = bitValue;
     }
     
-    if(settings[3] > 0)
-        applyFilterToPixelData(cachedValues[index], self.mask.imageStack.width, self.mask.imageStack.height, 0, settings[3], 2, 1);
+    //if(settings[3] > 0)
+    //    applyFilterToPixelData(cachedValues[index], self.mask.imageStack.width, self.mask.imageStack.height, 0, settings[3], 2, 1);
     
     if(vals)
         free(vals);
@@ -951,39 +951,30 @@
     }
     return str.copy;
 }
--(int)xIndexInArray:(NSArray *)array{
-    int xIndex = -1;
+-(NSInteger)xIndexInArray:(NSArray *)array{
     for (NSInteger i = array.count - 1; i >=0; i--) {
         NSString *str = array[i];
-        if ([str isEqualToString:@"X"] || [str isEqualToString:@"avg_X"] || [str isEqualToString:@"cell_avg_X"]){
-            xIndex = (int)[self.channels indexOfObject:str];
-            break;
-        }
+        if ([str isEqualToString:@"X"] || [str isEqualToString:@"avg_X"] || [str isEqualToString:@"cell_avg_X"])
+            return i;
     }
-    return xIndex;
+    return -1;
 }
 
--(int)yIndexInArray:(NSArray *)array{
-    int yIndex = -1;
+-(NSInteger)yIndexInArray:(NSArray *)array{
     for (NSInteger i = array.count - 1; i >=0; i--) {
         NSString *str = array[i];
-        if ([str isEqualToString:@"Y"] || [str isEqualToString:@"avg_Y"] || [str isEqualToString:@"cell_avg_Y"]){
-            yIndex = (int)[self.channels indexOfObject:str];
-            break;
-        }
+        if ([str isEqualToString:@"Y"] || [str isEqualToString:@"avg_Y"] || [str isEqualToString:@"cell_avg_Y"])
+            return i;
     }
-    return yIndex;
+    return -1;
 }
--(int)zIndexInArray:(NSArray *)array{
-    int zIndex = -1;
+-(NSInteger)zIndexInArray:(NSArray *)array{
     for (NSInteger i = array.count - 1; i >=0; i--) {
         NSString *str = array[i];
-        if ([str isEqualToString:@"Z"] || [str isEqualToString:@"avg_Z"] || [str isEqualToString:@"cell_avg_Z"]){
-            zIndex = (int)[self.channels indexOfObject:str];
-            break;
-        }
+        if ([str isEqualToString:@"Z"] || [str isEqualToString:@"avg_Z"] || [str isEqualToString:@"cell_avg_Z"])
+            return i;
     }
-    return zIndex;
+    return -1;
 }
 -(int)sizesInArray:(NSArray *)array{
     int sizes = -1;
@@ -997,8 +988,8 @@
     return sizes;
 }
 -(NSArray *)centroidsForChannel:(NSInteger)channel{
-    int xIndex = [self xIndexInArray:self.channels];
-    int yIndex = [self yIndexInArray:self.channels];
+    NSInteger xIndex = [self xIndexInArray:self.channels];
+    NSInteger yIndex = [self yIndexInArray:self.channels];
     NSMutableArray *collected = @[].mutableCopy;
     NSInteger cells = self.mask.numberOfSegments;
     for (int i = 0; i < cells; i++) {
@@ -1011,19 +1002,19 @@
     return [NSArray arrayWithArray:collected];
 }
 -(float *)xCentroids{
-    int xIndex = [self xIndexInArray:self.channels];
+    NSInteger xIndex = [self xIndexInArray:self.channels];
     if(xIndex >=0 && xIndex < self.channels.count)
         return self.computedData[xIndex];
     return NULL;
 }
 -(float *)yCentroids{
-    int yIndex = [self yIndexInArray:self.channels];
+    NSInteger yIndex = [self yIndexInArray:self.channels];
     if(yIndex >=0 && yIndex < self.channels.count)
         return self.computedData[yIndex];
     return NULL;
 }
 -(float *)zCentroids{
-    int zIndex = [self zIndexInArray:self.channels];
+    NSInteger zIndex = [self zIndexInArray:self.channels];
     if(zIndex >=0 && zIndex < self.channels.count)
         return self.computedData[zIndex];
     return NULL;

@@ -233,20 +233,20 @@
 }
 
 -(NSInteger)numberOfRowsInTableView:(NSTableView *)tableView{
-    if(self.parent.inScopeComputations.count > 0)
-        return self.parent.inScopeComputations.firstObject.channels.count;
     if(self.parent.inScope3DMask)
         return self.parent.inScope3DMask.channels.count;
+    if(self.parent.inScopeComputations.count > 0)
+        return self.parent.inScopeComputations.firstObject.channels.count;
     return self.parent.inScopeImage?self.parent.inScopeImage.channels.count:0;
 }
 
 -(id)tableView:(NSTableView *)tableView objectValueForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row{
+    if(self.parent.inScope3DMask)
+        return self.parent.inScope3DMask.channels[row];
+    
     if(self.parent.whichTableChannels.selectedSegment == 0)
         if(self.parent.inScopeComputations.count > 0)
             return self.parent.inScopeComputations.firstObject.channels[row];
-    
-    if(self.parent.inScope3DMask)
-        return self.parent.inScope3DMask.channels[row];
     
     if(self.parent.whichTableChannels.selectedSegment == 1)
         if(self.parent.inScopeComputations.count > 0)

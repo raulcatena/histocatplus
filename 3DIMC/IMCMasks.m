@@ -729,8 +729,9 @@ void noBordersMask(int * mask, NSInteger width, NSInteger height){
 
 BOOL doesNotJumpLine(NSInteger index, NSInteger indexTest, NSInteger width, NSInteger height, NSInteger total, NSInteger expectedDistance){
     if(indexTest>=total || indexTest < 0)return NO;
-    if(labs((indexTest+width)%width - (index+width)%width) > expectedDistance)return NO;
-    if(indexTest != index && indexTest >= 0 && indexTest < total)
+    if(labs(indexTest%width - index%width) > expectedDistance)return NO;
+    if(labs(indexTest/width - index/width) > expectedDistance)return NO;
+    if(indexTest != index)
         return YES;
     return NO;
 }

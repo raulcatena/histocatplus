@@ -1,8 +1,9 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="10117" systemVersion="15G31" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" customObjectInstantitationMethod="direct">
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="12120" systemVersion="16G29" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" customObjectInstantitationMethod="direct">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="10117"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="12120"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="IMCCellSegmentation">
@@ -165,7 +166,7 @@
                             </segments>
                         </segmentedCell>
                     </segmentedControl>
-                    <textField verticalHuggingPriority="750" id="Kid-3G-Aot">
+                    <textField verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="NO" id="Kid-3G-Aot">
                         <rect key="frame" x="903" y="403" width="40" height="22"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" title="0.6" drawsBackground="YES" id="ZQ1-Pc-NFE">
@@ -174,7 +175,7 @@
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <textField verticalHuggingPriority="750" id="AId-VS-Mhh">
+                    <textField verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="NO" id="AId-VS-Mhh">
                         <rect key="frame" x="951" y="403" width="40" height="22"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" title="1.0" drawsBackground="YES" id="xKu-vd-alY">
@@ -183,7 +184,7 @@
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <textField verticalHuggingPriority="750" id="xTy-tv-PKr">
+                    <textField verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="NO" id="xTy-tv-PKr">
                         <rect key="frame" x="903" y="354" width="40" height="22"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" title="8" drawsBackground="YES" id="jKT-Hs-lHs">
@@ -192,7 +193,7 @@
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <textField verticalHuggingPriority="750" id="EDY-Du-9Ax">
+                    <textField verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="NO" id="EDY-Du-9Ax">
                         <rect key="frame" x="951" y="354" width="40" height="22"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" title="21" drawsBackground="YES" id="oJE-O2-q6e">
@@ -212,7 +213,7 @@
                             <action selector="runProfilerPipelineWithImage:" target="-2" id="lbI-uL-3Xc"/>
                         </connections>
                     </button>
-                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="65R-Qe-FXS">
+                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="NO" id="65R-Qe-FXS">
                         <rect key="frame" x="708" y="344" width="188" height="39"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="Typical diameter of nuclei (pixels) Min - Max" id="FkE-aa-120">
@@ -236,7 +237,7 @@
                         <rect key="frame" x="676" y="8" width="321" height="73"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     </customView>
-                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="sk0-30-p15">
+                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="NO" id="sk0-30-p15">
                         <rect key="frame" x="753" y="394" width="143" height="39"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="Lower and upper bounds on threshold" id="YeK-j9-1bn">
@@ -245,7 +246,7 @@
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <scrollView autohidesScrollers="YES" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" allowsMagnification="YES" maxMagnification="25" minMagnification="1" usesPredominantAxisScrolling="NO" id="Awq-Nx-fMV" customClass="IMCTiledScrollView">
+                    <scrollView autohidesScrollers="YES" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" allowsMagnification="YES" maxMagnification="25" usesPredominantAxisScrolling="NO" id="Awq-Nx-fMV" customClass="IMCTiledScrollView">
                         <rect key="frame" x="246" y="154" width="487" height="518"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <clipView key="contentView" id="wVn-6z-2Bh">
@@ -283,11 +284,11 @@
                         <rect key="frame" x="9" y="154" width="229" height="518"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" heightSizable="YES"/>
                         <clipView key="contentView" id="qBN-tE-3c0">
-                            <rect key="frame" x="1" y="23" width="227" height="494"/>
+                            <rect key="frame" x="1" y="0.0" width="227" height="517"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <outlineView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" autosaveColumns="NO" headerView="Vie-ef-gUq" indentationPerLevel="16" outlineTableColumn="1eX-JN-1fq" id="N8s-GC-ZB1">
-                                    <rect key="frame" x="0.0" y="0.0" width="227" height="19"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="227" height="494"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <size key="intercellSpacing" width="3" height="2"/>
                                     <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -313,7 +314,6 @@
                                     </connections>
                                 </outlineView>
                             </subviews>
-                            <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </clipView>
                         <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="Edb-f6-fXI">
                             <rect key="frame" x="1" y="515" width="238" height="15"/>
@@ -332,7 +332,7 @@
                         <rect key="frame" x="9" y="13" width="229" height="124"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" heightSizable="YES"/>
                         <clipView key="contentView" id="zH8-Ze-Npc">
-                            <rect key="frame" x="1" y="23" width="227" height="100"/>
+                            <rect key="frame" x="1" y="0.0" width="227" height="123"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" headerView="cka-U6-16Z" id="UjJ-RE-OVi">
@@ -362,7 +362,6 @@
                                     </connections>
                                 </tableView>
                             </subviews>
-                            <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </clipView>
                         <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="bCv-LA-7XF">
                             <rect key="frame" x="1" y="121" width="232" height="16"/>

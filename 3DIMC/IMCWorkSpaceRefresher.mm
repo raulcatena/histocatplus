@@ -106,8 +106,8 @@
     if(self.parent.inScopeComputations.count == 1 && self.parent.inScopeComputation.isLoaded)
         self.parent.statsInfo.stringValue = [self.parent.inScopeComputation descriptionWithIndexes:self.parent.channels.selectedRowIndexes];
 
-    if(self.parent.inScope3DMask.isLoaded)
-        self.parent.statsInfo.stringValue = [self.parent.inScope3DMask descriptionWithIndexes:self.parent.channels.selectedRowIndexes];
+    //if(self.parent.inScope3DMask.isLoaded)
+    //    self.parent.statsInfo.stringValue = [self.parent.inScope3DMask descriptionWithIndexes:self.parent.channels.selectedRowIndexes];
     
     [self calculateMemory];
 
@@ -260,7 +260,7 @@
     if(self.parent.autoRefreshLock.state == NSOffState)
         return;
     
-    dispatch_queue_t  threadPainting = dispatch_queue_create("aQ", NULL);
+    dispatch_queue_t  threadPainting = dispatch_queue_create([IMCUtils randomStringOfLength:5].UTF8String, NULL);
     dispatch_async(threadPainting, ^{
         NSMutableArray *images = @[].mutableCopy;
         NSMutableArray *involvedStacks = @[].mutableCopy;

@@ -8,7 +8,9 @@
 
 #import "IMCMaskTraining.h"
 #import "IMCCellTrainerTool.h"
+#import "IMCCell3DTrainerTool.h"
 #import "IMCComputationOnMask.h"
+#import "IMC3DMask.h"
 #import "IMCPixelClassification.h"
 
 @interface IMCMaskTraining(){
@@ -37,7 +39,8 @@
     return @"Cell Training";
 }
 -(void)loadBufferAction{
-    self.training = (int *)calloc(self.computation.mask.numberOfSegments, sizeof(int));
+    self.training = (int *)calloc([self segments], sizeof(int));
+
     for (NSString *key in [self labels]) {
         NSArray *arr = self.trainingDictionary[key];
         for (NSNumber *num in arr) {
@@ -57,8 +60,12 @@
 -(void)loadLayerDataWithBlock:(void (^)())block{
     if(![self canLoad])return;
     [self loadBuffer];
-    IMCCellTrainerTool *tool = [[IMCCellTrainerTool alloc]initWithComputation:self.computation andTraining:self];
-    [[tool window] makeKeyAndOrderFront:tool];
+    NSWindowController *cont;
+    if([self.parent isMemberOfClass:[IMCComputationOnMask class]])
+        cont = [[IMCCellTrainerTool alloc]initWithComputation:self.computation andTraining:self];
+    if([self.parent isMemberOfClass:[IMC3DMask class]])
+        cont = [[IMCCell3DTrainerTool alloc]initWithComputation:self.computation andTraining:self];
+    [[cont window] makeKeyAndOrderFront:cont];
     [super loadLayerDataWithBlock:block];
     
 }
@@ -87,9 +94,18 @@
     return self.trainingDictionary[key];
 }
 
+-(NSInteger)segments{
+    if([self.parent isMemberOfClass:[IMCComputationOnMask class]])
+        return self.computation.mask.numberOfSegments;
+    if([self.parent isMemberOfClass:[IMC3DMask class]])
+        return [(IMC3DMask *)self.computation segmentedUnits];
+    return 0;
+}
+
 -(void)regenerateDictTraining{
     self.jsonDictionary[JSON_DICT_PIXEL_MASK_TRAINING_TRAINED] = nil;
-    for (NSInteger i = 0; i < self.computation.mask.numberOfSegments; i++) {
+    NSInteger segments = [self segments];
+    for (NSInteger i = 0; i < segments; i++) {
         if(self.training[i] > 0){
             NSMutableArray *arr = [self labelArray:self.training[i]];
             [arr addObject:[NSNumber numberWithInteger:i + 1]];//The CellId

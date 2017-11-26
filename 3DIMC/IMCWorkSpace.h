@@ -141,6 +141,7 @@
 @property (nonatomic, weak) IBOutlet NSPopUpButton *cleanUpMode;
 @property (nonatomic, weak) IBOutlet NSPopUpButton *boostMode;
 @property (nonatomic, weak) IBOutlet NSPopUpButton *videoType;
+@property (nonatomic, weak) IBOutlet NSPopUpButton *with3Dgaps;
 
 //TabPlotsTab
 @property (nonatomic, weak) IBOutlet IMCScrollView *plotResult;

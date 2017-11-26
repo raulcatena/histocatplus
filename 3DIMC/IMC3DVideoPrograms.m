@@ -32,7 +32,7 @@
     
     IMCVideoCreator *videoRecorder = [[IMCVideoCreator alloc]initWithSize:sizeFrame duration:frameDuration path:fullPath videoType:[IMC3DVideoPrograms videoFormat]];
     
-    dispatch_queue_t aQ = dispatch_queue_create("aQQQ", NULL);
+    dispatch_queue_t aQ = dispatch_queue_create([IMCUtils randomStringOfLength:5].UTF8String, NULL);
     dispatch_async(aQ, ^{
         
         NSInteger steps = roundf(360.0f / degrees.floatValue);
@@ -59,7 +59,7 @@
     if(invert != NSNotFound){
         IMCVideoCreator *videoRecorder = [[IMCVideoCreator alloc]initWithSize:sizeFrame duration:frameDuration path:fullPath videoType:[IMC3DVideoPrograms videoFormat]];
         
-        dispatch_queue_t aQ = dispatch_queue_create("aQQQ", NULL);
+        dispatch_queue_t aQ = dispatch_queue_create([IMCUtils randomStringOfLength:5].UTF8String, NULL);
         dispatch_async(aQ, ^{
             BOOL backwards = (BOOL)invert;
             float factor = !backwards ? 1.0f/slices : -1.0f/slices;
@@ -94,7 +94,7 @@
     } while (fabs(perc.floatValue) <= .0f || fabs(perc.floatValue) >= 90.0f);
     
     IMCVideoCreator *videoRecorder = [[IMCVideoCreator alloc]initWithSize:sizeFrame duration:16 path:fullPath videoType:[IMC3DVideoPrograms videoFormat]];
-    dispatch_queue_t aQ = dispatch_queue_create("aQQQ", NULL);
+    dispatch_queue_t aQ = dispatch_queue_create([IMCUtils randomStringOfLength:5].UTF8String, NULL);
     dispatch_async(aQ, ^{
         BOOL backwards = perc.floatValue < 0;
         float factor = !backwards ? 1.0f/slices : -1.0f/slices;
@@ -129,7 +129,7 @@
     
     
     IMCVideoCreator *videoRecorder = [[IMCVideoCreator alloc]initWithSize:sizeFrame duration:16 path:fullPath videoType:[IMC3DVideoPrograms videoFormat]];
-    dispatch_queue_t aQ = dispatch_queue_create("aQQQ", NULL);
+    dispatch_queue_t aQ = dispatch_queue_create([IMCUtils randomStringOfLength:5].UTF8String, NULL);
     dispatch_async(aQ, ^{
         float stepSize = 2 * M_PI/1000;
         NSInteger stepsToTake = perc.integerValue;

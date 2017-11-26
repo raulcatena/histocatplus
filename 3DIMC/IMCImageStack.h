@@ -65,5 +65,7 @@
 
 //Rotate
 -(void)rotate:(float)rotation andTranslate:(float)x y:(float)y;
+-(CGAffineTransform)affineTransformSuperCanvasW:(NSInteger)widthSuper superCanvasH:(NSInteger)heightSuper;
+-(NSInteger *)mapOfIndexesAfterAffineWithSuperCanvasW:(NSInteger)widthSuper superCanvasH:(NSInteger)heightSuper;
 
 @end

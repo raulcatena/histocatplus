@@ -9,6 +9,7 @@
 #import "IMCCellTrainer.h"
 #import "IMCMaskTraining.h"
 #import "IMCComputationOnMask.h"
+#import "IMC3DMask.h"
 #import "IMCPixelClassification.h"
 #import "IMCRandomForests.h"
 
@@ -30,6 +31,13 @@
     return self;
 }
 
+-(NSInteger)numberOfSegments{
+    if([self.computation isMemberOfClass:[IMCComputationOnMask class]])
+        return self.computation.mask.numberOfSegments;
+    if([self.computation isMemberOfClass:[IMC3DMask class]])
+        return [(IMC3DMask *)self.computation segmentedUnits];
+    return 0;
+}
 
 -(void)toogleChannel:(NSInteger)channel{
     NSMutableArray *use = self.trainingNodes.firstObject.useChannels;
@@ -64,12 +72,11 @@
         }
         [scopeImages addObjectsFromArray:refs];
         
-        NSInteger subPix = train.computation.mask.numberOfSegments;
+        NSInteger subPix = [self numberOfSegments];
         for(int j = 0; j < subPix; j++)
             if(train.training[j] > 0)
                 counter++;
     }
-    
     if(chanCount == 0 || labelsCount == 0){
         dispatch_async(dispatch_get_main_queue(), ^{
             [General runAlertModalWithMessage:@"Can't continue. No features or labels defined"];
@@ -90,7 +97,7 @@
         [maxima addObject:@([self.trainingNodes.firstObject.computation maxForIndex:num.integerValue])];
     
     for (IMCMaskTraining *train in self.trainingNodes) {
-        NSInteger cells = train.computation.mask.numberOfSegments;
+        NSInteger cells = [self numberOfSegments];
         for(NSInteger i = 0; i < cells; i++){
             if(train.training[i] > 0){//It's a training cell;
                 for (int j = 0; j < chanCount; j++){//Add value{
@@ -121,7 +128,7 @@
 }
 -(void)loadDataInRRFF{
     //Prepare test buffer
-    NSInteger segments = self.computation.mask.numberOfSegments;
+    NSInteger segments = [self numberOfSegments];
     NSArray *channels = [self.trainingNodes.firstObject useChannels];
     NSInteger chanCount = channels.count;
     
@@ -136,6 +143,7 @@
         NSMutableArray *maxima = @[].mutableCopy;
         for (NSNumber *num in channels)
             [maxima addObject:@([self.trainingNodes.firstObject.computation maxForIndex:num.integerValue])];
+        NSLog(@"Max %@", maxima);
         float * filteredChannelsAndClassProbando = (float *)calloc((chanCount + 1) * segments, sizeof(float));
         for(NSInteger i = 0; i < segments; i++){
             for (int j = 0; j < chanCount; j++){
@@ -164,10 +172,12 @@
         NSMutableArray *channels = self.computation.channels;
         
         NSInteger oldNumberOfChannels = channels.count;
-        NSInteger trainedLabels = self.trainingNodes.firstObject.labels.count;
-        NSInteger labelsToAdd = self.trainingNodes.firstObject.labels.count + 2;//2 is because I add one column per category as binary, plus another column with all categories, and a final one with the certainty
-        NSInteger cells = self.computation.mask.numberOfSegments;
+        NSInteger trainedLabels = self.trainingNodes.firstObject.labelsTitles.count;
+        NSInteger labelsToAdd = self.trainingNodes.firstObject.labelsTitles.count + 2;//2 is because I add one column per category as binary, plus another column with all categories, and a final one with the certainty
+        NSInteger cells = [self numberOfSegments];
         
+        NSLog(@"Labels to add %@", self.trainingNodes.firstObject.labelsTitles);
+        NSLog(@"Labels to add %@", self.trainingNodes.firstObject.labels);
         float ** new = calloc(labelsToAdd, sizeof(float *));
         float ** old = calloc(oldNumberOfChannels, sizeof(float *));
         for (NSInteger i = 0; i < labelsToAdd; i++)
@@ -184,7 +194,7 @@
                 else new[j - 1 + 2][i] = 0;
             }
             new[0][i] = theClass;
-            new[1][i] = prob;
+            new[1][i] = prob;            
         }
         
         

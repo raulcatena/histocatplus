@@ -64,7 +64,7 @@
     [args addObject:[stack.fileWrapper workingFolder]];
     
     if(ownThread){
-            dispatch_queue_t aQ = dispatch_queue_create("Seg", NULL);
+            dispatch_queue_t aQ = dispatch_queue_create([IMCUtils randomStringOfLength:5].UTF8String, NULL);
             dispatch_async(aQ, ^{
                 [[NSTask launchedTaskWithLaunchPath:pathCP arguments:[NSArray arrayWithArray:args]]waitUntilExit];
                 

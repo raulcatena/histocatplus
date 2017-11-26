@@ -389,12 +389,11 @@
 }
 
 -(void)changedColorSelector:(id)sender{
-    if(self.colorVariableActive.state == NSOffState){
-        if(colorData != NULL){
-            free(colorData);
-            colorData = NULL;
-        }
-    }else{
+    if(colorData != NULL){
+        free(colorData);
+        colorData = NULL;
+    }
+    if(self.colorVariableActive.state != NSOffState){
         colorData = (int *)calloc(self.computation.segmentedUnits * 3, sizeof(int));
         float ** preData = self.computation.computedData;
         NSInteger index = self.colorVariable.indexOfSelectedItem;
@@ -525,8 +524,17 @@
     return (int)self.computation.segmentedUnits;
 }
 -(int *)colorDataForThirdDimension{
-    
     return colorData;
+}
+-(NSDictionary *)titlesAndColorsDictionary{
+    NSMutableDictionary *dict = @{self.computation.channels[self.colorVariable.indexOfSelectedItem]:[NSColor redColor]}.mutableCopy;
+    if(self.overrideTitleGraph.stringValue.length > 0 || self.colorVariableActive.state == NSOffState)
+        return nil;
+    if(self.showColor2.state == NSOnState)
+        [dict setObject:[NSColor greenColor] forKey:self.computation.channels[self.colorVariable2.indexOfSelectedItem]];
+    if(self.showColor3.state == NSOnState)
+        [dict setObject:[NSColor blueColor] forKey:self.computation.channels[self.colorVariable3.indexOfSelectedItem]];
+    return dict;
 }
 
 -(BOOL)heatColorMode{
@@ -602,7 +610,7 @@
         
         [self.tableDR selectRowIndexes:[NSIndexSet indexSetWithIndex:[self.dimensionalityRedOperations.operations indexOfObject:op]] byExtendingSelection:NO];
         
-        dispatch_queue_t aQ = dispatch_queue_create("aQQQ", NULL);
+        dispatch_queue_t aQ = dispatch_queue_create([IMCUtils randomStringOfLength:5].UTF8String, NULL);
         dispatch_async(aQ, ^{
             int cycle = op.iterationCursor;
             while (recording) {

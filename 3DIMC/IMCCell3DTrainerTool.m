@@ -25,7 +25,7 @@
     
     NSInteger plane = [self mask].width * [self mask].height;
     NSInteger virtualSlice = (NSInteger)([self mask].slices * self.planeSelector.floatValue);
-    NSLog(@"Virtual Slice %li", virtualSlice);
+
     
     NSInteger pix = MAX(0, MIN(plane - 1, floor(processed.y) * [self mask].width + processed.x));
     
@@ -99,7 +99,6 @@
         if(copy[i] == 0)continue;
         NSInteger index = abs(copy[i]) - 1;
         int val = cellData[index] * (int)factor;
-        if(val > 0)NSLog(@"Paint pix %i", val);
         img[i] = val;
     }
     
@@ -108,18 +107,18 @@
 }
 -(void)addUint8Buffer:(UInt8 *)buffer toStack:(NSMutableArray *)stackRefs direction:(BOOL)clockWise{
     
-//    CGImageRef refi = [IMCImageGenerator imageFromCArrayOfValues:buffer color:nil width:self.trainer.computation.mask.imageStack.width height:self.trainer.computation.mask.imageStack.height startingHueScale:0 hueAmplitude:255 direction:clockWise ecuatorial:NO brightField:NO];
-//    
-//    const CGFloat myMaskingColors[6] = { 0, 100, 0, 100, 0, 100 };
-//    CGImageRef masked = CGImageCreateWithMaskingColors (refi, myMaskingColors);
-//    
-//    if(masked)
-//        [stackRefs addObject:(__bridge id)masked];
-//    if(refi)
-//        CFRelease(refi);
-//    
-//    if(buffer)
-//        free(buffer);
+    CGImageRef refi = [IMCImageGenerator imageFromCArrayOfValues:buffer color:nil width:[self mask].width height:[self mask].height startingHueScale:0 hueAmplitude:255 direction:clockWise ecuatorial:NO brightField:NO];
+    
+    const CGFloat myMaskingColors[6] = { 0, 100, 0, 100, 0, 100 };
+    CGImageRef masked = CGImageCreateWithMaskingColors (refi, myMaskingColors);
+    
+    if(masked)
+        [stackRefs addObject:(__bridge id)masked];
+    if(refi)
+        CFRelease(refi);
+    
+    if(buffer)
+        free(buffer);
 }
 -(void)refresh{
     NSMutableArray *colors = [NSMutableArray arrayWithCapacity:self.channelTableView.selectedRowIndexes.count];

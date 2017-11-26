@@ -49,7 +49,7 @@
     
     NSInteger howmanystacks = self.stacksTableView.selectedRowIndexes.count;
     __block NSInteger counter = 0;
-    dispatch_queue_t aQ = dispatch_queue_create("BatPC", NULL);
+    dispatch_queue_t aQ = dispatch_queue_create([IMCUtils randomStringOfLength:5].UTF8String, NULL);
     dispatch_async(aQ, ^{
         
         [self.stacksTableView.selectedRowIndexes enumerateIndexesUsingBlock:^(NSUInteger index, BOOL *stop){

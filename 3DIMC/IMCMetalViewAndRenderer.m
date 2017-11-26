@@ -188,27 +188,35 @@ bool heightDescriptor[] = {
         NSInteger area = width * height;
         CGRect rectToRender = [self.delegate rectToRender];
         AlphaMode alphaMode = [self.delegate alphaMode];
-        
-        
-        self.renderWidth = (NSInteger)round((rectToRender.size.width * width));
-        self.renderHeight = (NSInteger)round((fabs(rectToRender.size.height) * height));
-        
-        NSLog(@"RW %li RH %li", self.renderWidth, self.renderHeight);
-        
         self.slices = slices.count;
-        NSInteger renderableArea = self.renderWidth * self.renderHeight;
-        
         int stride = 8;
         
+        bool * mask = [self.delegate showMask];
+        NSInteger ascertainWidth = 0;
+        NSInteger firstToProcess = 0;
+        for (NSInteger i = 0; i < area; i++) {
+            if(mask[i] == true){
+                firstToProcess = i;
+                while (mask[i] == true) {
+                    ascertainWidth++;
+                    i++;
+                }
+                break;
+            }
+        }
+        self.renderWidth = ascertainWidth;
+        self.renderHeight = (NSInteger)round((fabs(rectToRender.size.height) * height));
+        NSInteger renderableArea = self.renderWidth * self.renderHeight;
+        NSInteger last = MIN(_renderHeight * width + firstToProcess, area);
+
         float * buff = calloc(renderableArea * slices.count * stride, sizeof(float));//Color components and positions
+        
         if(buff){
             __block NSInteger x , y, cursor = 0;
             __block float  z = 0.0f, thickness = 0.0f;
             
             self.colorsObtained = [self.delegate colors];
             float minThresholdForAlpha = [self.delegate combinedAlpha];
-            
-            bool * mask = [self.delegate showMask];
             
             float * colors = (float *)malloc(self.colorsObtained.count * 3 * sizeof(float));
             
@@ -219,6 +227,14 @@ bool heightDescriptor[] = {
                 colors[i * 3 + 1] = colorObj.greenComponent/255.0f;
                 colors[i * 3 + 2] = colorObj.blueComponent/255.0f;
             }
+            NSInteger numColors = self.colorsObtained.count;
+            
+            NSInteger realIndexesCount = self.indexesObtained.count;
+            NSInteger realIndexes[realIndexesCount];
+            for (NSInteger i = 0; i < self.indexesObtained.count; i++)
+                realIndexes[i] = [self.indexesObtained[i]integerValue];
+            
+            
             
             for (NSNumber *num in externals) {
                 NSInteger corresponding = num.integerValue;
@@ -230,58 +246,55 @@ bool heightDescriptor[] = {
                     thickness = zThicknesses[[[arranged[corresponding]firstObject]integerValue]];
                     UInt8 *chanData = NULL;
                     
-                    for (NSInteger idx = 0; idx < self.indexesObtained.count; idx++) {
-                        NSInteger realIndex = [self.indexesObtained[idx]integerValue];
+                    for (NSInteger idx = 0; idx < realIndexesCount; idx++) {
+                        NSInteger realIndex = realIndexes[idx];
                         
                         chanData = sliceData[realIndex];
                         if(chanData){
                             NSInteger internalCursor = 0;
 
-                            for (NSInteger pix = 0; pix < area; pix++) {
+                            for (NSInteger pix = firstToProcess; pix < last; pix++) {
                                 
                                 if(mask[pix] == false)
                                     continue;
-
-                                if(internalCursor >= renderableArea)
-                                    break;
                                 
                                 NSInteger internalStride = internalCursor * stride;
+                                internalStride += cursor;
                                 
-                                if(self.colorsObtained.count > 0){
-                                    buff[cursor + internalStride + 1] += chanData[pix] * colors[idx * 3];
-                                    buff[cursor + internalStride + 2] += chanData[pix] * colors[idx * 3 + 1];
-                                    buff[cursor + internalStride + 3] += chanData[pix] * colors[idx * 3 + 2];
+                                if(numColors > 0){
+                                    buff[internalStride + 1] += chanData[pix] * colors[idx * 3];
+                                    buff[internalStride + 2] += chanData[pix] * colors[idx * 3 + 1];
+                                    buff[internalStride + 3] += chanData[pix] * colors[idx * 3 + 2];
                                 }else{
                                     RgbColor rgb = RgbFromFloatUnit(chanData[pix]/255.0f);
-                                    buff[cursor + internalStride + 1] += rgb.r/255.0f;
-                                    buff[cursor + internalStride + 2] += rgb.g/255.0f;
-                                    buff[cursor + internalStride + 3] += rgb.b/255.0f;
+                                    buff[internalStride + 1] += rgb.r/255.0f;
+                                    buff[internalStride + 2] += rgb.g/255.0f;
+                                    buff[internalStride + 3] += rgb.b/255.0f;
                                 }
-                                buff[cursor + internalStride + 4] = internalCursor % _renderWidth;
-                                buff[cursor + internalStride + 5] = internalCursor /_renderWidth;
-                                buff[cursor + internalStride + 6] = z;
-                                buff[cursor + internalStride + 7] = thickness;
+                                buff[internalStride + 4] = internalCursor % _renderWidth;
+                                buff[internalStride + 5] = internalCursor /_renderWidth;
+                                buff[internalStride + 6] = z;
+                                buff[internalStride + 7] = thickness;
                                 
                                 //Filters
                                 float max = .0f;
                                 float sum = .0f;
                                 for (int i = 1; i < 4; i++){
-                                    float val = buff[cursor + internalStride + i];
+                                    float val = buff[internalStride + i];
                                     if(val > max)
                                         max = val;
                                     sum += val;
-                                    if(sum > 1.0f){
-                                        sum = 1.0f;
+                                    if(sum > 1.0f)
                                         break;
-                                    }
                                 }
+                                if(sum > 1.0f)sum = 1.0f;
                                 
                                 if(alphaMode == ALPHA_MODE_OPAQUE)
-                                    buff[cursor + internalStride] = max < minThresholdForAlpha ? 0.0f : 1.0f;
-                                if(alphaMode == ALPHA_MODE_FIXED)
-                                    buff[cursor + internalStride] = max < minThresholdForAlpha ? 0.0f : minThresholdForAlpha;//Alpha
-                                if(alphaMode == ALPHA_MODE_ADAPTIVE)
-                                    buff[cursor + internalStride] = max < minThresholdForAlpha ? 0.0f : sum;//MIN(1.0f, sum);//Alpha
+                                    buff[internalStride] = max < minThresholdForAlpha ? 0.0f : 1.0f;
+                                else if(alphaMode == ALPHA_MODE_FIXED)
+                                    buff[internalStride] = max < minThresholdForAlpha ? 0.0f : minThresholdForAlpha;//Alpha
+                                else if(alphaMode == ALPHA_MODE_ADAPTIVE)
+                                    buff[internalStride] = max < minThresholdForAlpha ? 0.0f : sum;//MIN(1.0f, sum);//Alpha
                                 
                                 internalCursor++;
                             }
@@ -636,6 +649,9 @@ bool heightDescriptor[] = {
             }
         }
     }
+    else
+        for (NSTextField *f in view.labels)
+            f.frame = CGRectZero;
 }
 
 @end

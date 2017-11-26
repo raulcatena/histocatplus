@@ -275,7 +275,7 @@
 -(void)calculateFeaturesForMask:(IMCPixelClassification *)mask andBlock:(void(^)())block{
     NSInteger sure = [General runAlertModalAreYouSureWithMessage:@"You need to extract the mask features first. Would you like to proceed?"];
     if(sure == NSAlertFirstButtonReturn){
-        dispatch_queue_t feat = dispatch_queue_create("feat", NULL);
+        dispatch_queue_t feat = dispatch_queue_create([IMCUtils randomStringOfLength:5].UTF8String, NULL);
         dispatch_async(feat, ^{
             [mask extractDataForMask:[General cellComputations] processedData:YES];
             dispatch_async(dispatch_get_main_queue(), ^{

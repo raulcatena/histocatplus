@@ -20,6 +20,13 @@ typedef struct RgbColor
     unsigned char b;
 } RgbColor;
 
+typedef struct RgbColorF
+{
+    float r;
+    float g;
+    float b;
+} RgbColorF;
+
 typedef struct HsvColor
 {
     unsigned char h;

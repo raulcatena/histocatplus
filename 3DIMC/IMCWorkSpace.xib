@@ -88,6 +88,7 @@
                 <outlet property="whichTableChannels" destination="vtD-SD-z0O" id="qIS-9k-GlR"/>
                 <outlet property="whichTableCoordinator" destination="rIY-1J-hX4" id="RxF-mf-H2Q"/>
                 <outlet property="window" destination="xOd-HO-29H" id="JIz-fz-R2o"/>
+                <outlet property="with3Dgaps" destination="P9U-3p-gsl" id="lf9-kp-ihB"/>
                 <outlet property="xChannel" destination="4gO-kK-Ll0" id="9nF-Zm-lui"/>
                 <outlet property="xLog" destination="oVW-pk-vdO" id="oP6-MC-2Rt"/>
                 <outlet property="yChannel" destination="Ew6-4d-HHx" id="u7J-vl-X4m"/>
@@ -653,7 +654,7 @@
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <clipView key="contentView" id="LZg-c4-jDn">
                                                 <rect key="frame" x="1" y="0.0" width="717" height="612"/>
-                                                <autoresizingMask key="autoresizingMask"/>
+                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" autosaveColumns="NO" headerView="UAO-A7-670" id="AC1-NF-W0U">
                                                         <rect key="frame" x="0.0" y="0.0" width="717" height="589"/>
@@ -1005,7 +1006,7 @@
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <button verticalHuggingPriority="750" misplaced="YES" id="T96-Qz-Zpi">
-                                            <rect key="frame" x="-3" y="15" width="162" height="32"/>
+                                            <rect key="frame" x="-3" y="19" width="162" height="32"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <buttonCell key="cell" type="push" title="Prepare 3D buffer" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="Pl8-Ac-lM8">
                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -1050,7 +1051,7 @@
                                             </textFieldCell>
                                         </textField>
                                         <button verticalHuggingPriority="750" misplaced="YES" id="Njm-ud-Yvc">
-                                            <rect key="frame" x="462" y="49" width="109" height="32"/>
+                                            <rect key="frame" x="489" y="19" width="109" height="32"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <buttonCell key="cell" type="push" title="Record" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="NUg-GY-5F3">
                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -1061,7 +1062,7 @@
                                             </connections>
                                         </button>
                                         <segmentedControl verticalHuggingPriority="750" misplaced="YES" id="V6o-Va-rVy">
-                                            <rect key="frame" x="258" y="22" width="202" height="24"/>
+                                            <rect key="frame" x="274" y="22" width="202" height="24"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <segmentedCell key="cell" borderStyle="border" alignment="left" style="rounded" trackingMode="selectOne" id="jEL-dE-HH3">
                                                 <font key="font" metaFont="system"/>
@@ -1076,7 +1077,7 @@
                                             </connections>
                                         </segmentedControl>
                                         <segmentedControl verticalHuggingPriority="750" misplaced="YES" id="FZW-dX-zXh">
-                                            <rect key="frame" x="258" y="50" width="154" height="24"/>
+                                            <rect key="frame" x="274" y="50" width="154" height="24"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <segmentedCell key="cell" borderStyle="border" alignment="left" style="rounded" trackingMode="selectOne" id="iKV-o4-pZQ">
                                                 <font key="font" metaFont="system"/>
@@ -1090,7 +1091,7 @@
                                             </connections>
                                         </segmentedControl>
                                         <slider verticalHuggingPriority="750" misplaced="YES" id="XJD-Nh-PDj">
-                                            <rect key="frame" x="258" y="-2" width="202" height="20"/>
+                                            <rect key="frame" x="274" y="-2" width="202" height="20"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <sliderCell key="cell" state="on" alignment="left" maxValue="0.90000000000000002" doubleValue="0.20000000000000001" tickMarkPosition="above" sliderType="linear" id="ttb-Pr-0Z4"/>
                                             <connections>
@@ -1109,7 +1110,7 @@
                                             </connections>
                                         </button>
                                         <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" misplaced="YES" id="api-7p-VaR">
-                                            <rect key="frame" x="166" y="-5" width="19" height="27"/>
+                                            <rect key="frame" x="98" y="-3" width="19" height="27"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <stepperCell key="cell" continuous="YES" alignment="left" increment="0.10000000000000001" maxValue="10" doubleValue="2" id="J2R-iM-3z5"/>
                                             <connections>
@@ -1117,9 +1118,9 @@
                                             </connections>
                                         </stepper>
                                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" misplaced="YES" allowsCharacterPickerTouchBarItem="NO" id="8o3-IC-z9L">
-                                            <rect key="frame" x="188" y="0.0" width="39" height="17"/>
+                                            <rect key="frame" x="113" y="2" width="39" height="17"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="2.0" id="ckN-eT-Nb1">
+                                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="2.0" id="ckN-eT-Nb1">
                                                 <font key="font" metaFont="system"/>
                                                 <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -1130,7 +1131,7 @@
                                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
                                         </progressIndicator>
                                         <button verticalHuggingPriority="750" misplaced="YES" id="aJF-bX-h4i">
-                                            <rect key="frame" x="-3" y="-10" width="162" height="32"/>
+                                            <rect key="frame" x="-3" y="-7" width="93" height="32"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <buttonCell key="cell" type="push" title="ReDo Z" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="K9L-zd-p0J">
                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -1237,7 +1238,7 @@
                                             </popUpButtonCell>
                                         </popUpButton>
                                         <popUpButton verticalHuggingPriority="750" misplaced="YES" id="TMF-T8-MY3" userLabel="RenderType">
-                                            <rect key="frame" x="159" y="21" width="96" height="26"/>
+                                            <rect key="frame" x="159" y="23" width="96" height="26"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <popUpButtonCell key="cell" type="push" title="Voxels" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="w43-PG-pjv" id="bDf-YG-LpE">
                                                 <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
@@ -1263,8 +1264,37 @@
                                                 <action selector="typeOf3DMesh:" target="-2" id="Crk-tW-tjv"/>
                                             </connections>
                                         </popUpButton>
+                                        <popUpButton verticalHuggingPriority="750" misplaced="YES" id="P9U-3p-gsl" userLabel="RenderType">
+                                            <rect key="frame" x="159" y="-3" width="96" height="26"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <popUpButtonCell key="cell" type="push" title="Full 3D Mask" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="V2m-Hc-XYf" id="WgM-9D-geC">
+                                                <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
+                                                <font key="font" metaFont="menu"/>
+                                                <menu key="menu" id="Jh2-9l-xqg">
+                                                    <items>
+                                                        <menuItem title="Full 3D Mask" state="on" id="V2m-Hc-XYf">
+                                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                                        </menuItem>
+                                                        <menuItem title="No borders" id="bRl-Ax-n99">
+                                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                                        </menuItem>
+                                                    </items>
+                                                </menu>
+                                            </popUpButtonCell>
+                                        </popUpButton>
+                                        <button verticalHuggingPriority="750" misplaced="YES" id="C9L-QZ-WjP">
+                                            <rect key="frame" x="489" y="-7" width="109" height="32"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxY="YES"/>
+                                            <buttonCell key="cell" type="push" title="Copy to CB" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="HK3-80-qhM">
+                                                <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                <font key="font" metaFont="system"/>
+                                            </buttonCell>
+                                            <connections>
+                                                <action selector="copy3Dpic:" target="-2" id="eYG-bx-TNZ"/>
+                                            </connections>
+                                        </button>
                                         <popUpButton verticalHuggingPriority="750" misplaced="YES" id="fWp-Br-tKG">
-                                            <rect key="frame" x="565" y="52" width="102" height="26"/>
+                                            <rect key="frame" x="493" y="49" width="102" height="26"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <popUpButtonCell key="cell" type="push" title="Rotate around Y" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="MPl-ec-ZQX" id="NcY-8B-UXX">
                                                 <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
@@ -1279,17 +1309,6 @@
                                                 </menu>
                                             </popUpButtonCell>
                                         </popUpButton>
-                                        <button verticalHuggingPriority="750" misplaced="YES" id="C9L-QZ-WjP">
-                                            <rect key="frame" x="462" y="17" width="109" height="32"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxY="YES"/>
-                                            <buttonCell key="cell" type="push" title="Copy to CB" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="HK3-80-qhM">
-                                                <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                                <font key="font" metaFont="system"/>
-                                            </buttonCell>
-                                            <connections>
-                                                <action selector="copy3Dpic:" target="-2" id="eYG-bx-TNZ"/>
-                                            </connections>
-                                        </button>
                                     </subviews>
                                 </view>
                             </tabViewItem>

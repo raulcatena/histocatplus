@@ -295,13 +295,13 @@ void applyFilterToChannel(NSInteger chann, NSInteger images, NSInteger planePixe
 }
 
 void threeDMeanBlur(UInt8 *** data, NSInteger width, NSInteger height, NSInteger images, NSIndexSet * channels, NSInteger mode, bool *mask, float * deltas_z){
-    
     if(data == NULL || mode == 0)
         return;
     
     NSInteger planePixels = width * height;
     
     [channels enumerateIndexesUsingBlock:^(NSUInteger chann, BOOL *stop){
+        
         if(mode < 5)
             applyFilterToChannel(chann, images, planePixels, data, width, height, mask, mode, deltas_z);
         if(mode == 5){
@@ -700,27 +700,27 @@ void threeDMeanBlur(UInt8 *** data, NSInteger width, NSInteger height, NSInteger
     
     CGColorSpaceRef colorSpace = CGColorSpaceCreateWithName(kCGColorSpaceGenericGray);
     CGContextRef canvas = CGBitmapContextCreate(subBuffer, widthSuper, heightSuper, 8, widthSuper, colorSpace, kCGImageAlphaNone);
-    
-    CGAffineTransform transform = CGAffineTransformIdentity;
-    
-    float radians =  [IMCImageGenerator degressToRadians:[stack.transform[JSON_DICT_IMAGE_TRANSFORM_ROTATION]floatValue]];
+        
     CGFloat w = stack.width * [stack.transform[JSON_DICT_IMAGE_TRANSFORM_COMPRESS_X]floatValue];
     CGFloat h = stack.height * [stack.transform[JSON_DICT_IMAGE_TRANSFORM_COMPRESS_Y]floatValue];
     
     CGRect framePaint = CGRectMake(0, 0, w, h);//Here will pass compression
     
+//    float radians =  [IMCImageGenerator degressToRadians:[stack.transform[JSON_DICT_IMAGE_TRANSFORM_ROTATION]floatValue]];
+//    CGAffineTransform transform = CGAffineTransformIdentity;
+//    transform = CGAffineTransformTranslate(transform, (widthSuper - (float)stack.width)/2, (heightSuper -(float)stack.height)/2);
+//    transform = CGAffineTransformTranslate(transform,
+//                                           stack.transform[JSON_DICT_IMAGE_TRANSFORM_OFFSET_X]?
+//                                           [stack.transform[JSON_DICT_IMAGE_TRANSFORM_OFFSET_X]floatValue]:0,
+//                                           stack.transform[JSON_DICT_IMAGE_TRANSFORM_OFFSET_Y]?
+//                                           [stack.transform[JSON_DICT_IMAGE_TRANSFORM_OFFSET_Y]floatValue]:0
+//                                           );
+//    
+//    transform = CGAffineTransformTranslate(transform, (float)stack.width/2, (float)stack.height/2);
+//    transform = CGAffineTransformRotate(transform, radians);
+//    transform = CGAffineTransformTranslate(transform, -(float)stack.width/2, -(float)stack.height/2);
     
-    transform = CGAffineTransformTranslate(transform, (widthSuper - (float)stack.width)/2, (heightSuper -(float)stack.height)/2);
-    transform = CGAffineTransformTranslate(transform,
-                                           stack.transform[JSON_DICT_IMAGE_TRANSFORM_OFFSET_X]?
-                                           [stack.transform[JSON_DICT_IMAGE_TRANSFORM_OFFSET_X]floatValue]:0,
-                                           stack.transform[JSON_DICT_IMAGE_TRANSFORM_OFFSET_Y]?
-                                           [stack.transform[JSON_DICT_IMAGE_TRANSFORM_OFFSET_Y]floatValue]:0
-                                           );
-    
-    transform = CGAffineTransformTranslate(transform, (float)stack.width/2, (float)stack.height/2);
-    transform = CGAffineTransformRotate(transform, radians);
-    transform = CGAffineTransformTranslate(transform, -(float)stack.width/2, -(float)stack.height/2);
+    CGAffineTransform transform = [stack affineTransformSuperCanvasW:widthSuper superCanvasH:heightSuper];
     
     CGContextConcatCTM(canvas, transform);
     CGContextDrawImage(canvas, framePaint, ref);
@@ -965,8 +965,6 @@ RgbColor RgbFromFloatUnit(float unit){
     RgbColor rgb = HsvToRgb(hsv);
     return rgb;
 }
-
-
 
 #pragma mark utilities
 

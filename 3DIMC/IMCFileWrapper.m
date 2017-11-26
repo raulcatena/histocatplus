@@ -34,7 +34,7 @@
 
 -(void)loadFileWithBlock:(void(^)())block{
     if(![self isLoaded]){
-        dispatch_queue_t queue = dispatch_queue_create("queue", NULL);
+        dispatch_queue_t queue = dispatch_queue_create([IMCUtils randomStringOfLength:5].UTF8String, NULL);
         dispatch_async(queue, ^{
             [self loadLayerDataWithBlock:block];
         });
@@ -42,7 +42,7 @@
 }
 -(void)loadOrUnloadFileWithBlock:(void(^)())block{
     if(![self isLoaded]){
-        dispatch_queue_t queue = dispatch_queue_create("queue", NULL);
+        dispatch_queue_t queue = dispatch_queue_create([IMCUtils randomStringOfLength:5].UTF8String, NULL);
         dispatch_async(queue, ^{
             [self loadLayerDataWithBlock:block];
         });
@@ -202,7 +202,7 @@
 -(void)loadLayerDataWithBlock:(void (^)())block{
     if(![self canLoad])return;
     
-    dispatch_queue_t aQ = dispatch_queue_create("aQQ", NULL);
+    dispatch_queue_t aQ = dispatch_queue_create([IMCUtils randomStringOfLength:5].UTF8String, NULL);
     dispatch_async(aQ, ^{
         if([self isMemberOfClass:NSClassFromString(@"IMCPixelMap")]){
             [super loadLayerDataWithBlock:block];

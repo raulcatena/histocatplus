@@ -68,7 +68,7 @@
                             <action selector="calculateMaps:" target="-2" id="v55-g6-kNY"/>
                         </connections>
                     </button>
-                    <scrollView autohidesScrollers="YES" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" allowsMagnification="YES" maxMagnification="25" minMagnification="1" usesPredominantAxisScrolling="NO" id="ID4-BG-Ezl" customClass="IMCTiledScrollView">
+                    <scrollView autohidesScrollers="YES" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" allowsMagnification="YES" maxMagnification="25" usesPredominantAxisScrolling="NO" id="ID4-BG-Ezl" customClass="IMCTiledScrollView">
                         <rect key="frame" x="259" y="149" width="709" height="518"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <clipView key="contentView" id="Nc7-nj-LDO">

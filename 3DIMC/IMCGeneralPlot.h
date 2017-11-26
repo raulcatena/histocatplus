@@ -15,6 +15,7 @@
 -(int *)biaxialData;
 -(float *)floatBiaxialData;
 -(int *)colorDataForThirdDimension;
+-(NSDictionary *)titlesAndColorsDictionary;
 -(BOOL)heatColorMode;
 -(int)sizeOfData;
 -(NSString *)topLabel;
@@ -56,5 +57,6 @@
 -(void)drawLabels:(CGContextRef)ctx;
 -(void)setBackGroundColor:(CGContextRef)ctx dirtyRect:(CGRect)dirtyRect;
 -(void)addTopLabel:(NSString *)topTitle context:(CGContextRef)ctx dirtyRect:(CGRect)dirtyRect;
+-(void)addTopLabels:(NSArray<NSString *>*)topTitles withColors:(NSArray<NSColor *>*)colors size:(CGFloat)size context:(CGContextRef)ctx dirtyRect:(CGRect)dirtyRect;
 
 @end

@@ -16,7 +16,7 @@
 @implementation IMCChannelOperations
 
 +(void)savefiles:(NSArray <IMCFileWrapper *>*)files block:(void(^)())block{
-    dispatch_queue_t aQ = dispatch_queue_create("aaQ", NULL);
+    dispatch_queue_t aQ = dispatch_queue_create([IMCUtils randomStringOfLength:5].UTF8String, NULL);
     dispatch_async(aQ, ^{
         for (IMCFileWrapper *file in files){
             [file save];
@@ -27,7 +27,7 @@
 }
 
 +(void)changeChannelsToStacks:(NSArray *)stacks withFile:(NSURL *)url block:(void(^)())block{
-    dispatch_queue_t aQ = dispatch_queue_create("aaQ", NULL);
+    dispatch_queue_t aQ = dispatch_queue_create([IMCUtils randomStringOfLength:5].UTF8String, NULL);
     dispatch_async(aQ, ^{
         NSString *str = [[NSString alloc]initWithData:[NSData dataWithContentsOfFile:url.path] encoding:NSUTF8StringEncoding];
         NSArray *arr = [str componentsSeparatedByString:@"\t"];NSLog(@"%@", arr);
@@ -56,7 +56,7 @@
             if(![closedFiles containsObject:stack.fileWrapper])
                 [closedFiles addObject:stack.fileWrapper];
     
-    dispatch_queue_t aQ = dispatch_queue_create("aaQ", NULL);
+    dispatch_queue_t aQ = dispatch_queue_create([IMCUtils randomStringOfLength:5].UTF8String, NULL);
     dispatch_async(aQ, ^{
         for (IMCImageStack *stack in images) {
             
@@ -101,7 +101,7 @@
     if (sure == NSAlertSecondButtonReturn)
         return NO;
     
-    dispatch_queue_t aQ = dispatch_queue_create("otQ", NULL);
+    dispatch_queue_t aQ = dispatch_queue_create([IMCUtils randomStringOfLength:5].UTF8String, NULL);
     dispatch_async(aQ, ^{
         for (IMCComputationOnMask *comp in comps) {
             
@@ -144,7 +144,7 @@
     
     NSInteger sure = [General runAlertModalAreYouSure];if (sure == NSAlertSecondButtonReturn)return;
     
-    dispatch_queue_t aQ = dispatch_queue_create("aaQ", NULL);
+    dispatch_queue_t aQ = dispatch_queue_create([IMCUtils randomStringOfLength:5].UTF8String, NULL);
     dispatch_async(aQ, ^{
         for (IMCImageStack *otherStack in stacks) {
             //Check the file has been loaded at least once
@@ -164,7 +164,7 @@
     
     NSInteger sure = [General runAlertModalAreYouSure];if (sure == NSAlertSecondButtonReturn)return;
     
-    dispatch_queue_t aQ = dispatch_queue_create("aaQ", NULL);
+    dispatch_queue_t aQ = dispatch_queue_create([IMCUtils randomStringOfLength:5].UTF8String, NULL);
     dispatch_async(aQ, ^{
         for (IMCComputationOnMask *comp in computations) {
             //Check the file has been loaded at least once
@@ -184,7 +184,7 @@
     
     NSInteger sure = [General runAlertModalAreYouSure];if (sure == NSAlertSecondButtonReturn)return;
     
-    dispatch_queue_t aQ = dispatch_queue_create("aaQ", NULL);
+    dispatch_queue_t aQ = dispatch_queue_create([IMCUtils randomStringOfLength:5].UTF8String, NULL);
     dispatch_async(aQ, ^{
         for (IMCImageStack *otherStack in stacks) {
             //Check the file has been loaded at least once
@@ -204,7 +204,7 @@
     
     NSInteger sure = [General runAlertModalAreYouSure];if (sure == NSAlertSecondButtonReturn)return;
     
-    dispatch_queue_t aQ = dispatch_queue_create("aaQ", NULL);
+    dispatch_queue_t aQ = dispatch_queue_create([IMCUtils randomStringOfLength:5].UTF8String, NULL);
     dispatch_async(aQ, ^{
         for (IMCImageStack *otherStack in stacks) {
             if(otherStack != stack){
@@ -240,7 +240,7 @@
 }
 
 +(void)converttoTIFFFiles:(NSArray <IMCFileWrapper *>*)files block:(void(^)())block{
-    dispatch_queue_t aQ = dispatch_queue_create("aaQ", NULL);
+    dispatch_queue_t aQ = dispatch_queue_create([IMCUtils randomStringOfLength:5].UTF8String, NULL);
     dispatch_async(aQ, ^{
         for (IMCFileWrapper *wrapper in files) {
             if([wrapper.fileType hasPrefix:EXTENSION_TIFF_PREFIX] || [wrapper hasTIFFBackstore])continue;//Is already

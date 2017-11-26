@@ -86,9 +86,14 @@ int fltcompare(const void *a,const void *b) {
     float internalX = plotableX * fabsf(self.minX)/(self.maxX - self.minX);
     float internalY = plotableY * fabsf(self.minY)/(self.maxY - self.minY);
     
-    
     int *dataColor = [self.delegatePlot colorDataForThirdDimension];
-    if(dataColor != NULL)[self addTopLabel:[self.delegatePlot topLabel] context:ctx dirtyRect:dirtyRect];
+    
+    NSDictionary *colorsDict = [self.delegatePlot titlesAndColorsDictionary];
+    if(colorsDict){
+        [self addTopLabels:colorsDict.allKeys withColors:colorsDict.allValues size:self.axesPointSize context:ctx dirtyRect:dirtyRect];
+    }else{
+        if(dataColor != NULL)[self addTopLabel:[self.delegatePlot topLabel] context:ctx dirtyRect:dirtyRect];
+    }
     
     BOOL heatColor = [self.delegatePlot heatColorMode];
     

@@ -41,6 +41,7 @@ typedef enum{
 @property (nonatomic, weak) IMCLoader *coordinator;
 @property (nonatomic, weak) IMC3DHandler *threeDHandler;
 @property (nonatomic, assign) NSInteger blurMode;
+@property (nonatomic, assign) BOOL noBorders;
 @property (nonatomic, assign) NSInteger width;
 @property (nonatomic, assign) NSInteger height;
 @property (nonatomic, readonly) NSInteger slices;
