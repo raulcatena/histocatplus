@@ -7,12 +7,23 @@
 //
 
 #import <Cocoa/Cocoa.h>
+#import "OpenGLView.h"
 
 @class IMCLoader;
 @class IMCMtkView;
+@class IMCTiledScrollView;
 
-@interface IMCPositions : NSWindowController<NSTableViewDelegate, NSTableViewDataSource>
+@interface IMCPositions : NSWindowController<NSTableViewDelegate, NSTableViewDataSource, Get3DData>
 
--(instancetype)initWithLoader:(IMCLoader *)loader andView:(IMCMtkView *)view;
+@property (nonatomic, weak) IBOutlet NSPopUpButton * positionsSelector;
+@property (nonatomic, weak) id<Get3DData>delegate;
+@property (nonatomic, weak) IBOutlet NSTableView *tableView;
+
+-(instancetype)initWithLoader:(IMCLoader *)loader andView:(IMCMtkView *)view andSV:(IMCTiledScrollView *)scrollView;
+
+-(IBAction)addProfile:(id)sender;
+-(IBAction)removeProfile:(id)sender;
+-(IBAction)setPositionProfile:(id)sender;
+-(IBAction)refreshList:(id)sender;
 
 @end

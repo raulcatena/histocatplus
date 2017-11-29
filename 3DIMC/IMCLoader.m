@@ -480,7 +480,14 @@
 }
 
 #pragma mark 3Dstate
-
+-(void)setPositions:(NSArray *)positions{
+    _jsonDescription[THREE_D_POSITIONS] = positions;
+}
+-(NSMutableDictionary *)positions{
+    if(!_jsonDescription[THREE_D_POSITIONS])
+        _jsonDescription[THREE_D_POSITIONS] = @{}.mutableCopy;
+    return _jsonDescription[THREE_D_POSITIONS];
+}
 -(void)setSelectedRectString:(NSString *)selectedRectString{
     _jsonDescription[THREE_D_ROI] = selectedRectString;
 }
@@ -492,18 +499,6 @@
 }
 -(NSString *)zoom{
     return _jsonDescription[THREE_D_ZOOM];
-}
--(void)setPosition:(NSString *)position{
-    _jsonDescription[THREE_D_POS] = position;
-}
--(NSString *)position{
-    return _jsonDescription[THREE_D_POS];
-}
--(void)setRotation:(NSString *)rotation{
-    _jsonDescription[THREE_D_ROT] = rotation;
-}
--(NSString *)rotation{
-    return _jsonDescription[THREE_D_ROT];
 }
 -(void)setBaseModelMatrixMetal:(NSString *)baseModelMatrixMetal{
     _jsonDescription[METAL_BASE_MATRIX] = baseModelMatrixMetal;

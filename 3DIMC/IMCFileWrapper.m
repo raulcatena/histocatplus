@@ -86,7 +86,7 @@
     for (IMCPanoramaWrapper *pan in self.children)
         for(IMCImageStack *stck in pan.children)
             [arr addObject:stck];
-    return [NSArray arrayWithArray:arr];
+    return arr;
 }
 
 -(void)saveBIMCAtPath:(NSString *)path{

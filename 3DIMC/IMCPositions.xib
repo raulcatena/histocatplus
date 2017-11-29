@@ -8,6 +8,8 @@
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="IMCPositions">
             <connections>
+                <outlet property="positionsSelector" destination="1fA-5A-WvN" id="bJK-Lz-n09"/>
+                <outlet property="tableView" destination="6AR-z0-8VX" id="cQA-pM-i9e"/>
                 <outlet property="window" destination="F0z-JX-Cv5" id="gIp-Ho-8D9"/>
             </connections>
         </customObject>
@@ -29,6 +31,9 @@
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" size="13" name="CambriaMath"/>
                         </buttonCell>
+                        <connections>
+                            <action selector="refreshList:" target="-2" id="PfZ-xa-dpe"/>
+                        </connections>
                     </button>
                     <button verticalHuggingPriority="750" misplaced="YES" id="da9-lW-rBW">
                         <rect key="frame" x="285" y="2" width="65" height="32"/>
@@ -37,6 +42,9 @@
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
+                        <connections>
+                            <action selector="addProfile:" target="-2" id="G5a-EE-2lw"/>
+                        </connections>
                     </button>
                     <button verticalHuggingPriority="750" misplaced="YES" id="UpO-6b-aCj">
                         <rect key="frame" x="202" y="2" width="89" height="32"/>
@@ -45,10 +53,13 @@
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
+                        <connections>
+                            <action selector="removeProfile:" target="-2" id="s5k-bN-gv9"/>
+                        </connections>
                     </button>
                     <popUpButton verticalHuggingPriority="750" misplaced="YES" id="1fA-5A-WvN">
                         <rect key="frame" x="25" y="407" width="393" height="26"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                         <popUpButtonCell key="cell" type="push" title="Item 1" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="6C7-9e-O46" id="pNZ-f7-JwM">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="menu"/>
@@ -60,10 +71,13 @@
                                 </items>
                             </menu>
                         </popUpButtonCell>
+                        <connections>
+                            <action selector="refreshList:" target="-2" id="QHG-RJ-pvH"/>
+                        </connections>
                     </popUpButton>
                     <scrollView misplaced="YES" autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" id="kiw-Hf-kYm">
                         <rect key="frame" x="27" y="45" width="386" height="357"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <clipView key="contentView" id="aQf-Ng-2IV">
                             <rect key="frame" x="1" y="0.0" width="384" height="356"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -75,7 +89,7 @@
                                     <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                     <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                     <tableColumns>
-                                        <tableColumn width="116" minWidth="40" maxWidth="1000" id="AX4-bW-jPr">
+                                        <tableColumn identifier="Title" width="116" minWidth="40" maxWidth="1000" id="AX4-bW-jPr">
                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border">
                                                 <font key="font" metaFont="smallSystem"/>
                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -129,6 +143,9 @@
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
+                        <connections>
+                            <action selector="setPositionProfile:" target="-2" id="igZ-Wp-Jzh"/>
+                        </connections>
                     </button>
                 </subviews>
             </view>

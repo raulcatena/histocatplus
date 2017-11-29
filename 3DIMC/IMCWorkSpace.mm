@@ -2040,7 +2040,6 @@
                 return;
         }while (input.integerValue < 0);
         mask3d.expansion = input.integerValue;
-        
         mask3d.threshold = self.thresholdToRender.floatValue;
         mask3d.sheepShaver = (BOOL)mask3d.minKernel;
         mask3d.type = type;
@@ -2152,8 +2151,10 @@
 
 #pragma mark
 -(void)openPoisitionsTool:(id)sender{
-    if(!self.positionsTool)
-        self.positionsTool = [[IMCPositions alloc]initWithLoader:self.dataCoordinator andView:self.metalView];
+    if(!self.positionsTool){
+        self.positionsTool = [[IMCPositions alloc]initWithLoader:self.dataCoordinator andView:self.metalView andSV:self.scrollViewBlends];
+        self.positionsTool.delegate = self;
+    }
     [[self.positionsTool window] makeKeyAndOrderFront:self.positionsTool];
 }
 

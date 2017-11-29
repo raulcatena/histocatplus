@@ -513,21 +513,26 @@
             NSInteger offset = planeLength * i;
             if(handler.allBuffer[i])
                 if(handler.allBuffer[i][channel])
-                    for (NSInteger j = 0; j < planeLength; j++)
+                    for (NSInteger j = 0; j < planeLength; j++){
+                        if(mask[j] == false)
+                            continue;
                         if (_maskIds[offset + j] == 0){
-                            UInt8 val = handler.allBuffer[i][channel][j];
+                            float val = (float)handler.allBuffer[i][channel][j];
                             if(schannel != NSNotFound && handler.allBuffer[i][schannel])
                                 val -= handler.allBuffer[i][schannel][j];
                             if(val >= analyze)
                                 _maskIds[offset + j] = -1;
                         }
+                    }
         }
         int cellId = 1;
         for (NSInteger i = 0; i < handler.images; i++) {
             NSInteger offset = planeLength * i;
             if(handler.allBuffer[i])
                 if(handler.allBuffer[i][channel])
-                    for (NSInteger j = 0; j < planeLength; j++)
+                    for (NSInteger j = 0; j < planeLength; j++){
+                        if(mask[j] == false)
+                            continue;
                         if (_maskIds[offset + j] == -1){
                             int qual = [self checkCandidates:offset + j fullMaskLength:fullMask planLength:planeLength width:self.width once:NO];
                             if(qual >= self.minKernel){//Promote all
@@ -536,6 +541,7 @@
                                 cellId++;
                             }
                         }
+                    }
         }
         NSLog(@"Assigned %i", cellId);
         self.segments = cellId - 1;

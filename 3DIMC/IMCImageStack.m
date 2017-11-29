@@ -290,8 +290,9 @@
 
 -(void)setAutoMaxForMilenile:(int)milenile andChannel:(NSInteger)channel{
     float valPer = [self valueAtMilenile:milenile forChannel:channel];
-    
     if(valPer == .0f)return;
+
+    [self getCachedBufferForIndex:channel];
     float max = cachedSettings[channel][5];
     if(max == .0f)
         cachedSettings[channel][0] = 1.0f;
