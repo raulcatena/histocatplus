@@ -353,6 +353,15 @@
 		0D44D2501FC56FEE002F8DD4 /* IMCCell3DTrainerTool.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0D44D24F1FC56FEE002F8DD4 /* IMCCell3DTrainerTool.xib */; };
 		0D44D2511FC56FEE002F8DD4 /* IMCCell3DTrainerTool.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0D44D24F1FC56FEE002F8DD4 /* IMCCell3DTrainerTool.xib */; };
 		0D44D2521FC56FEE002F8DD4 /* IMCCell3DTrainerTool.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0D44D24F1FC56FEE002F8DD4 /* IMCCell3DTrainerTool.xib */; };
+		0D44D2551FCD49CA002F8DD4 /* NSImage+Utilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D44D2541FCD49CA002F8DD4 /* NSImage+Utilities.m */; };
+		0D44D2561FCD49CA002F8DD4 /* NSImage+Utilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D44D2541FCD49CA002F8DD4 /* NSImage+Utilities.m */; };
+		0D44D2571FCD49CA002F8DD4 /* NSImage+Utilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D44D2541FCD49CA002F8DD4 /* NSImage+Utilities.m */; };
+		0D44D25B1FCEA350002F8DD4 /* IMCPositions.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D44D2591FCEA350002F8DD4 /* IMCPositions.m */; };
+		0D44D25C1FCEA351002F8DD4 /* IMCPositions.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D44D2591FCEA350002F8DD4 /* IMCPositions.m */; };
+		0D44D25D1FCEA351002F8DD4 /* IMCPositions.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D44D2591FCEA350002F8DD4 /* IMCPositions.m */; };
+		0D44D25E1FCEA351002F8DD4 /* IMCPositions.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0D44D25A1FCEA350002F8DD4 /* IMCPositions.xib */; };
+		0D44D25F1FCEA351002F8DD4 /* IMCPositions.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0D44D25A1FCEA350002F8DD4 /* IMCPositions.xib */; };
+		0D44D2601FCEA351002F8DD4 /* IMCPositions.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0D44D25A1FCEA350002F8DD4 /* IMCPositions.xib */; };
 		0D4748511F9DCBE10090AA78 /* IMCWaterShedSegmenter.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D4748501F9DCBE00090AA78 /* IMCWaterShedSegmenter.m */; };
 		0D4748521F9DCBE10090AA78 /* IMCWaterShedSegmenter.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D4748501F9DCBE00090AA78 /* IMCWaterShedSegmenter.m */; };
 		0D4748531F9DCBE10090AA78 /* IMCWaterShedSegmenter.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D4748501F9DCBE00090AA78 /* IMCWaterShedSegmenter.m */; };
@@ -949,6 +958,11 @@
 		0D44D24A1FC56FC5002F8DD4 /* IMCCell3DTrainerTool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IMCCell3DTrainerTool.h; sourceTree = "<group>"; };
 		0D44D24B1FC56FC5002F8DD4 /* IMCCell3DTrainerTool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IMCCell3DTrainerTool.m; sourceTree = "<group>"; };
 		0D44D24F1FC56FEE002F8DD4 /* IMCCell3DTrainerTool.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = IMCCell3DTrainerTool.xib; sourceTree = "<group>"; };
+		0D44D2531FCD49CA002F8DD4 /* NSImage+Utilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSImage+Utilities.h"; sourceTree = "<group>"; };
+		0D44D2541FCD49CA002F8DD4 /* NSImage+Utilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSImage+Utilities.m"; sourceTree = "<group>"; };
+		0D44D2581FCEA350002F8DD4 /* IMCPositions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IMCPositions.h; sourceTree = "<group>"; };
+		0D44D2591FCEA350002F8DD4 /* IMCPositions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IMCPositions.m; sourceTree = "<group>"; };
+		0D44D25A1FCEA350002F8DD4 /* IMCPositions.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = IMCPositions.xib; sourceTree = "<group>"; };
 		0D47484F1F9DCBE00090AA78 /* IMCWaterShedSegmenter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IMCWaterShedSegmenter.h; sourceTree = "<group>"; };
 		0D4748501F9DCBE00090AA78 /* IMCWaterShedSegmenter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IMCWaterShedSegmenter.m; sourceTree = "<group>"; };
 		0D5C20E51E38022E00DCD346 /* IMCScale.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IMCScale.h; sourceTree = "<group>"; };
@@ -2134,6 +2148,8 @@
 				0D6720541E3FF3E400C19663 /* IMCTransformDictController.xib */,
 				0D9AEE421E43EDC500F76590 /* NSImage+OpenCV.h */,
 				0D9AEE431E43EDC500F76590 /* NSImage+OpenCV.mm */,
+				0D44D2531FCD49CA002F8DD4 /* NSImage+Utilities.h */,
+				0D44D2541FCD49CA002F8DD4 /* NSImage+Utilities.m */,
 			);
 			name = "View Objects";
 			sourceTree = "<group>";
@@ -2157,6 +2173,9 @@
 				0DB400491E530BB600179ECB /* IMCBrushBullet.m */,
 				0D1FD2A21FB5AC3700304C27 /* Help.h */,
 				0D1FD2A31FB5AC3700304C27 /* Help.m */,
+				0D44D2581FCEA350002F8DD4 /* IMCPositions.h */,
+				0D44D2591FCEA350002F8DD4 /* IMCPositions.m */,
+				0D44D25A1FCEA350002F8DD4 /* IMCPositions.xib */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -2372,6 +2391,7 @@
 				0D00AC581E64D53400887057 /* libopencv_highgui.3.2.0.dylib in Resources */,
 				0D00AC591E64D53400887057 /* libopencv_highgui.3.2.dylib in Resources */,
 				0D00AC5A1E64D53400887057 /* libopencv_highgui.dylib in Resources */,
+				0D44D25F1FCEA351002F8DD4 /* IMCPositions.xib in Resources */,
 				0D00AC5B1E64D53400887057 /* libopencv_imgcodecs.3.2.0.dylib in Resources */,
 				0DC0E4921F64AEF700DD1B62 /* SpillOverTableCleanWithZerosBioRXivsIMC.txt in Resources */,
 				0D00AC5C1E64D53400887057 /* libopencv_imgcodecs.3.2.dylib in Resources */,
@@ -2481,6 +2501,7 @@
 				0D9F31151EF909CF00E1E083 /* libopencv_highgui.3.2.0.dylib in Resources */,
 				0D9F31161EF909CF00E1E083 /* libopencv_highgui.3.2.dylib in Resources */,
 				0D9F31171EF909CF00E1E083 /* libopencv_highgui.dylib in Resources */,
+				0D44D2601FCEA351002F8DD4 /* IMCPositions.xib in Resources */,
 				0D9F31181EF909CF00E1E083 /* libopencv_imgcodecs.3.2.0.dylib in Resources */,
 				0DC0E4931F64AEF700DD1B62 /* SpillOverTableCleanWithZerosBioRXivsIMC.txt in Resources */,
 				0D9F31191EF909CF00E1E083 /* libopencv_imgcodecs.3.2.dylib in Resources */,
@@ -2590,6 +2611,7 @@
 				0D15574B1E5D876900C27064 /* libopencv_highgui.3.2.0.dylib in Resources */,
 				0D15574C1E5D876900C27064 /* libopencv_highgui.3.2.dylib in Resources */,
 				0D99BFCE1E82E34800E337A2 /* IMCThresholdBatch.xib in Resources */,
+				0D44D25E1FCEA351002F8DD4 /* IMCPositions.xib in Resources */,
 				0D15574D1E5D876900C27064 /* libopencv_highgui.dylib in Resources */,
 				0DC0E4911F64AEF700DD1B62 /* SpillOverTableCleanWithZerosBioRXivsIMC.txt in Resources */,
 				0D15574E1E5D876900C27064 /* libopencv_imgcodecs.3.2.0.dylib in Resources */,
@@ -2729,6 +2751,7 @@
 				0D0D84051FA138360044EDC1 /* IMCPCAOperation.m in Sources */,
 				0D00ABE01E64D53400887057 /* IMC_BIMCLoader.m in Sources */,
 				0D0D83D11FA12C670044EDC1 /* IMCTestCPP.cpp in Sources */,
+				0D44D2561FCD49CA002F8DD4 /* NSImage+Utilities.m in Sources */,
 				0D0D83E61FA12D410044EDC1 /* IMCGeneralPlot.m in Sources */,
 				0DF81F111FBD9801000260F5 /* IMC3DVideoPrograms.m in Sources */,
 				0D00ABE21E64D53400887057 /* XMLDictionary.m in Sources */,
@@ -2811,6 +2834,7 @@
 				0D00AC0E1E64D53400887057 /* IMCVideoCreator.m in Sources */,
 				0D00AC0F1E64D53400887057 /* sptree.cpp in Sources */,
 				0D04DBFA1EEABA7E00B16BAB /* IMCMetric.m in Sources */,
+				0D44D25C1FCEA351002F8DD4 /* IMCPositions.m in Sources */,
 				0D00AC101E64D53400887057 /* NSOpenGLView+Utilities.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2868,6 +2892,7 @@
 				0D0D84061FA138360044EDC1 /* IMCPCAOperation.m in Sources */,
 				0D9F30891EF909CF00E1E083 /* XMLDictionary.m in Sources */,
 				0D0D83D21FA12C670044EDC1 /* IMCTestCPP.cpp in Sources */,
+				0D44D2571FCD49CA002F8DD4 /* NSImage+Utilities.m in Sources */,
 				0D0D83E71FA12D410044EDC1 /* IMCGeneralPlot.m in Sources */,
 				0DF81F121FBD9801000260F5 /* IMC3DVideoPrograms.m in Sources */,
 				0D9F308A1EF909CF00E1E083 /* IMCThresholder.mm in Sources */,
@@ -2950,6 +2975,7 @@
 				0D9F30C51EF909CF00E1E083 /* IMCVideoCreator.m in Sources */,
 				0D9F30C61EF909CF00E1E083 /* sptree.cpp in Sources */,
 				0D9F30C71EF909CF00E1E083 /* IMCMetric.m in Sources */,
+				0D44D25D1FCEA351002F8DD4 /* IMCPositions.m in Sources */,
 				0D9F30C81EF909CF00E1E083 /* NSOpenGLView+Utilities.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -3007,6 +3033,7 @@
 				0DB37D351E34B4DE002975E2 /* IMCScrollView.m in Sources */,
 				0DB37D101E30C90F002975E2 /* NSString+MD5.m in Sources */,
 				0D0D84041FA138360044EDC1 /* IMCPCAOperation.m in Sources */,
+				0D44D2551FCD49CA002F8DD4 /* NSImage+Utilities.m in Sources */,
 				0DB37D321E34B17F002975E2 /* IMC_BIMCLoader.m in Sources */,
 				0DF81F101FBD9801000260F5 /* IMC3DVideoPrograms.m in Sources */,
 				0D0D83D01FA12C670044EDC1 /* IMCTestCPP.cpp in Sources */,
@@ -3089,6 +3116,7 @@
 				0D4336481E4DEE920096371D /* IMCVideoCreator.m in Sources */,
 				0DB400641E534D7D00179ECB /* sptree.cpp in Sources */,
 				0D04DBF91EEABA7E00B16BAB /* IMCMetric.m in Sources */,
+				0D44D25B1FCEA350002F8DD4 /* IMCPositions.m in Sources */,
 				0D4336451E4DEE4E0096371D /* NSOpenGLView+Utilities.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

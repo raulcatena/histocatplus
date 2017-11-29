@@ -50,6 +50,7 @@ typedef enum
 -(NSArray *)channelsForCell;
 -(NSButton *)legends;
 -(NSInteger)boostModeCode;
+-(float)sizeLabels;
 @end
 
 

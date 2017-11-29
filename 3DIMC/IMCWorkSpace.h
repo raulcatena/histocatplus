@@ -262,6 +262,9 @@
 -(IBAction)clusterKMeans:(id)sender;
 -(IBAction)clusterFlock:(id)sender;
 
+//Positions
+-(IBAction)openPoisitionsTool:(id)sender;
+
 //Help
 -(IBAction)helpHC:(NSButton *)sender;
 

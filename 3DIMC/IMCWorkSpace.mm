@@ -69,6 +69,9 @@
 //Help
 #import "Help.h"
 
+//Positioning 3D
+#import "IMCPositions.h"
+
 @interface IMCWorkSpace (){
     dispatch_queue_t threadPainting;
     BOOL recordingVideo;
@@ -86,6 +89,7 @@
 @property (nonatomic, strong) IMCCompensation * compensationHandler;
 @property (nonatomic, strong) NSMutableArray<IMCCellBasicAlgorithms *> * cellAnalyses;
 @property (nonatomic, strong) IMCCellBasicAlgorithms *currentCellAnalysis;
+@property (nonatomic, strong) IMCPositions *positionsTool;
 
 @end
 
@@ -655,7 +659,17 @@
 }
 //TODO find active view
 -(IBAction)copy:(id)sender{
-    [IMCFileExporter copyToClipBoardFromScroll:[self inViewScrollView] allOrZoomed:NO];
+    NSString *ident = self.tabs.selectedTabViewItem.identifier;
+    if([ident isEqualToString:TAB_ID_THREED]){
+        NSImage *im = [self.metalView getImageBitMapFromRect:self.metalView.bounds];
+        NSImage *im2 = [NSImage imageWithRef:[self.metalView captureImageRef]];
+        NSImage *merge = [IMCFileExporter mergeImage:im2 andB:im fraction:1.0f];
+        NSPasteboard *pasteboard = [NSPasteboard generalPasteboard];
+        [pasteboard clearContents];
+        [pasteboard writeObjects:@[merge]];
+    }
+    else
+        [IMCFileExporter copyToClipBoardFromScroll:[self inViewScrollView] allOrZoomed:NO];
 }
 -(IBAction)copy3Dpic:(id)sender{
     NSImage *im;
@@ -1699,6 +1713,9 @@
     }
     return ALPHA_MODE_OPAQUE;
 }
+-(float)sizeLabels{
+    return self.legendsFontSize.floatValue;
+}
 -(NSInteger)boostModeCode{
     return self.boostMode.indexOfSelectedItem;
 }
@@ -2131,6 +2148,13 @@
 #pragma mark
 -(void)cleanUpNamesWithAirlab:(id)sender{
     [IMCAirLabClient getInfoClones:self.inScopeImages];
+}
+
+#pragma mark
+-(void)openPoisitionsTool:(id)sender{
+    if(!self.positionsTool)
+        self.positionsTool = [[IMCPositions alloc]initWithLoader:self.dataCoordinator andView:self.metalView];
+    [[self.positionsTool window] makeKeyAndOrderFront:self.positionsTool];
 }
 
 -(void)close{

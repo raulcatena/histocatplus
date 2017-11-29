@@ -15,6 +15,7 @@
 #import "tiffio.h"
 #import "IMCScrollView.h"
 #import "NSView+Utilities.h"
+#import "NSImage+Utilities.h"
 #import "IMCLoader.h"
 
 @implementation IMCFileExporter
@@ -170,6 +171,20 @@
         [scroll setMagnification:prev];
     }
     return someImage;
+}
++(NSImage *) mergeImage:(NSImage*)a andB:(NSImage*)b fraction:(float)fraction{
+    
+    NSBitmapImageRep *bitmap = [a bitmapImageRepresentation];//(NSBitmapImageRep*)[[a representations] objectAtIndex:0];
+    NSGraphicsContext *ctx = [NSGraphicsContext graphicsContextWithBitmapImageRep:bitmap];
+    [NSGraphicsContext saveGraphicsState];
+    [NSGraphicsContext setCurrentContext:ctx];
+    CGRect rect = CGRectMake(0, 0, bitmap.size.width, bitmap.size.height);
+    [NSGraphicsContext saveGraphicsState];
+    [NSGraphicsContext setCurrentContext:ctx];
+    [b drawInRect:rect fromRect:rect operation:NSCompositeSourceOver fraction:fraction];
+    [NSGraphicsContext restoreGraphicsState];
+    
+    return [[NSImage alloc]initWithCGImage:bitmap.CGImage size:bitmap.size];
 }
 +(void)copyToClipBoardFromScroll:(IMCScrollView *)scroll allOrZoomed:(BOOL)zoomed{
     NSImage *im = [IMCFileExporter getNSImageForIMCScrollView:scroll zoomed:zoomed];

@@ -621,7 +621,8 @@ bool heightDescriptor[] = {
         NSArray *channsObtained = [self.delegate channelsForCell];
         NSArray *indexesObtained = [self.delegate inOrderIndexes];
         CGFloat width = view.bounds.size.width;
-        CGFloat heigthLabel = 30;
+        float sizeLabels = [self.delegate sizeLabels];
+        CGFloat heigthLabel = sizeLabels + 5.0f;
         
         if(colorsObtained.count == indexesObtained.count || colorsObtained.count == 0){
             int index = 0;
@@ -636,7 +637,7 @@ bool heightDescriptor[] = {
                     field.frame = NSMakeRect(10.0f, heigthLabel * index, width, heigthLabel);
                     field.textColor = colorsObtained.count == 0 ? [NSColor whiteColor] : [colorsObtained objectAtIndex:index];
                     field.backgroundColor = [NSColor clearColor];
-                    field.font = [NSFont systemFontOfSize:25.0f];
+                    field.font = [NSFont systemFontOfSize:sizeLabels];
                     field.bordered = NO;
                     field.selectable = NO;
                     field.editable = NO;

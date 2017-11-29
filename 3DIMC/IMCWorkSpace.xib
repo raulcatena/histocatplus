@@ -461,20 +461,20 @@
                                             <rect key="frame" x="-3" y="105" width="646" height="541"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <clipView key="contentView" id="G0P-xh-7z1">
-                                                <rect key="frame" x="1" y="1" width="644" height="539"/>
+                                                <rect key="frame" x="1" y="1" width="629" height="524"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <view id="bEC-dY-lh0">
-                                                        <rect key="frame" x="0.0" y="30" width="672" height="539"/>
+                                                        <rect key="frame" x="0.0" y="15" width="672" height="539"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                     </view>
                                                 </subviews>
                                             </clipView>
                                             <scroller key="horizontalScroller" verticalHuggingPriority="750" horizontal="YES" id="wde-Z5-Q5f">
-                                                <rect key="frame" x="1" y="524" width="644" height="16"/>
+                                                <rect key="frame" x="1" y="525" width="629" height="15"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                             </scroller>
-                                            <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="o3j-AT-rhz">
+                                            <scroller key="verticalScroller" verticalHuggingPriority="750" horizontal="NO" id="o3j-AT-rhz">
                                                 <rect key="frame" x="630" y="1" width="15" height="524"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                             </scroller>
@@ -1062,7 +1062,7 @@
                                             </connections>
                                         </button>
                                         <segmentedControl verticalHuggingPriority="750" misplaced="YES" id="V6o-Va-rVy">
-                                            <rect key="frame" x="274" y="22" width="202" height="24"/>
+                                            <rect key="frame" x="274" y="50" width="202" height="24"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <segmentedCell key="cell" borderStyle="border" alignment="left" style="rounded" trackingMode="selectOne" id="jEL-dE-HH3">
                                                 <font key="font" metaFont="system"/>
@@ -1076,7 +1076,7 @@
                                                 <action selector="refresh3D:" target="-2" id="rSD-uP-c18"/>
                                             </connections>
                                         </segmentedControl>
-                                        <segmentedControl verticalHuggingPriority="750" misplaced="YES" id="FZW-dX-zXh">
+                                        <segmentedControl hidden="YES" verticalHuggingPriority="750" misplaced="YES" id="FZW-dX-zXh">
                                             <rect key="frame" x="274" y="50" width="154" height="24"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <segmentedCell key="cell" borderStyle="border" alignment="left" style="rounded" trackingMode="selectOne" id="iKV-o4-pZQ">
@@ -1091,7 +1091,7 @@
                                             </connections>
                                         </segmentedControl>
                                         <slider verticalHuggingPriority="750" misplaced="YES" id="XJD-Nh-PDj">
-                                            <rect key="frame" x="274" y="-2" width="202" height="20"/>
+                                            <rect key="frame" x="274" y="26" width="202" height="20"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <sliderCell key="cell" state="on" alignment="left" maxValue="0.90000000000000002" doubleValue="0.20000000000000001" tickMarkPosition="above" sliderType="linear" id="ttb-Pr-0Z4"/>
                                             <connections>
@@ -1282,17 +1282,6 @@
                                                 </menu>
                                             </popUpButtonCell>
                                         </popUpButton>
-                                        <button verticalHuggingPriority="750" misplaced="YES" id="C9L-QZ-WjP">
-                                            <rect key="frame" x="489" y="-7" width="109" height="32"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxY="YES"/>
-                                            <buttonCell key="cell" type="push" title="Copy to CB" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="HK3-80-qhM">
-                                                <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                                <font key="font" metaFont="system"/>
-                                            </buttonCell>
-                                            <connections>
-                                                <action selector="copy3Dpic:" target="-2" id="eYG-bx-TNZ"/>
-                                            </connections>
-                                        </button>
                                         <popUpButton verticalHuggingPriority="750" misplaced="YES" id="fWp-Br-tKG">
                                             <rect key="frame" x="493" y="49" width="102" height="26"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -1309,6 +1298,28 @@
                                                 </menu>
                                             </popUpButtonCell>
                                         </popUpButton>
+                                        <button verticalHuggingPriority="750" misplaced="YES" id="C9L-QZ-WjP">
+                                            <rect key="frame" x="489" y="-7" width="109" height="32"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxY="YES"/>
+                                            <buttonCell key="cell" type="push" title="Copy to CB" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="HK3-80-qhM">
+                                                <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                <font key="font" metaFont="system"/>
+                                            </buttonCell>
+                                            <connections>
+                                                <action selector="copy3Dpic:" target="-2" id="eYG-bx-TNZ"/>
+                                            </connections>
+                                        </button>
+                                        <button verticalHuggingPriority="750" misplaced="YES" id="Wys-pp-cuA">
+                                            <rect key="frame" x="276" y="-1" width="33" height="19"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <buttonCell key="cell" type="roundRect" title="📐" bezelStyle="roundedRect" alignment="center" imageScaling="proportionallyDown" inset="2" id="xfg-0Y-lxc">
+                                                <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                <font key="font" metaFont="cellTitle"/>
+                                            </buttonCell>
+                                            <connections>
+                                                <action selector="openPoisitionsTool:" target="-2" id="jsa-P1-fV3"/>
+                                            </connections>
+                                        </button>
                                     </subviews>
                                 </view>
                             </tabViewItem>
