@@ -794,7 +794,8 @@
     return [[self.fileWrapper.workingFolder stringByAppendingPathComponent:self.mask.itemHash]stringByAppendingPathExtension:@"cbin"];
 }
 -(float *)createImageForMaskWithCellData:(float *)data maskOption:(MaskOption)option maskType:(MaskType)maskType maskSingleColor:(NSColor *)maskSingleColor{
-    
+    if(!self.mask.mask)
+        return NULL;
     int * copy = copyMask(self.mask.mask, (int)self.mask.imageStack.width, (int)self.mask.imageStack.height);
     
     float * img = calloc(self.mask.imageStack.numberOfPixels, sizeof(float));
@@ -1422,11 +1423,9 @@ typedef enum{
         }
         float min = 10000000000.f;//ridiculously high number
         NSInteger segments = self.segmentedUnits;
-        for (NSInteger i = 0; i < segments; i++) {
-            
+        for (NSInteger i = 0; i < segments; i++)
             if(centroids[i] < min)
                 min = centroids[i];
-        }
         return min;
     }
     return .0f;

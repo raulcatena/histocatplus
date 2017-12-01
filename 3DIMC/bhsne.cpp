@@ -46,7 +46,7 @@
 using namespace std;
 
 // Perform t-SNE
-void BHSNE::run(double* X, int N, int D, double* Y, int no_dims, double perplexity, double theta, int * iterationsCursor, int max_iter, int stop_lying_iter) {
+void BHSNE::run(double* X, int N, int D, double* Y, int no_dims, double perplexity, double theta, int * iterationsCursor, int max_iter, int stop_lying_iter, bool * stopCursor) {
     
     // Determine whether we are using an exact algorithm
     if(N - 1 < 3 * perplexity) { printf("Perplexity too large for the number of data points!\n"); exit(1); }
@@ -169,6 +169,8 @@ void BHSNE::run(double* X, int N, int D, double* Y, int no_dims, double perplexi
 			start = clock();
         }
         (*iterationsCursor)++;
+        if(*stopCursor == true)
+            break;
     }
     end = clock(); total_time += (float) (end - start) / CLOCKS_PER_SEC;
     

@@ -29,7 +29,7 @@
                      self.outputData,
                      (int)self.numberOfOutputVariables,
                      self.perplexity,
-                     &_iterationCursor, self.numberOfCycles, self.cyclesLying);
+                     &_iterationCursor, self.numberOfCycles, self.cyclesLying, &_stopCursor);
         
         self.opFinished = YES;
         [self.delegate finishedOperation:self];

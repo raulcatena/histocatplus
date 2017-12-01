@@ -33,8 +33,8 @@
 
 -(float *)outputData{
     if(!_outputData)
-        _outputData = (float *)calloc(self.numberOfValues * 2, sizeof(float));
-    NSInteger values = self.numberOfValues * 2;
+        _outputData = (float *)calloc(self.numberOfValues * self.numberOfOutputVariables, sizeof(float));
+    NSInteger values = self.numberOfValues * self.numberOfOutputVariables;
     for(NSInteger i = 0; i < values; i++)_outputData[i] = (float)self.outputDataDouble[i];
     return _outputData;
 }
@@ -43,7 +43,7 @@
     @autoreleasepool {
         stagingBuffer = NULL;
         BHSNE bh;
-        bh.run(self.inputDataDouble, (unsigned int)self.numberOfValues, (int)self.numberOfVariables, self.outputDataDouble, (int)self.numberOfOutputVariables, self.perplexity, self.thetha, &_iterationCursor, self.numberOfCycles, self.cyclesLying);
+        bh.run(self.inputDataDouble, (unsigned int)self.numberOfValues, (int)self.numberOfVariables, self.outputDataDouble, (int)self.numberOfOutputVariables, self.perplexity, self.thetha, &_iterationCursor, self.numberOfCycles, self.cyclesLying, &_stopCursor);
         
         self.opFinished = YES;
         [self.delegate finishedOperation:self];

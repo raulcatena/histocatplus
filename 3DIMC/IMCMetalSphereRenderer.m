@@ -53,8 +53,15 @@
             float * xCentroids = [self.computation xCentroids];
             float * yCentroids = [self.computation yCentroids];
             float * zCentroids = [self.computation zCentroids];
-            float * sizes = [self.computation sizes];
+            float minZ = [self.computation minDimension:2];
+            
             float defaultThicknessValue = [self.delegate defaultThicknessValue];
+            if(minZ < .0f)
+                defaultThicknessValue = 1.0f;
+            
+            float * sizes = [self.computation sizes];
+            
+            float cellModifier = [self.delegate cellModifierFactor];
             float maxes[channels];
             for (NSInteger idx = 0; idx < channels; idx++)
                 maxes[idx] = [self.computation maxChannel:[self.indexesObtained[idx]integerValue]];
@@ -78,7 +85,7 @@
                     buff[internalCursor + 4] = xCentroids[i];
                     buff[internalCursor + 5] = yCentroids[i];
                     buff[internalCursor + 6] = zCentroids[i] * defaultThicknessValue;
-                    buff[internalCursor + 7] = powf((3 * sizes[i]) / (4 * M_PI) , 1.0f/3);//Size
+                    buff[internalCursor + 7] = powf((3 * sizes[i]) / (4 * M_PI) , 1.0f/3) * cellModifier;//Size
                     
                     //Filters
                     float max = .0f;
@@ -134,7 +141,7 @@
         return;
     if(!self.computation || !self.computation.isLoaded)
         return;
-    NSLog(@"1");
+    
     view.refresh = NO;
     
     if(!self.device){
@@ -174,9 +181,12 @@
     positional.upperY = view.upperYOffset * height;
     positional.leftX = view.leftXOffset * width;
     positional.rightX = view.rightXOffset * width;
-    positional.widthModel = [self.computation halfDimension:0] + [self.computation minDimension:0];
-    positional.heightModel = [self.computation halfDimension:1] + [self.computation minDimension:1];
-    positional.halfTotalThickness = [self.computation halfDimension:2] * [self.delegate defaultThicknessValue];
+    float minX = [self.computation minDimension:0];
+    float minY = [self.computation minDimension:1];
+    float minZ = [self.computation minDimension:2];
+    positional.widthModel = minX < .0f ? 0 : minX + [self.computation halfDimension:0];
+    positional.heightModel = minY < .0f ? 0 : minY + [self.computation halfDimension:1];
+    positional.halfTotalThickness = minZ < .0f ? 0 : [self.computation halfDimension:2] * [self.delegate defaultThicknessValue];
     positional.nearZ = view.nearZOffset * positional.halfTotalThickness * 2;
     positional.farZ = view.farZOffset * positional.halfTotalThickness * 2;
     positional.stride = (uint32)(4 + self.stripes * 4);
@@ -223,10 +233,9 @@
     [renderEncoder drawPrimitives:MTLPrimitiveTypeTriangle vertexStart:0 vertexCount:sphereNumVerts instanceCount:_cellsToRender];
     
     [renderEncoder endEncoding];
-    NSLog(@"2");
+    
     [comBuffer addCompletedHandler:^(id<MTLCommandBuffer> buffer){
         view.lastRenderedTexture = text;
-        NSLog(@"3");
     }];
     
     //Commit

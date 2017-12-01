@@ -14,6 +14,7 @@
 @optional
 -(int *)biaxialData;
 -(float *)floatBiaxialData;
+-(int)numberOfDimensions;
 -(int *)colorDataForThirdDimension;
 -(NSDictionary *)titlesAndColorsDictionary;
 -(BOOL)heatColorMode;

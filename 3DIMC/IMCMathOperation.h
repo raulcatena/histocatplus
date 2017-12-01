@@ -18,6 +18,7 @@
 @interface IMCMathOperation : NSOperation{
     NSString * _nameGiven;
     int _iterationCursor;
+    bool _stopCursor;
 }
 
 @property (nonatomic, assign) float perplexity;
@@ -35,6 +36,7 @@
 @property (nonatomic, assign) NSInteger numberOfOutputVariables;
 
 @property (nonatomic, assign) int iterationCursor;
+@property (nonatomic, assign) bool stopCursor;
 @property (nonatomic, strong) NSString * nameGiven;
 @property (nonatomic, assign) int numberOfCycles;
 

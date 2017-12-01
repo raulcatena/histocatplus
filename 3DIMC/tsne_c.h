@@ -10,7 +10,9 @@
 #ifndef TSNE_H
 #define TSNE_H
 
-void perform_tsne(float* X, int D, int N, float* Y, int No_dims, float perplexity, int * iterationsCursor, int max_iter, int stop_lying_iter);
+#include <stdbool.h>
+
+void perform_tsne(float* X, int D, int N, float* Y, int No_dims, float perplexity, int * iterationsCursor, int max_iter, int stop_lying_iter, bool * stopCursor);
 void normalize_data(float* X, int N, int D);
 void zero_mean(float* X, int N, int D);
 void compute_squared_euclidean_distance(float* X, int N, int D, float* DD);

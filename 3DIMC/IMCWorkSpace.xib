@@ -20,6 +20,7 @@
                 <outlet property="brightFieldEffect" destination="lOe-1G-vpW" id="MgF-C4-5Ew"/>
                 <outlet property="cChannel" destination="2AZ-yh-7tH" id="AT8-If-n2u"/>
                 <outlet property="cLog" destination="I7v-rk-ahT" id="tOH-Er-wvF"/>
+                <outlet property="cellModifier" destination="5gG-JT-9pY" id="QQc-zn-bTB"/>
                 <outlet property="channels" destination="of0-BY-9Ve" id="wf0-il-38t"/>
                 <outlet property="channelsCustom" destination="u49-mD-ISF" id="zsI-xa-KY5"/>
                 <outlet property="channelsCustomSV" destination="K0E-6C-gmg" id="z3D-Tp-miV"/>
@@ -474,7 +475,7 @@
                                                 <rect key="frame" x="1" y="525" width="629" height="15"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                             </scroller>
-                                            <scroller key="verticalScroller" verticalHuggingPriority="750" horizontal="NO" id="o3j-AT-rhz">
+                                            <scroller key="verticalScroller" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="o3j-AT-rhz">
                                                 <rect key="frame" x="630" y="1" width="15" height="524"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                             </scroller>
@@ -499,7 +500,7 @@
                                             <rect key="frame" x="-3" y="100" width="725" height="541"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <clipView key="contentView" id="mVh-zm-F3q">
-                                                <rect key="frame" x="1" y="1" width="723" height="539"/>
+                                                <rect key="frame" x="1" y="1" width="723" height="524"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                                 <subviews>
                                                     <view id="5lJ-K7-OS1">
@@ -654,7 +655,7 @@
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <clipView key="contentView" id="LZg-c4-jDn">
                                                 <rect key="frame" x="1" y="0.0" width="717" height="612"/>
-                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                <autoresizingMask key="autoresizingMask"/>
                                                 <subviews>
                                                     <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" autosaveColumns="NO" headerView="UAO-A7-670" id="AC1-NF-W0U">
                                                         <rect key="frame" x="0.0" y="0.0" width="717" height="589"/>
@@ -1098,6 +1099,14 @@
                                                 <action selector="refresh3D:" target="-2" id="3oG-iz-rK3"/>
                                             </connections>
                                         </slider>
+                                        <slider hidden="YES" verticalHuggingPriority="750" misplaced="YES" id="5gG-JT-9pY">
+                                            <rect key="frame" x="277" y="-5" width="199" height="20"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <sliderCell key="cell" state="on" alignment="left" minValue="0.01" maxValue="1" doubleValue="0.20000000000000001" tickMarkPosition="above" sliderType="linear" id="PBZ-J8-KpU"/>
+                                            <connections>
+                                                <action selector="refresh3D:" target="-2" id="SWS-QL-HCB"/>
+                                            </connections>
+                                        </slider>
                                         <button verticalHuggingPriority="750" misplaced="YES" id="C63-1Y-AiQ">
                                             <rect key="frame" x="665" y="-4" width="56" height="32"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
@@ -1310,7 +1319,7 @@
                                             </connections>
                                         </button>
                                         <button verticalHuggingPriority="750" misplaced="YES" id="Wys-pp-cuA">
-                                            <rect key="frame" x="276" y="-1" width="33" height="19"/>
+                                            <rect key="frame" x="598" y="0.0" width="33" height="19"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <buttonCell key="cell" type="roundRect" title="📐" bezelStyle="roundedRect" alignment="center" imageScaling="proportionallyDown" inset="2" id="xfg-0Y-lxc">
                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>

@@ -16,7 +16,7 @@
 dispatch_queue_t queue;
 
 
-void perform_tsne(float* X, int D, int N, float* Y, int no_dims, float perplexity, int * iterationsCursor, int max_iter, int stop_lying_iter) {
+void perform_tsne(float* X, int D, int N, float* Y, int no_dims, float perplexity, int * iterationsCursor, int max_iter, int stop_lying_iter, bool * stopCursor) {
     
     // Initialize libdispatch
     queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0);
@@ -88,6 +88,8 @@ void perform_tsne(float* X, int D, int N, float* Y, int no_dims, float perplexit
         //http://stackoverflow.com/questions/3655728/increment-value-of-int-being-pointed-to-by-pointer
         //int *iteri = iterationsCursor;
         (*iterationsCursor)++;
+        if(*stopCursor == true)
+            break;
         //printf("iter %i %p retrieved %i\n", iter, iterationsCursor, (*iteri)++);
 	}
     

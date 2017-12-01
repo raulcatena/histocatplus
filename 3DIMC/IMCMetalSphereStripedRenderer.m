@@ -41,8 +41,16 @@
             float * xCentroids = [self.computation xCentroids];
             float * yCentroids = [self.computation yCentroids];
             float * zCentroids = [self.computation zCentroids];
-            float * sizes = [self.computation sizes];
+            
+            float minZ = [self.computation minDimension:2];
+            
             float defaultThicknessValue = [self.delegate defaultThicknessValue];
+            if(minZ < .0f)
+                defaultThicknessValue = 1.0f;
+            
+            float * sizes = [self.computation sizes];
+            
+            float cellModifier = [self.delegate cellModifierFactor];
             float maxes[channels];
             for (NSInteger idx = 0; idx < channels; idx++)
                 maxes[idx] = [self.computation maxChannel:[self.indexesObtained[idx]integerValue]];
@@ -56,7 +64,7 @@
                 buff[internalCursor + 0] = xCentroids[i];
                 buff[internalCursor + 1] = yCentroids[i];
                 buff[internalCursor + 2] = zCentroids[i] * defaultThicknessValue;
-                buff[internalCursor + 3] = powf((3 * sizes[i]) / (4 * M_PI) , 1.0f/3);//Size
+                buff[internalCursor + 3] = powf((3 * sizes[i]) / (4 * M_PI) , 1.0f/3) * cellModifier;//Size
                 
                 NSInteger channelOffset = 4;
                 for (NSInteger idx = 0; idx < copyStripes; idx++) {

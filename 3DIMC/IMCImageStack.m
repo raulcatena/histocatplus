@@ -104,7 +104,7 @@
     return [self.children filterClass:NSStringFromClass([IMCPixelMap class])].mutableCopy;
 }
 -(NSMutableArray *)pixelMasks{
-    return [self.children filterClass:NSStringFromClass([IMCPixelClassification class])].mutableCopy;
+    return [self.children filterClass:IMCPixelClassification.className].mutableCopy;
 }
 
 #pragma mark getters

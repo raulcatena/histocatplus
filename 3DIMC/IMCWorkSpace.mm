@@ -1536,6 +1536,7 @@
     self.threeDHandler.defaultZ = self.stepperDefaultZ.floatValue;
 }
 -(void)typeOf3DMesh:(NSPopUpButton *)sender{
+    self.cellModifier.hidden = sender.indexOfSelectedItem == 0;
     if(sender.indexOfSelectedItem == 0)self.metalView.delegate = self.metalViewDelegate;
     if(sender.indexOfSelectedItem == 1)self.metalView.delegate = self.sphereMetalViewDelegate;
     if(sender.indexOfSelectedItem == 2)self.metalView.delegate = self.stripedSphereMetalViewDelegate;
@@ -1715,6 +1716,9 @@
 }
 -(float)sizeLabels{
     return self.legendsFontSize.floatValue;
+}
+-(float)cellModifierFactor{
+    return self.cellModifier.floatValue;
 }
 -(NSInteger)boostModeCode{
     return self.boostMode.indexOfSelectedItem;

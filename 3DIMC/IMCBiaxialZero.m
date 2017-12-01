@@ -23,9 +23,11 @@ int fltcompare(const void *a,const void *b) {
 -(void)drawPoints:(CGContextRef)ctx dirtyRect:(CGRect)dirtyRect{
     
     float *theBiaxialData = [self.delegatePlot floatBiaxialData];
-    if(!theBiaxialData)return;
-    int dataSize = [self.delegatePlot sizeOfData];
-    int elements = dataSize/2;
+    if(!theBiaxialData)
+        return;
+    int numDim = [self.delegatePlot numberOfDimensions];
+    int elements = [self.delegatePlot sizeOfData];
+    int dataSize = elements * numDim;
     float width = dirtyRect.size.width * 0.9;
     float height = dirtyRect.size.height * 0.9;
     
@@ -38,9 +40,9 @@ int fltcompare(const void *a,const void *b) {
     
     float * x = malloc(elements * sizeof(float));
     float * y = malloc(elements * sizeof(float));
-    for (NSInteger i = 0; i < dataSize; i+= 2) {
-        x[i/2] = theBiaxialData[i];
-        y[i/2] = theBiaxialData[i + 1];
+    for (NSInteger i = 0; i < dataSize; i+= numDim) {
+        x[i/numDim] = theBiaxialData[i];
+        y[i/numDim] = theBiaxialData[i + 1];
     }
     NSInteger validX = 0, validY = 0;
     for (NSInteger i = 0; i < elements; i++) {
@@ -102,7 +104,7 @@ int fltcompare(const void *a,const void *b) {
     rgb.g = (int)self.pointsColor.greenComponent * 255;
     rgb.b = (int)self.pointsColor.blueComponent * 255;
     
-    for (NSInteger x = 0; x<dataSize; x+=2) {
+    for (NSInteger x = 0; x<dataSize; x+=numDim) {
         //printf("datico %f %f\n", theBiaxialData[x], theBiaxialData[x+1]);
         if (theBiaxialData[x] == .0f && theBiaxialData[x + 1] == .0f)continue;
         if (isnan(theBiaxialData[x]) || isnan(theBiaxialData[x + 1]))continue;

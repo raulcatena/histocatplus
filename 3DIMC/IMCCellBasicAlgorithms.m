@@ -90,9 +90,14 @@
     self.plot.delegatePlot = self;
     [self changedChoice:self.choiceDRAlgorithm];
     [self assembleDashboards];
-    [self.tableDR setDoubleAction:@selector(addDR:)];
+    [self.tableDR setDoubleAction:@selector(stopDR)];
     [self.tableClust setDoubleAction:@selector(addClust:)];
     [self setChannelsInLists];
+    self.plot.pointsColor = [NSColor orangeColor];
+    self.plot.sizePoints = 1.0f;
+    self.plot.transparencyPoints = 0.5;
+    self.plot.axesColor = [NSColor blackColor];
+    self.plot.backGroundCol = [NSColor blackColor];
 }
 -(void)awakeFromNib{
     [super awakeFromNib];
@@ -146,58 +151,70 @@
 }
 
 -(void)runTsne{
-    int anIterationsCursor = 0;
-    float *reducedDataOutput = (float*) calloc(self.computation.segmentedUnits * 2, sizeof(float));//not iVar anymore
-    unsigned int chansToAnalyze = (unsigned int)[self.tableView.selectedRowIndexes count];
-    
-    IMCTsneOperation *op = [[IMCTsneOperation alloc]init];
-    op.outputData = reducedDataOutput;
-    op.inputData = [self prepData];
-    op.numberOfValues = self.computation.segmentedUnits;
-    op.numberOfVariables = chansToAnalyze;
-    op.numberOfOutputVariables = 2;
-    op.iterationCursor = anIterationsCursor;
-    op.perplexity = self.tsneDashboard.perplexity.floatValue;
-    op.numberOfCycles = 150;
-    op.cyclesLying = 100;
-    op.indexSet = [self.tableView.selectedRowIndexes copy];
-    [self.dimensionalityRedOperationsArray addObject:op];
-    [self.dimensionalityRedOperations addOperation:op];
+    NSInteger outputDim = [IMCUtils inputOptions:@[@"2", @"3"] prompt:@"Number of dimensions to reduce data to"];
+    if(outputDim != NSNotFound){
+        outputDim += 2;
+        int anIterationsCursor = 0;
+        float *reducedDataOutput = (float*) calloc(self.computation.segmentedUnits * outputDim, sizeof(float));//not iVar anymore
+        unsigned int chansToAnalyze = (unsigned int)[self.tableView.selectedRowIndexes count];
+        
+        IMCTsneOperation *op = [[IMCTsneOperation alloc]init];
+        op.outputData = reducedDataOutput;
+        op.inputData = [self prepData];
+        op.numberOfValues = self.computation.segmentedUnits;
+        op.numberOfVariables = chansToAnalyze;
+        op.numberOfOutputVariables = outputDim;
+        op.iterationCursor = anIterationsCursor;
+        op.perplexity = self.tsneDashboard.perplexity.floatValue;
+        op.numberOfCycles = 150;
+        op.cyclesLying = 100;
+        op.indexSet = [self.tableView.selectedRowIndexes copy];
+        [self.dimensionalityRedOperationsArray addObject:op];
+        [self.dimensionalityRedOperations addOperation:op];
+    }
 }
 
 -(void)runBhsne{
-    int anIterationsCursor = 0;
-    double *reducedDataOutput = (double*) calloc(self.computation.segmentedUnits * 2, sizeof(double));//not iVar anymore
-    unsigned int chansToAnalyze = (unsigned int)[self.tableView.selectedRowIndexes count];
-    
-    IMCBhSNEOperation *op = [[IMCBhSNEOperation alloc]init];
-    op.outputDataDouble = reducedDataOutput;
-    op.inputDataDouble = [self prepDataDouble];
-    op.numberOfValues = self.computation.segmentedUnits;
-    op.numberOfVariables = chansToAnalyze;
-    op.numberOfOutputVariables = 2;
-    op.iterationCursor = anIterationsCursor;
-    op.perplexity = self.tsneDashboard.perplexity.floatValue;
-    op.thetha = 0.1f;
-    op.numberOfCycles = 1000;
-    op.cyclesLying = 100;
-    op.indexSet = [self.tableView.selectedRowIndexes copy];
-    [self.dimensionalityRedOperationsArray addObject:op];
-    [self.dimensionalityRedOperations addOperation:op];
+    NSInteger outputDim = [IMCUtils inputOptions:@[@"2", @"3"] prompt:@"Number of dimensions to reduce data to"];
+    if(outputDim != NSNotFound){
+        outputDim += 2;
+        int anIterationsCursor = 0;
+        double *reducedDataOutput = (double*) calloc(self.computation.segmentedUnits * outputDim, sizeof(double));//not iVar anymore
+        unsigned int chansToAnalyze = (unsigned int)[self.tableView.selectedRowIndexes count];
+        
+        IMCBhSNEOperation *op = [[IMCBhSNEOperation alloc]init];
+        op.outputDataDouble = reducedDataOutput;
+        op.inputDataDouble = [self prepDataDouble];
+        op.numberOfValues = self.computation.segmentedUnits;
+        op.numberOfVariables = chansToAnalyze;
+        op.numberOfOutputVariables = outputDim;
+        op.iterationCursor = anIterationsCursor;
+        op.perplexity = self.tsneDashboard.perplexity.floatValue;
+        op.thetha = 0.1f;
+        op.numberOfCycles = 1000;
+        op.cyclesLying = 100;
+        op.indexSet = [self.tableView.selectedRowIndexes copy];
+        [self.dimensionalityRedOperationsArray addObject:op];
+        [self.dimensionalityRedOperations addOperation:op];
+    }
 }
 
 -(void)runPCA{
-    float *reducedDataOutput = (float*) calloc(self.computation.segmentedUnits * 2, sizeof(float));//not iVar anymore
-    unsigned int chansToAnalyze = (unsigned int)[self.tableView.selectedRowIndexes count];
-    IMCPCAOperation *op = [[IMCPCAOperation alloc]init];
-    op.outputData = reducedDataOutput;
-    op.inputData = [self prepData];
-    op.numberOfValues = self.computation.segmentedUnits;
-    op.numberOfVariables = chansToAnalyze;
-    op.numberOfOutputVariables = 2;
-    op.indexSet = [self.tableView.selectedRowIndexes copy];
-    [self.dimensionalityRedOperationsArray addObject:op];
-    [self.dimensionalityRedOperations addOperation:op];
+    NSInteger outputDim = [IMCUtils inputOptions:@[@"2", @"3"] prompt:@"Number of dimensions to reduce data to"];
+    if(outputDim != NSNotFound){
+        outputDim += 2;
+        float *reducedDataOutput = (float*) calloc(self.computation.segmentedUnits * outputDim, sizeof(float));//not iVar anymore
+        unsigned int chansToAnalyze = (unsigned int)[self.tableView.selectedRowIndexes count];
+        IMCPCAOperation *op = [[IMCPCAOperation alloc]init];
+        op.outputData = reducedDataOutput;
+        op.inputData = [self prepData];
+        op.numberOfValues = self.computation.segmentedUnits;
+        op.numberOfVariables = chansToAnalyze;
+        op.numberOfOutputVariables = outputDim;
+        op.indexSet = [self.tableView.selectedRowIndexes copy];
+        [self.dimensionalityRedOperationsArray addObject:op];
+        [self.dimensionalityRedOperations addOperation:op];
+    }
 }
 
 -(void)runKmeans{
@@ -333,7 +350,10 @@
     }
     [self.tableView reloadData];
 }
-
+-(void)stopDR{
+    IMCTsneOperation *op = [self.dimensionalityRedOperationsArray objectAtIndex:self.tableDR.selectedRow];
+    op.stopCursor = true;
+}
 -(void)addDR:(id)sender{
     IMCTsneOperation *op = [self.dimensionalityRedOperationsArray objectAtIndex:self.tableDR.selectedRow];
     
@@ -481,8 +501,12 @@
     
     
     if (notification.object == self.tableView) {
-        
-        float * data = (float*)calloc(self.computation.segmentedUnits * 2, sizeof(float));
+        if(newReducedData != NULL){
+            free(newReducedData);
+            newReducedData = NULL;
+        }
+        NSInteger selectedChannels = self.tableView.selectedRowIndexes.count;
+        float * data = (float*)calloc(self.computation.segmentedUnits * selectedChannels, sizeof(float));
         
         __block int cursor = 0;
         
@@ -493,16 +517,14 @@
             else
                 self.plot.titlesXY = strY.length > 0 ? @[strY] : @[[self.computation.channels objectAtIndex:index]];
             
-            for (NSInteger i = 0; i < self.computation.segmentedUnits; i++){
-                    data[i * 2 + cursor] = self.computation.computedData[index][i];
-            }
+            for (NSInteger i = 0; i < self.computation.segmentedUnits; i++)
+                    data[i * selectedChannels + cursor] = self.computation.computedData[index][i];
+            
             
             cursor++;
             
             if(cursor == 2)*stop = YES;
         }];
-        if(newReducedData != NULL)
-            free(newReducedData);
         newReducedData = data;
     }
     [self updateGraph:nil];
@@ -517,8 +539,15 @@
         [self.tableView selectRowIndexes:op.indexSet byExtendingSelection:NO];
         return op.outputData;
     }
-    
     return newReducedData;
+}
+-(int)numberOfDimensions{
+    if(self.tableDR.selectedRow >= 0){
+        IMCTsneOperation *op = [self.dimensionalityRedOperationsArray objectAtIndex:self.tableDR.selectedRow];
+        [self.tableView selectRowIndexes:op.indexSet byExtendingSelection:NO];
+        return (int)op.numberOfOutputVariables;
+    }
+    return (int)self.tableView.selectedRowIndexes.count;
 }
 -(int)sizeOfData{
     return (int)self.computation.segmentedUnits;
@@ -613,7 +642,7 @@
         dispatch_queue_t aQ = dispatch_queue_create([IMCUtils randomStringOfLength:5].UTF8String, NULL);
         dispatch_async(aQ, ^{
             int cycle = op.iterationCursor;
-            while (recording) {
+            while (recording && cycle < op.numberOfCycles) {
                 while (op.iterationCursor == cycle);
                 dispatch_async(dispatch_get_main_queue(), ^{[self updateGraph:nil];});
                 cycle = op.iterationCursor;

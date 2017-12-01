@@ -133,6 +133,7 @@
 @property (nonatomic, weak) IBOutlet IMCMtkView *metalView;
 @property (nonatomic, weak) IBOutlet NSColorWell *background3D;
 @property (nonatomic, weak) IBOutlet NSSlider *thresholdToRender;
+@property (nonatomic, weak) IBOutlet NSSlider *cellModifier;
 @property (nonatomic, weak) IBOutlet NSSegmentedControl *alphaModeSelector;
 @property (nonatomic, weak) IBOutlet NSSegmentedControl *lightModeSelector;
 @property (nonatomic, weak) IBOutlet NSStepper *stepperDefaultZ;

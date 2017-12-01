@@ -51,6 +51,7 @@ typedef enum
 -(NSButton *)legends;
 -(NSInteger)boostModeCode;
 -(float)sizeLabels;
+-(float)cellModifierFactor;
 @end
 
 

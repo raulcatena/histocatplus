@@ -204,8 +204,8 @@ void increaseMaskBoundsNegBy(int layer, int *mask, int width, int height){
 }
 
 int * copyMask(int *mask, int width, int height){
-    int * copy = calloc(width * height, sizeof(int));
     NSInteger size = width * height;
+    int * copy = calloc(size, sizeof(int));
     for (int i = 0; i < size; i++)
         copy[i] = mask[i];
     return copy;
