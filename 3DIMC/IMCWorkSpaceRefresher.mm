@@ -106,8 +106,8 @@
     if(self.parent.inScopeComputations.count == 1 && self.parent.inScopeComputation.isLoaded)
         self.parent.statsInfo.stringValue = [self.parent.inScopeComputation descriptionWithIndexes:self.parent.channels.selectedRowIndexes];
 
-    //if(self.parent.inScope3DMask.isLoaded)
-    //    self.parent.statsInfo.stringValue = [self.parent.inScope3DMask descriptionWithIndexes:self.parent.channels.selectedRowIndexes];
+    if(self.parent.inScope3DMask.isLoaded)
+        self.parent.statsInfo.stringValue = [self.parent.inScope3DMask descriptionWithIndexes:self.parent.channels.selectedRowIndexes];
     
     [self calculateMemory];
 
@@ -422,9 +422,13 @@
             for (id color in [self.parent.customChannelsDelegate collectColors]) {
                 [cols addObject:@[color]];
             }
-            for (id chann in [self.parent channelsForCell]) {
-                [channs addObject:@[chann]];
-            }
+//            for (id chann in [self.parent channelsForCell]) {
+//                [channs addObject:@[chann]];
+//            }
+            NSMutableArray *arr = @[].mutableCopy;
+            for(NSNumber *idx in self.parent.inOrderIndexes)
+                [arr addObject:@[[self.parent channelsForCell][idx.integerValue]]];
+            [channs addObjectsFromArray:arr];
         }
     }
     self.parent.scrollViewTiles.imageNames = arr;

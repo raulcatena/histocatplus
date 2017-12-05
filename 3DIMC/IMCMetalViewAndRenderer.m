@@ -632,10 +632,10 @@ bool heightDescriptor[] = {
                     [view.labels addObject:field];
                     [view addSubview:field];
                 }
-                NSString * str = [channsObtained objectAtIndex:chann.integerValue];
+                NSString * str = channsObtained[MIN(channsObtained.count - 1, labs(chann.integerValue))];
                 if(str){
                     field.frame = NSMakeRect(10.0f, heigthLabel * index, width, heigthLabel);
-                    field.textColor = colorsObtained.count == 0 ? [NSColor whiteColor] : [colorsObtained objectAtIndex:index];
+                    field.textColor = colorsObtained.count == 0 ? [NSColor whiteColor] : colorsObtained[MAX(0, MIN(index, colorsObtained.count - 1))];
                     field.backgroundColor = [NSColor clearColor];
                     field.font = [NSFont systemFontOfSize:sizeLabels];
                     field.bordered = NO;

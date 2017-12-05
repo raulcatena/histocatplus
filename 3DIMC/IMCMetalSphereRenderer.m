@@ -181,12 +181,9 @@
     positional.upperY = view.upperYOffset * height;
     positional.leftX = view.leftXOffset * width;
     positional.rightX = view.rightXOffset * width;
-    float minX = [self.computation minDimension:0];
-    float minY = [self.computation minDimension:1];
-    float minZ = [self.computation minDimension:2];
-    positional.widthModel = minX < .0f ? 0 : minX + [self.computation halfDimension:0];
-    positional.heightModel = minY < .0f ? 0 : minY + [self.computation halfDimension:1];
-    positional.halfTotalThickness = minZ < .0f ? 0 : [self.computation halfDimension:2] * [self.delegate defaultThicknessValue];
+    positional.widthModel = [self.computation halfDimension:0];
+    positional.heightModel = [self.computation halfDimension:1];
+    positional.halfTotalThickness = [self.computation halfDimension:2] * [self.delegate defaultThicknessValue];
     positional.nearZ = view.nearZOffset * positional.halfTotalThickness * 2;
     positional.farZ = view.farZOffset * positional.halfTotalThickness * 2;
     positional.stride = (uint32)(4 + self.stripes * 4);

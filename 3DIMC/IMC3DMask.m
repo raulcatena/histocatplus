@@ -34,9 +34,7 @@
     }
     return self;
 }
--(NSString *)itemName{
-    return self.jsonDictionary[JSON_DICT_ITEM_NAME];
-}
+
 #pragma mark Mask Relations
 -(void)setJsonDictionary:(NSMutableDictionary *)jsonDictionary{
     [super setJsonDictionary:jsonDictionary];
@@ -59,9 +57,12 @@
 }
 
 #pragma mark setters and getters
-
+-(NSString *)itemName{
+    return self.jsonDictionary[JSON_DICT_ITEM_NAME];
+}
 -(NSString *)itemSubName{
-    return self.origin == MASK3D_VOXELS ? @"Voxel-based" : @"Mask-based";
+    NSString *pre = self.origin == MASK3D_VOXELS ? @"Voxel-based_" : @"Mask-based_";
+    return [pre stringByAppendingString:self.itemHash];
 }
 -(NSArray *)components{
     return self.jsonDictionary[JSON_DICT_3DS_COMPONENTS];
@@ -476,7 +477,7 @@
                             
                             if(schannel != NSNotFound)
                                 if(handler.allBuffer[i][schannel])
-                                    val -= handler.allBuffer[i][schannel][j];
+                                    val -= handler.allBuffer[i][schannel][j]/2;//2 is heuristic
                             
                             val = MIN(255, val);
                             if(val >= analyzeAdded){
@@ -829,14 +830,27 @@
     
     while (testVoxel) {
         NSInteger val = testVoxel.integerValue;
-        NSInteger candidates[6] = {val - width,
-            val + width,
-            val - 1,
-            val + 1,
-            val - planeLength,
-            val + planeLength
+//        NSInteger candidates[6] = {val - width,
+//            val + width,
+//            val - 1,
+//            val + 1,
+//            val - planeLength,
+//            val + planeLength
+//        };
+//        NSInteger candidates[6] = {val - width,
+        NSInteger newerBase = val + planeLength;
+        NSInteger candidates[9] = {newerBase,
+            newerBase - 1,
+            newerBase + 1,
+            newerBase - width,
+            newerBase - width - 1,
+            newerBase - width + 1,
+            newerBase + width,
+            newerBase + width - 1,
+            newerBase + width + 1,
         };
-        for (int m = 0; m < 6;  m++){
+        //for (int m = 0; m < 6;  m++){
+        for (int m = 0; m < 9;  m++){
             if(candidates[m] >= 0 && candidates[m] < fullMaskLength)
                 if (_maskIds[candidates[m]] == cellId){
                     _maskIds[candidates[m]] = -_maskIds[candidates[m]];
@@ -854,7 +868,6 @@
         maxDepth = MAX(vox/planeLength, maxDepth);
         _maskIds[vox] = -_maskIds[vox];
     }
-    
     return maxDepth;
 }
 
@@ -967,8 +980,16 @@
 -(void)extractCellData{
     
     //[self openIfNecessaryAndPerformBlock:^{
-    
-    [self restoreBordersToMask];
+    NSInteger option = [IMCUtils inputOptions:@[@"Full mask", @"Exclude borders"] prompt:@"Choose an option"];
+    if(option == NSNotFound)
+        return;
+    if(option == 1 && self.noBorders == NO){
+        [self removeBordersForMask];
+    }
+    else if(option == 0)
+    {
+        [self restoreBordersToMask];
+    }
     
     NSInteger planeLength = self.width * self.height;
     NSInteger fullMask = planeLength *  self.slices;
@@ -1024,9 +1045,9 @@
                 if(!auxiliaryData[ext]){
                     NSLog(@"Load external %li", ext);
                     auxiliaryData[ext] = calloc(channelsExtraction, sizeof(UInt8 *));
+                    
                     for(NSInteger c = 0; c < channelsExtraction; c++)
                         auxiliaryData[ext][c] = calloc(planeLength, sizeof(UInt8));
-                    
                     NSArray *internals = [self.threeDHandler indexesArranged][ext];
                     for(NSNumber *internal in internals){
                         IMCImageStack *stack = self.threeDHandler.loader.inOrderImageWrappers[internal.integerValue];
@@ -1068,13 +1089,15 @@
                         
                         NSInteger index = num.integerValue%planeLength;
                         NSInteger planeItBelongs = num.integerValue/planeLength;
+                        if(planeItBelongs > lastTouchedPlane)
+                            continue;
                         
                         [positionsX addObject:@(index%maxWidth)];
                         [positionsY addObject:@(index/maxWidth)];
                         [positionsZ addObject:@(planeItBelongs)];
-                        
-                        for (NSInteger c = 0; c < channelsExtraction; c ++)
-                            self.computedData[c][cellId] += (float)auxiliaryData[planeItBelongs][c][index];
+
+                        for (NSInteger c = 0; c < channelsExtraction; c++)
+                            self.computedData[c][cellId]  += (float)auxiliaryData[planeItBelongs][c][index];
                         
                         NSInteger tests[6] = {
                             index + planeLength,

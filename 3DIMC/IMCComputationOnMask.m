@@ -1392,7 +1392,7 @@ typedef enum{
             default:
                 break;
         }
-        float min = 10000000000.f, max = .0f;
+        float min = 10000000000.f, max = -10000000000.f;
         NSInteger segments = self.segmentedUnits;
         for (NSInteger i = 0; i < segments; i++) {
             if(centroids[i] > max)
@@ -1400,7 +1400,7 @@ typedef enum{
             if(centroids[i] < min)
                 min = centroids[i];
         }
-        return (max - min) / 2;
+        return (max + min) / 2;
     }
     return .0f;
 }
@@ -1427,6 +1427,32 @@ typedef enum{
             if(centroids[i] < min)
                 min = centroids[i];
         return min;
+    }
+    return .0f;
+}
+-(float)maxDimension:(NSInteger)dimension{
+    
+    if(self.isLoaded && dimension < 3){
+        float *centroids = NULL;
+        switch (dimension) {
+            case 0:
+                centroids = [self xCentroids];
+                break;
+            case 1:
+                centroids = [self yCentroids];
+                break;
+            case 2:
+                centroids = [self zCentroids];
+                break;
+            default:
+                break;
+        }
+        float max = -10000000000.f;//ridiculously high number
+        NSInteger segments = self.segmentedUnits;
+        for (NSInteger i = 0; i < segments; i++)
+            if(centroids[i] > max)
+                max = centroids[i];
+        return max;
     }
     return .0f;
 }

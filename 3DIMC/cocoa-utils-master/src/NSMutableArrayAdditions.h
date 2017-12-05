@@ -19,6 +19,6 @@
 @interface NSMutableArray (MutableArrayAdditions)
 
 - (NSMutableArray*) shuffle;
-- (NSArray *)filterClass:(NSString *)class;
+- (NSArray *)filterClass:(NSString *)theClass;
 
 @end

@@ -84,7 +84,7 @@ BOOL doesJumpLineTest(NSInteger index, NSInteger indexTest, NSInteger width, NSI
     return NO;
 }
 
-void denoiseOrMeanFilter(NSInteger pix, NSInteger width, NSInteger height, NSInteger planePixels, UInt8 *prevLayer, UInt8 *layer, UInt8 *postLayer, bool denoiseOrMean, UInt8 * temp1Buffer[2], NSInteger tempBufferUse){
+void denoiseOrMeanFilter(NSInteger pix, NSInteger width, NSInteger height, NSInteger planePixels, UInt8 *prevLayer, UInt8 *layer, UInt8 *postLayer, bool denoiseOrMean, UInt8 * temp1Buffer[2], NSInteger tempBufferUse, bool *mask){
     
     NSInteger blurCounter = 0;
     float sum = 0;
@@ -94,7 +94,8 @@ void denoiseOrMeanFilter(NSInteger pix, NSInteger width, NSInteger height, NSInt
             NSInteger index = pix + x + width * y;
             
             if( doesJumpLineTest(pix, index, width, height, planePixels, 1))
-            //if(index < 0 || index >= planePixels)
+                continue;
+            if(mask[index] == false)
                 continue;
             
             if(prevLayer){
@@ -129,16 +130,17 @@ int gaussian [9][3] = {
     {1, 1, 1}
 };
 
-void gaussianFilter(NSInteger pix, NSInteger width, NSInteger height, NSInteger planePixels, UInt8 *prevLayer, UInt8 *layer, UInt8 *postLayer, bool denoiseOrMean, UInt8 * temp1Buffer[2], NSInteger tempBufferUse){
+void gaussianFilter(NSInteger pix, NSInteger width, NSInteger height, NSInteger planePixels, UInt8 *prevLayer, UInt8 *layer, UInt8 *postLayer, bool denoiseOrMean, UInt8 * temp1Buffer[2], NSInteger tempBufferUse, bool *mask){
     
     NSInteger blurCounter = 0;
     float sum = 0;
     
     for (int i = 0; i < 9; i++) {
         NSInteger index = pix + gaussian[i][0] + width * gaussian[i][1];
-        //TODO jumper
+        if(mask[index] == false)
+            continue;
+        
         if( doesJumpLineTest(pix, index, width, height, planePixels, 1))
-        //if(index < 0 || index >= planePixels)
             continue;
         
         if(prevLayer){
@@ -157,7 +159,7 @@ void gaussianFilter(NSInteger pix, NSInteger width, NSInteger height, NSInteger 
     }
     temp1Buffer[tempBufferUse][pix] = MIN(255, (UInt8)(sum/blurCounter));
 }
-void modeFilter(NSInteger pix, NSInteger width, NSInteger height, NSInteger planePixels, UInt8 *prevLayer, UInt8 *layer, UInt8 *postLayer, bool denoiseOrMean, UInt8 * temp1Buffer[2], NSInteger tempBufferUse){
+void modeFilter(NSInteger pix, NSInteger width, NSInteger height, NSInteger planePixels, UInt8 *prevLayer, UInt8 *layer, UInt8 *postLayer, bool denoiseOrMean, UInt8 * temp1Buffer[2], NSInteger tempBufferUse, bool *mask){
     if(layer[pix] == 0){
         temp1Buffer[tempBufferUse][pix] = 0;
         return;
@@ -166,11 +168,11 @@ void modeFilter(NSInteger pix, NSInteger width, NSInteger height, NSInteger plan
     
     for (int i = 0; i < 9; i++) {
         NSInteger index = pix + gaussian[i][0] + width * gaussian[i][1];
-        //TODO jumper
-        if( doesJumpLineTest(pix, index, width, height, planePixels, 1))
-        //if(index < 0 || index >= planePixels)
+        if(mask[index] == false)
             continue;
         
+        if( doesJumpLineTest(pix, index, width, height, planePixels, 1))
+            continue;
         if(prevLayer)
             bins[prevLayer[index]]++;
         bins[layer[index]]++;
@@ -188,6 +190,70 @@ void modeFilter(NSInteger pix, NSInteger width, NSInteger height, NSInteger plan
     temp1Buffer[tempBufferUse][pix] = winnerIndex;
 }
 
+int uint8compare (const void * a, const void * b)
+{
+    return ( *(UInt8*)a - *(UInt8*)b );
+}
+void medianFilter(NSInteger pix, NSInteger width, NSInteger height, NSInteger planePixels, UInt8 *prevLayer, UInt8 *layer, UInt8 *postLayer, bool denoiseOrMean, UInt8 * temp1Buffer[2], NSInteger tempBufferUse, bool *mask){
+    if(layer[pix] == 0){
+        temp1Buffer[tempBufferUse][pix] = 0;
+        return;
+    }
+
+    //To use with QSort
+    //UInt8 * bins = calloc(26, sizeof(UInt8));
+    UInt8 * bins2 = calloc(256, sizeof(UInt8));
+    
+    UInt8 count = 0;
+    for (int i = 0; i < 9; i++) {
+        NSInteger index = pix + gaussian[i][0] + width * gaussian[i][1];
+        if(mask[index] == false)
+            continue;
+        
+        if( doesJumpLineTest(pix, index, width, height, planePixels, 1))
+            continue;
+        
+        /*
+         //To use with QSort
+         if(prevLayer){
+            bins[count] = prevLayer[index];
+            count++;
+        }
+        bins[count] = layer[index];
+        count++;
+        if(postLayer){
+            bins[count] = postLayer[index];
+            count++;
+        }*/
+        
+        if(prevLayer){
+            bins2[prevLayer[index]]++;
+            count++;
+        }
+        bins2[layer[index]]++;
+        count++;
+        if(postLayer){
+            bins2[postLayer[index]]++;
+            count++;
+        }
+        
+    }
+    UInt8 winnerIndex = 0;
+    for (int i = 0; i < 256; i++){
+        winnerIndex += bins2[i];
+        if(winnerIndex >= count/2){
+            winnerIndex = i;
+            break;
+        }
+    }
+    free(bins2);
+    temp1Buffer[tempBufferUse][pix] = winnerIndex;
+    //To use with QSort
+    //qsort(bins, 26, sizeof(UInt8), uint8compare);
+    //temp1Buffer[tempBufferUse][pix] = bins[26 - count + count/2];
+    //free(bins);
+}
+
 int sharpen [9][3] = {
     {-1, -1, 0},
     {0, -1, -1},
@@ -200,16 +266,17 @@ int sharpen [9][3] = {
     {1, 1, 0}
 };
 
-void sharpenFilter(NSInteger pix, NSInteger width, NSInteger height, NSInteger planePixels, UInt8 *prevLayer, UInt8 *layer, UInt8 *postLayer, bool denoiseOrMean, UInt8 * temp1Buffer[2], NSInteger tempBufferUse){
+void sharpenFilter(NSInteger pix, NSInteger width, NSInteger height, NSInteger planePixels, UInt8 *prevLayer, UInt8 *layer, UInt8 *postLayer, bool denoiseOrMean, UInt8 * temp1Buffer[2], NSInteger tempBufferUse, bool *mask){
     
     NSInteger blurCounter = 0;
     float sum = 0;
     
     for (int i = 0; i < 9; i++) {
         NSInteger index = pix + sharpen[i][0] + width * sharpen[i][1];
-        //TODO jumper
+        if(mask[index] == false)
+            continue;
+
         if( doesJumpLineTest(pix, index, width, height, planePixels, 1))
-        //if(index < 0 || index >= planePixels)
             continue;
         
         if(prevLayer){
@@ -270,13 +337,15 @@ void applyFilterToChannel(NSInteger chann, NSInteger images, NSInteger planePixe
                 continue;
             
             if(mode < 3)
-                denoiseOrMeanFilter(pix, width, height, planePixels, prevLayer, layer, postLayer, (bool)(mode - 1), temp1Buffer, tempBufferUse);
+                denoiseOrMeanFilter(pix, width, height, planePixels, prevLayer, layer, postLayer, (bool)(mode - 1), temp1Buffer, tempBufferUse, mask);
             if(mode == 3)
-                gaussianFilter(pix, width, height, planePixels, prevLayer, layer, postLayer, (bool)(mode - 1), temp1Buffer, tempBufferUse);
+                gaussianFilter(pix, width, height, planePixels, prevLayer, layer, postLayer, (bool)(mode - 1), temp1Buffer, tempBufferUse, mask);
             if(mode == 4)
-                sharpenFilter(pix, width, height, planePixels, prevLayer, layer, postLayer, (bool)(mode - 1), temp1Buffer, tempBufferUse);
+                sharpenFilter(pix, width, height, planePixels, prevLayer, layer, postLayer, (bool)(mode - 1), temp1Buffer, tempBufferUse, mask);
             if(mode == 5)
-                modeFilter(pix, width, height,planePixels, prevLayer, layer, postLayer, (bool)(mode - 1), temp1Buffer, tempBufferUse);
+                modeFilter(pix, width, height,planePixels, prevLayer, layer, postLayer, (bool)(mode - 1), temp1Buffer, tempBufferUse, mask);
+            if(mode == 6)
+                medianFilter(pix, width, height,planePixels, prevLayer, layer, postLayer, (bool)(mode - 1), temp1Buffer, tempBufferUse, mask);
         }
         tempBufferUse = (NSInteger)!tempBufferUse;
         
@@ -322,6 +391,25 @@ void threeDMeanBlur(UInt8 *** data, NSInteger width, NSInteger height, NSInteger
         if(mode == 9){
             applyFilterToChannel(chann, images, planePixels, data, width, height, mask, 5, deltas_z);
             applyFilterToChannel(chann, images, planePixels, data, width, height, mask, 2, deltas_z);
+        }
+        if(mode == 10){
+            applyFilterToChannel(chann, images, planePixels, data, width, height, mask, 6, deltas_z);
+        }
+        if(mode == 11){
+            applyFilterToChannel(chann, images, planePixels, data, width, height, mask, 6, deltas_z);
+            applyFilterToChannel(chann, images, planePixels, data, width, height, mask, 3, deltas_z);
+        }
+        if(mode == 12){
+            applyFilterToChannel(chann, images, planePixels, data, width, height, mask, 6, deltas_z);
+            applyFilterToChannel(chann, images, planePixels, data, width, height, mask, 2, deltas_z);
+        }
+        if(mode == 13){
+            applyFilterToChannel(chann, images, planePixels, data, width, height, mask, 3, deltas_z);
+            applyFilterToChannel(chann, images, planePixels, data, width, height, mask, 6, deltas_z);
+        }
+        if(mode == 14){
+            applyFilterToChannel(chann, images, planePixels, data, width, height, mask, 2, deltas_z);
+            applyFilterToChannel(chann, images, planePixels, data, width, height, mask, 6, deltas_z);
         }
     }];
 }

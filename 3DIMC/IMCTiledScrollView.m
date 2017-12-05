@@ -141,7 +141,7 @@
         [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(nilScopeScroll) userInfo:nil repeats:NO];
     }
     if(scroll != self.inScopeScroll)return;
-
+    
     NSPoint pos = scroll.documentVisibleRect.origin;
     for (IMCScrollView *aV in self.imageView.subviews) {
         if([aV isMemberOfClass:[IMCScrollView class]]){

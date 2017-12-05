@@ -10,6 +10,12 @@
 #import "IMC3DMask.h"
 #import "IMCImageGenerator.h"
 
+@interface IMCCell3DTrainerTool(){
+    BOOL updating;
+}
+
+@end
+
 @implementation IMCCell3DTrainerTool
 
 -(IMC3DMask *)mask{
@@ -24,20 +30,23 @@
     NSPoint processed = [self.scrollView getTranslatedPoint:point];
     
     NSInteger plane = [self mask].width * [self mask].height;
-    NSInteger virtualSlice = (NSInteger)([self mask].slices * self.planeSelector.floatValue);
+    NSInteger virtualSlice = [self virtualSlice];
 
     
     NSInteger pix = MAX(0, MIN(plane - 1, floor(processed.y) * [self mask].width + processed.x));
     
     int cellId = abs([self mask].maskIds[virtualSlice * plane + pix]);
     
-    if(cellId > 0 && self.labelsTableView.selectedRow >= 0)
+    if(cellId > 0 && self.labelsTableView.selectedRow != NSNotFound)
         [self trainingBuff][cellId - 1] = [self trainingBuff][cellId - 1] == 0 ? (int)self.labelsTableView.selectedRow + 1:0;
     
     [self.trainer.trainingNodes.firstObject regenerateDictTraining];
     [self refresh];
 }
 
+-(NSInteger)virtualSlice{
+    return MAX(0, MIN((NSInteger)([self mask].slices * self.planeSelector.floatValue), [self mask].slices - 1));
+}
 
 -(UInt8 *)createImageForClassification{
     
@@ -47,7 +56,7 @@
     NSInteger size = [self maskPlaneLength];
     NSInteger fullMask = size * [self mask].slices;
     int * copy = (int *)calloc(size, sizeof(int));
-    NSInteger virtualSlice = (NSInteger)([self mask].slices * self.planeSelector.floatValue);
+    NSInteger virtualSlice = [self virtualSlice];
     
     NSInteger offSetPlane = virtualSlice * size;
     NSInteger upperLimit = MIN(offSetPlane + size, fullMask);
@@ -80,7 +89,7 @@
     NSInteger size = [self maskPlaneLength];
     NSInteger fullMask = size * [self mask].slices;
     int * copy = (int *)calloc(size, sizeof(int));
-    NSInteger virtualSlice = (NSInteger)([self mask].slices * self.planeSelector.floatValue);
+    NSInteger virtualSlice = [self virtualSlice];
     
     //Get slice of 3D mask
     NSInteger offSetPlane = virtualSlice * size;
@@ -109,18 +118,22 @@
     
     CGImageRef refi = [IMCImageGenerator imageFromCArrayOfValues:buffer color:nil width:[self mask].width height:[self mask].height startingHueScale:0 hueAmplitude:255 direction:clockWise ecuatorial:NO brightField:NO];
     
-    const CGFloat myMaskingColors[6] = { 0, 100, 0, 100, 0, 100 };
-    CGImageRef masked = CGImageCreateWithMaskingColors (refi, myMaskingColors);
+    //const CGFloat myMaskingColors[6] = { 0, 100, 0, 100, 0, 100 };
+    //CGImageRef masked = CGImageCreateWithMaskingColors (refi, myMaskingColors);
     
-    if(masked)
-        [stackRefs addObject:(__bridge id)masked];
+    //if(masked)
+    //    [stackRefs addObject:(__bridge id)masked];
+    
     if(refi)
-        CFRelease(refi);
+        [stackRefs addObject:(__bridge id)refi];
+//    if(refi)
+//        CFRelease(refi);
     
     if(buffer)
         free(buffer);
 }
 -(void)refresh{
+    updating = YES;
     NSMutableArray *colors = [NSMutableArray arrayWithCapacity:self.channelTableView.selectedRowIndexes.count];
     for (int i = 0; i < self.channelTableView.selectedRowIndexes.count; i++) {
         [colors addObject:[NSColor whiteColor]];
@@ -141,78 +154,58 @@
     
     if(self.showImage.state == NSOnState){
         //TODO enable pixel data here
-        CGImageRef ref = NULL;
+        
         if(self.showPixelData.state == NSOffState){
-            NSInteger channel = self.channelTableView.selectedRow;
-            if(channel != NSNotFound){
+            __block int counter = 0;
+            NSArray <NSColor *>*colors = @[
+                                [NSColor blueColor],
+                                [NSColor greenColor],
+                                [NSColor redColor],
+                                [NSColor cyanColor],
+                                [NSColor yellowColor],
+                                [NSColor magentaColor]
+                                ];
+            [self.channelTableView.selectedRowIndexes.copy enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop){
+                CGImageRef ref = NULL;
                 NSInteger size = [self maskPlaneLength];
                 UInt8 * image = calloc(size, sizeof(UInt8));
-                NSInteger virtualSlice = (NSInteger)([self mask].slices * self.planeSelector.floatValue);
-                
+                NSInteger virtualSlice = [self virtualSlice];
                 int * subMaskPlane = &[self mask].maskIds[virtualSlice * size];
                 float ** maskData = [self mask].computedData;
-                NSInteger channel = self.channelTableView.selectedRow;
                 
                 float max = .0f;
                 NSInteger segments = [self mask].segmentedUnits;
                 for (NSInteger i = 0; i < segments; i++)
-                    if(maskData[channel][i] > max)
-                        max = maskData[channel][i];
+                    if(maskData[idx][i] > max)
+                        max = maskData[idx][i];
                 
                 for (NSInteger i = 0; i < size; i++) {
                     if(subMaskPlane[i] > 0){
-                        image[i] = (UInt8)(maskData[channel][subMaskPlane[i]]/max * 255);
+                        image[i] = (UInt8)(maskData[idx][subMaskPlane[i]]/max * 255);
                     }
                 }
-                ref = [IMCImageGenerator imageFromCArrayOfValues:image color:[NSColor whiteColor] width:[self mask].width height:[self mask].height startingHueScale:0 hueAmplitude:170 direction:NO ecuatorial:NO brightField:NO];
-                
+                ref = [IMCImageGenerator imageFromCArrayOfValues:image color:colors[counter] width:[self mask].width height:[self mask].height startingHueScale:0 hueAmplitude:170 direction:NO ecuatorial:NO brightField:NO];
+                if(ref)
+                    [refs addObject:(__bridge id)ref];
                 free(image);
-            }
+                counter++;
+                if(counter == 5)
+                    *stop = YES;
+            }];
         }
-        if(self.showPixelData.state == NSOnState){
-//            IMCImageStack *stack = self.trainer.computation.mask.imageStack;
-//            NSMutableArray *foundChannels = @[].mutableCopy;
-//            NSMutableArray *colors = @[].mutableCopy;
-//            [self.channelTableView.selectedRowIndexes enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop){
-//                NSInteger foundPixChannel = [stack ascertainIndexInStackForComputationChannel:self.trainer.computation.originalChannels[idx]];
-//                if(foundPixChannel == NSNotFound)
-//                    foundPixChannel = [stack ascertainIndexInStackForComputationChannel:self.trainer.computation.channels[idx]];
-//                if(foundPixChannel != NSNotFound){
-//                    [foundChannels addObject:@(foundPixChannel)];
-//                    [colors addObject:[NSColor whiteColor]];
-//                }
-//                
-//            }];
-//            
-//            if(!stack.isLoaded)
-//                [stack loadLayerDataWithBlock:nil];
-//            while(!stack.isLoaded);
-//            
-//            ref = [[IMCImageGenerator imageForImageStacks:@[stack].mutableCopy
-//                                                  indexes:foundChannels
-//                                         withColoringType:0
-//                                             customColors:self.pixelsColoring.selectedSegment == 0?colors:nil
-//                                        minNumberOfColors:3
-//                                                    width:stack.width
-//                                                   height:stack.height
-//                                           withTransforms:NO
-//                                                    blend:kCGBlendModeScreen
-//                                                 andMasks:self.showMaskBorder.state == NSOnState?@[self.trainer.computation.mask]:nil
-//                                          andComputations:nil
-//                                               maskOption:MASK_ONE_COLOR_BORDER
-//                                                 maskType:MASK_ALL_CELL
-//                                          maskSingleColor:[NSColor whiteColor]
-//                                          isAlignmentPair:NO
-//                                              brightField:NO]CGImage];
-        }
-        
-        //        NSImage *image = [IMCImageGenerator imageForImageStacks:nil indexes:self.inOrderIndexes withColoringType:0 customColors:nil minNumberOfColors:3 width:self.trainer.computation.mask.imageStack.width height:self.trainer.computation.mask.imageStack.height withTransforms:NO blend:kCGBlendModeScreen andMasks:nil andComputations:@[self.trainer.computation] maskOption:0 maskType:MASK_ALL_CELL maskSingleColor:nil isAlignmentPair:NO brightField:NO];
-        if(ref)
-            [refs addObject:(__bridge id)ref];
     }
-    NSImage *final = [IMCImageGenerator imageWithArrayOfCGImages:refs width:[self mask].width height:[self mask].height blendMode:kCGBlendModeOverlay];
+    NSImage *final = [IMCImageGenerator imageWithArrayOfCGImages:refs width:[self mask].width height:[self mask].height blendMode:kCGBlendModeScreen];
     
     self.scrollView.imageView.image = final;
+    updating = NO;
+}
+
+#pragma mark imcscrollviewdelegate
+
+-(void)altScrolledWithEvent:(NSEvent *)event{
+    self.planeSelector.floatValue = MAX(.0f, MIN(1.0f, self.planeSelector.floatValue + event.deltaY * 0.005f));
+    if(!updating)
+        [self refresh];
 }
 
 @end

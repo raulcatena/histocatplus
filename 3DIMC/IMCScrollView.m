@@ -91,13 +91,22 @@
         position.x += theEvent.deltaX;
         [self setMagnification:zoomFactor centeredAtPoint:NSMakePoint(center.x + position.x, self.bounds.size.height - center.y)];
     }
-    else
-    {
+
+    if(self.delegate){
+        if(theEvent.modifierFlags & NSEventModifierFlagOption)
+        {
+            if([self.delegate respondsToSelector:@selector(altScrolledWithEvent:)])
+                [self.delegate altScrolledWithEvent:theEvent];
+        }
+        else
+        {
+            if([self.delegate respondsToSelector:@selector(scrolledWithScroll:)])
+                [self.delegate scrolledWithScroll:self];
+            [super scrollWheel:theEvent];
+        }
+    }else{
         [super scrollWheel:theEvent];
     }
-    if(self.delegate)
-        if([self.delegate respondsToSelector:@selector(scrolledWithScroll:)])
-            [self.delegate scrolledWithScroll:self];
 }
 
 - (void)mouseUp:(NSEvent *)theEvent

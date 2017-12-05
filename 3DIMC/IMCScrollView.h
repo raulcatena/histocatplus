@@ -17,6 +17,7 @@
 -(void)doubleClickedAtPoint:(IMCScrollView *)scroll;
 -(void)draggedThrough:(NSEvent *)event scroll:(IMCScrollView *)scroll;
 -(void)scrolledWithScroll:(IMCScrollView *)scroll;
+-(void)altScrolledWithEvent:(NSEvent *)event;
 -(void)mouseUpCallback:(NSEvent *)event;
 @end
 

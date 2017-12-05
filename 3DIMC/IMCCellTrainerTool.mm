@@ -138,6 +138,7 @@
 }
 -(void)tableView:(NSTableView *)tableView setObjectValue:(id)object forTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row{
     if (tableView == self.labelsTableView){
+        object = [object stringByReplacingOccurrencesOfString:@"->" withString:@""];
         [self.trainer.labels replaceObjectAtIndex:row withObject:object];
         //[self.trainer saveTraining];
     }
@@ -155,7 +156,8 @@
 -(IBAction)removeLabel:(id)sender{
     if(self.labelsTableView.selectedRow >= 0)
         [self.trainer.labels removeObjectAtIndex:[self.labelsTableView selectedRow]];
-    for (NSInteger i = 0; i < self.trainer.computation.mask.numberOfSegments; i++) {
+    NSInteger segments = [self.trainer numberOfSegments];
+    for (NSInteger i = 0; i < segments; i++) {
         if([self trainingBuff][i] == self.labelsTableView.selectedRow + 1)
             [self trainingBuff][i] = 0;
         if([self trainingBuff][i] > self.labelsTableView.selectedRow + 1)
@@ -344,7 +346,8 @@
 }
 
 -(IBAction)eraseCurrentMask:(id)sender{
-    for(NSInteger o = 0; o < self.trainer.computation.mask.numberOfSegments; o++)
+    NSInteger segments = [self.trainer numberOfSegments];
+    for(NSInteger o = 0; o < segments; o++)
         if([self trainingBuff][o] == self.labelsTableView.selectedRow + 1)
             [self trainingBuff][o] = 0;
     [self.trainer.trainingNodes.firstObject regenerateDictTraining];

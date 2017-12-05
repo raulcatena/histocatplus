@@ -68,5 +68,6 @@
 -(float)maxChannel:(NSInteger)channel;
 -(float)halfDimension:(NSInteger)dimension;
 -(float)minDimension:(NSInteger)dimension;
+-(float)maxDimension:(NSInteger)dimension;
 
 @end

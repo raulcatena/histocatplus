@@ -30,10 +30,10 @@
    return self;
 }
 
--(NSArray *)filterClass:(NSString *)class{
+-(NSArray *)filterClass:(NSString *)theClass{
     NSMutableArray *result = @[].mutableCopy;
     [self enumerateObjectsUsingBlock:^(id test, NSUInteger idx, BOOL *stop){
-        if([test isMemberOfClass:NSClassFromString(class)])[result addObject:test];
+        if([test isMemberOfClass:NSClassFromString(theClass)])[result addObject:test];
     }];
     return [NSArray arrayWithArray:result];
 }

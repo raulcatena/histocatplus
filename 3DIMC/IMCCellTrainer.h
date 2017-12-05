@@ -27,6 +27,8 @@
 -(instancetype)initWithComputation:(IMCComputationOnMask *)stack andTrainings:(NSArray<IMCMaskTraining *>*)training;
 -(void)toogleChannel:(NSInteger)channel;
 
+-(NSInteger)numberOfSegments;
+
 
 //-(CGImageRef)pMap;
 //-(void)saveTraining;

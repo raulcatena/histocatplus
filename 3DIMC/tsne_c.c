@@ -25,22 +25,21 @@ void perform_tsne(float* X, int D, int N, float* Y, int no_dims, float perplexit
 	//int max_iter = 100, stop_lying_iter = 100;//Originally 1000 iterations. Now I pass dynamically
 	float initial_momentum = .5, final_momentum = .8;
 	float eta = 1000.0;
-	
 	// Allocate some memory
-	float* P        = (float*) malloc(N * N * sizeof(float));
-	float* Q        = (float*) malloc(N * N * sizeof(float));
-	float* unnorm_Q = (float*) malloc(N * N * sizeof(float));
-	float* uY       = (float*) calloc(N * no_dims, sizeof(float));	
+	float* P        = (float*) malloc((long)N * N * sizeof(float));
+	float* Q        = (float*) malloc((long)N * N * sizeof(float));
+	float* unnorm_Q = (float*) malloc((long)N * N * sizeof(float));
+	float* uY       = (float*) calloc(N * no_dims, sizeof(float));
 	float* dY       = (float*) malloc(N * no_dims * sizeof(float));	
-        
+    
     // Normalize data to prevent numerical issues
     normalize_data(X, N, D);
-	
+    
 	// Compute Gaussian affinities
 	compute_gaussian_perplexity(X, N, D, P, perplexity);
 	
 	// Lie about the P-values
-	for(int i = 0; i < N * N; i++) P[i] *= 4.0;
+	for(int i = 0; i < (long)N * N; i++) P[i] *= 4.0;
 	
 	// Initialize solution
 	for(int i = 0; i < N * no_dims; i++) {
@@ -73,7 +72,7 @@ void perform_tsne(float* X, int D, int N, float* Y, int no_dims, float perplexit
 		
 		// Stop lying about the P-values after a while, and switch momentum
 		if(iter == stop_lying_iter) {
-			for(int i = 0; i < N * N; i++) P[i] /= 4.0;
+			for(int i = 0; i < (long)N * N; i++) P[i] /= 4.0;
 			momentum = final_momentum;
             //break;//Added by RCF
 		}
@@ -155,7 +154,6 @@ void zero_mean(float* X, int N, int D) {
 }
 
 void compute_squared_euclidean_distance(float* X, int N, int D, float* DD) {
-    
     // Compute squared Euclidean distance matrix (without BLAS)
     //for(int n = 0; n < N; n++) {
     dispatch_apply(N, queue, ^(size_t n) {
@@ -176,7 +174,7 @@ void compute_squared_euclidean_distance(float* X, int N, int D, float* DD) {
 void compute_gaussian_perplexity(float* X, int N, int D, float* P, float perplexity) {
 	
 	// Compute the squared Euclidean distance matrix
-	float* DD = (float*) malloc(N * N * sizeof(float));
+	float* DD = (float*) malloc((long)N * N * sizeof(float));
 	compute_squared_euclidean_distance(X, N, D, DD);
 	
 	// Compute the Gaussian kernel row by row
@@ -248,8 +246,8 @@ void compute_gaussian_perplexity(float* X, int N, int D, float* P, float perplex
         }
     }
     float sumP = 0.0;
-    for(int i = 0; i < N * N; i++) sumP += P[i];        
-    for(int i = 0; i < N * N; i++) {
+    for(int i = 0; i < (long)N * N; i++) sumP += P[i];
+    for(int i = 0; i < (long)N * N; i++) {
         P[i] /= sumP;
         P[i] += FLT_MIN;
     }
@@ -292,13 +290,13 @@ void compute_student(float* X, int N, int D, float* P, float* unnorm_P) {
     
     // Perform full normalization
     float totalSum = 0.0;
-    for(int i = 0; i < N * N; i++) totalSum += P[i];
-    for(int i = 0; i < N * N; i++) P[i] /= totalSum;    
+    for(int i = 0; i < (long)N * N; i++) totalSum += P[i];
+    for(int i = 0; i < (long)N * N; i++) P[i] /= totalSum;
 }
 
 void compute_stiffnesses(float* P, float* Q, float* unnorm_Q, int N) {
 	//for(int i = 0; i < N * N; i++) {
-    dispatch_apply(N * N, queue, ^(size_t i) {
+    dispatch_apply((long)N * N, queue, ^(size_t i) {
         unnorm_Q[i] = 4.0 * (P[i] - Q[i]) * unnorm_Q[i];
     });
 }

@@ -74,7 +74,7 @@
     self.color.color = color;
     
     //[self.selectChannel selectItemAtIndex:localIndex];
-    [self.selectChannel selectItemWithTitle:self.channels[self.index]];
+    [self.selectChannel selectItemWithTitle:self.channels[MIN(self.index, self.channels.count - 1)]];
 }
 
 - (void)drawRect:(NSRect)dirtyRect {

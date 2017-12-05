@@ -77,9 +77,18 @@
     if (theEvent.modifierFlags & NSEventModifierFlagCommand) {
         [self.baseModelMatrix translate:theEvent.deltaX y:-theEvent.deltaY z:0];
     }else{
-        _rotation.x = theEvent.deltaX;
-        _rotation.y = theEvent.deltaY;
-        [self applyRotationWithCGPoint:_rotation];
+        if (theEvent.modifierFlags & NSEventModifierFlagOption) {
+            CGFloat rotation_z = theEvent.deltaX + theEvent.deltaY;
+            [self rotateX:.0f Y:.0f Z:rotation_z * 0.005];
+        }else{
+            _rotation.x = theEvent.deltaX;
+            _rotation.y = theEvent.deltaY;
+            if(theEvent.modifierFlags & NSEventModifierFlagControl){
+                _rotation.x = theEvent.deltaY > theEvent.deltaX ? theEvent.deltaY : .0f;
+                _rotation.y = theEvent.deltaX > theEvent.deltaY ? theEvent.deltaX : .0f;
+            }
+            [self applyRotationWithCGPoint:_rotation];
+        }
     }
     self.refresh = YES;
 }

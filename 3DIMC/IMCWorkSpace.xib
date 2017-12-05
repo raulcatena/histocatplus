@@ -1121,7 +1121,7 @@
                                         <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" misplaced="YES" id="api-7p-VaR">
                                             <rect key="frame" x="98" y="-3" width="19" height="27"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                            <stepperCell key="cell" continuous="YES" alignment="left" increment="0.10000000000000001" maxValue="10" doubleValue="2" id="J2R-iM-3z5"/>
+                                            <stepperCell key="cell" continuous="YES" alignment="left" increment="0.10000000000000001" maxValue="200" doubleValue="2" id="J2R-iM-3z5"/>
                                             <connections>
                                                 <action selector="stepperZChanged:" target="-2" id="dOO-Zj-XVW"/>
                                             </connections>
@@ -1186,6 +1186,21 @@
                                                             <modifierMask key="keyEquivalentModifierMask"/>
                                                         </menuItem>
                                                         <menuItem title="Mode + Mean" id="e2q-OW-fo4">
+                                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                                        </menuItem>
+                                                        <menuItem title="Median" id="eFZ-Ui-7By">
+                                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                                        </menuItem>
+                                                        <menuItem title="Median + Gauss" id="gO6-lB-V38">
+                                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                                        </menuItem>
+                                                        <menuItem title="Median + Mean" id="0VB-fu-U4t">
+                                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                                        </menuItem>
+                                                        <menuItem title="Gauss + Median" id="aOV-yk-zIY">
+                                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                                        </menuItem>
+                                                        <menuItem title="Mean + Median" id="ZRe-Ie-rsA">
                                                             <modifierMask key="keyEquivalentModifierMask"/>
                                                         </menuItem>
                                                     </items>
@@ -1782,6 +1797,9 @@
             <point key="canvasLocation" x="681" y="826"/>
         </segmentedControl>
         <menuItem title="Mode Filter" id="LAB-KZ-YAw">
+            <modifierMask key="keyEquivalentModifierMask"/>
+        </menuItem>
+        <menuItem title="Median + Mean" id="iKm-dx-f9u">
             <modifierMask key="keyEquivalentModifierMask"/>
         </menuItem>
     </objects>
