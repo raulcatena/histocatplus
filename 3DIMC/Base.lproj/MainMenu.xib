@@ -16,11 +16,11 @@
         <customObject id="Voe-Tx-rLC" customClass="AppDelegate"/>
         <menu title="Main Menu" systemMenu="main" id="AYu-sK-qS6">
             <items>
-                <menuItem title="3DIMC" id="1Xt-HY-uBw">
+                <menuItem title="histoCAT++" id="1Xt-HY-uBw">
                     <modifierMask key="keyEquivalentModifierMask"/>
-                    <menu key="submenu" title="3DIMC" systemMenu="apple" id="uQy-DD-JDr">
+                    <menu key="submenu" title="histoCAT++" systemMenu="apple" id="uQy-DD-JDr">
                         <items>
-                            <menuItem title="About 3DIMC" id="5kV-Vb-QxS">
+                            <menuItem title="About histoCAT++" id="5kV-Vb-QxS">
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <connections>
                                     <action selector="orderFrontStandardAboutPanel:" target="-1" id="Exp-CZ-Vem"/>

@@ -655,7 +655,7 @@
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <clipView key="contentView" id="LZg-c4-jDn">
                                                 <rect key="frame" x="1" y="0.0" width="717" height="612"/>
-                                                <autoresizingMask key="autoresizingMask"/>
+                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" autosaveColumns="NO" headerView="UAO-A7-670" id="AC1-NF-W0U">
                                                         <rect key="frame" x="0.0" y="0.0" width="717" height="589"/>
@@ -1102,7 +1102,7 @@
                                         <slider hidden="YES" verticalHuggingPriority="750" misplaced="YES" id="5gG-JT-9pY">
                                             <rect key="frame" x="277" y="-5" width="199" height="20"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                            <sliderCell key="cell" state="on" alignment="left" minValue="0.01" maxValue="1" doubleValue="0.20000000000000001" tickMarkPosition="above" sliderType="linear" id="PBZ-J8-KpU"/>
+                                            <sliderCell key="cell" state="on" alignment="left" minValue="0.0050000000000000001" maxValue="5" doubleValue="1" tickMarkPosition="above" sliderType="linear" id="PBZ-J8-KpU"/>
                                             <connections>
                                                 <action selector="refresh3D:" target="-2" id="SWS-QL-HCB"/>
                                             </connections>

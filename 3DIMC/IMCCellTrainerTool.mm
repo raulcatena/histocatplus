@@ -273,12 +273,11 @@
 }
 -(void)refresh{
     NSMutableArray *colors = [NSMutableArray arrayWithCapacity:self.channelTableView.selectedRowIndexes.count];
-    for (int i = 0; i < self.channelTableView.selectedRowIndexes.count; i++) {
+    
+    for (int i = 0; i < self.channelTableView.selectedRowIndexes.count; i++)
         [colors addObject:[NSColor whiteColor]];
-    }
     
-    NSMutableArray *refs = @[].mutableCopy;
-    
+    NSMutableArray *refs = @[].mutableCopy;    
     
     if(self.showTraining.state == NSOnState){
         UInt8 * tempMask = [self createImageForTrainingWithmaskOption:MASK_NO_BORDERS maskType:MASK_ALL_CELL maskSingleColor:nil];
@@ -290,7 +289,7 @@
         [self addUint8Buffer:tempMask toStack:refs direction:YES];
     }
     
-    if(self.showImage.state == NSOnState){
+    if(self.showImage.state == NSOnState && self.channelTableView.selectedRow != NSNotFound){
         //TODO enable pixel data here
         CGImageRef ref = NULL;
         if(self.showPixelData.state == NSOffState)
@@ -336,9 +335,8 @@
         if(ref)
             [refs addObject:(__bridge id)ref];
     }
-    NSImage *final = [IMCImageGenerator imageWithArrayOfCGImages:refs width:self.trainer.computation.mask.imageStack.width height:self.trainer.computation.mask.imageStack.height blendMode:kCGBlendModeOverlay];
-    
-    self.scrollView.imageView.image = final;
+    if(refs.count > 0)
+        self.scrollView.imageView.image = [IMCImageGenerator imageWithArrayOfCGImages:refs width:self.trainer.computation.mask.imageStack.width height:self.trainer.computation.mask.imageStack.height blendMode:kCGBlendModeOverlay];
 }
 
 -(IBAction)changedTolerance:(NSSlider *)sender{

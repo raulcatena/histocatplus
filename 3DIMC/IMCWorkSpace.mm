@@ -694,7 +694,7 @@
 #pragma mark Export Data
 
 -(IBAction)exportCSV:(id)sender{
-    if(self.whichTableCoordinator.indexOfSelectedItem != 5)
+    if(self.whichTableCoordinator.indexOfSelectedItem != 5 && self.whichTableCoordinator.indexOfSelectedItem != 7)
         return;
     
     NSIndexSet *setMetadata = [IMCUtils inputTable:self.dataCoordinator.metadata[JSON_METADATA_KEYS] prompt:@"Do you want to stich metadata? Select which fields to add"];
@@ -704,7 +704,7 @@
     [panel setNameFieldStringValue:proposedName];
     [panel beginSheetModalForWindow:self.windowForSheet completionHandler:^(NSInteger result){
         if (result == NSFileHandlingPanelOKButton)
-            [IMCFileExporter saveCSVWithComputations:self.inScopeComputations atPath:panel.URL.path columnIndexes:self.channels.selectedRowIndexes dataCoordinator:self.dataCoordinator metadataIndexes:setMetadata];
+            [IMCFileExporter saveCSVWithComputations:self.inScope3DMask ? @[self.inScope3DMask] : self.inScopeComputations atPath:panel.URL.path columnIndexes:self.channels.selectedRowIndexes dataCoordinator:self.dataCoordinator metadataIndexes:setMetadata];
     }];
 }
 -(IBAction)exportFCS:(id)sender{
@@ -1270,6 +1270,10 @@
             [self.inScope3DMask interactionAnalysis:chosen];
         }
     }
+}
+-(void)duplicate3DMask:(NSMenuItem *)sender{
+    if(self.inScope3DMask)
+        [self.inScope3DMask copyThisMask];
 }
 -(void)convertToMask:(NSMenuItem *)sender{
 

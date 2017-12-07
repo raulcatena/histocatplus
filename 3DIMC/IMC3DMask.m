@@ -830,27 +830,28 @@
     
     while (testVoxel) {
         NSInteger val = testVoxel.integerValue;
-//        NSInteger candidates[6] = {val - width,
-//            val + width,
-//            val - 1,
-//            val + 1,
-//            val - planeLength,
-//            val + planeLength
-//        };
-//        NSInteger candidates[6] = {val - width,
-        NSInteger newerBase = val + planeLength;
-        NSInteger candidates[9] = {newerBase,
-            newerBase - 1,
-            newerBase + 1,
-            newerBase - width,
-            newerBase - width - 1,
-            newerBase - width + 1,
-            newerBase + width,
-            newerBase + width - 1,
-            newerBase + width + 1,
+        NSInteger candidates[6] = {val - width,
+            val + width,
+            val - 1,
+            val + 1,
+            val - planeLength,
+            val + planeLength
         };
-        //for (int m = 0; m < 6;  m++){
-        for (int m = 0; m < 9;  m++){
+//        NSInteger candidates[6] = {val - width,
+//        NSInteger newerBase = val + planeLength;
+//        NSInteger candidates[9] = {newerBase,
+//            newerBase - 1,
+//            newerBase + 1,
+//            newerBase - width,
+//            newerBase - width - 1,
+//            newerBase - width + 1,
+//            newerBase + width,
+//            newerBase + width - 1,
+//            newerBase + width + 1,
+//        };
+//        
+//        for (int m = 0; m < 9;  m++){
+        for (int m = 0; m < 6;  m++){
             if(candidates[m] >= 0 && candidates[m] < fullMaskLength)
                 if (_maskIds[candidates[m]] == cellId){
                     _maskIds[candidates[m]] = -_maskIds[candidates[m]];
@@ -902,6 +903,28 @@
     
     while (testVoxel) {
         NSInteger val = testVoxel.integerValue;
+        
+//        NSInteger newerBase = val + planeLength;
+//        NSInteger candidates[17] = {
+//            val - 1,
+//            val + 1,
+//            val - width,
+//            val - width - 1,
+//            val - width + 1,
+//            val + width,
+//            val + width - 1,
+//            val + width + 1,
+//            newerBase,
+//            newerBase - 1,
+//            newerBase + 1,
+//            newerBase - width,
+//            newerBase - width - 1,
+//            newerBase - width + 1,
+//            newerBase + width,
+//            newerBase + width - 1,
+//            newerBase + width + 1,
+//        };
+        
         NSInteger candidates[6] = {val - width,
             val + width,
             val - 1,
@@ -909,7 +932,9 @@
             val - planeLength,
             val + planeLength
         };
+        //for (int m = 0; m < 17;  m++){
         for (int m = 0; m < 6;  m++){
+        
             if(candidates[m] >= 0 && candidates[m] < fullMaskLength)
                 if (_maskIds[candidates[m]] == cellId){
                     _maskIds[candidates[m]] = -_maskIds[candidates[m]];
@@ -935,6 +960,22 @@
         self.computedData = NULL;
     }
 }
+-(void)copyThisMask{
+    IMC3DMask *newMask = [[IMC3DMask alloc]init];
+    newMask.jsonDictionary = self.jsonDictionary.copy;
+    newMask.itemHash = [IMCUtils randomStringOfLength:20];
+    newMask.itemName = [@"copy of " stringByAppendingString:newMask.itemName];
+    NSInteger elems = self.slices * self.width * self.height;
+    NSInteger count = elems * sizeof(int);
+    newMask.maskIds = malloc(count);
+    [self openIfNecessaryAndPerformBlock:^{
+        for (NSInteger i = 0; i < count; i++)
+            newMask.maskIds[i] = self.maskIds[i];
+        [newMask saveMaskData];
+    }];
+    [self.coordinator add3DNode:newMask];
+}
+
 -(void)allocateComputedData{
     
     [self clearComputedData];
@@ -1078,6 +1119,9 @@
                 if (_maskIds[i] > 0){
                     NSInteger cellId = _maskIds[i] - 1;
                     NSArray *collectedVoxelIndexes = [self collectVoxelsForVoxelIndex:i width:self.width planeLength:planeLength totalMask:fullMask];
+                    
+                    if(collectedVoxelIndexes.count < 20)//RCF heuristic May pass as parameter
+                        continue;
 
                     NSMutableArray *positionsX = [NSMutableArray arrayWithCapacity:collectedVoxelIndexes.count];
                     NSMutableArray *positionsY = [NSMutableArray arrayWithCapacity:collectedVoxelIndexes.count];

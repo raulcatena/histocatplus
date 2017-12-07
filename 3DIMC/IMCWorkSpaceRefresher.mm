@@ -188,7 +188,7 @@
 //    self.parent.scrollViewBlends.imageView.image = imi;
 //    return;
     
-    if(self.parent.inScopeImages.count > 0 || self.parent.inScopeMasks > 0){
+    if(self.parent.inScopeImages.count > 0 || self.parent.inScopeMasks.count > 0 || self.parent.inScopeComputations.count > 0){
         
         NSInteger maxW = 0, maxH = 0;
         for (IMCImageStack *stk in self.parent.inScopeImages.copy) {

@@ -11,6 +11,7 @@
 #import "IMCImageStack.h"
 #import "IMCPixelClassification.h"
 #import "IMCComputationOnMask.h"
+#import "IMC3DMask.h"
 #import "NSString+MD5.h"
 #import "tiffio.h"
 #import "IMCScrollView.h"
@@ -231,19 +232,33 @@
     }];
     
     NSMutableString *titles = [NSMutableString stringWithFormat:@"%@\n",[channs componentsJoinedByString:@"\t"]];
+    
     for (IMCComputationOnMask *compo in computations){
+        
         BOOL wasLoaded = compo.isLoaded;
         if(!wasLoaded)
             [compo loadLayerDataWithBlock:nil];
         while(!compo.isLoaded);
         
-        NSInteger cells = compo.mask.numberOfSegments;
+        NSInteger cells;
+        if([compo isMemberOfClass:[IMCComputationOnMask class]]){
+            cells = compo.mask.numberOfSegments;
+        }else{
+            cells = [(IMC3DMask *)compo segmentedUnits];
+        }
         NSInteger channels = compo.channels.count;
         
-        NSDictionary *metadataDict = [loader metadataForImageStack:compo.mask.imageStack];
+        NSDictionary *metadataDict;
+        if([compo isMemberOfClass:[IMCComputationOnMask class]]){
+            metadataDict = [loader metadataForImageStack:compo.mask.imageStack];
+        }
         
         for (NSInteger i = 0; i <cells; i++) {
-            [titles appendFormat:@"%@\t", compo.mask.imageStack.itemName];
+            if(metadataDict){
+                [titles appendFormat:@"%@\t", compo.mask.imageStack.itemName];
+            }else{
+                    [titles appendString:@"\t"];
+            }
             for (NSString *key in selectedKeys) {
                 [titles appendString:[NSString stringWithFormat:@"%@\t", metadataDict[key]?metadataDict[key]:@""]];
             }

@@ -159,7 +159,7 @@
     
     if(!self.mask.isLoaded)
         [self.mask loadLayerDataWithBlock:nil];
-    while (!self.mask.isDual);
+    while (!self.mask.isLoaded);
     
     if(!self.isLoaded)
         [self open];
@@ -668,7 +668,7 @@
 }
 
 -(BOOL)compareCachedSettingsWithCurrentForIndex:(NSInteger)index{//Compares and prepares the buffer
-    if(index >= self.channels.count)return YES;
+    if(index >= self.channels.count || cachedSettings == NULL)return YES;
     float * settings = cachedSettings[index];
     NSMutableDictionary *setts = [self channelSettings][index];
     

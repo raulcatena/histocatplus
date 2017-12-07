@@ -215,10 +215,11 @@
 
 -(IBAction)updateTableView:(NSSegmentedControl *)sender{
     
-    self.parent.pushItemUp.hidden = !(self.parent.whichTableCoordinator.indexOfSelectedItem == 1);
-    self.parent.pushItemDown.hidden = !(self.parent.whichTableCoordinator.indexOfSelectedItem == 1);
-    self.parent.exportCSVButton.hidden = !(self.parent.whichTableCoordinator.indexOfSelectedItem == 5);
-    self.parent.exportFCSButton.hidden = !(self.parent.whichTableCoordinator.indexOfSelectedItem == 5);
+    NSInteger selectedIndex = self.parent.whichTableCoordinator.indexOfSelectedItem;
+    self.parent.pushItemUp.hidden = !(selectedIndex == 1);
+    self.parent.pushItemDown.hidden = !(selectedIndex == 1);
+    self.parent.exportCSVButton.hidden = !(selectedIndex == 5 || selectedIndex == 7);
+    self.parent.exportFCSButton.hidden = !(selectedIndex == 5 || selectedIndex == 7);
     
     if(sender == self.parent.whichTableChannels){
         int i = 0;
@@ -412,8 +413,8 @@
             }
             if([item isMemberOfClass:[IMC3DMask class]] && item.isLoaded){
                 
-                NSArray *titles = @[@"Measure distances to other mask...", @"Cluster interaction analysis"];
-                NSArray *selectors = @[@"distances3D:", @"clusterInteraction:"];
+                NSArray *titles = @[@"Measure distances to other mask...", @"Cluster interaction analysis", @"Duplicate Mask"];
+                NSArray *selectors = @[@"distances3D:", @"clusterInteraction:", @"duplicate3DMask:"];
                 [addingTitles addObjectsFromArray:titles];
                 [addingSelectors addObjectsFromArray:selectors];
                 

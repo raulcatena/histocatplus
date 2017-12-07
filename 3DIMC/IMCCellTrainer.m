@@ -100,8 +100,7 @@
         NSInteger cells = [self numberOfSegments];
         for(NSInteger i = 0; i < cells; i++){
             if(train.training[i] > 0){//It's a training cell;
-                for (int j = 0; j < chanCount; j++){//Add value{
-                    //printf(" %f", train.computation.computedData[[useChannels[j]integerValue]][i]);
+                for (int j = 0; j < chanCount; j++){//Add value
                     float max = [maxima[j]floatValue];
                     if(max != .0f)
                         filteredChannelsAndClassTraining[counter * (chanCount + 1) + j] = (float)train.computation.computedData[[useChannels[j]integerValue]][i]/max;

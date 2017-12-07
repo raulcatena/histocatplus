@@ -348,10 +348,8 @@
         NSInteger subPix = train.imageStack.numberOfPixels;
         for(NSInteger i = 0; i < subPix; i++){
             if(train.trainingBuffer[i] > 0){//It's a training pixel
-                //printf(" %u", train.trainingBuffer[i]);
                 for (int j = 0; j < chanCount; j++)//Add value
                     filteredChannelsAndClassTraining[counter * (chanCount + 1) + j] = (float)allData[trainCount * chanCount + j][i * 4];
-                
                 //If is training I need to specify the class
                 filteredChannelsAndClassTraining[counter * (chanCount + 1) + chanCount] = (float)train.trainingBuffer[i];
                 counter++;

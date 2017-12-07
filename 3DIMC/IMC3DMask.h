@@ -74,4 +74,6 @@ typedef enum{
 -(void)distanceToOtherMaskEuclidean:(IMC3DMask *)otherMask;
 -(void)interactionAnalysis:(NSInteger)clusteringChannel;
 
+-(void)copyThisMask;
+
 @end
