@@ -112,9 +112,10 @@
         NSInteger initialHeight = 0;
         
         NSMutableArray *images = [NSMutableArray arrayWithCapacity:splitter.countOfImages];//I case they are all ARGB
-        
+        ;
         for (NSInteger i = 0; i < splitter.countOfImages; i++) {
             NSData *data = [splitter dataForImage:i];
+
             NSImage *im = [[NSImage alloc]initWithData:data];
             NSBitmapImageRep *rep = (NSBitmapImageRep *)im.representations.firstObject;
             NSString *nameImage270 = [splitter titleForImage_270:splitter index:(int)i];
@@ -128,29 +129,33 @@
             if(initialHeight == 0)initialHeight = rep.pixelsHigh;
             else{
                 if(initialHeight != rep.pixelsHigh)return NO;
-            }
+            };
             channels += rep.bitsPerPixel/rep.bitsPerSample;
             [images addObject:rep];
         }
-        
         imageStack.width = initialWidth;
         imageStack.height = initialHeight;
-                
-        if(!imageStack.channels || imageStack.channels.count < channs.count)
+        
+        imageStack.channels = @[].mutableCopy;
+        imageStack.origChannels = @[].mutableCopy;
+        
+        if(imageStack.channels.count < channs.count)
             for (int i = 0; i < channs.count - imageStack.channels.count; i++)
                 [imageStack.channels addObject:[NSString stringWithFormat:@"Unknown channel %i", i + 1]];
-        if(!imageStack.origChannels || imageStack.origChannels.count < channs.count)
+        if(imageStack.origChannels.count < channs.count)
             for (int i = 0; i < channs.count - imageStack.origChannels.count; i++)
                 [imageStack.origChannels addObject:[NSString stringWithFormat:@"Unknown channel %i", i + 1]];
         
-        if(!imageStack.channels || imageStack.channels.count > channs.count)
+        
+        if(imageStack.channels.count > channs.count)
             imageStack.channels = [[imageStack.channels subarrayWithRange:NSMakeRange(0, channs.count)]mutableCopy];
-        if(!imageStack.origChannels || imageStack.origChannels.count > channs.count)
+        if(imageStack.origChannels.count > channs.count)
             imageStack.origChannels = [[imageStack.origChannels subarrayWithRange:NSMakeRange(0, channs.count)]mutableCopy];
+        
+        
         
         [imageStack clearBuffers];
         [imageStack allocateBufferWithPixels:imageStack.numberOfPixels];
-        
         for (NSBitmapImageRep *rep in images) {
             NSInteger indexChannel = [images indexOfObject:rep];
             [IMC_TIFFLoader processRep:rep toIMCImageStack:imageStack toIndexChannel:indexChannel];
