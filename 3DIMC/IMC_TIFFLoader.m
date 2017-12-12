@@ -136,8 +136,10 @@
         imageStack.width = initialWidth;
         imageStack.height = initialHeight;
         
-        imageStack.channels = @[].mutableCopy;
-        imageStack.origChannels = @[].mutableCopy;
+        if(!imageStack.channels)
+            imageStack.channels = @[].mutableCopy;
+        if(!imageStack.origChannels)
+            imageStack.origChannels = @[].mutableCopy;
         
         if(imageStack.channels.count < channs.count)
             for (int i = 0; i < channs.count - imageStack.channels.count; i++)
@@ -151,7 +153,6 @@
             imageStack.channels = [[imageStack.channels subarrayWithRange:NSMakeRange(0, channs.count)]mutableCopy];
         if(imageStack.origChannels.count > channs.count)
             imageStack.origChannels = [[imageStack.origChannels subarrayWithRange:NSMakeRange(0, channs.count)]mutableCopy];
-        
         
         
         [imageStack clearBuffers];
