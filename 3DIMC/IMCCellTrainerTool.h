@@ -61,4 +61,7 @@
 -(IBAction)savePredictions:(NSButton *)sender;
 -(int *)trainingBuff;
 
+-(IBAction)copyTrainingSettings:(NSButton *)sender;
+-(IBAction)pasteTrainingSettings:(NSButton *)sender;
+
 @end

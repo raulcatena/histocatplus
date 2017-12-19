@@ -91,6 +91,7 @@
 @property (nonatomic, weak) IBOutlet NSSegmentedControl *maskPartsSelector;
 @property (nonatomic, weak) IBOutlet NSPopUpButton *multiImageFilters;
 @property (nonatomic, weak) IBOutlet NSPopUpButton *multiImageMode;
+@property (nonatomic, weak) IBOutlet NSView *scaleBarView;
 @property (nonatomic, weak) IBOutlet NSButton *scaleBar;
 @property (nonatomic, weak) IBOutlet NSButton *scaleBarStatic;
 @property (nonatomic, weak) IBOutlet NSColorWell *scaleBarColor;
@@ -98,6 +99,7 @@
 @property (nonatomic, weak) IBOutlet NSTextField *scaleBarCalibration;
 @property (nonatomic, weak) IBOutlet NSStepper *scaleBarSteps;
 @property (nonatomic, weak) IBOutlet NSStepper *scaleBarFontSize;
+@property (nonatomic, weak) IBOutlet NSView *legendsView;
 @property (nonatomic, weak) IBOutlet NSButton *legends;
 @property (nonatomic, weak) IBOutlet NSButton *showNames;
 @property (nonatomic, weak) IBOutlet NSButton *legendsStatic;

@@ -105,7 +105,8 @@
     
     NSTiffSplitter *splitter = [[NSTiffSplitter alloc]initWithData:data];
     NSMutableArray *channs = [NSMutableArray arrayWithCapacity:splitter.countOfImages];
-                       
+    
+    
     if(splitter.countOfImages > 0){
         int channels = 0;
         NSInteger initialWidth = 0;
@@ -136,16 +137,20 @@
         imageStack.width = initialWidth;
         imageStack.height = initialHeight;
         
+        
         if(!imageStack.channels)
             imageStack.channels = @[].mutableCopy;
         if(!imageStack.origChannels)
             imageStack.origChannels = @[].mutableCopy;
         
-        if(imageStack.channels.count < channs.count)
-            for (int i = 0; i < channs.count - imageStack.channels.count; i++)
+        NSInteger prevChannelCount = imageStack.channels.count;
+        if(prevChannelCount < channs.count)
+            for (int i = 0; i < channs.count - prevChannelCount; i++)
                 [imageStack.channels addObject:[NSString stringWithFormat:@"Unknown channel %i", i + 1]];
-        if(imageStack.origChannels.count < channs.count)
-            for (int i = 0; i < channs.count - imageStack.origChannels.count; i++)
+        
+        NSInteger prevOriginalChannelCount = imageStack.origChannels.count;
+        if(prevOriginalChannelCount < channs.count)
+            for (int i = 0; i < channs.count - prevOriginalChannelCount; i++)
                 [imageStack.origChannels addObject:[NSString stringWithFormat:@"Unknown channel %i", i + 1]];
         
         
@@ -156,6 +161,7 @@
         
         
         [imageStack clearBuffers];
+        
         [imageStack allocateBufferWithPixels:imageStack.numberOfPixels];
         for (NSBitmapImageRep *rep in images) {
             NSInteger indexChannel = [images indexOfObject:rep];

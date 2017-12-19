@@ -114,6 +114,8 @@
     
     self.parent.scrollSubpanels.hidden = YES;
     self.parent.applyTransfomrs.hidden = YES;
+    self.parent.legendsView.hidden = !self.parent.legends.state;
+    self.parent.scaleBarView.hidden = !self.parent.scaleBar.state;
     
     BOOL refreshImagesLastCheck = self.parent.autoRefreshLock.state;
     if([self.parent.tabs.selectedTabViewItem.identifier isEqualToString:TAB_ID_BLEND] || [self.parent.tabs.selectedTabViewItem.identifier isEqualToString:TAB_ID_TILES]){

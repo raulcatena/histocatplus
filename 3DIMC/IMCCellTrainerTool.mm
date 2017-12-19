@@ -408,4 +408,27 @@
     [IMCFileExporter copyToClipBoardFromScroll:self.scrollView allOrZoomed:YES];
 }
 
+-(IBAction)copyTrainingSettings:(id)sender{
+    NSPasteboard * pasteBoard = [NSPasteboard generalPasteboard];
+    [pasteBoard declareTypes:[NSArray arrayWithObject:NSStringPboardType] owner:nil];
+    //NSInteger changeCount = [pasteBoard clearContents];
+    NSString *string = [General jsonStringFromObject:@[[self.trainer.trainingNodes.firstObject useChannels], self.trainer.labels] prettryPrint:NO];
+    [pasteBoard setString:string forType:NSStringPboardType];
+}
+-(IBAction)pasteTrainingSettings:(NSButton *)sender{
+    NSPasteboard *pasteboard = [NSPasteboard generalPasteboard];
+    NSString *got = [pasteboard stringForType:NSStringPboardType];
+    NSArray *options = [General objectFromString:got];
+    IMCMaskTraining *training = self.trainer.trainingNodes[0];
+    if(training){
+        training.jsonDictionary[JSON_DICT_PIXEL_TRAINING_LEARNING_SETTINGS] = options.firstObject;
+        training.jsonDictionary[JSON_DICT_PIXEL_TRAINING_LABELS] = options.lastObject;
+    }
+    
+    [self.trainer updateTrainingSettings];
+    [self.channelTableView reloadData];
+    [self.labelsTableView reloadData];
+    
+}
+
 @end

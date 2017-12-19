@@ -240,5 +240,9 @@
     }
 }
 
+-(void)updateTrainingSettings{
+    NSLog(@"%@", self.trainingNodes.firstObject.jsonDictionary);
+}
+
 
 @end

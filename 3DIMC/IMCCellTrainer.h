@@ -39,5 +39,6 @@
 -(void)classifyCells;
 -(void)classifyCellsAllSteps;
 -(void)addResultsToComputation;
+-(void)updateTrainingSettings;
 
 @end
