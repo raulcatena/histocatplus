@@ -1275,6 +1275,10 @@
     if(self.inScope3DMask)
         [self.inScope3DMask copyThisMask];
 }
+-(void)calcAdjMatrix:(NSMenuItem *)sender{
+    if(self.inScope3DMask)
+        [self.inScope3DMask generateAdjacencyMatrix];
+}
 -(void)convertToMask:(NSMenuItem *)sender{
 
 }

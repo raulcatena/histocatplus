@@ -413,8 +413,8 @@
             }
             if([item isMemberOfClass:[IMC3DMask class]] && item.isLoaded){
                 
-                NSArray *titles = @[@"Measure distances to other mask...", @"Cluster interaction analysis", @"Duplicate Mask"];
-                NSArray *selectors = @[@"distances3D:", @"clusterInteraction:", @"duplicate3DMask:"];
+                NSArray *titles = @[@"Measure distances to other mask...", @"Cluster interaction analysis", @"Duplicate Mask", @"Calculate Adjacency Matrix"];
+                NSArray *selectors = @[@"distances3D:", @"clusterInteraction:", @"duplicate3DMask:", @"calcAdjMatrix:"];
                 [addingTitles addObjectsFromArray:titles];
                 [addingSelectors addObjectsFromArray:selectors];
                 

@@ -76,4 +76,7 @@ typedef enum{
 
 -(void)copyThisMask;
 
+//Interaction Analysis
+-(NSArray *)generateAdjacencyMatrix;//Returns array of arrays. Index of array is cellid - 1. NSNumbers in array are actual cellIds
+
 @end

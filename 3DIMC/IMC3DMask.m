@@ -1183,9 +1183,11 @@
             free(auxiliaryData);
         
         //Return mask to initial state
-        for (NSInteger i = 0; i < fullMask; i++)
-            if (_maskIds[i] < 0)
-                _maskIds[i] = -_maskIds[i];
+        [self invertNegs:fullMask];
+
+        //for (NSInteger i = 0; i < fullMask; i++)
+        //    if (_maskIds[i] < 0)
+        //        _maskIds[i] = -_maskIds[i];
         
         [self saveData];
     });
@@ -1575,6 +1577,68 @@
             [self addBuffer:results withName:[NSString stringWithFormat:@"Distance to %@", otherMask.itemName] atIndex:NSNotFound];
         }];
     }
+}
+
+#pragma mark
+-(NSArray *)touchedIds:(NSInteger)testIndex fullMaskLength:(NSInteger)fullMaskLength planLength:(NSInteger)plane{
+    NSInteger test = 0;
+    
+    NSMutableDictionary *dic = @{}.mutableCopy;
+    for (int cur = -1; cur < 2; cur+=2) {
+        for (int type = 0; type < 3; type++) {
+            switch (type) {
+                case 0:
+                    test = testIndex + plane * cur;
+                    break;
+                case 1:
+                    test = testIndex + self.width * cur;
+                    break;
+                case 2:
+                    test = testIndex + cur;
+                    break;
+                default:
+                    break;
+            }
+            if(test > 0 && test < fullMaskLength)
+                if(_maskIds[test] != 0 && abs(_maskIds[test]) != abs(_maskIds[testIndex])){
+                    NSNumber *keyNum = @(abs(_maskIds[test]));
+                    dic[keyNum] = dic[keyNum]?@([dic[keyNum]integerValue]+1):@(1);
+                }
+        }
+    }
+    return dic.allKeys;
+}
+-(NSArray *)generateAdjacencyMatrix{
+    NSInteger planeLength = self.width * self.height;
+    NSInteger fullMask = planeLength *  self.slices;
+    [self invertNegs:fullMask];
+    NSInteger total = self.segments;
+    NSMutableArray *adjMatrix = @[].mutableCopy;
+    for (NSInteger i = 0; i < total; i++)
+        [adjMatrix addObject:@[].mutableCopy];
+    
+    int processed = 0;
+    for (NSInteger i = 0; i < fullMask; i++) {
+        if(_maskIds[i] > 0){
+            int index = _maskIds[i];
+            processed++;
+            if(processed > total/100){
+                processed = 0;
+                printf(".");
+            }
+            NSArray *collectedVoxelIndexes = [self collectVoxelsForVoxelIndex:i width:self.width planeLength:planeLength totalMask:fullMask];
+            for (NSNumber *num in collectedVoxelIndexes) {
+                NSArray *touched = [self touchedIds:abs(num.intValue) fullMaskLength:fullMask planLength:planeLength];
+                for (NSNumber *anId in touched) {
+                    NSNumber *interactee = @(abs(anId.intValue));
+                    if(![adjMatrix[index - 1] containsObject:interactee])
+                        [adjMatrix[index - 1] addObject:interactee];
+                }
+            }
+        }
+    }
+    [self invertNegs:fullMask];
+    return adjMatrix;
 }
 
 -(void)dealloc{
