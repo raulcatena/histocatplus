@@ -78,5 +78,8 @@ typedef enum{
 
 //Interaction Analysis
 -(NSArray *)generateAdjacencyMatrix;//Returns array of arrays. Index of array is cellid - 1. NSNumbers in array are actual cellIds
+-(float *)summaryOfAdjacencyMatrixUsingCategoricalVariable:(NSInteger)indexOfCategoricalVariable forAdjacencyMatrix:(NSArray *)matrix;
+-(float *)expectedMatrixWithSummary:(float *)summary forAdjacencyMatrix:(NSArray *)matrix categoricalVariable:(NSInteger)indexOfCategoricalVariable;
+-(float *)observedMatrixWithSummary:(float *)summary forAdjacencyMatrix:(NSArray *)matrix categoricalVariable:(NSInteger)indexOfCategoricalVariable;
 
 @end

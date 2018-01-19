@@ -1638,7 +1638,107 @@
         }
     }
     [self invertNegs:fullMask];
+    
     return adjMatrix;
+}
+-(NSInteger)maxCategorical:(NSInteger)indexOfCategoricalVariable{
+    if(indexOfCategoricalVariable == NSNotFound)
+        return 0;
+    
+    NSInteger total = self.segments;
+    NSInteger maxCluster = 0;
+    for (NSInteger i = 0; i < total; i++) {
+        float val = self.computedData[indexOfCategoricalVariable][i];
+        if(roundf(val) != val){
+            [General runAlertModalWithMessage:@"Not a categorical variable"];
+            return 0;
+        }
+        if((NSInteger)val > maxCluster)
+            maxCluster = (NSInteger)val;
+    }
+    return maxCluster;
+}
+-(float *)summaryOfAdjacencyMatrixUsingCategoricalVariable:(NSInteger)indexOfCategoricalVariable forAdjacencyMatrix:(NSArray *)matrix{
+    
+    NSInteger total = self.segments;
+    
+    NSInteger maxCluster = [self maxCategorical:indexOfCategoricalVariable];
+    
+    if(!matrix || maxCluster <= 0)
+        return NULL;
+    
+    if(maxCluster == 0)
+        return NULL;
+    
+    //Generate summary
+    float *summary = calloc(maxCluster * 3, sizeof(float));
+    for (NSInteger i = 0; i < total; i++) {
+        NSInteger clust = (NSInteger)self.computedData[indexOfCategoricalVariable][i];
+        summary[(clust - 1) * 3] += [matrix[i]count];
+        summary[(clust - 1) * 3 + 1] += 1.0f;
+    }
+    //Report results
+    printf("\n");
+    for (NSInteger i = 0; i < maxCluster; i++) {
+        if(summary[i * 3 + 1] > 0)
+            summary[i * 3 + 2] = summary[i * 3]/summary[i * 3 + 1];
+        printf("cluster %li has %li neighbors and %li members. Average neighbors are %f\n", i + 1, (NSInteger)summary[i * 3], (NSInteger)summary[i * 3 + 1], summary[i * 3 + 2]);
+    }
+    
+    return summary;
+}
+-(float *)expectedMatrixWithSummary:(float *)summary forAdjacencyMatrix:(NSArray *)matrix categoricalVariable:(NSInteger)indexOfCategoricalVariable{
+
+    NSInteger total = self.segments;
+    NSLog(@"Total are %li", total);
+    NSInteger maxCluster = [self maxCategorical:indexOfCategoricalVariable];
+    
+    if(summary == NULL || maxCluster <= 0)
+        return NULL;
+    
+    float *expectedMatrix = calloc(maxCluster * maxCluster, sizeof(float));
+    
+    for (NSInteger i = 0; i < maxCluster; i++)
+        for (NSInteger j = 0; j < maxCluster; j++)
+            //if( i + j >= maxCluster)
+                expectedMatrix[j * maxCluster + i] = summary[i * 3 + 1]/(total - 1) * summary[j * 3 + 2] * summary[j * 3 + 1];
+    
+    for (NSInteger j = 0; j < maxCluster; j++){
+        for (NSInteger i = 0; i < maxCluster; i++)
+            printf("%.3f ", expectedMatrix[j * maxCluster + i]);
+        printf("\n");
+    }
+    
+    return summary;
+}
+
+-(float *)observedMatrixWithSummary:(float *)summary forAdjacencyMatrix:(NSArray *)matrix categoricalVariable:(NSInteger)indexOfCategoricalVariable{
+    
+    NSInteger total = self.segments;
+    NSLog(@"Total are %li", total);
+    NSInteger maxCluster = [self maxCategorical:indexOfCategoricalVariable];
+    
+    if(summary == NULL || maxCluster <= 0)
+        return NULL;
+    
+    float *observedMatrix = calloc(maxCluster * maxCluster, sizeof(float));
+    
+    for (NSInteger i = 0; i < total; i++){
+        NSArray *arr = matrix[i];
+        NSInteger classCell = (NSInteger)self.computedData[indexOfCategoricalVariable][i] - 1;
+        for (NSNumber *num in arr) {
+            NSInteger classCellInteractee = (NSInteger)self.computedData[indexOfCategoricalVariable][num.intValue - 1] - 1;
+            observedMatrix[classCell * maxCluster + classCellInteractee] += 1.0f;
+        }
+    }
+    
+    for (NSInteger j = 0; j < maxCluster; j++){
+        for (NSInteger i = 0; i < maxCluster; i++)
+            printf("%.3f ", observedMatrix[j * maxCluster + i]);
+        printf("\n");
+    }
+    
+    return summary;
 }
 
 -(void)dealloc{

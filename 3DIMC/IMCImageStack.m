@@ -31,7 +31,7 @@
             return self.jsonDictionary[JSON_DICT_ITEM_NAME];
         
         if([(IMCPanoramaWrapper *)self.parent isPanorama])
-            return [(IMCPanoramaWrapper *)self.parent panoramaName];
+            return [NSString stringWithFormat:@"%@ (%@)", [(IMCPanoramaWrapper *)self.parent panoramaName], self.name ? self.name : @"Unknown ROI name"];
     }
     return self.fileWrapper.fileName;
 }

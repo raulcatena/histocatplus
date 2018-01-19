@@ -93,6 +93,7 @@
                                             JSON_DICT_IMAGE_NAME: acqs[0][@"Description"],
                                             JSON_DICT_IMAGE_ALLDATA: roi.copy}.mutableCopy;
                 
+                
                 CGRect rect = [IMC_MCDLoader rectFromArrayOfROIPoints:roi[@"points"]];
                 imageDict[JSON_DICT_IMAGE_RECT_IN_PAN] = NSStringFromRect(rect);
                 
@@ -105,6 +106,7 @@
                 if(!stk){
                     stk  = [[IMCImageStack alloc]init];
                     stk.jsonDictionary = imageDict;
+                    NSLog(@"AT this point ------- %@ --------", stk.itemName);
                 }
                 
                 BOOL success = [self loadFromData:data intoImageStack:stk withAcqDict:acqs.firstObject andXMLDict:xmlDict];
@@ -253,7 +255,7 @@
             //printf("%i ", bytes);
             //printf("%c ", bytes);
         }
-        //NSLog(@"METADATA %@", xml);
+        NSLog(@"METADATA %@", xml);
         return xml;
     }
     return nil;

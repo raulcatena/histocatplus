@@ -17,9 +17,11 @@
 
 -(void)setChannels:(NSArray *)channels{
     _channels = channels;
-    for (NSString *str in _channels) {//TODO refactor this
-        [self.selectChannel addItemWithTitle:@"blah"];
-        [[self.selectChannel lastItem]setTitle:str];
+    if(self.selectChannel.itemArray.count != channels.count){
+        for (NSString *str in _channels) {//TODO refactor this
+            [self.selectChannel addItemWithTitle:@"blah"];
+            [[self.selectChannel lastItem]setTitle:str];
+        }
     }
 }
 
@@ -33,7 +35,7 @@
     if([self.settingsDictionary valueForKey:JSON_DICT_CHANNEL_SETTINGS_COLOR])
         self.color.color = [NSColor colorFromHexString:[self.settingsDictionary valueForKey:JSON_DICT_CHANNEL_SETTINGS_COLOR]];
     
-    if([self.delegate typeOfColoring] < 4)self.color.enabled = NO;
+    self.color.enabled = ([self.delegate typeOfColoring] == 4);
 }
 
 -(void)selectedChannel:(id)sender{

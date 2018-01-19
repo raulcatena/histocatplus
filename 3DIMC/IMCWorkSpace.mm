@@ -1254,7 +1254,7 @@
                 [names addObject:other.itemName];
             }
         }
-        NSInteger chosen = [IMCUtils inputOptions:names prompt:@"Select a destinatino mask for distance calculation"];
+        NSInteger chosen = [IMCUtils inputOptions:names prompt:@"Select a destination mask for distance calculation"];
         if(chosen != NSNotFound){
             IMC3DMask * chosenMask = possibles[chosen];
             if(chosenMask){
@@ -1267,7 +1267,11 @@
     if(self.inScope3DMask){
         NSInteger chosen = [IMCUtils inputOptions:self.inScope3DMask.channels prompt:@"Select a categorical variable (e.g. Flock clustering)"];
         if(chosen != NSNotFound){
-            [self.inScope3DMask interactionAnalysis:chosen];
+            NSArray *adjMatrix = [self.inScope3DMask generateAdjacencyMatrix];
+            float * summary = [self.inScope3DMask summaryOfAdjacencyMatrixUsingCategoricalVariable:chosen forAdjacencyMatrix:adjMatrix];
+            float * expected = [self.inScope3DMask expectedMatrixWithSummary:summary forAdjacencyMatrix:adjMatrix categoricalVariable:chosen];
+            float * observed = [self.inScope3DMask observedMatrixWithSummary:summary forAdjacencyMatrix:adjMatrix categoricalVariable:chosen];
+            //[self.inScope3DMask interactionAnalysis:chosen];
         }
     }
 }
@@ -1275,10 +1279,7 @@
     if(self.inScope3DMask)
         [self.inScope3DMask copyThisMask];
 }
--(void)calcAdjMatrix:(NSMenuItem *)sender{
-    if(self.inScope3DMask)
-        [self.inScope3DMask generateAdjacencyMatrix];
-}
+
 -(void)convertToMask:(NSMenuItem *)sender{
 
 }
@@ -2172,6 +2173,7 @@
 
 -(void)close{
     [super close];
+
 }
 
 #pragma mark close things properly
