@@ -42,10 +42,10 @@
 
 -(NSMutableDictionary *)generateSelfDictionary;
 -(void)populateSelfWithDictionary;
--(void)loadLayerDataWithBlock:(void(^)())block;//To always override
--(void)unLoadLayerDataWithBlock:(void(^)())block;//To always override
+-(void)loadLayerDataWithBlock:(void(^)(void))block;//To always override
+-(void)unLoadLayerDataWithBlock:(void(^)(void))block;//To always override
 
--(void)openIfNecessaryAndPerformBlock:(void(^)())block;
+-(void)openIfNecessaryAndPerformBlock:(void(^)(void))block;
 
 -(BOOL)canLoad;
 

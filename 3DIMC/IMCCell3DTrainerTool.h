@@ -11,5 +11,6 @@
 @interface IMCCell3DTrainerTool : IMCCellTrainerTool
 
 @property (nonatomic, weak) IBOutlet NSSlider *planeSelector;
+@property (weak) IBOutlet NSSlider *saturate;
 
 @end

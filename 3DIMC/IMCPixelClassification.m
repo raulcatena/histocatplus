@@ -97,7 +97,7 @@
 
 #pragma mark load and deliver masks
 
--(void)loadLayerDataWithBlock:(void (^)())block{
+-(void)loadLayerDataWithBlock:(void (^)(void))block{
     if(![self canLoad])return;
     
     dispatch_async(dispatch_queue_create("load_mask", NULL), ^{
@@ -107,7 +107,7 @@
     });
 }
 
--(void)unLoadLayerDataWithBlock:(void (^)())block{
+-(void)unLoadLayerDataWithBlock:(void (^)(void))block{
     if(self.mask)
         free(self.mask);
     _mask = NULL;

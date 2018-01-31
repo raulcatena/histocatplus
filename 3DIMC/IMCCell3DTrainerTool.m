@@ -27,21 +27,34 @@
 
 #pragma mark mask painting
 -(void)clickedAtPoint:(NSPoint)point{
-    NSPoint processed = [self.scrollView getTranslatedPoint:point];
-    
-    NSInteger plane = [self mask].width * [self mask].height;
-    NSInteger virtualSlice = [self virtualSlice];
-
-    
-    NSInteger pix = MAX(0, MIN(plane - 1, floor(processed.y) * [self mask].width + processed.x));
-    
-    int cellId = abs([self mask].maskIds[virtualSlice * plane + pix]);
-    
-    if(cellId > 0 && self.labelsTableView.selectedRow != NSNotFound)
-        [self trainingBuff][cellId - 1] = [self trainingBuff][cellId - 1] == 0 ? (int)self.labelsTableView.selectedRow + 1:0;
-    
-    [self.trainer.trainingNodes.firstObject regenerateDictTraining];
-    [self refresh];
+    if(self.labelsTableView.selectedRow !=  NSNotFound){
+        NSLog(@"%li LTV index", self.labelsTableView.selectedRow);
+        NSPoint processed = [self.scrollView getTranslatedPoint:point];
+        
+        NSInteger plane = [self mask].width * [self mask].height;
+        NSInteger virtualSlice = [self virtualSlice];
+        
+        NSLog(@"%li virtual slice", virtualSlice);
+        
+        NSInteger pix = MAX(0, MIN(plane - 1, floor(processed.y) * [self mask].width + processed.x));
+        
+        NSLog(@"%li PIX", pix);
+        
+        int cellId = abs([self mask].maskIds[virtualSlice * plane + pix]);
+        
+        NSLog(@"%i Cell Id", cellId);
+        
+        if(self.trainingBuff)
+            NSLog(@"%p is the training buffer", self.trainingBuff);
+        else
+            NSLog(@"%p is the training buffer NULL pointer", self.trainingBuff);
+        
+        if(cellId > 0)
+            [self trainingBuff][cellId - 1] = [self trainingBuff][cellId - 1] == 0 ? (int)self.labelsTableView.selectedRow + 1 : 0;
+        
+        [self.trainer.trainingNodes.firstObject regenerateDictTraining];
+        [self refresh];
+    }
 }
 
 -(NSInteger)virtualSlice{
@@ -179,12 +192,16 @@
                     if(maskData[idx][i] > max)
                         max = maskData[idx][i];
                 
+                max *= self.saturate.floatValue;
+                
                 for (NSInteger i = 0; i < size; i++) {
                     if(subMaskPlane[i] > 0){
-                        image[i] = (UInt8)(maskData[idx][subMaskPlane[i]]/max * 255);
+                        image[i] = (UInt8)(maskData[idx][subMaskPlane[i]-1]/max * 255);
                     }
                 }
-                ref = [IMCImageGenerator imageFromCArrayOfValues:image color:colors[counter] width:[self mask].width height:[self mask].height startingHueScale:0 hueAmplitude:170 direction:NO ecuatorial:NO brightField:NO];
+                
+                NSColor *color = colors[counter];
+                ref = [IMCImageGenerator imageFromCArrayOfValues:image color:color width:[self mask].width height:[self mask].height startingHueScale:0 hueAmplitude:170 direction:NO ecuatorial:NO brightField:NO];
                 if(ref)
                     [refs addObject:(__bridge id)ref];
                 free(image);

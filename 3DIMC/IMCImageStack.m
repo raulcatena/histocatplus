@@ -31,7 +31,7 @@
             return self.jsonDictionary[JSON_DICT_ITEM_NAME];
         
         if([(IMCPanoramaWrapper *)self.parent isPanorama])
-            return [NSString stringWithFormat:@"%@ (%@)", [(IMCPanoramaWrapper *)self.parent panoramaName], self.name ? self.name : @"Unknown ROI name"];
+            return [NSString stringWithFormat:@"%@ (%@, %@)", self.name ? self.name : @"Unknown ROI name", [(IMCPanoramaWrapper *)self.parent panoramaName], self.fileWrapper.itemName];
     }
     return self.fileWrapper.fileName;
 }
@@ -829,13 +829,13 @@
 
 #pragma mark load unload
 
--(void)loadLayerDataWithBlock:(void (^)())block{
+-(void)loadLayerDataWithBlock:(void (^)(void))block{
     if(![self canLoad])return;
     [self.fileWrapper loadLayerDataWithBlock:^{
         [super loadLayerDataWithBlock:block];
     }];
 }
--(void)unLoadLayerDataWithBlock:(void (^)())block{
+-(void)unLoadLayerDataWithBlock:(void (^)(void))block{
     [self clearBuffers];
     self.isLoaded = NO;
     self.fileWrapper.isLoaded = NO;

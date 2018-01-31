@@ -18,22 +18,24 @@ typedef enum{
     OPERATION_MULTIPLY_CHANNELS
 }kOperation;
 
+typedef void(^Block)(int, int) ;
+
 @interface IMCChannelOperations : NSObject
 
-+(BOOL)operationOnImages:(NSArray <IMCImageStack *>*)images operation:(kOperation)operation withIndexSetChannels:(NSIndexSet *)indexSet toIndex:(NSInteger)index block:(void(^)())block;
-+(void)applySettingsFromStack:(IMCImageStack *)stack stacks:(NSArray <IMCImageStack *>*)stacks withIndexSetChannels:(NSIndexSet *)indexSet block:(void(^)())block;
-+(void)applySettingsAdjustToMaxFromStack:(IMCImageStack *)stack stacks:(NSArray <IMCImageStack *>*)stacks withIndexSetChannels:(NSIndexSet *)indexSet block:(void(^)())block;
-+(void)applySettingsFromComputation:(IMCComputationOnMask *)computation stacks:(NSArray <IMCComputationOnMask *>*)computations withIndexSetChannels:(NSIndexSet *)indexSet block:(void(^)())block;
-+(void)applyColors:(IMCImageStack *)stack stacks:(NSArray <IMCFileWrapper *>*)stacks withIndexSetChannels:(NSIndexSet *)indexSet block:(void(^)())block;
++(BOOL)operationOnImages:(NSArray <IMCImageStack *>*)images operation:(kOperation)operation withIndexSetChannels:(NSIndexSet *)indexSet toIndex:(NSInteger)index block:(void(^)(void))block;
++(void)applySettingsFromStack:(IMCImageStack *)stack stacks:(NSArray <IMCImageStack *>*)stacks withIndexSetChannels:(NSIndexSet *)indexSet block:(void(^)(void))block;
++(void)applySettingsAdjustToMaxFromStack:(IMCImageStack *)stack stacks:(NSArray <IMCImageStack *>*)stacks withIndexSetChannels:(NSIndexSet *)indexSet block:(void(^)(void))block;
++(void)applySettingsFromComputation:(IMCComputationOnMask *)computation stacks:(NSArray <IMCComputationOnMask *>*)computations withIndexSetChannels:(NSIndexSet *)indexSet block:(void(^)(void))block;
++(void)applyColors:(IMCImageStack *)stack stacks:(NSArray <IMCFileWrapper *>*)stacks withIndexSetChannels:(NSIndexSet *)indexSet block:(void(^)(void))block;
 
 //On computations
-+(BOOL)operationOnComputations:(NSArray <IMCComputationOnMask *>*)comps operation:(kOperation)operation withIndexSetChannels:(NSIndexSet *)indexSet toIndex:(NSInteger)index block:(void(^)())block;
++(BOOL)operationOnComputations:(NSArray <IMCComputationOnMask *>*)comps operation:(kOperation)operation withIndexSetChannels:(NSIndexSet *)indexSet toIndex:(NSInteger)index block:(void(^)(void))block;
 
 //File saving
-+(void)savefiles:(NSArray <IMCFileWrapper *>*)files block:(void(^)())block;
-+(void)converttoTIFFFiles:(NSArray <IMCFileWrapper *>*)files block:(void(^)())block;
++(void)savefiles:(NSArray <IMCFileWrapper *>*)files block:(void(^)(void))block;
++(void)converttoTIFFFiles:(NSArray <IMCFileWrapper *>*)files block:(void(^)(void))block;
 
 //Change Channels
-+(void)changeChannelsToStacks:(NSArray *)stacks withFile:(NSURL *)url block:(void(^)())block;
++(void)changeChannelsToStacks:(NSArray *)stacks withFile:(NSURL *)url block:(void(^)(void))block;
 
 @end

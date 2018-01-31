@@ -912,7 +912,7 @@ typedef struct
                 
                 if(mask[i] == true && x >= leftX && x <= rightX && y >= upperY && y <= lowerY){
                     
-                    red = .0f, green = .0f, blue = .0f;
+                    red = .0f; green = .0f; blue = .0f;
                     
                     for (chann = 0; chann < indexChannelsCount; chann++) {
                         

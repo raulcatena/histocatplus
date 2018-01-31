@@ -15,6 +15,6 @@
 
 +(void)saveCellProfilerPipelineWithImageWithWf:(NSString *)wf hash:(NSString *)hash minCellDiam:(NSString *)minCellDiam maxCellDiam:(NSString *)maxCellDiam lowThreshold:(NSString *)lowerThreshold upperThreshold:(NSString *)upperThreshold showIntermediate:(BOOL)showInter foreGround:(BOOL)foreground;
 
-+(void)runCPSegmentationForeGround:(BOOL)foreground details:(BOOL)details onStack:(IMCImageStack *)stack withHash:(NSString *)hash withBlock:(void(^)())block inOwnThread:(BOOL)ownThread;
++(void)runCPSegmentationForeGround:(BOOL)foreground details:(BOOL)details onStack:(IMCImageStack *)stack withHash:(NSString *)hash withBlock:(void(^)(void))block inOwnThread:(BOOL)ownThread;
 
 @end

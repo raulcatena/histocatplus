@@ -69,12 +69,12 @@
     
 }
 
--(void)loadLayerDataWithBlock:(void (^)())block{
+-(void)loadLayerDataWithBlock:(void (^)(void))block{
     if(![self canLoad])return;
     self.isLoaded = YES;
     [self.parent loadLayerDataWithBlock:block];
 }
--(void)unLoadLayerDataWithBlock:(void (^)())block{
+-(void)unLoadLayerDataWithBlock:(void (^)(void))block{
     self.isLoaded = NO;
     for(IMCImageStack *child in self.children)
         [child unLoadLayerDataWithBlock:nil];

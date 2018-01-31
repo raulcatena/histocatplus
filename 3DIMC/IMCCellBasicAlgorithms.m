@@ -330,7 +330,7 @@
     [self updateGraph:nil];
 }
 
--(void)saveOp:(IMCTsneOperation *)op block:(void(^)())block{
+-(void)saveOp:(IMCTsneOperation *)op block:(void(^)(void))block{
     NSAlert *alert = [[NSAlert alloc]init];
     [alert addButtonWithTitle:@"OK"];
     
@@ -646,11 +646,15 @@
                 while (op.iterationCursor == cycle);
                 dispatch_async(dispatch_get_main_queue(), ^{[self updateGraph:nil];});
                 cycle = op.iterationCursor;
-                UInt8 *buff = [self.plot bufferForView];//NULL
-                [videoRecorder addBuffer:buff];
-                free(buff);
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    UInt8 *buff = [self.plot bufferForView];//NULL
+                    [videoRecorder addBuffer:buff];
+                    free(buff);
+                });
             }
-            [videoRecorder finishVideo];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self stopDR];
+                [videoRecorder finishVideo];});
         });
     }
 }

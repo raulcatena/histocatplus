@@ -57,7 +57,7 @@
     }else
         [self loadBufferAction];
 }
--(void)loadLayerDataWithBlock:(void (^)())block{
+-(void)loadLayerDataWithBlock:(void (^)(void))block{
     if(![self canLoad])return;
     [self loadBuffer];
     NSWindowController *cont;

@@ -750,7 +750,7 @@
         NSLog(@"Remove returned error: %@", [error localizedDescription]);
     [self.coordinator remove3DNode:self];
 }
--(void)loadLayerDataWithBlock:(void (^)())block{
+-(void)loadLayerDataWithBlock:(void (^)(void))block{
     
     if(![self canLoad])return;
     
@@ -810,7 +810,7 @@
     }
     self.isLoaded = YES;
 }
--(void)unLoadLayerDataWithBlock:(void (^)())block{
+-(void)unLoadLayerDataWithBlock:(void (^)(void))block{
     [self releaseMask];
     [self clearComputedData];
     [super unLoadLayerDataWithBlock:block];
@@ -1072,11 +1072,13 @@
             //Find until where deepest voxel falls
             NSInteger lastTouchedPlane = [self maxDepthInPlane:p width:self.width planeLength:planeLength totalMask:fullMask];
             
+            //In case stuff has been removed, avoid going off bounds
+            while(lastTouchedPlane >= self.threeDHandler.indexesArranged.count)
+                lastTouchedPlane--;
+            
             //Define range to have open only relevant slices
             NSInteger begg = [self.threeDHandler internalSliceIndexForExternal:p];
             end = MAX(end, [self.threeDHandler internalSliceIndexForExternal:lastTouchedPlane]);
-            
-            NSLog(@"Layer %li goes to %li internals %li | %li", p, lastTouchedPlane, begg, end);
             
             //Open relevant slices and form auxiliary buffer
             for (NSInteger l = begg; l < end + 1; l++){
@@ -1228,6 +1230,8 @@
         if(self.threeDHandler.allBuffer && self.computedData){
             UInt8 *** allBuff = self.threeDHandler.allBuffer;
             NSInteger slices = self.slices;
+            if(slices >= self.threeDHandler.indexesArranged.count)
+                slices = self.threeDHandler.indexesArranged.count - 1;
             
             
             NSMutableArray *indexesO = @[].mutableCopy;
@@ -1273,6 +1277,7 @@
             for (NSInteger i = 0; i < fullMaskLength; i++) {
                 if (_maskIds[i] > 0){
                     NSInteger plane = i / planeLength;
+                    if(plane >= slices)continue;
                     NSInteger pix = i % planeLength;
                     NSInteger cell = _maskIds[i] - 1;
                     

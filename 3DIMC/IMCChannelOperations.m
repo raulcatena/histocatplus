@@ -15,7 +15,7 @@
 
 @implementation IMCChannelOperations
 
-+(void)savefiles:(NSArray <IMCFileWrapper *>*)files block:(void(^)())block{
++(void)savefiles:(NSArray <IMCFileWrapper *>*)files block:(void(^)(void))block{
     dispatch_queue_t aQ = dispatch_queue_create([IMCUtils randomStringOfLength:5].UTF8String, NULL);
     dispatch_async(aQ, ^{
         for (IMCFileWrapper *file in files){
@@ -26,7 +26,7 @@
     });
 }
 
-+(void)changeChannelsToStacks:(NSArray *)stacks withFile:(NSURL *)url block:(void(^)())block{
++(void)changeChannelsToStacks:(NSArray *)stacks withFile:(NSURL *)url block:(void(^)(void))block{
     dispatch_queue_t aQ = dispatch_queue_create([IMCUtils randomStringOfLength:5].UTF8String, NULL);
     dispatch_async(aQ, ^{
         NSString *str = [[NSString alloc]initWithData:[NSData dataWithContentsOfFile:url.path] encoding:NSUTF8StringEncoding];
@@ -43,7 +43,7 @@
     });
 }
 
-+(BOOL)operationOnImages:(NSArray <IMCImageStack *>*)images operation:(kOperation)operation withIndexSetChannels:(NSIndexSet *)indexSet toIndex:(NSInteger)index block:(void(^)())block{
++(BOOL)operationOnImages:(NSArray <IMCImageStack *>*)images operation:(kOperation)operation withIndexSetChannels:(NSIndexSet *)indexSet toIndex:(NSInteger)index block:(void(^)(void))block{
     if(images.count == 0)
         return NO;
     NSInteger sure = [General runAlertModalAreYouSure];
@@ -93,7 +93,7 @@
     return YES;
 }
 
-+(BOOL)operationOnComputations:(NSArray <IMCComputationOnMask *>*)comps operation:(kOperation)operation withIndexSetChannels:(NSIndexSet *)indexSet toIndex:(NSInteger)index block:(void(^)())block{
++(BOOL)operationOnComputations:(NSArray <IMCComputationOnMask *>*)comps operation:(kOperation)operation withIndexSetChannels:(NSIndexSet *)indexSet toIndex:(NSInteger)index block:(void(^)(void))block{
     if(comps.count == 0)
         return NO;
     
@@ -140,7 +140,7 @@
     return YES;
 }
 
-+(void)applySettingsFromStack:(IMCImageStack *)stack stacks:(NSArray <IMCFileWrapper *>*)stacks withIndexSetChannels:(NSIndexSet *)indexSet block:(void(^)())block{
++(void)applySettingsFromStack:(IMCImageStack *)stack stacks:(NSArray <IMCFileWrapper *>*)stacks withIndexSetChannels:(NSIndexSet *)indexSet block:(void(^)(void))block{
     
     NSInteger sure = [General runAlertModalAreYouSure];if (sure == NSAlertSecondButtonReturn)return;
     
@@ -160,7 +160,7 @@
     });
 }
 
-+(void)applySettingsFromComputation:(IMCComputationOnMask *)computation stacks:(NSArray <IMCComputationOnMask *>*)computations withIndexSetChannels:(NSIndexSet *)indexSet block:(void(^)())block{
++(void)applySettingsFromComputation:(IMCComputationOnMask *)computation stacks:(NSArray <IMCComputationOnMask *>*)computations withIndexSetChannels:(NSIndexSet *)indexSet block:(void(^)(void))block{
     
     NSInteger sure = [General runAlertModalAreYouSure];if (sure == NSAlertSecondButtonReturn)return;
     
@@ -180,7 +180,7 @@
     });
 }
 
-+(void)applyColors:(IMCImageStack *)stack stacks:(NSArray <IMCFileWrapper *>*)stacks withIndexSetChannels:(NSIndexSet *)indexSet block:(void(^)())block{
++(void)applyColors:(IMCImageStack *)stack stacks:(NSArray <IMCFileWrapper *>*)stacks withIndexSetChannels:(NSIndexSet *)indexSet block:(void(^)(void))block{
     
     NSInteger sure = [General runAlertModalAreYouSure];if (sure == NSAlertSecondButtonReturn)return;
     
@@ -200,7 +200,7 @@
     });
 }
 
-+(void)applySettingsAdjustToMaxFromStack:(IMCImageStack *)stack stacks:(NSArray <IMCImageStack *>*)stacks withIndexSetChannels:(NSIndexSet *)indexSet block:(void(^)())block{
++(void)applySettingsAdjustToMaxFromStack:(IMCImageStack *)stack stacks:(NSArray <IMCImageStack *>*)stacks withIndexSetChannels:(NSIndexSet *)indexSet block:(void(^)(void))block{
     
     NSInteger sure = [General runAlertModalAreYouSure];if (sure == NSAlertSecondButtonReturn)return;
     
@@ -239,7 +239,7 @@
 //    }
 }
 
-+(void)converttoTIFFFiles:(NSArray <IMCFileWrapper *>*)files block:(void(^)())block{
++(void)converttoTIFFFiles:(NSArray <IMCFileWrapper *>*)files block:(void(^)(void))block{
     dispatch_queue_t aQ = dispatch_queue_create([IMCUtils randomStringOfLength:5].UTF8String, NULL);
     dispatch_async(aQ, ^{
         for (IMCFileWrapper *wrapper in files) {

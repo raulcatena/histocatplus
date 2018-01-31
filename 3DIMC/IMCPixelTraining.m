@@ -58,7 +58,7 @@
     return self;
 }
 
--(void)loadLayerDataWithBlock:(void (^)())block{
+-(void)loadLayerDataWithBlock:(void (^)(void))block{
     if(![self canLoad])return;
     
     [self loadBuffer];
@@ -94,7 +94,7 @@
     }
 }
 
--(void)unLoadLayerDataWithBlock:(void (^)())block{
+-(void)unLoadLayerDataWithBlock:(void (^)(void))block{
     if(_trainingBuffer){
         free(_trainingBuffer);
         _trainingBuffer = NULL;

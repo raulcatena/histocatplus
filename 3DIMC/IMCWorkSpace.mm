@@ -1271,6 +1271,7 @@
             float * summary = [self.inScope3DMask summaryOfAdjacencyMatrixUsingCategoricalVariable:chosen forAdjacencyMatrix:adjMatrix];
             float * expected = [self.inScope3DMask expectedMatrixWithSummary:summary forAdjacencyMatrix:adjMatrix categoricalVariable:chosen];
             float * observed = [self.inScope3DMask observedMatrixWithSummary:summary forAdjacencyMatrix:adjMatrix categoricalVariable:chosen];
+            printf("%p %p", expected, observed);
             //[self.inScope3DMask interactionAnalysis:chosen];
         }
     }

@@ -153,7 +153,7 @@
     [self.jsonDictionary setValue:channelSettings forKey:JSON_DICT_IMAGE_CHANNEL_SETTINGS];
 }
 
--(void)loadLayerDataWithBlock:(void (^)())block{
+-(void)loadLayerDataWithBlock:(void (^)(void))block{
     
     if(![self canLoad])return;
     
@@ -167,7 +167,7 @@
         return;
     [super loadLayerDataWithBlock:block];
 }
--(void)unLoadLayerDataWithBlock:(void (^)())block{
+-(void)unLoadLayerDataWithBlock:(void (^)(void))block{
     [self release_computedData];
     [self clearCacheBuffers];
     [super unLoadLayerDataWithBlock:block];

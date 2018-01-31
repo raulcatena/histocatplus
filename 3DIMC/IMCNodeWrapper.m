@@ -54,7 +54,7 @@
 -(void)populateSelfWithDictionary{
 
 }
--(void)openIfNecessaryAndPerformBlock:(void(^)())block{
+-(void)openIfNecessaryAndPerformBlock:(void(^)(void))block{
     BOOL wasLoaded = self.isLoaded;
     if(!wasLoaded)
         [self loadLayerDataWithBlock:nil];
@@ -64,7 +64,7 @@
     if(!wasLoaded)
         [self unLoadLayerDataWithBlock:nil];
 }
--(void)loadLayerDataWithBlock:(void(^)())block;{
+-(void)loadLayerDataWithBlock:(void(^)(void))block;{
     if([self isMemberOfClass:[IMCFileWrapper class]])
         for (IMCNodeWrapper *pan in self.children){
             pan.isLoaded = YES;
@@ -88,7 +88,7 @@
         self.loading = YES;
     return canLoadResult;
 }
--(void)unLoadLayerDataWithBlock:(void(^)())block;{
+-(void)unLoadLayerDataWithBlock:(void(^)(void))block;{
     if([self isMemberOfClass:[IMCFileWrapper class]])
         for (IMCNodeWrapper *pan in self.children){
             pan.isLoaded = NO;

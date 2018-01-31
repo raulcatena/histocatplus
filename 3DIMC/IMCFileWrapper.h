@@ -25,8 +25,8 @@
 -(void)softLoad;
 
 -(void)checkAndCreateWorkingFolder;
--(void)loadFileWithBlock:(void(^)())block;
--(void)loadOrUnloadFileWithBlock:(void(^)())block;
+-(void)loadFileWithBlock:(void(^)(void))block;
+-(void)loadOrUnloadFileWithBlock:(void(^)(void))block;
 -(NSArray *)allStacks;
 //Specific for BIMC
 -(void)saveBIMCAtPath:(NSString *)path;

@@ -38,7 +38,7 @@
     [temp writeToFile:path atomically:YES encoding:NSUTF8StringEncoding error:NULL];
 }
 
-+(void)runCPSegmentationForeGround:(BOOL)foreground details:(BOOL)details onStack:(IMCImageStack *)stack withHash:(NSString *)hash withBlock:(void(^)())block inOwnThread:(BOOL)ownThread{
++(void)runCPSegmentationForeGround:(BOOL)foreground details:(BOOL)details onStack:(IMCImageStack *)stack withHash:(NSString *)hash withBlock:(void(^)(void))block inOwnThread:(BOOL)ownThread{
     NSString *pathCP = [[NSUserDefaults standardUserDefaults]valueForKey:PREF_LOCATION_DRIVE_CP];//[[NSBundle mainBundle]pathForResource:@"CellProfiler" ofType:@"app"];
     if(!pathCP || ![pathCP containsString:@"CellProfiler"]){
         dispatch_async(dispatch_get_main_queue(), ^{

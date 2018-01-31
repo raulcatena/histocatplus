@@ -219,14 +219,13 @@
             chosen = compo;
     NSInteger width = chosen.channels.count + 1;
     
-    NSMutableArray *channs  = @[].mutableCopy;//= @[@"Acquisiton"].mutableCopy;
+    NSMutableArray *channs = @[@"Acquisiton", @"cell_id"].mutableCopy;
     NSArray *keys = loader.metadata[JSON_METADATA_KEYS];
     NSMutableArray *selectedKeys = @[].mutableCopy;
     [indexSetMetadata enumerateIndexesUsingBlock:^(NSUInteger index, BOOL *stop){
         [selectedKeys addObject:keys[index]];
     }];
     [channs addObjectsFromArray:selectedKeys];
-    
     [indexSet enumerateIndexesUsingBlock:^(NSUInteger index, BOOL *stop){
         [channs addObject:chosen.channels[index]];
     }];
@@ -234,47 +233,32 @@
     NSMutableString *titles = [NSMutableString stringWithFormat:@"%@\n",[channs componentsJoinedByString:@"\t"]];
     
     for (IMCComputationOnMask *compo in computations){
-        
-        BOOL wasLoaded = compo.isLoaded;
-        if(!wasLoaded)
-            [compo loadLayerDataWithBlock:nil];
-        while(!compo.isLoaded);
-        
-        NSInteger cells;
-        if([compo isMemberOfClass:[IMCComputationOnMask class]]){
-            cells = compo.mask.numberOfSegments;
-        }else{
-            cells = [(IMC3DMask *)compo segmentedUnits];
-        }
-        NSInteger channels = compo.channels.count;
-        
-        NSDictionary *metadataDict;
-        if([compo isMemberOfClass:[IMCComputationOnMask class]]){
-            metadataDict = [loader metadataForImageStack:compo.mask.imageStack];
-        }
-        
-        for (NSInteger i = 0; i <cells; i++) {
-            if(metadataDict){
-                [titles appendFormat:@"%@\t", compo.mask.imageStack.itemName];
-            }else{
+        [compo openIfNecessaryAndPerformBlock:^{
+            BOOL is3D = ![compo isMemberOfClass:[IMCComputationOnMask class]];
+            
+            NSInteger cells = is3D ? [(IMC3DMask *)compo segmentedUnits] : compo.mask.numberOfSegments;
+            NSInteger channels = compo.channels.count;
+            NSDictionary *metadataDict = is3D? @{} : [loader metadataForImageStack:compo.mask.imageStack];
+            
+            for (NSInteger i = 0; i <cells; i++) {
+                if(!is3D) [titles appendFormat:@"%@\t%li\t", compo.mask.imageStack.itemName, i + 1];
+                else [titles appendFormat:@"%@\t%li\t", compo.itemName, i + 1];
+                
+                for (NSString *key in selectedKeys)
+                    [titles appendString:[NSString stringWithFormat:@"%@\t", metadataDict[key]?metadataDict[key]:@""]];
+                
+                [indexSet enumerateIndexesUsingBlock:^(NSUInteger index, BOOL *stop){
+                    [titles appendString:[NSString stringWithFormat:@"%.6f\t", compo.computedData[index][i]]];
+                }];
+                
+                for (NSInteger j = 0; j < width - channels - 1; j++)//Fill if it has less channels than chosen
                     [titles appendString:@"\t"];
+                
+                [titles deleteCharactersInRange:NSMakeRange([titles length]-2, 2)];
+                [titles appendString:@"\n"];
             }
-            for (NSString *key in selectedKeys) {
-                [titles appendString:[NSString stringWithFormat:@"%@\t", metadataDict[key]?metadataDict[key]:@""]];
-            }
             
-            [indexSet enumerateIndexesUsingBlock:^(NSUInteger index, BOOL *stop){
-                [titles appendString:[NSString stringWithFormat:@"%.6f\t", compo.computedData[index][i]]];
-            }];
-            
-            for (NSInteger j = 0; j < width - channels - 1; j++)//Fill if it has less channels than chosen
-                [titles appendString:@"\t"];
-            
-            [titles deleteCharactersInRange:NSMakeRange([titles length]-2, 2)];
-            [titles appendString:@"\n"];
-        }
-        if(!wasLoaded)
-            [compo unLoadLayerDataWithBlock:nil];
+        }];
     }
     [titles deleteCharactersInRange:NSMakeRange([titles length]-2, 2)];
     

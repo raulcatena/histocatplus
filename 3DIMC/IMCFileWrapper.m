@@ -32,7 +32,7 @@
 
 #pragma mark paths
 
--(void)loadFileWithBlock:(void(^)())block{
+-(void)loadFileWithBlock:(void(^)(void))block{
     if(![self isLoaded]){
         dispatch_queue_t queue = dispatch_queue_create([IMCUtils randomStringOfLength:5].UTF8String, NULL);
         dispatch_async(queue, ^{
@@ -40,7 +40,7 @@
         });
     }
 }
--(void)loadOrUnloadFileWithBlock:(void(^)())block{
+-(void)loadOrUnloadFileWithBlock:(void(^)(void))block{
     if(![self isLoaded]){
         dispatch_queue_t queue = dispatch_queue_create([IMCUtils randomStringOfLength:5].UTF8String, NULL);
         dispatch_async(queue, ^{
@@ -199,7 +199,7 @@
     [self.jsonDictionary setValue:[NSNumber numberWithBool:YES] forKey:JSON_DICT_FILE_IS_SOFT_LOADED];
 }
 
--(void)loadLayerDataWithBlock:(void (^)())block{
+-(void)loadLayerDataWithBlock:(void (^)(void))block{
     if(![self canLoad])return;
     
     dispatch_queue_t aQ = dispatch_queue_create([IMCUtils randomStringOfLength:5].UTF8String, NULL);
@@ -239,7 +239,7 @@
             [super loadLayerDataWithBlock:block];
     });
 }
--(void)unLoadLayerDataWithBlock:(void (^)())block{
+-(void)unLoadLayerDataWithBlock:(void (^)(void))block{
     self.isLoaded = NO;
     for (IMCPanoramaWrapper *wrap in self.children){
         wrap.isLoaded = NO;
