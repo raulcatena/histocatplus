@@ -4,3 +4,6 @@ Software developed by Raúl Catena in the bodenmiller laboratory to perform IMC 
 ##Dependencies
 OpenCV must be installed in the standard path (/usr/local) to run the project with XCode. No dependencies to use the binary it contains copies of the libraries.
 R, with ggplot2 and RColorBrewer packages for the plotting. Let R be installed in the standar directory as /Library/Frameworks/R.framework open the R console and execute install.packages("ggplot2"); install.packages("RColorBrewer");
+
+##References
+Raul Catena et al. Journal of Pathology, February 2018.
