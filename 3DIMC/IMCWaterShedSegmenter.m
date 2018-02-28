@@ -10,6 +10,8 @@
 #import "IMCImageStack.h"
 #import "IMCPixelClassification.h"
 #import "IMCMasks.h"
+//#import "NSImage+OpenCV.h"
+//#import "IMCImageGenerator.h"
 
 @interface IMCWaterShedSegmenter(){
     int * maskIds;
@@ -267,7 +269,7 @@ int gaussianMatrix [9][3] = {
 
 +(void)gaussianFilter2D_l3:(NSInteger)width allLength:(NSInteger)planePixels buff:(UInt8 *)buff receiver:(UInt8 *)newBuff{
     
-    UInt8 * a = calloc(planePixels, sizeof(UInt8));
+    UInt8 * a = (UInt8 *)calloc(planePixels, sizeof(UInt8));
     for (NSInteger pix = 0; pix < planePixels; pix++) {
         float sum = 0;
         NSInteger blurCounter = 0;
@@ -296,7 +298,7 @@ int gaussianMatrix [9][3] = {
     
     NSInteger allLength = width * height;
     
-    int * maskIds = calloc(allLength, sizeof(int));
+    int * maskIds = (int *)calloc(allLength, sizeof(int));
     
     [stack openIfNecessaryAndPerformBlock:^{
         UInt8 ** chanImage = [stack preparePassBuffers:inOrderIndexes];
@@ -305,12 +307,21 @@ int gaussianMatrix [9][3] = {
             chanImageS= [stack preparePassBuffers:@[@(schannel)]][0];
         
         if(chanImage){
-            UInt8 ** copies = calloc(inOrderIndexes.count, sizeof(UInt8 *));
+            UInt8 ** copies = (UInt8 **)calloc(inOrderIndexes.count, sizeof(UInt8 *));
             for (int a = 0; a < inOrderIndexes.count; a++) {
-                copies[a] = calloc(allLength, sizeof(UInt8));
+                copies[a] = (UInt8 *)calloc(allLength, sizeof(UInt8));
                 [self gaussianFilter2D_l3:width allLength:allLength buff:chanImage[a] receiver:copies[a]];
             }
-            UInt8 * copyS = calloc(allLength, sizeof(UInt8));
+            
+//            for (NSNumber * idx in inOrderIndexes) {
+//                NSInteger index = [inOrderIndexes indexOfObject:idx];
+//                NSImage *im = [IMCImageGenerator imageForImageStacks:@[stack].mutableCopy indexes:@[@(index)] withColoringType:0 customColors:nil minNumberOfColors:0 width:stack.width height:stack.height withTransforms:NO blend:kCGBlendModeScreen andMasks:nil andComputations:nil maskOption:MASK_FULL maskType:MASK_ALL_CELL maskSingleColor:nil isAlignmentPair:NO brightField:NO];
+//                UInt8 * data = (UInt8 *)[im obtainCentroidpixelsData];
+//                copies[index] = (UInt8 *)malloc(allLength * sizeof(UInt8));
+//                for (NSInteger l = 0; l < allLength; l++)
+//                    copies[index][l] = data[l];
+//            }
+            UInt8 * copyS = (UInt8 *)calloc(allLength, sizeof(UInt8));
             
             if(chanImageS)
                 [self gaussianFilter2D_l3:width allLength:allLength buff:chanImageS receiver:copyS];
@@ -379,13 +390,13 @@ int gaussianMatrix [9][3] = {
 }
 
 +(void)expand:(int)expansion length:(NSInteger)allLength width:(NSInteger)width mask:(int *)maskIds{
-    
+
     NSInteger height = allLength/width;
     int * original = copyMask(maskIds, (int)width, (int)height);
-    
+
     for (NSInteger i = 0; i < expansion; i++) {
         for (NSInteger j = 0; j < allLength; j++) {
-            
+
             int val = maskIds[j];
             if(val > 0){
                 NSInteger candidates[4] = {j - width,
@@ -403,7 +414,7 @@ int gaussianMatrix [9][3] = {
             if(maskIds[j] < 0)
                 maskIds[j] = -maskIds[j];
     }
-    
+
     for (NSInteger j = 0; j < allLength; j++)
         if(original[j] > 0)
             maskIds[j] = -original[j];

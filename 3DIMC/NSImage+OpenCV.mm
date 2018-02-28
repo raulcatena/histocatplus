@@ -195,6 +195,40 @@ using namespace cv;
     return [NSImage imageWithCVMat:[self matGaussianBlurred:kernelSize]];
 }
 
+#pragma mark Median Blurred
+- (Mat)matMedianBlurred:(unsigned)kernelSize{
+    if(kernelSize % 2 == 0)kernelSize++;
+    Mat matRep = [self CVMat];
+    Mat dst;
+    medianBlur(matRep, dst, kernelSize);
+    return dst;
+}
+- (uchar *)dataMedianBlurred:(unsigned)kernelSize{
+    Mat mat = [self matMedianBlurred:kernelSize];
+    return mat.data;;
+}
+- (NSImage *)medianBlurred:(unsigned)kernelSize{
+    if(kernelSize % 2 == 0)kernelSize++;
+    return [NSImage imageWithCVMat:[self matMedianBlurred:kernelSize]];
+}
+
+#pragma mark Median Blurred
+- (Mat)matBilateralBlurred:(unsigned)kernelSize{
+    if(kernelSize % 2 == 0)kernelSize++;
+    Mat matRep = [self CVMat];
+    Mat dst;
+    bilateralFilter(matRep, dst, kernelSize, kernelSize * 4, kernelSize * 4);
+    return dst;
+}
+- (uchar *)dataBilateralBlurred:(unsigned)kernelSize{
+    Mat mat = [self matBilateralBlurred:kernelSize];
+    return mat.data;;
+}
+- (NSImage *)bilateralBlurred:(unsigned int)kernelSize{
+    if(kernelSize % 2 == 0)kernelSize++;
+    return [NSImage imageWithCVMat:[self matBilateralBlurred:kernelSize]];
+}
+
 #pragma mark Laplacian of Gaussian Blurred
 - (Mat)matLog:(unsigned)kernelSize{
     Mat src, dst;
@@ -370,5 +404,54 @@ Mat orientationMap(const cv::Mat& mag, const cv::Mat& ori, double thresh = 1.0)
 //    
 //    return image;
 //}
+
+-(Mat)obtainCentroidpixelsMat{
+    Mat matRep = [self matGaussianBlurred:3];
+    cv::Mat gray;
+    cv::cvtColor(matRep, gray, cv::COLOR_BGR2GRAY);
+    
+//    std::vector<cv::Vec3f> circles;
+//    cv::HoughCircles(gray, circles, cv::HOUGH_GRADIENT, 2, 7, 150, 2, 2, 8);
+//    std::cout << circles.size() << std::endl;
+    
+    Mat img_or, img_or_ad, img_bw, img_bw_2;
+    adaptiveThreshold(gray, img_or_ad, 255, ADAPTIVE_THRESH_GAUSSIAN_C, THRESH_BINARY, 15, 1);
+    threshold(gray, img_or, 10, 255, THRESH_BINARY);
+    
+    img_or = img_or_ad & img_or;
+    
+    //erode(img_or, img_bw_2, Mat());//Smaller kernels
+    dilate(img_or, img_bw, Mat());
+    erode(img_bw, img_bw, Mat());
+    erode(img_bw, img_bw, Mat());
+    erode(img_bw, img_bw, Mat());
+    img_or /= 2;
+    
+    Mat sum = img_or + img_bw;
+    Mat lt;
+    compare(gray, sum, lt, CMP_LT);
+    sum +=  gray.mul(lt/255);
+    GaussianBlur(sum, sum, cv::Size(9, 9), 1, 1, BORDER_CONSTANT);
+    return sum;
+    
+//    for( size_t i = 0; i < circles.size(); i++ )
+//    {
+//        cv::Vec3i c = circles[i];
+//        cv::Point center = cv::Point(c[0], c[1]);
+//        cv::line(gray, center, center, cv::Scalar(255,255,255));
+//        cv::circle( gray, center, 1, cv::Scalar(255,255,255), 1, cv::LINE_AA);
+//    }
+//    return gray;
+}
+
+-(NSImage *)obtainCentroidpixels{
+    Mat matRep = [self obtainCentroidpixelsMat];
+    return [NSImage imageWithCVMat:matRep];
+}
+
+-(uchar *)obtainCentroidpixelsData{
+    Mat matRep = [self obtainCentroidpixelsMat];
+    return matRep.data;
+}
 
 @end

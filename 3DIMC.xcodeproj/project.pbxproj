@@ -379,6 +379,9 @@
 		0D6720531E3FF3C800C19663 /* IMCTransformDictController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D6720521E3FF3C800C19663 /* IMCTransformDictController.m */; };
 		0D6720551E3FF3E400C19663 /* IMCTransformDictController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0D6720541E3FF3E400C19663 /* IMCTransformDictController.xib */; };
 		0D6F4F2B1E473CC200533127 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 0D6F4F2A1E473CC200533127 /* libz.tbd */; };
+		0D80B5AA2021DF73008CF561 /* IMCCellDataImport.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D80B5A92021DF73008CF561 /* IMCCellDataImport.m */; };
+		0D80B5AB2021DF73008CF561 /* IMCCellDataImport.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D80B5A92021DF73008CF561 /* IMCCellDataImport.m */; };
+		0D80B5AC2021DF73008CF561 /* IMCCellDataImport.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D80B5A92021DF73008CF561 /* IMCCellDataImport.m */; };
 		0D8171251E4229FC0058084C /* IMCImprovedRegistration.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D8171241E4229FC0058084C /* IMCImprovedRegistration.m */; };
 		0D873ECB1E8C06620097937B /* miCAT3D_1024.png in Resources */ = {isa = PBXBuildFile; fileRef = 0D873ECA1E8C06620097937B /* miCAT3D_1024.png */; };
 		0D873ECC1E8C06620097937B /* miCAT3D_1024.png in Resources */ = {isa = PBXBuildFile; fileRef = 0D873ECA1E8C06620097937B /* miCAT3D_1024.png */; };
@@ -984,6 +987,8 @@
 		0D6720521E3FF3C800C19663 /* IMCTransformDictController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IMCTransformDictController.m; sourceTree = "<group>"; };
 		0D6720541E3FF3E400C19663 /* IMCTransformDictController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = IMCTransformDictController.xib; sourceTree = "<group>"; };
 		0D6F4F2A1E473CC200533127 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
+		0D80B5A82021DF73008CF561 /* IMCCellDataImport.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IMCCellDataImport.h; sourceTree = "<group>"; };
+		0D80B5A92021DF73008CF561 /* IMCCellDataImport.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = IMCCellDataImport.m; sourceTree = "<group>"; };
 		0D8171231E4229FC0058084C /* IMCImprovedRegistration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IMCImprovedRegistration.h; sourceTree = "<group>"; };
 		0D8171241E4229FC0058084C /* IMCImprovedRegistration.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IMCImprovedRegistration.m; sourceTree = "<group>"; };
 		0D8171261E422D4B0058084C /* IMCRegistration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IMCRegistration.h; sourceTree = "<group>"; };
@@ -2120,6 +2125,8 @@
 				0D6720451E3C1E2E00C19663 /* NSTiffSplitter.m */,
 				0D6720471E3CA57900C19663 /* IMCFileExporter.h */,
 				0D6720481E3CA57900C19663 /* IMCFileExporter.m */,
+				0D80B5A82021DF73008CF561 /* IMCCellDataImport.h */,
+				0D80B5A92021DF73008CF561 /* IMCCellDataImport.m */,
 				0DA6660C1E6059FB003DD274 /* IMCCellDataExport.h */,
 				0DA6660D1E6059FB003DD274 /* IMCCellDataExport.m */,
 				0DB37D291E33A75E002975E2 /* IMCImageGenerator.h */,
@@ -2755,6 +2762,7 @@
 				0D0D83E61FA12D410044EDC1 /* IMCGeneralPlot.m in Sources */,
 				0DF81F111FBD9801000260F5 /* IMC3DVideoPrograms.m in Sources */,
 				0D00ABE21E64D53400887057 /* XMLDictionary.m in Sources */,
+				0D80B5AB2021DF73008CF561 /* IMCCellDataImport.m in Sources */,
 				0DA2B81E1E70023C00EAA438 /* IMCThresholder.mm in Sources */,
 				0D00ABE31E64D53400887057 /* OpenGLView.m in Sources */,
 				0D00ABE41E64D53400887057 /* NSMutableArray-RowMoving.m in Sources */,
@@ -2896,6 +2904,7 @@
 				0D0D83E71FA12D410044EDC1 /* IMCGeneralPlot.m in Sources */,
 				0DF81F121FBD9801000260F5 /* IMC3DVideoPrograms.m in Sources */,
 				0D9F308A1EF909CF00E1E083 /* IMCThresholder.mm in Sources */,
+				0D80B5AC2021DF73008CF561 /* IMCCellDataImport.m in Sources */,
 				0D9F308B1EF909CF00E1E083 /* OpenGLView.m in Sources */,
 				0D9F308C1EF909CF00E1E083 /* NSMutableArray-RowMoving.m in Sources */,
 				0D9F308D1EF909CF00E1E083 /* NSDataGZipAdditions.m in Sources */,
@@ -3037,6 +3046,7 @@
 				0DB37D321E34B17F002975E2 /* IMC_BIMCLoader.m in Sources */,
 				0DF81F101FBD9801000260F5 /* IMC3DVideoPrograms.m in Sources */,
 				0D0D83D01FA12C670044EDC1 /* IMCTestCPP.cpp in Sources */,
+				0D80B5AA2021DF73008CF561 /* IMCCellDataImport.m in Sources */,
 				0DBB87641FA2200100F468DA /* flock.c in Sources */,
 				0D0D83E51FA12D410044EDC1 /* IMCGeneralPlot.m in Sources */,
 				0DA84DA31E3B53FE00D075C7 /* XMLDictionary.m in Sources */,

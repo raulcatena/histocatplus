@@ -104,7 +104,7 @@ vertex VertexOut vertexShader(
                               unsigned int iid [[ instance_id ]]) {
 
     VertexOut out;
-    
+    out.position[0] = -100.0;
     unsigned int baseIndex = iid * STRIDE_COLOR_ARRAY;
 //    if(colors[baseIndex] == 0.0f)//Precalculated 0 alpha if zero do not process further (optimization)
 //        return out;
@@ -138,6 +138,8 @@ vertex VertexOut vertexShader(
 }
 
 fragment half4 fragmentShader(const VertexOut interpolated [[ stage_in ]]){
+//    if(interpolated.position[0] == -100.0)
+//        discard_fragment();
     return half4(interpolated.color);
 }
 

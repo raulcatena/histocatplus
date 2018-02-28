@@ -19,6 +19,7 @@
 #import "IMCImageGenerator.h"
 #import "NSImage+OpenCV.h"
 #import "IMCRegistration.h"
+#import "IMCRegistrationOCV.h"
 
 
 @interface IMCWorkSpaceRefresher(){
@@ -234,8 +235,14 @@
                                        isAlignmentPair:isAlignment
                                            brightField:(BOOL)self.parent.brightFieldEffect.state];
         
-        if(self.parent.blur.selectedSegment == 1)
+        if(self.parent.blur.indexOfSelectedItem == 1)
             image = [image gaussianBlurred:(unsigned)self.parent.gaussianBlur.integerValue];
+        if(self.parent.blur.indexOfSelectedItem == 2)
+            image = [image medianBlurred:(unsigned)self.parent.gaussianBlur.integerValue];
+//        if(self.parent.blur.indexOfSelectedItem == 3)
+//            image = [image bilateralBlurred:(unsigned)self.parent.gaussianBlur.integerValue];
+        if(self.parent.blur.indexOfSelectedItem == 3)
+            image = [image obtainCentroidpixels];
         
         if(overrideRefresh)
             return;
@@ -648,7 +655,8 @@
                                      isAlignmentPair:NO
                                          brightField:NO];
     
-    //[IMCRegistrationOCV alignTwoImages:im1 imageB:im2];
+    ///[IMCRegistrationOCV alignTwoImages:im1 imageB:im2];
+    ///return;
     
     static NSInteger multiplier = 1;
     NSInteger * i = &multiplier;

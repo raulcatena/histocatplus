@@ -692,31 +692,45 @@
 }
 
 #pragma mark Export Data
+typedef enum {
+    TableExportTypeTSV,
+    TableExportTypeFCS,
+    TableExportTypeBinary
+} TableExportType;
 
--(IBAction)exportCSV:(id)sender{
+-(void)generalExportCellDataTable:(TableExportType)type{
     if(self.whichTableCoordinator.indexOfSelectedItem != 5 && self.whichTableCoordinator.indexOfSelectedItem != 7)
         return;
     
     NSIndexSet *setMetadata = [IMCUtils inputTable:self.dataCoordinator.metadata[JSON_METADATA_KEYS] prompt:@"Do you want to stich metadata? Select which fields to add"];
     
     NSSavePanel * panel = [NSSavePanel savePanel];
-    NSString *proposedName = [NSString stringWithFormat:@"%f.tsv", [NSDate timeIntervalSinceReferenceDate]];
+    NSString *proposedName = [NSString stringWithFormat:@"%f.", [NSDate timeIntervalSinceReferenceDate]];
+    if (type == TableExportTypeTSV) proposedName = [proposedName stringByAppendingString:@"tsv"];
+    if (type == TableExportTypeFCS) proposedName = [proposedName stringByAppendingString:@"fcs"];
+    if (type == TableExportTypeBinary) proposedName = [proposedName stringByAppendingString:@"hcat"];
+    
     [panel setNameFieldStringValue:proposedName];
     [panel beginSheetModalForWindow:self.windowForSheet completionHandler:^(NSInteger result){
-        if (result == NSFileHandlingPanelOKButton)
-            [IMCFileExporter saveCSVWithComputations:self.inScope3DMask ? @[self.inScope3DMask] : self.inScopeComputations atPath:panel.URL.path columnIndexes:self.channels.selectedRowIndexes dataCoordinator:self.dataCoordinator metadataIndexes:setMetadata];
+        if (result == NSFileHandlingPanelOKButton){
+            if (type == TableExportTypeTSV)
+                [IMCFileExporter saveCSVWithComputations:self.inScope3DMask ? @[self.inScope3DMask] : self.inScopeComputations atPath:panel.URL.path columnIndexes:self.channels.selectedRowIndexes dataCoordinator:self.dataCoordinator metadataIndexes:setMetadata];
+            if (type == TableExportTypeFCS)
+                [IMCFileExporter saveCSVWithComputations:self.inScope3DMask ? @[self.inScope3DMask] : self.inScopeComputations atPath:panel.URL.path columnIndexes:self.channels.selectedRowIndexes dataCoordinator:self.dataCoordinator metadataIndexes:setMetadata];
+            if (type == TableExportTypeBinary)
+                [IMCFileExporter saveBinaryWithComputations:self.inScope3DMask ? @[self.inScope3DMask] : self.inScopeComputations atPath:panel.URL.path columnIndexes:self.channels.selectedRowIndexes dataCoordinator:self.dataCoordinator metadataIndexes:setMetadata];
+        }
+        
     }];
 }
+-(IBAction)exportCSV:(id)sender{
+    [self generalExportCellDataTable:TableExportTypeTSV];
+}
 -(IBAction)exportFCS:(id)sender{
-//    if(self.whichTableCoordinator.indexOfSelectedItem != 5)
-//        return;
-//    NSSavePanel * panel = [NSSavePanel savePanel];
-//    NSString *proposedName = [NSString stringWithFormat:@"%f.tsv", [NSDate timeIntervalSinceReferenceDate]];
-//    [panel setNameFieldStringValue:proposedName];
-//    [panel beginSheetModalForWindow:self.windowForSheet completionHandler:^(NSInteger result){
-//        if (result == NSFileHandlingPanelOKButton)
-//            [IMCFileExporter saveCSVWithComputations:self.inScopeComputations];
-//    }];
+    [self generalExportCellDataTable:TableExportTypeFCS];
+}
+-(IBAction)exportBinary:(id)sender{
+    [self generalExportCellDataTable:TableExportTypeBinary];
 }
 
 #pragma mark metadata
@@ -1522,11 +1536,13 @@
 }
 -(void)alignSelected:(NSButton *)sender{
     sender.enabled = NO;
-    dispatch_queue_t aQ = dispatch_queue_create([IMCUtils randomStringOfLength:5].UTF8String, NULL);
-    dispatch_async(aQ, ^{
+//    dispatch_queue_t aQ = dispatch_queue_create([IMCUtils randomStringOfLength:5].UTF8String, NULL);
+//    dispatch_async(aQ, ^{
         [self.workSpaceRefresher alignSelected];
-        sender.enabled = YES;
-    });
+//        dispatch_async(dispatch_get_main_queue(), ^{
+            sender.enabled = YES;
+//        });
+//    });
 }
 #pragma mark 3D reconstruction
 -(BOOL)canRender{
@@ -1915,13 +1931,6 @@
     return array;
 }
 
-#pragma mark blur
-
--(void)changedBlur:(id)sender{
-    [self.blur setLabel:[NSString stringWithFormat:@"%li x %li", self.gaussianBlur.integerValue, self.gaussianBlur.integerValue] forSegment:1];
-    [self refresh];
-}
-
 #pragma mark GGPlot
 
 -(void)refreshGGPlot:(id)sender{
@@ -2187,7 +2196,6 @@
 
 #pragma mark help
 -(void)helpHC:(NSButton *)sender{
-    NSLog(@"Call help for %@", sender.description);
     [Help helpWithIdentifier:sender.identifier];
 }
 

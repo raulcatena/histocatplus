@@ -58,6 +58,10 @@ int compare (const void * a, const void * b)
 {
     return ( *(int*)a - *(int*)b );
 }
+int compareUInt8 (const void * a, const void * b)
+{
+    return ( *(UInt8*)b - *(UInt8*)a );
+}
 
 int median (int values[], int elements)
 {

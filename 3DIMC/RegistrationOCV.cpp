@@ -88,6 +88,30 @@ void init_warp(CvMat W, float wz, float tx, float ty)
     //CV_MAT_ELEM(W, float, 2, 2) = 1;
 }
 
+Mat GetGradient(Mat src_gray)
+{
+    Mat grad_x, grad_y;
+    Mat abs_grad_x, abs_grad_y;
+    
+    int scale = 1;
+    int delta = 0;
+    int ddepth = CV_32FC1; ;
+    
+    // Calculate the x and y gradients using Sobel operator
+    Sobel( src_gray, grad_x, ddepth, 1, 0, 3, scale, delta, BORDER_DEFAULT );
+    convertScaleAbs( grad_x, abs_grad_x );
+    
+    Sobel( src_gray, grad_y, ddepth, 0, 1, 3, scale, delta, BORDER_DEFAULT );
+    convertScaleAbs( grad_y, abs_grad_y );
+    
+    // Combine the two gradients
+    Mat grad;
+    addWeighted( abs_grad_x, 0.5, abs_grad_y, 0.5, 0, grad );
+    
+    return grad;
+    
+}
+
 void registerImages(Mat image1, Mat image2){
     // Convert images to gray scale;
     Mat im1_gray, im2_gray;
@@ -119,8 +143,8 @@ void registerImages(Mat image1, Mat image2){
     
     // Run the ECC algorithm. The results are stored in warp_matrix.
     findTransformECC(
-                     im1_gray,
-                     im2_gray,
+                     GetGradient(im1_gray),
+                     GetGradient(im2_gray),
                      warp_matrix,
                      warp_mode,
                      criteria
@@ -136,18 +160,29 @@ void registerImages(Mat image1, Mat image2){
         // Use warpPerspective for Homography
         warpPerspective (image2, im2_aligned, warp_matrix, image1.size(),cv::INTER_LINEAR + cv::WARP_INVERSE_MAP);
     
+    Mat added;
+    cv::add(image1, im2_aligned, added);
+    Mat addedU;
+    cv::add(image1, image2, addedU);
+    
     cout << warp_matrix;
     
     // Show final result
-    imshow("Image 1", image1);
-    imshow("Image 2", image2);
-    imshow("Image 2 Aligned", im2_aligned);
+//    imshow("Image 1", image1);
+//    imshow("Image 2", image2);
+//    imshow("Image 2 Aligned", im2_aligned);
+    imshow("Added", added);
+    imshow("AddedU", addedU);
+//    waitKey(0);
+//    destroyWindow("Image 1");
+//    waitKey(0);
+//    destroyWindow("Image 2");
+//    waitKey(0);
+//    destroyWindow("Image 2 Aligned");
     waitKey(0);
-    destroyWindow("Image 1");
+    destroyWindow("Added");
     waitKey(0);
-    destroyWindow("Image 2");
-    waitKey(0);
-    destroyWindow("Image 2 Aligned");
+    destroyWindow("AddedU");
 }
 
 

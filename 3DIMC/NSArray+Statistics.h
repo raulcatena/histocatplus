@@ -23,6 +23,7 @@
 - (float)sumOfSquares;
 
 int compare (const void * a, const void * b);
+int compareUInt8 (const void * a, const void * b);
 
 NSInteger milenile (NSInteger *values, int elements, int milenile);
 -(int)medianC;

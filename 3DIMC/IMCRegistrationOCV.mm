@@ -18,9 +18,9 @@ using namespace cv;
     Mat im1 = [imageA CVMat];
     Mat im2 = [imageB CVMat];
     
-    //registerImages(im1, im2);
+    registerImages(im1, im2);
     //testMatImages(im1, im2);
-    surfPlusHomography(im1, im2);
+    //surfPlusHomography(im1, im2);
 }
 
 @end

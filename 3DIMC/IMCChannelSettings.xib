@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="12120" systemVersion="16G29" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" customObjectInstantitationMethod="direct">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="13771" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" customObjectInstantitationMethod="direct">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="12120"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="13771"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -13,7 +13,7 @@
             <rect key="frame" x="0.0" y="0.0" width="222" height="155"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" misplaced="YES" allowsCharacterPickerTouchBarItem="NO" id="TbS-LA-6Fh">
+                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" misplaced="YES" id="TbS-LA-6Fh">
                     <rect key="frame" x="8" y="78" width="30" height="17"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Max" id="xh2-xT-qbo">
@@ -22,7 +22,7 @@
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
                 </textField>
-                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" misplaced="YES" allowsCharacterPickerTouchBarItem="NO" id="zXW-fr-fSh">
+                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" misplaced="YES" id="zXW-fr-fSh">
                     <rect key="frame" x="8" y="53" width="53" height="17"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Offset" id="bxJ-YZ-Rpe">
@@ -39,7 +39,7 @@
                         <action selector="selectedChannel:" target="c22-O7-iKe" id="m7Q-zt-2L5"/>
                     </connections>
                 </slider>
-                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" misplaced="YES" allowsCharacterPickerTouchBarItem="NO" id="dtz-Sg-mhs">
+                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" misplaced="YES" id="dtz-Sg-mhs">
                     <rect key="frame" x="8" y="29" width="33" height="17"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Mult" id="UEu-H3-Mu8">
@@ -59,7 +59,7 @@
                 <slider verticalHuggingPriority="750" misplaced="YES" id="yA3-1U-apk">
                     <rect key="frame" x="37" y="6" width="180" height="20"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                    <sliderCell key="cell" state="on" alignment="left" maxValue="20" tickMarkPosition="above" sliderType="linear" id="MDJ-Lj-Y5k"/>
+                    <sliderCell key="cell" state="on" alignment="left" maxValue="1" tickMarkPosition="above" sliderType="linear" id="MDJ-Lj-Y5k"/>
                     <connections>
                         <action selector="selectedChannel:" target="c22-O7-iKe" id="yEf-52-aDT"/>
                     </connections>
@@ -72,7 +72,7 @@
                         <action selector="selectedChannel:" target="c22-O7-iKe" id="oAv-5J-baG"/>
                     </connections>
                 </slider>
-                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" misplaced="YES" allowsCharacterPickerTouchBarItem="NO" id="tdj-3h-78w">
+                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" misplaced="YES" id="tdj-3h-78w">
                     <rect key="frame" x="8" y="5" width="39" height="17"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="SPF" id="5JP-Ve-ZSJ">

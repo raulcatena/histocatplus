@@ -27,6 +27,7 @@ using namespace cv;
 
 - (Mat)matAveragingBlurred:(unsigned)kernelSize;
 - (Mat)matGaussianBlurred:(unsigned)kernelSize;
+- (Mat)matMedianBlurred:(unsigned)kernelSize;
 - (Mat)matLog:(unsigned)kernelSize;
 - (Mat)matCanny:(unsigned)kernelSize;
 - (Mat)matGaussianGradient:(unsigned)kernelSize;
@@ -39,10 +40,17 @@ using namespace cv;
 - (uchar *)dataGaussianGradientAngle:(unsigned)kernelSize;
 - (NSImage *)averagingBlurred:(unsigned)kernelSize;
 - (NSImage *)gaussianBlurred:(unsigned)kernelSize;
+- (NSImage *)medianBlurred:(unsigned)kernelSize;
+- (NSImage *)bilateralBlurred:(unsigned)kernelSize;
 - (NSImage *)log:(unsigned)kernelSize;
 - (NSImage *)canny:(unsigned)kernelSize;
 - (NSImage *)gaussianGradient:(unsigned)kernelSize;
 - (NSImage *)gaussianGradientAngle:(unsigned)kernelSize;
+
+//Helpers for segmentation
+-(Mat)obtainCentroidpixelsMat;
+-(NSImage *)obtainCentroidpixels;
+-(uchar *)obtainCentroidpixelsData;
 
 @property(nonatomic, readonly) cv::Mat CVMat;
 @property(nonatomic, readonly) cv::Mat CVGrayscaleMat;

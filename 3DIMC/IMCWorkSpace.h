@@ -106,7 +106,7 @@
 @property (nonatomic, weak) IBOutlet NSButton *legendsVertical;
 @property (nonatomic, weak) IBOutlet NSStepper *legendsFontSize;
 @property (nonatomic, weak) IBOutlet NSStepper *gaussianBlur;
-@property (nonatomic, weak) IBOutlet NSSegmentedControl *blur;
+@property (nonatomic, weak) IBOutlet NSPopUpButton *blur;
 @property (nonatomic, weak) IBOutlet NSButton *brightFieldEffect;
 
 
@@ -165,8 +165,7 @@
 
 //TableEventstab
 @property (nonatomic, weak) IBOutlet NSTableView *eventsTable;
-@property (nonatomic, weak) IBOutlet NSButton *exportCSVButton;
-@property (nonatomic, weak) IBOutlet NSButton *exportFCSButton;
+@property (nonatomic, weak) IBOutlet NSView *exportButtons;
 
 //Compensation button
 @property (nonatomic, weak) IBOutlet NSButton *compensationSwitch;
@@ -228,8 +227,6 @@
 -(IBAction)thresholdMaskBatch:(id)sender;
 //Manual Mask
 -(IBAction)manualMask:(id)sender;
-//Gaussian Blur
--(IBAction)changedBlur:(id)sender;
 //Plot
 -(IBAction)refreshGGPlot:(id)sender;
 -(IBAction)showRMiniConsole:(id)sender;
@@ -241,6 +238,7 @@
 //Export events
 -(IBAction)exportCSV:(id)sender;
 -(IBAction)exportFCS:(id)sender;
+-(IBAction)exportBinary:(id)sender;
 //Metadata table
 -(IBAction)addMetadataLabel:(id)sender;
 -(IBAction)removeMetadataLabel:(id)sender;

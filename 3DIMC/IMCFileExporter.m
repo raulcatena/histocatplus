@@ -19,6 +19,8 @@
 #import "NSImage+Utilities.h"
 #import "IMCLoader.h"
 
+#import "IMCCellDataImport.h"
+
 @implementation IMCFileExporter
 
 #pragma mark save TIFFs
@@ -213,11 +215,12 @@
 }
 
 +(BOOL)saveCSVWithComputations:(NSArray<IMCComputationOnMask *>*)computations atPath:(NSString *)path columnIndexes:(NSIndexSet *)indexSet dataCoordinator:(IMCLoader *)loader metadataIndexes:(NSIndexSet *)indexSetMetadata{
+    
     IMCComputationOnMask * chosen = computations.firstObject;
     for (IMCComputationOnMask *compo in computations)
         if(compo.channels.count > chosen.channels.count)
             chosen = compo;
-    NSInteger width = chosen.channels.count + 1;
+    NSInteger width = chosen.channels.count + 2;
     
     NSMutableArray *channs = @[@"Acquisiton", @"cell_id"].mutableCopy;
     NSArray *keys = loader.metadata[JSON_METADATA_KEYS];
@@ -241,8 +244,7 @@
             NSDictionary *metadataDict = is3D? @{} : [loader metadataForImageStack:compo.mask.imageStack];
             
             for (NSInteger i = 0; i <cells; i++) {
-                if(!is3D) [titles appendFormat:@"%@\t%li\t", compo.mask.imageStack.itemName, i + 1];
-                else [titles appendFormat:@"%@\t%li\t", compo.itemName, i + 1];
+                [titles appendFormat:@"%@\t%li\t", is3D ? compo.itemName : compo.mask.imageStack.itemName, i + 1];
                 
                 for (NSString *key in selectedKeys)
                     [titles appendString:[NSString stringWithFormat:@"%@\t", metadataDict[key]?metadataDict[key]:@""]];
@@ -253,11 +255,9 @@
                 
                 for (NSInteger j = 0; j < width - channels - 1; j++)//Fill if it has less channels than chosen
                     [titles appendString:@"\t"];
-                
                 [titles deleteCharactersInRange:NSMakeRange([titles length]-2, 2)];
                 [titles appendString:@"\n"];
             }
-            
         }];
     }
     [titles deleteCharactersInRange:NSMakeRange([titles length]-2, 2)];
@@ -265,6 +265,63 @@
     NSError *error;
     [titles writeToFile:path atomically:YES encoding:NSUTF8StringEncoding error:&error];
     return !(error);
+}
+
+
+
++(BOOL)saveBinaryWithComputations:(NSArray<IMCComputationOnMask *>*)computations atPath:(NSString *)path columnIndexes:(NSIndexSet *)indexSet dataCoordinator:(IMCLoader *)loader metadataIndexes:(NSIndexSet *)indexSetMetadata{
+    IMCComputationOnMask * chosen = computations.firstObject;
+    for (IMCComputationOnMask *compo in computations)
+        if(compo.channels.count > chosen.channels.count)
+            chosen = compo;
+    NSMutableArray *channs = @[@"Acquisition", @"cell_id"].mutableCopy;
+    [indexSet enumerateIndexesUsingBlock:^(NSUInteger index, BOOL *stop){
+        [channs addObject:chosen.channels[index]];
+    }];
+    NSMutableString *titles = [NSMutableString stringWithFormat:@"%@\n",[channs componentsJoinedByString:@"\t"]];
+    
+    
+    //Calculate total cells
+    __block float totalCells = 0;
+    for (IMCComputationOnMask *compo in computations){
+        [compo openIfNecessaryAndPerformBlock:^{
+            BOOL is3D = ![compo isMemberOfClass:[IMCComputationOnMask class]];
+            totalCells += is3D ? (float)[(IMC3DMask *)compo segmentedUnits] : (float)compo.mask.numberOfSegments;
+        }];
+    }
+    
+    NSMutableData *data = [NSMutableData data];
+    [data appendBytes:&totalCells length:sizeof(float)];
+    float channCount = (float)channs.count;
+    [data appendBytes:&channCount length:sizeof(float)];
+    float offset = (channCount * totalCells + 3) * sizeof(float);
+    [data appendBytes:&offset length:sizeof(float)];
+    
+    for (IMCComputationOnMask *compo in computations){
+        [compo openIfNecessaryAndPerformBlock:^{
+            BOOL is3D = ![compo isMemberOfClass:[IMCComputationOnMask class]];
+            
+            NSInteger cells = is3D ? [(IMC3DMask *)compo segmentedUnits] : compo.mask.numberOfSegments;
+            
+            //First add the acqusition Id
+            float hash = (float)compo.itemName.hash;
+            for (NSInteger i = 0; i < cells; i++)
+                [data appendBytes:&hash length:sizeof(float)];
+            
+            //Second add the cell Id
+            for (float i = 1; i < cells + 1; i++)
+                [data appendBytes:&i length:sizeof(float)];
+            
+            [indexSet enumerateIndexesUsingBlock:^(NSUInteger index, BOOL *stop){
+                [data appendBytes:compo.computedData[index] length:(sizeof(float) * cells)];
+            }];
+        }];
+    }
+    [data appendData:[titles dataUsingEncoding:NSUTF8StringEncoding]];
+    BOOL success = [data writeToFile:path atomically:YES];
+    if(success)
+        [[[IMCCellDataImport alloc]init]loadDataFromFile:path];
+    return success;
 }
 +(BOOL)saveTSVWithMetadata:(NSArray<IMCImageStack *>*)stacks atPath:(NSString *)path withCoordinator:(IMCLoader *)loader{
     

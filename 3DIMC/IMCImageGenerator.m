@@ -12,6 +12,7 @@
 #import "NSString+MD5.h"
 #import "IMCPixelClassification.h"
 #import "IMCComputationOnMask.h"
+#import "NSArray+Statistics.h"
 
 @implementation IMCImageGenerator
 
@@ -27,7 +28,38 @@
 
 #pragma mark Buffer Filters
 
+void percentileFilter(UInt8 * pixelData, NSInteger width, NSInteger height, float factor, NSInteger layers){
+    if(factor == .0f || factor == 1.0f)
+        return;
+    NSInteger total = width * height;
+    NSInteger kernetSize = (layers * 2 + 1) * (layers * 2 + 1);
+    UInt8 collected[kernetSize];
+    UInt8 *tempBuff = malloc(total * sizeof(UInt8));
+    for (int i = 0; i < total; i++) {
+        NSInteger sum = 0;
+        NSInteger otherIndex = -1;
+        for (NSInteger j = -layers; j<layers + 1; j++) {//Going up-down
+            for (NSInteger k = -layers; k<layers + 1; k++) {//Going left-right
+                otherIndex = i + j * width + k;
+                if (otherIndex >=0 && otherIndex < total){
+                    collected[sum] = pixelData[otherIndex];
+                    sum ++;
+                }
+            }
+        }
+        qsort(collected, sum, sizeof(UInt8), compareUInt8);
+        tempBuff[i] = collected[(int)round(sum * factor)];
+    }
+    for (int i = 0; i < total; i++)
+        pixelData[i] = tempBuff[i];
+    free(tempBuff);
+}
+
 void applyFilterToPixelData(UInt8 * pixelData, NSInteger width, NSInteger height, NSInteger mode, float factor, NSInteger layers, NSInteger channels){
+    //Override for now with this new one;
+    percentileFilter(pixelData, width, height, factor, 3);
+    return;
+    
     NSInteger total = width * height;
     NSInteger totalWithChannels = total * channels;
     for (int i = 0; i < totalWithChannels; i+=channels) {

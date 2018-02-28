@@ -1496,7 +1496,8 @@
 
 
 -(void)distanceToOtherMaskEuclidean:(IMC3DMask *)otherMask{
-    if(otherMask.width == self.width && otherMask.height == self.height && otherMask.slices == self.slices){
+    NSLog(@"%li %li %li %li %li", otherMask.width, self.width, otherMask.height, otherMask.slices, self.slices);
+    if(otherMask.width == self.width && otherMask.height == self.height && otherMask.slices >= self.slices){
         [otherMask openIfNecessaryAndPerformBlock:^{
             NSInteger max = self.segmentedUnits;
             
@@ -1554,6 +1555,7 @@
             }
             
             NSLog(@"Edges %li", edges.count);
+            int l = 0;
             for (NSNumber *index in edges) {
                 NSInteger cIndex = index.integerValue;
                 NSInteger xEdge = cIndex%width;
@@ -1569,6 +1571,8 @@
                             results[c] = dist;//
                     }
                 }
+                if(l % 1000 == 0)printf(".");
+                l++;
             }
             NSLog(@"Done");
             //Do expensive square roots

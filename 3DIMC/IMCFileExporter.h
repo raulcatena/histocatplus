@@ -35,6 +35,7 @@
 
 //Export cell data
 +(BOOL)saveCSVWithComputations:(NSArray<IMCComputationOnMask *>*)computations atPath:(NSString *)path columnIndexes:(NSIndexSet *)indexSet dataCoordinator:(IMCLoader *)loader metadataIndexes:(NSIndexSet *)indexSetMetadata;
++(BOOL)saveBinaryWithComputations:(NSArray<IMCComputationOnMask *>*)computations atPath:(NSString *)path columnIndexes:(NSIndexSet *)indexSet dataCoordinator:(IMCLoader *)loader metadataIndexes:(NSIndexSet *)indexSetMetadata;
 +(BOOL)saveTSVWithMetadata:(NSArray<IMCImageStack *>*)stacks atPath:(NSString *)path withCoordinator:(IMCLoader *)loader;
 
 +(NSImage *) mergeImage:(NSImage*)a andB:(NSImage*)b fraction:(float)fraction;

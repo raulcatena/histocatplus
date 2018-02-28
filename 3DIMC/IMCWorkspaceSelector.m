@@ -218,8 +218,7 @@
     NSInteger selectedIndex = self.parent.whichTableCoordinator.indexOfSelectedItem;
     self.parent.pushItemUp.hidden = !(selectedIndex == 1);
     self.parent.pushItemDown.hidden = !(selectedIndex == 1);
-    self.parent.exportCSVButton.hidden = !(selectedIndex == 5 || selectedIndex == 7);
-    self.parent.exportFCSButton.hidden = !(selectedIndex == 5 || selectedIndex == 7);
+    self.parent.exportButtons.hidden = !(selectedIndex == 5 || selectedIndex == 7);
     
     if(sender == self.parent.whichTableChannels){
         int i = 0;
