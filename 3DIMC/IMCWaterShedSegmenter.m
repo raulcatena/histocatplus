@@ -69,8 +69,8 @@
     NSInteger sChannel = 0;
     do{
         NSArray *channs = [@[@"None"] arrayByAddingObjectsFromArray:inScopeImage.channels.copy];
-        sChannel = [IMCUtils inputOptions:channs prompt:@"Do you want to use a channel to frame the nuclear signal?"];
-    }while (sChannel < 0 || sChannel == channel + 1);
+        sChannel = [IMCUtils inputOptions:channs prompt:@"Do you want to use a channel to frame the nuclear signal?"] - 1;
+    }while (sChannel < 0 || sChannel == channel);
     
     int expansion = 0;
     do{
