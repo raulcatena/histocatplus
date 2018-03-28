@@ -422,7 +422,12 @@
     else{
         if([anobj isMemberOfClass:[IMCPanoramaWrapper class]]){
             IMCPanoramaWrapper *pan = (IMCPanoramaWrapper *)anobj;
+            NSImage *prevImage = pan.panoramaImage;
+            if([self.inScopePanoramas containsObject:prevImage])
+                [self.inScopePanoramas removeObject:prevImage];
+            
             pan.after = !pan.after;
+            [self.inScopePanoramas insertObject:pan.panoramaImage atIndex:0];
             [self refresh];
         }
         else
@@ -1367,6 +1372,8 @@ typedef enum {
     [self.workSpaceRefresher calculateMemory];
 }
 -(void)refresh:(id)sender{
+    if(sender == self.gaussianBlur)
+        self.gaussianBlurLabel.intValue = self.gaussianBlur.intValue;
     [self refresh];
 }
 

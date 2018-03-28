@@ -483,10 +483,13 @@
 #pragma mark control for toolpanels
 
 -(void)checkToolsBlendMode{
+    
 //    self.parent.alignmentToolsContainer.bounds = self.parent.blendToolsContainer.bounds;
 //    self.parent.toolsContainer.bounds = self.parent.blendToolsContainer.bounds;
-//    self.parent.toolsContainer.layer.borderColor = [NSColor blueColor].CGColor;
-//    self.parent.toolsContainer.layer.borderWidth = 2.0f;
+//    self.parent.alignmentToolsContainer.autoresizingMask = NSViewWidthSizable;
+    self.parent.toolsContainer.autoresizingMask = NSViewWidthSizable;
+    
+    
     if(self.parent.applyTransfomrs.indexOfSelectedItem == 1){
         self.parent.scrollViewBlends.rotationDelegate = self.parent;
         if(self.parent.toolsContainer.superview)
@@ -501,6 +504,7 @@
             [self.parent.toolsContainer removeFromSuperview];
         [self.parent.blendToolsContainer addSubview:self.parent.toolsContainer];
     }
+    
     self.parent.applyTransfomrs.hidden = NO;
 }
 

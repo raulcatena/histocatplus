@@ -106,6 +106,7 @@
 @property (nonatomic, weak) IBOutlet NSButton *legendsVertical;
 @property (nonatomic, weak) IBOutlet NSStepper *legendsFontSize;
 @property (nonatomic, weak) IBOutlet NSStepper *gaussianBlur;
+@property (nonatomic, weak) IBOutlet NSTextField *gaussianBlurLabel;
 @property (nonatomic, weak) IBOutlet NSPopUpButton *blur;
 @property (nonatomic, weak) IBOutlet NSButton *brightFieldEffect;
 

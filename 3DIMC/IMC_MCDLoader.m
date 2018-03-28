@@ -32,13 +32,14 @@
     
     if(end > beggining && end < data.length){
         panWrapper.panoramaImage = [[NSImage alloc]initWithData:[data subdataWithRange:NSMakeRange(beggining, end - beggining)]];
-        panWrapper.afterPanoramaImage = [[NSImage alloc]initWithData:[data subdataWithRange:NSMakeRange(begginingAfter, endAfter - begginingAfter)]];
         panWrapper.jsonDictionary[JSON_DICT_CONT_PANORAMA_COEF] = [panDict valueForKey:@"PixelScaleCoef"];
         if(!panWrapper.jsonDictionary[JSON_DICT_CONT_PANORAMA_W] || [panWrapper.jsonDictionary[JSON_DICT_CONT_PANORAMA_W]integerValue] == 0)
             panWrapper.jsonDictionary[JSON_DICT_CONT_PANORAMA_W] = [NSNumber numberWithFloat:panWrapper.panoramaImage.size.width];
         if(!panWrapper.jsonDictionary[JSON_DICT_CONT_PANORAMA_H] || [panWrapper.jsonDictionary[JSON_DICT_CONT_PANORAMA_H]integerValue] == 0)
             panWrapper.jsonDictionary[JSON_DICT_CONT_PANORAMA_H] = [NSNumber numberWithFloat:panWrapper.panoramaImage.size.height];
     }
+    if(endAfter > begginingAfter && endAfter < data.length)
+        panWrapper.afterPanoramaImage = [[NSImage alloc]initWithData:[data subdataWithRange:NSMakeRange(begginingAfter, endAfter - begginingAfter)]];
 }
 
 +(BOOL)loadMCD:(NSData *)data toIMCFileWrapper:(IMCFileWrapper *)wrapper{
