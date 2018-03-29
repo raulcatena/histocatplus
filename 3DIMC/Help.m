@@ -22,7 +22,7 @@
     [General runHelpModalWithMessage:@"Exports data as float32 binary, followed by a tab-separated UTF-8 string with the names of the channels. The first value is the number of cells, the second is the number of channels, the thrid is the offset of the UTF-8 string. From value 4 until the offset the binary data organized as cell_1_channel_1, cell_1_channel_2 ... cell_1_channel_n | then cell_2_channel_1 etc. ONLY the channels selected in the channels table will be exported. A cell_id and Acquisition column is also added automatically" andTitle:@"Help Binary Export"];
 }
 +(void)helpCompensation{
-    [General runHelpModalWithMessage:@"Read Chevrier et al. 2018 on how compensation works. If you switch this on, the matrix published by Chevrier will be applied to your data to compensate. You can also go to the Edit menu and input a custom compensation matrix if you have the spillover matrix for your isotope set in your own hands. One requierment for this function to work is that anywhere in the channel names the metals are specified, such as Eu151. The channel naming is automatized if you use AirLab (Catena et al. 2016." andTitle:@"Help Compensation"];
+    [General runHelpModalWithMessage:@"Read Chevrier et al. 2018 on how compensation works. If you switch this on, the matrix published by Chevrier will be applied to your data to compensate. You can also go to the Edit menu and input a custom compensation matrix if you have the spillover matrix for your isotope set in your own hands. One requierment for this function to work is that anywhere in the channel names the metals are specified, such as Eu151. The channel naming is automatized if you use AirLab (Catena et al. 2016)" andTitle:@"Help Compensation"];
 }
 
 @end

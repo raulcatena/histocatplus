@@ -226,8 +226,8 @@
         [self viewerOnly];
     if(VIEWER_HISTO)
         [self noThreeD];
-    if(VIEWER_ONLY || VIEWER_HISTO)
-        self.compensationSwitch.hidden = YES;
+//    if(VIEWER_ONLY || VIEWER_HISTO)
+//        self.compensationSwitch.hidden = YES;
     
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     
