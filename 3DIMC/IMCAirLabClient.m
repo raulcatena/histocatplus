@@ -11,7 +11,7 @@
 
 @implementation IMCAirLabClient
 
-+(void)getInfoClones:(NSArray <IMCImageStack *>*)stacks{
++(void)getInfoClones:(NSArray <IMCImageStack *>*)stacks subdomain:(NSString *)subdomain{
     __block int counter = 0;
     
     NSMutableDictionary *collect = @{}.mutableCopy;
@@ -38,7 +38,7 @@
     
     NSURLSession *session = [NSURLSession sharedSession];
     [[session dataTaskWithURL:[NSURL URLWithString:
-                               [NSString stringWithFormat:@"https://airlab-1118.appspot.com/apiLabPad/api/getInfoForClones/%@", arg]]
+                               [NSString stringWithFormat:@"http://airlab-1118.appspot.com/apiLabPad/api/getInfoForClones/%@", arg]]
                 completionHandler:^(NSData *data, NSURLResponse *response, NSError *error){
             counter++;
             

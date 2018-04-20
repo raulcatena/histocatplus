@@ -20,6 +20,7 @@
 #import "NSImage+OpenCV.h"
 #import "IMCRegistration.h"
 #import "IMCRegistrationOCV.h"
+#import "IMCHistogram.h"
 
 
 @interface IMCWorkSpaceRefresher(){
@@ -247,6 +248,11 @@
         if(overrideRefresh)
             return;
         
+        //Precalculate histogram
+        if(!self.parent.scrollViewBlends.histogram)
+            self.parent.scrollViewBlends.histogram = [[IMCHistogram alloc]init];
+        [self.parent.scrollViewBlends.histogram primeWithData:[self.parent.inScopeImage preparePassBuffers:self.parent.inOrderIndexes.copy] channels:self.parent.inOrderIndexes.count pixels:self.parent.inScopeImage.numberOfPixels colors:[self.parent.customChannelsDelegate collectColors]];
+        
         self.parent.scrollViewBlends.imageView.image = image;
         [self scaleAndLegendChannelsBlend];
         [self intensityLegend];
@@ -269,24 +275,34 @@
     if(self.parent.autoRefreshLock.state == NSOffState)
         return;
     
+
+    NSMutableArray *images = @[].mutableCopy;
+    NSMutableArray *involvedStacks = @[].mutableCopy;
+    for (IMCComputationOnMask *comp in self.parent.inScopeComputations)
+        if(![involvedStacks containsObject:comp.mask.imageStack])
+            if(comp.mask.imageStack)
+                [involvedStacks addObject:comp.mask.imageStack];
+    for (IMCPixelClassification *mask in self.parent.inScopeMasks)
+        if(![involvedStacks containsObject:mask.imageStack])
+            if(mask.imageStack)
+                [involvedStacks addObject:mask.imageStack];
+    for (IMCImageStack *stack in self.parent.inScopeImages)
+        if(![involvedStacks containsObject:stack])
+            [involvedStacks addObject:stack];
+    
+    [self scaleAndLegendChannelsTiles:involvedStacks];
+
+    NSArray *collColors = [self.parent.customChannelsDelegate collectColors];
+    NSInteger colorSegmentSel = self.parent.colorSpaceSelector.selectedSegment;
+    NSInteger imageFilterSelected = self.parent.multiImageFilters.indexOfSelectedItem;
+    NSColor *scaleBarColor = self.parent.scaleBarColor.color;
+    BOOL brightFieldEffect = (BOOL)self.parent.brightFieldEffect.state;
+    NSInteger colorSpaceSelector = self.parent.colorSpaceSelector.selectedSegment;
+    NSInteger maskOption = self.parent.maskVisualizeSelector.selectedSegment;
+
     dispatch_queue_t  threadPainting = dispatch_queue_create([IMCUtils randomStringOfLength:5].UTF8String, NULL);
     dispatch_async(threadPainting, ^{
-        NSMutableArray *images = @[].mutableCopy;
-        NSMutableArray *involvedStacks = @[].mutableCopy;
-        for (IMCComputationOnMask *comp in self.parent.inScopeComputations)
-            if(![involvedStacks containsObject:comp.mask.imageStack])
-                if(comp.mask.imageStack)
-                    [involvedStacks addObject:comp.mask.imageStack];
-        for (IMCPixelClassification *mask in self.parent.inScopeMasks)
-            if(![involvedStacks containsObject:mask.imageStack])
-                if(mask.imageStack)
-                    [involvedStacks addObject:mask.imageStack];
-        for (IMCImageStack *stack in self.parent.inScopeImages)
-            if(![involvedStacks containsObject:stack])
-                [involvedStacks addObject:stack];
-        
-        [self scaleAndLegendChannelsTiles:involvedStacks];
-        
+    
         int cursor = 0;
         if(involvedStacks.count == 1){
             IMCImageStack *stack = (IMCImageStack *)involvedStacks.firstObject;
@@ -296,27 +312,27 @@
                 if (overrideRefresh)
                     return;
                 
-                NSColor *col = [self.parent.customChannelsDelegate collectColors][cursor];//Is like case 4 later
-                if(self.parent.colorSpaceSelector.selectedSegment == 0)col = [NSColor whiteColor];
-                if(self.parent.colorSpaceSelector.selectedSegment == 1 || self.parent.colorSpaceSelector.selectedSegment == 2)
-                    col = [NSColor colorInHueAtIndex:cursor totalColors:self.parent.inOrderIndexes.count withColoringType:self.parent.colorSpaceSelector.selectedSegment minumAmountColors:3];
+                NSColor *col = collColors[cursor];//Is like case 4 later
+                if(colorSpaceSelector == 0)col = [NSColor whiteColor];
+                if(colorSpaceSelector == 1 || colorSpaceSelector == 2)
+                    col = [NSColor colorInHueAtIndex:cursor totalColors:self.parent.inOrderIndexes.count withColoringType:colorSpaceSelector minumAmountColors:3];
                 
                 NSImage * image = [IMCImageGenerator
                                    imageForImageStacks:self.parent.inScopeComputations.count > 0?nil:self.parent.inScopeImages.copy
                                                                  indexes:@[num]
-                                                        withColoringType:self.parent.colorSpaceSelector.selectedSegment !=3?4:3 customColors:@[col]
+                                                        withColoringType:colorSpaceSelector !=3?4:3 customColors:@[col]
                                                        minNumberOfColors:3
                                                                    width:stack.width
                                                                   height:stack.height
                                                           withTransforms:NO
-                                                                   blend:[IMCBlendModes blendModeForValue:self.parent.multiImageFilters.indexOfSelectedItem]
+                                                                   blend:[IMCBlendModes blendModeForValue:imageFilterSelected]
                                                                 andMasks:self.parent.inScopeMasks
                                                          andComputations:self.parent.inScopeComputations
-                                                              maskOption:(MaskOption)self.parent.maskVisualizeSelector.selectedSegment
+                                                              maskOption:(MaskOption)maskOption
                                                                 maskType:[self maskType]
-                                                         maskSingleColor:self.parent.scaleBarColor.color
+                                                         maskSingleColor:scaleBarColor
                                                          isAlignmentPair:NO
-                                                             brightField:(BOOL)self.parent.brightFieldEffect.state];
+                                                             brightField:brightFieldEffect];
                 
                 [images addObject:image];
                 cursor++;
@@ -354,17 +370,17 @@
                 
                 NSImage * image = [IMCImageGenerator imageForImageStacks:dict[@"stack"]?@[dict[@"stack"]].mutableCopy:nil
                                                                  indexes:self.parent.inOrderIndexes.copy
-                                                        withColoringType:self.parent.colorSpaceSelector.selectedSegment !=3?4:3 customColors:[self.parent.customChannelsDelegate collectColors] minNumberOfColors:3 width:stck.width
+                                                        withColoringType:colorSegmentSel !=3?4:3 customColors:collColors minNumberOfColors:3 width:stck.width
                                                                   height:stck.height
                                                           withTransforms:NO
-                                                                   blend:[IMCBlendModes blendModeForValue:self.parent.multiImageFilters.indexOfSelectedItem]
+                                                                   blend:[IMCBlendModes blendModeForValue:imageFilterSelected]
                                                                 andMasks:dict[@"mask"]?@[dict[@"mask"]]:nil
                                                          andComputations:dict[@"comp"]?@[dict[@"comp"]]:nil
                                                               maskOption:(MaskOption)self.parent.maskVisualizeSelector.selectedSegment
                                                                 maskType:[self maskType]
-                                                         maskSingleColor:self.parent.scaleBarColor.color
+                                                         maskSingleColor:scaleBarColor
                                                          isAlignmentPair:NO
-                                                             brightField:(BOOL)self.parent.brightFieldEffect.state];
+                                                             brightField:brightFieldEffect];
                 
                 [images addObject:image];
             }
@@ -411,35 +427,19 @@
     self.parent.scrollViewTiles.showScaleBars = self.parent.scaleBar.state;
     
     self.parent.scrollViewTiles.legendColor = self.parent.scaleBarColor.color;
-    self.parent.scrollViewTiles.legendColor = self.parent.lengendsBackgroundColor.color;
+    self.parent.scrollViewTiles.legendChannelsBackgroundColor = self.parent.lengendsBackgroundColor.color;
         
     NSMutableArray *arr = @[].mutableCopy;
     NSMutableArray *cols = @[].mutableCopy;
     NSMutableArray *channs = @[].mutableCopy;
     
-    for (IMCImageStack *stack in involvedStacks) {
+    for (IMCImageStack *stack in involvedStacks)
         [arr addObject:stack.itemName.copy];
-        if(involvedStacks.count > 1){
-            if([self.parent.customChannelsDelegate collectColors]){
-                [cols addObject:[self.parent.customChannelsDelegate collectColors].copy];
-                if([self.parent channelsForCell])
-                    [channs addObject:[self.parent channelsForCell].copy];
-            }
-        }
-        else
-        {
-            for (id color in [self.parent.customChannelsDelegate collectColors]) {
-                [cols addObject:@[color]];
-            }
-//            for (id chann in [self.parent channelsForCell]) {
-//                [channs addObject:@[chann]];
-//            }
-            NSMutableArray *arr = @[].mutableCopy;
-            for(NSNumber *idx in self.parent.inOrderIndexes)
-                [arr addObject:@[[self.parent channelsForCell][idx.integerValue]]];
-            [channs addObjectsFromArray:arr];
-        }
-    }
+    for (id color in [self.parent.customChannelsDelegate collectColors])
+        [cols addObject:@[color]];
+    for(NSNumber *idx in self.parent.inOrderIndexes)
+        [channs addObject:@[[self.parent channelsForCell][idx.integerValue]]];
+    
     self.parent.scrollViewTiles.imageNames = arr;
     self.parent.scrollViewTiles.colorLegends = cols;
     self.parent.scrollViewTiles.channels = channs;

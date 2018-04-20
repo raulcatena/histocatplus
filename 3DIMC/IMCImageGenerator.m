@@ -57,8 +57,7 @@ void percentileFilter(UInt8 * pixelData, NSInteger width, NSInteger height, floa
 
 void applyFilterToPixelData(UInt8 * pixelData, NSInteger width, NSInteger height, NSInteger mode, float factor, NSInteger layers, NSInteger channels){
     //Override for now with this new one;
-    percentileFilter(pixelData, width, height, factor, 3);
-    return;
+    //percentileFilter(pixelData, width, height, factor, 3);
     
     NSInteger total = width * height;
     NSInteger totalWithChannels = total * channels;

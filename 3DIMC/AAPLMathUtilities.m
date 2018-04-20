@@ -314,7 +314,8 @@ quaternion_float quaternion_slerp(quaternion_float q0, quaternion_float q1, floa
     return q0 * cosf(angleInc) + q2 * sinf(angleInc);
 }
 
-vector_float3 AAPL_SIMD_OVERLOAD quaternion_rotate_vector(quaternion_float q, vector_float3 v) {
+//vector_float3 AAPL_SIMD_OVERLOAD quaternion_rotate_vector(quaternion_float q, vector_float3 v) {
+vector_float3 quaternion_rotate_vector(quaternion_float q, vector_float3 v) {
     
     vector_float3 qp = vector_make(q.x, q.y, q.z);
     float w = q.w;

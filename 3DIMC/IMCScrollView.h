@@ -8,6 +8,8 @@
 
 #import <Cocoa/Cocoa.h>
 #import "IMCImageView.h"
+#import <Quartz/Quartz.h>
+#import "IMCHistogram.h"
 
 @class IMCScrollView;
 
@@ -30,6 +32,8 @@
 @interface IMCScrollView : NSScrollView<IMCScrollViewDelegate>
 
 @property (nonatomic, strong) IMCImageView *imageView;
+@property (nonatomic, strong) IKImageView *iKimageView;
+@property (nonatomic, strong) IMCHistogram *histogram;
 @property (nonatomic, weak) id<IMCScrollViewDelegate>delegate;
 @property (nonatomic, weak) id<IMCScrollViewRotationDelegate>rotationDelegate;
 @property (nonatomic, assign) BOOL takingEvents;

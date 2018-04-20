@@ -9,6 +9,7 @@
 #import "IMCMaskTraining.h"
 #import "IMCCellTrainerTool.h"
 #import "IMCCell3DTrainerTool.h"
+#import "IMCSceneKitClassifier.h"
 #import "IMCComputationOnMask.h"
 #import "IMC3DMask.h"
 #import "IMCPixelClassification.h"
@@ -63,8 +64,10 @@
     NSWindowController *cont;
     if([self.parent isMemberOfClass:[IMCComputationOnMask class]])
         cont = [[IMCCellTrainerTool alloc]initWithComputation:self.computation andTraining:self];
+//    if([self.parent isMemberOfClass:[IMC3DMask class]])
+//        cont = [[IMCCell3DTrainerTool alloc]initWithComputation:self.computation andTraining:self];
     if([self.parent isMemberOfClass:[IMC3DMask class]])
-        cont = [[IMCCell3DTrainerTool alloc]initWithComputation:self.computation andTraining:self];
+        cont = [[IMCSceneKitClassifier alloc]initWithComputation:self.computation andTraining:self];
     [[cont window] makeKeyAndOrderFront:cont];
     [super loadLayerDataWithBlock:block];
     

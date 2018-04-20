@@ -41,6 +41,7 @@
 //Cell Classificaton
 #import "IMCCellTrainerTool.h"
 #import "IMCCell3DTrainerTool.h"
+#import "IMCSceneKitClassifier.h"
 
 //RConsole
 #import "IMCMiniRConsole.h"
@@ -1887,8 +1888,12 @@ typedef enum {
         IMCCellTrainerTool *seg = [[IMCCellTrainerTool alloc]initWithComputation:self.inScopeComputation andTraining:nil];
         [[seg window] makeKeyAndOrderFront:seg];
     }
+//    if(self.inScope3DMask.isLoaded){
+//        IMCCell3DTrainerTool *seg = [[IMCCell3DTrainerTool alloc]initWithComputation:self.inScope3DMask andTraining:nil];
+//        [[seg window] makeKeyAndOrderFront:seg];
+//    }
     if(self.inScope3DMask.isLoaded){
-        IMCCell3DTrainerTool *seg = [[IMCCell3DTrainerTool alloc]initWithComputation:self.inScope3DMask andTraining:nil];
+        IMCSceneKitClassifier *seg = [[IMCSceneKitClassifier alloc]initWithComputation:self.inScope3DMask andTraining:nil];
         [[seg window] makeKeyAndOrderFront:seg];
     }
 }
@@ -2176,7 +2181,7 @@ typedef enum {
 
 #pragma mark
 -(void)cleanUpNamesWithAirlab:(id)sender{
-    [IMCAirLabClient getInfoClones:self.inScopeImages];
+    [IMCAirLabClient getInfoClones:self.inScopeImages subdomain:@"bodenmillerlab"];
 }
 
 #pragma mark

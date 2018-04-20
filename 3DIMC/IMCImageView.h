@@ -7,7 +7,7 @@
 //
 
 #import <Cocoa/Cocoa.h>
-
+ 
 @class IMCImageStack;
 
 @interface IMCImageView : NSImageView

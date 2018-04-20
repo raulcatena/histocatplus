@@ -12,7 +12,6 @@
 @interface IMCNodeWrapper(){
     
 }
-@property (nonatomic, assign) UInt8 * panoramaData;
 
 @end
 
@@ -53,12 +52,6 @@
 }
 
 -(NSImage *)panoramaImage{
-    if(!_panoramaImage){
-        //TODO generate here and remove buffer
-        if(self.panoramaData != NULL){
-            free(self.panoramaData);
-        }
-    }
     return self.after == YES ? _afterPanoramaImage : _panoramaImage;
 }
 

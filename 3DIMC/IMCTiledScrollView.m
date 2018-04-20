@@ -75,6 +75,14 @@
         heightTile /= yProp;
     }
     
+    NSMutableArray *joinedChannels = @[].mutableCopy;
+    for(NSArray *chann in self.channels.copy)
+        [joinedChannels addObject:chann.firstObject];
+    
+    NSMutableArray *joinedColors = @[].mutableCopy;
+    for(NSArray *cols in self.colorLegends.copy)
+        [joinedColors addObject:cols.firstObject];
+    
     for (NSImage *im in images) {
         
         NSInteger idx = [images indexOfObject:im];
@@ -100,15 +108,19 @@
                                                                            heightTile)];
             iv.image = im;
             iv.autoresizingMask = (NSViewWidthSizable | NSViewHeightSizable);
-//            [self.documentView addSubview:iv];
             iv.image = im;
             v = iv;
         }
         [iv removeLabels];
         
         //Legends
-        NSMutableArray *all = idx < self.channels.count? [self.channels[idx] mutableCopy] : @[].mutableCopy;
-        NSMutableArray *allColors = idx < self.colorLegends.count? [self.colorLegends[idx] mutableCopy] : @[].mutableCopy;
+        NSMutableArray *all;
+        if(self.imageNames.count == 1) all = idx < self.channels.count? [self.channels[idx] mutableCopy] : @[].mutableCopy;
+        else all = [joinedChannels mutableCopy];
+        NSMutableArray *allColors;
+        if(self.imageNames.count == 1) allColors = idx < self.colorLegends.count? [self.colorLegends[idx] mutableCopy] : @[].mutableCopy;
+        else allColors = [joinedColors mutableCopy];
+        
         
         if(self.showImageNames){
             [all insertObject:idx < self.imageNames.count ? [self.imageNames objectAtIndex:idx] : @"" atIndex:0];
@@ -118,7 +130,6 @@
             //NSColor *color = self.colorLegends[MIN(self.colorLegends.count - 1,idx)];
             [iv setLabels:all withColors:allColors backGround:self.legendChannelsBackgroundColor fontSize:self.fontSizeLegends vAlign:YES static:iv.superview?YES:NO];
         }
-        
         //Scale Bar
         
         [iv removeScale];

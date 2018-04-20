@@ -12,7 +12,7 @@
 
 @interface IMCAirLabClient : NSObject
 
-+(void)getInfoClones:(NSArray<IMCImageStack *> *)stacks;
++(void)getInfoClones:(NSArray<IMCImageStack *> *)stacks subdomain:(NSString *)subdomain;
 +(void)getMetalForConjugates:(NSArray <IMCImageStack *>*)stacks;
 
 @end

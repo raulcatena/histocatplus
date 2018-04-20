@@ -8,6 +8,7 @@
 
 #import "IMCScrollView.h"
 #import <CoreImage/CoreImage.h>
+#import "NSImage+OpenCV.h"
 
 @interface IMCScrollView(){
     float zoomFactor;
@@ -165,10 +166,36 @@
 #pragma mark histogram
 
 -(void)toggleHistogram{
+    [self.iKimageView removeFromSuperview];
+    self.iKimageView = nil;
+    
+    
+    if(self.imageView.image && self.histogram.superview){
+        self.reserveImage = self.imageView.image;
+        self.imageView.image = nil;
+    }else if(!self.imageView.image && self.histogram.superview){
+        [self.histogram removeFromSuperview];
+        self.imageView.image = self.reserveImage;
+        self.reserveImage = nil;
+    }else{
+        self.histogram.frame = self.imageView.frame;
+        [self.imageView.superview addSubview:self.histogram];
+    }
+    
+    /*
     if(self.reserveImage){
         self.imageView.image = self.reserveImage;
         self.reserveImage = nil;
     }else{
+        
+         //Add IKImageView
+        self.iKimageView = [[IKImageView alloc]initWithFrame:self.imageView.frame];
+        [self.iKimageView setImage:self.imageView.image.CGImage imageProperties:@{}];
+        [self.imageView.superview addSubview:self.iKimageView];
+        [self.iKimageView setEditable:YES];
+        [self.iKimageView setDoubleClickOpensImageEditPanel:YES];
+
+         //Old ugly histogram
         //CIContext* context = [[NSGraphicsContext currentContext] CIContext];
         //NSBitmapImageRep *imageRep = (NSBitmapImageRep *)[self.imageView.image representations][0];
         NSData *imageData = [self.imageView.image TIFFRepresentation];
@@ -176,7 +203,9 @@
         CIImage *ciImage = [[CIImage alloc] initWithBitmapImageRep:imageRep];
         
         CIImage *hist = [ciImage imageByApplyingFilter:@"CIAreaHistogram"
-                                   withInputParameters:@{ @"inputCount": @256 }];
+                                   withInputParameters:@{ @"inputCount": @256
+                                                          //@"inputHeight": @50
+                                                          }];
         
         CIImage *outputImage = [hist imageByApplyingFilter:@"CIHistogramDisplayFilter"
                                        withInputParameters:nil];
@@ -188,10 +217,11 @@
         //CGImageRef cgImage2 = [context createCGImage:ciImage fromRect:ciImage.extent];
         //NSImage *img2 = [[NSImage alloc] initWithCGImage:cgImage2 size:ciImage.extent.size];
         
-        self.reserveImage = self.imageView.image;
+        
         self.imageView.image = outNSImage;
+        
     }
-    
+    */
 }
 //
 
