@@ -155,6 +155,8 @@
     NSInteger endOfHeader = 0;
     NSInteger lineCursor = 0;
     
+    bool nReturnOnly = NO;
+    
     for (; i < lenght; i++) {
         if(bytes[i] == 0x0d){
             if (bytes[i + 1] == 0x0a) {
@@ -166,9 +168,25 @@
             }
         }
     }
-    
+    // Just in case return is just \n
+    if(endOfHeader == 0){
+        i = 0;
+        for (; i < lenght; i++) {
+            if (bytes[i] == 0x0a) {
+                if(endOfHeader == 0)
+                    endOfHeader = i;
+                else
+                    lines++;
+                lineCursor = i;
+            }
+        }
+        if (endOfHeader != 0)
+            nReturnOnly = YES;
+    }
+
     NSString *achannels = [[NSString alloc]initWithData:[data subdataWithRange:NSMakeRange(0, endOfHeader)] encoding:NSUTF8StringEncoding];
     NSArray *channs = [achannels componentsSeparatedByString:@"\t"];
+    
     if(!imageStack.channels || imageStack.channels.count != channs.count)
             imageStack.channels = channs.mutableCopy;
     if(!imageStack.origChannels || imageStack.origChannels.count != channs.count)
@@ -182,23 +200,40 @@
     i = endOfHeader;
     NSInteger lastIndex = i;
 
-    for (; i < lineCursor; i++) {
-        if(bytes[i] == 0x09){//Between numbers
-            imageStack.stackData[chan][pix] = atof(&bytes[lastIndex]);
-            lastIndex = i;
-            chan++;
-        }
-        
-        if(bytes[i] == 0x0d){
-            if (bytes[i + 1] == 0x0a) {
+    if(nReturnOnly){
+        for (; i < lineCursor; i++) {
+            if(bytes[i] == 0x09){//Between numbers
+                imageStack.stackData[chan][pix] = atof(&bytes[lastIndex]);
+                lastIndex = i;
+                chan++;
+            }
+            if (bytes[i] == 0x0a) {
                 imageStack.stackData[chan][pix] = atof(&bytes[lastIndex]);
                 lastIndex = i + 1;
                 chan = 0;
                 pix++;
             }
+            if(lastIndex + 4 >= lineCursor || pix >= lines)
+                break;
         }
-        if(lastIndex + 4 >= lineCursor || pix >= lines)
-            break;
+    }else{
+        for (; i < lineCursor; i++) {
+            if(bytes[i] == 0x09){//Between numbers
+                imageStack.stackData[chan][pix] = atof(&bytes[lastIndex]);
+                lastIndex = i;
+                chan++;
+            }
+            if(bytes[i] == 0x0d){
+                if (bytes[i + 1] == 0x0a) {
+                    imageStack.stackData[chan][pix] = atof(&bytes[lastIndex]);
+                    lastIndex = i + 1;
+                    chan = 0;
+                    pix++;
+                }
+            }
+            if(lastIndex + 4 >= lineCursor || pix >= lines)
+                break;
+        }
     }
     
     return [IMC_TxtLoader checkTXTMCDFile:imageStack fileLines:lines];

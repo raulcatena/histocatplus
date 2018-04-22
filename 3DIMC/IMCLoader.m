@@ -518,9 +518,8 @@
 -(NSString *)compMatrix{
     if(self.jsonDescription[COMP_MATRIX])
         return self.jsonDescription[COMP_MATRIX];
-    
     NSError *error;
-    NSString *path = [[NSBundle mainBundle]pathForResource:@"201806_spillmat" ofType:@"txt"];
+    NSString *path = [[NSBundle mainBundle]pathForResource:@"SpillOverTableCleanWithZerosBioRXivsIMC" ofType:@"txt"];
     NSString *matrix = [[NSString alloc]initWithContentsOfFile:path encoding:NSUTF8StringEncoding error:&error];
     if(error)NSLog(@"Error %@", error.description);
     return matrix;

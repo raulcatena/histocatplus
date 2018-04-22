@@ -722,11 +722,11 @@
             reverseIndexes[i] = [self.origChannels indexOfObject:chan];
     }
 //    
-//    for (int i = 0; i < self.origChannels.count; i++)
-//        printf("%i: %li\n", i, indexes[i]);
-//    printf("\n\n");
-//    for (int i = 0; i < countIsotopes; i++)
-//        printf("%i: %li\n", i, reverseIndexes[i]);
+    for (int i = 0; i < self.origChannels.count; i++)
+        printf("%i: %li\n", i, indexes[i]);
+    printf("\n\n");
+    for (int i = 0; i < countIsotopes; i++)
+        printf("%i: %li\n", i, reverseIndexes[i]);
     
     NSInteger channelsCount = self.channels.count;
     NSInteger pixelsCount = self.numberOfPixels;
@@ -734,20 +734,19 @@
     float * factors = calloc(countIsotopes, sizeof(float));
     NSLog(@"Start comp");
     for (NSInteger j = 0; j < channelsCount; j++) {
-        
-        NSInteger index = indexes[j];
-        NSInteger stride = index * countIsotopes;
-        
-        for (NSInteger n = 0; n < countIsotopes; n++)
-            if(index == n || reverseIndexes[n] < 0 || reverseIndexes[n] == j)
-                factors[n] = .0f;
-            else
-                factors[n] = matrixNumbers[stride + indexes[n]];
-        
-        if(index < 0)
+
+        NSInteger indexIsotope = indexes[j];
+        if(indexIsotope < 0){
             memcpy(_compensatedData[j], _stackData[j], sizeof(float) * pixelsCount);
-        
-        else
+        }else{
+            NSInteger stride = indexIsotope * countIsotopes;
+            for (NSInteger n = 0; n < countIsotopes; n++){
+                if(indexIsotope == n || reverseIndexes[n] < 0 || reverseIndexes[n] == j)
+                    factors[n] = .0f;
+                else
+                    factors[n] = matrixNumbers[indexIsotope + n * countIsotopes];
+            }
+            
             for (NSInteger i = 0; i < pixelsCount; i++) {
                 float val = _stackData[j][i];
                 if(val > 0){
@@ -762,6 +761,7 @@
                 }
                 _compensatedData[j][i] = val;
             }
+        }
     }
     NSLog(@"Finished comp");
     free(indexes);

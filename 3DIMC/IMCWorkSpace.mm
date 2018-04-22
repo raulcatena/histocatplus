@@ -1379,9 +1379,9 @@ typedef enum {
 }
 
 -(void)refresh{
-    if(self.compensationSession)
-        [NSApp endModalSession:self.compensationSession];
-    self.compensationSession = nil;
+//    if(self.compensationSession)
+//        [NSApp endModalSession:self.compensationSession];
+//    self.compensationSession = nil;
     
     dispatch_async(dispatch_get_main_queue(), ^{
         [self.workSpaceRefresher refresh];

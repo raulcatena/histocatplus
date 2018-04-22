@@ -39,10 +39,7 @@
 -(NSInteger)numberOfRowsInTableView:(NSTableView *)tableView{
     return self.matrix.count - 1;
 }
-
-- (void)windowDidLoad {
-    [super windowDidLoad];
-    
+-(void)prepareColumns{
     while (self.tableView.tableColumns.count > 0) {
         NSTableColumn *col = [[self.tableView tableColumns]firstObject];
         [self.tableView removeTableColumn:col];
@@ -54,6 +51,11 @@
         aColumn.width = [headers indexOfObject:str] == 0? 50.0f : 40.0f;
         [self.tableView addTableColumn:aColumn];
     }
+}
+- (void)windowDidLoad {
+    [super windowDidLoad];
+    
+    [self prepareColumns];
 }
 -(id)tableView:(NSTableView *)tableView objectValueForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row{
     NSInteger indexCol = [tableView.tableColumns indexOfObject:tableColumn];
@@ -78,6 +80,7 @@
         [self.lodaer.jsonDescription removeObjectForKey:COMP_MATRIX];
     }
     [self fetchMatrix];
+    [self prepareColumns];
     [self.tableView reloadData];
 }
 
