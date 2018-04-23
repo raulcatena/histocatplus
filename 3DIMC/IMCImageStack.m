@@ -342,7 +342,8 @@
 }
 
 -(void)recalculateChannelAtIndex:(NSInteger)index{
-    
+    if (self.stackData == NULL)
+        return;
     float ** data = self.usingCompensated == YES? self.compensatedData : self.stackData;
     
     if(data == NULL && self.usingCompensated){
@@ -354,15 +355,15 @@
     
     float * settings = cachedSettings[index];
     float * vals = data[index];
-    
+
     if(!vals || !settings)return;
     
     if(settings[5] == .0f){
         settings[5] = [self maxInBuffer:vals];
     }
-    
+
     NSInteger pixs = self.numberOfPixels;
-    
+
     float precalc = settings[2] * 255.0f/(settings[5] * settings[0]);
     for (NSInteger i = 0; i < pixs; i++) {
         float val = vals[i];
@@ -694,22 +695,31 @@
 
 -(void)compensateTheData{
     //[self getMetalForConjugates];
+    if(!_stackData)
+        return;
+    
     if(self.compensatedData){
         for (NSInteger i = 0; i < self.channels.count; i++)
             if(self.compensatedData[i])
                 free(self.compensatedData[i]);
     }
+    
     self.compensatedData = (float **)calloc(self.channels.count, sizeof(float *));
+    NSInteger numPix = self.numberOfPixels;
     for (NSInteger i = 0; i < self.channels.count; i++)
-        self.compensatedData[i] = calloc(self.numberOfPixels, sizeof(float));
+        self.compensatedData[i] = calloc(numPix, sizeof(float));
     
     NSString *matrix = [self.fileWrapper.coordinator compMatrix];
     NSArray *listIsotopes = [self isotopesList:matrix];
-    NSInteger countIsotopes = listIsotopes.count;
-    float * matrixNumbers = [self matrixNumbers:matrix];
     
-    NSInteger *indexes = calloc(countIsotopes, sizeof(NSInteger));
+    NSInteger countIsotopes = listIsotopes.count;
+    NSInteger channelsCount = self.channels.count;
+    NSInteger pixelsCount = self.numberOfPixels;
+    
+    float * matrixNumbers = [self matrixNumbers:matrix];
+    NSInteger *indexes = calloc(channelsCount, sizeof(NSInteger));
     NSInteger *reverseIndexes = calloc(countIsotopes, sizeof(NSInteger));
+    
     for (int i = 0; i < countIsotopes; i++)
         reverseIndexes[i] = -1;
     
@@ -721,16 +731,15 @@
         if(i >= 0)
             reverseIndexes[i] = [self.origChannels indexOfObject:chan];
     }
-//    
-    for (int i = 0; i < self.origChannels.count; i++)
-        printf("%i: %li\n", i, indexes[i]);
-    printf("\n\n");
-    for (int i = 0; i < countIsotopes; i++)
-        printf("%i: %li\n", i, reverseIndexes[i]);
+
+//    for (int i = 0; i < self.origChannels.count; i++)
+//        printf("%i: %li\n", i, indexes[i]);
+//    printf("\n\n");
+//    for (int i = 0; i < countIsotopes; i++)
+//        printf("%i: %li\n", i, reverseIndexes[i]);
     
-    NSInteger channelsCount = self.channels.count;
-    NSInteger pixelsCount = self.numberOfPixels;
     
+
     float * factors = calloc(countIsotopes, sizeof(float));
     NSLog(@"Start comp");
     for (NSInteger j = 0; j < channelsCount; j++) {
@@ -739,16 +748,16 @@
         if(indexIsotope < 0){
             memcpy(_compensatedData[j], _stackData[j], sizeof(float) * pixelsCount);
         }else{
-            NSInteger stride = indexIsotope * countIsotopes;
+            float tot = 1.0f;
             for (NSInteger n = 0; n < countIsotopes; n++){
                 if(indexIsotope == n || reverseIndexes[n] < 0 || reverseIndexes[n] == j)
                     factors[n] = .0f;
                 else
-                    factors[n] = matrixNumbers[indexIsotope + n * countIsotopes];
+                    tot += factors[n] = matrixNumbers[indexIsotope + n * countIsotopes];
             }
             
             for (NSInteger i = 0; i < pixelsCount; i++) {
-                float val = _stackData[j][i];
+                float val = _stackData[j][i] * tot;
                 if(val > 0){
                     for (NSInteger n = 0; n < countIsotopes; n++){
                         if(factors[n] > 0)
@@ -764,9 +773,9 @@
         }
     }
     NSLog(@"Finished comp");
-    free(indexes);
-    free(reverseIndexes);
-    free(factors);
+    if(indexes)free(indexes);
+    if(reverseIndexes)free(reverseIndexes);
+    if(factors)free(factors);
 }
 
 -(void)setUsingCompensated:(BOOL)usingCompensated{

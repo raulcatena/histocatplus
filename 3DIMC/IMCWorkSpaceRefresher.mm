@@ -54,6 +54,7 @@
 
 
 -(void)refresh{
+
     overrideRefresh = YES;
     
     self.parent.scrollViewBlends.imageView.stacks = 0;
@@ -112,7 +113,6 @@
         self.parent.statsInfo.stringValue = [self.parent.inScope3DMask descriptionWithIndexes:self.parent.channels.selectedRowIndexes];
     
     [self calculateMemory];
-
     
     self.parent.scrollSubpanels.hidden = YES;
     self.parent.applyTransfomrs.hidden = YES;
@@ -142,15 +142,14 @@
             }
         }
     }
-//
+  
 //    if([self.parent.tabs.selectedTabViewItem.identifier isEqualToString:@"4"]){
 //        [self refreshRControls];
 //    }
-    
+
     if([self.parent.tabs.selectedTabViewItem.identifier isEqualToString:TAB_ID_ANALYTICS]){
         [self.parent.metricsController refreshTables];
     }
-    
     //Table selection counters
     self.parent.channelsTag.stringValue = [NSString stringWithFormat:@"Channels (%li/%li)", self.parent.channels.selectedRowIndexes.count, [self.parent.channels numberOfRows ]];
     self.parent.objectsTag.stringValue = [NSString stringWithFormat:@"Files/Stacks/Masks (%li/%li)", self.parent.filesTree.selectedRowIndexes.count, [self.parent.filesTree numberOfChildrenOfItem:nil]];
@@ -192,6 +191,14 @@
 //    self.parent.scrollViewBlends.imageView.image = imi;
 //    return;
     
+    NSArray *collColors = [self.parent.customChannelsDelegate collectColors];
+    NSInteger imageFilterSelected = self.parent.multiImageFilters.indexOfSelectedItem;
+    NSColor *scaleBarColor = self.parent.scaleBarColor.color;
+    BOOL brightFieldEffect = (BOOL)self.parent.brightFieldEffect.state;
+    NSInteger colorSpaceSelector = self.parent.colorSpaceSelector.selectedSegment;
+    NSInteger maskOption = self.parent.maskVisualizeSelector.selectedSegment;
+    MaskType maskType = [self maskType];
+    
     if(self.parent.inScopeImages.count > 0 || self.parent.inScopeMasks.count > 0 || self.parent.inScopeComputations.count > 0){
         
         NSInteger maxW = 0, maxH = 0;
@@ -217,24 +224,25 @@
            && self.parent.channels.selectedRowIndexes.count < 3
            && [self.parent.applyTransfomrs indexOfSelectedItem])
             isAlignment = YES;
-        //3D alignment
         
-        NSImage *image = [IMCImageGenerator imageForImageStacks:self.parent.inScopeImages.copy
+        //3D alignment
+        NSImage *image;
+        image = [IMCImageGenerator imageForImageStacks:self.parent.inScopeImages.copy
                                                indexes:self.parent.inOrderIndexes.copy
-                                      withColoringType:self.parent.colorSpaceSelector.selectedSegment
-                                          customColors:[self.parent.customChannelsDelegate collectColors]
+                                      withColoringType:colorSpaceSelector
+                                          customColors:collColors
                                      minNumberOfColors:3
                                                  width:maxW * factor
                                                 height:maxH * factor
                                         withTransforms:(BOOL)self.parent.applyTransfomrs.indexOfSelectedItem
-                                                 blend:[IMCBlendModes blendModeForValue:self.parent.multiImageFilters.indexOfSelectedItem]
-                                              andMasks:self.parent.inScopeMasks
-                                       andComputations:self.parent.inScopeComputations
-                                            maskOption:(MaskOption)self.parent.maskVisualizeSelector.selectedSegment
-                                              maskType:[self maskType]
-                                       maskSingleColor:self.parent.scaleBarColor.color
+                                                 blend:[IMCBlendModes blendModeForValue:imageFilterSelected]
+                                              andMasks:self.parent.inScopeMasks.copy
+                                       andComputations:self.parent.inScopeComputations.copy
+                                            maskOption:(MaskOption)maskOption
+                                              maskType:maskType
+                                       maskSingleColor:scaleBarColor
                                        isAlignmentPair:isAlignment
-                                           brightField:(BOOL)self.parent.brightFieldEffect.state];
+                                           brightField:brightFieldEffect];
         
         if(self.parent.blur.indexOfSelectedItem == 1)
             image = [image gaussianBlurred:(unsigned)self.parent.gaussianBlur.integerValue];
@@ -251,9 +259,12 @@
         //Precalculate histogram
         if(!self.parent.scrollViewBlends.histogram)
             self.parent.scrollViewBlends.histogram = [[IMCHistogram alloc]init];
-        [self.parent.scrollViewBlends.histogram primeWithData:[self.parent.inScopeImage preparePassBuffers:self.parent.inOrderIndexes.copy] channels:self.parent.inOrderIndexes.count pixels:self.parent.inScopeImage.numberOfPixels colors:[self.parent.customChannelsDelegate collectColors]];
         
+
+        [self.parent.scrollViewBlends.histogram primeWithData:[self.parent.inScopeImage preparePassBuffers:self.parent.inOrderIndexes.copy] channels:self.parent.inOrderIndexes.count pixels:self.parent.inScopeImage.numberOfPixels colors:collColors];
+
         self.parent.scrollViewBlends.imageView.image = image;
+
         [self scaleAndLegendChannelsBlend];
         [self intensityLegend];
     }
@@ -293,12 +304,12 @@
     [self scaleAndLegendChannelsTiles:involvedStacks];
 
     NSArray *collColors = [self.parent.customChannelsDelegate collectColors];
-    NSInteger colorSegmentSel = self.parent.colorSpaceSelector.selectedSegment;
     NSInteger imageFilterSelected = self.parent.multiImageFilters.indexOfSelectedItem;
     NSColor *scaleBarColor = self.parent.scaleBarColor.color;
     BOOL brightFieldEffect = (BOOL)self.parent.brightFieldEffect.state;
     NSInteger colorSpaceSelector = self.parent.colorSpaceSelector.selectedSegment;
     NSInteger maskOption = self.parent.maskVisualizeSelector.selectedSegment;
+    MaskType maskType = [self maskType];
 
     dispatch_queue_t  threadPainting = dispatch_queue_create([IMCUtils randomStringOfLength:5].UTF8String, NULL);
     dispatch_async(threadPainting, ^{
@@ -326,10 +337,10 @@
                                                                   height:stack.height
                                                           withTransforms:NO
                                                                    blend:[IMCBlendModes blendModeForValue:imageFilterSelected]
-                                                                andMasks:self.parent.inScopeMasks
-                                                         andComputations:self.parent.inScopeComputations
+                                                                andMasks:self.parent.inScopeMasks.copy
+                                                         andComputations:self.parent.inScopeComputations.copy
                                                               maskOption:(MaskOption)maskOption
-                                                                maskType:[self maskType]
+                                                                maskType:maskType
                                                          maskSingleColor:scaleBarColor
                                                          isAlignmentPair:NO
                                                              brightField:brightFieldEffect];
@@ -370,14 +381,14 @@
                 
                 NSImage * image = [IMCImageGenerator imageForImageStacks:dict[@"stack"]?@[dict[@"stack"]].mutableCopy:nil
                                                                  indexes:self.parent.inOrderIndexes.copy
-                                                        withColoringType:colorSegmentSel !=3?4:3 customColors:collColors minNumberOfColors:3 width:stck.width
+                                                        withColoringType:colorSpaceSelector !=3?4:3 customColors:collColors minNumberOfColors:3 width:stck.width
                                                                   height:stck.height
                                                           withTransforms:NO
                                                                    blend:[IMCBlendModes blendModeForValue:imageFilterSelected]
                                                                 andMasks:dict[@"mask"]?@[dict[@"mask"]]:nil
                                                          andComputations:dict[@"comp"]?@[dict[@"comp"]]:nil
-                                                              maskOption:(MaskOption)self.parent.maskVisualizeSelector.selectedSegment
-                                                                maskType:[self maskType]
+                                                              maskOption:(MaskOption)maskOption
+                                                                maskType:maskType
                                                          maskSingleColor:scaleBarColor
                                                          isAlignmentPair:NO
                                                              brightField:brightFieldEffect];
@@ -410,7 +421,8 @@
         NSMutableArray *arr = @[].mutableCopy;
         for(NSNumber *idx in self.parent.inOrderIndexes)
             [arr addObject:[self.parent channelsForCell][idx.integerValue]];
-        [self.parent.scrollViewBlends.imageView setLabels:arr withColors:[self.parent.customChannelsDelegate collectColors] backGround:self.parent.lengendsBackgroundColor.color fontSize:self.parent.legendsFontSize.floatValue vAlign:self.parent.legendsVertical.state static:self.parent.legendsStatic.state];
+        NSArray *colors = [self.parent.customChannelsDelegate collectColors];
+        [self.parent.scrollViewBlends.imageView setLabels:arr withColors:colors backGround:self.parent.lengendsBackgroundColor.color fontSize:self.parent.legendsFontSize.floatValue vAlign:self.parent.legendsVertical.state static:self.parent.legendsStatic.state];
     }
     else [self.parent.scrollViewBlends.imageView removeLabels];
 }
@@ -489,7 +501,6 @@
 //    self.parent.alignmentToolsContainer.autoresizingMask = NSViewWidthSizable;
     self.parent.toolsContainer.autoresizingMask = NSViewWidthSizable;
     
-    
     if(self.parent.applyTransfomrs.indexOfSelectedItem == 1){
         self.parent.scrollViewBlends.rotationDelegate = self.parent;
         if(self.parent.toolsContainer.superview)
@@ -504,7 +515,6 @@
             [self.parent.toolsContainer removeFromSuperview];
         [self.parent.blendToolsContainer addSubview:self.parent.toolsContainer];
     }
-    
     self.parent.applyTransfomrs.hidden = NO;
 }
 

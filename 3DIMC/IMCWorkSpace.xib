@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="13771" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" customObjectInstantitationMethod="direct">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14109" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" customObjectInstantitationMethod="direct">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="13771"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14109"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -459,7 +459,7 @@
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <view id="bEC-dY-lh0">
-                                                        <rect key="frame" x="0.0" y="0.0" width="672" height="539"/>
+                                                        <rect key="frame" x="0.0" y="-15" width="672" height="539"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                     </view>
                                                 </subviews>
@@ -493,7 +493,7 @@
                                             <rect key="frame" x="-3" y="100" width="725" height="541"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <clipView key="contentView" id="mVh-zm-F3q">
-                                                <rect key="frame" x="1" y="1" width="723" height="524"/>
+                                                <rect key="frame" x="1" y="1" width="723" height="539"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                                 <subviews>
                                                     <view id="5lJ-K7-OS1">
@@ -687,7 +687,7 @@
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <clipView key="contentView" id="LZg-c4-jDn">
                                                 <rect key="frame" x="1" y="0.0" width="717" height="612"/>
-                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                <autoresizingMask key="autoresizingMask"/>
                                                 <subviews>
                                                     <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" autosaveColumns="NO" headerView="UAO-A7-670" id="AC1-NF-W0U">
                                                         <rect key="frame" x="0.0" y="0.0" width="717" height="589"/>
@@ -1619,7 +1619,7 @@
                         <action selector="refresh:" target="-2" id="Qmz-ZQ-Ut8"/>
                     </connections>
                 </segmentedControl>
-                <segmentedControl hidden="YES" verticalHuggingPriority="750" misplaced="YES" id="kdj-mq-1hd">
+                <segmentedControl verticalHuggingPriority="750" misplaced="YES" id="kdj-mq-1hd">
                     <rect key="frame" x="0.0" y="51" width="334" height="24"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <segmentedCell key="cell" borderStyle="border" alignment="left" style="rounded" trackingMode="selectOne" id="vgw-fd-Rug">
@@ -1635,7 +1635,7 @@
                         <action selector="refresh:" target="-2" id="FuX-hq-fjO"/>
                     </connections>
                 </segmentedControl>
-                <segmentedControl hidden="YES" verticalHuggingPriority="750" misplaced="YES" id="Vii-1E-1In">
+                <segmentedControl verticalHuggingPriority="750" misplaced="YES" id="Vii-1E-1In">
                     <rect key="frame" x="0.0" y="27" width="334" height="24"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <segmentedCell key="cell" borderStyle="border" alignment="left" style="rounded" trackingMode="selectOne" id="eUA-sb-u4t">
@@ -1861,9 +1861,6 @@
                     <segment label="|" width="64"/>
                 </segments>
             </segmentedCell>
-            <connections>
-                <action selector="refresh:" target="-2" id="uW6-gg-ha5"/>
-            </connections>
             <point key="canvasLocation" x="743" y="-235"/>
         </segmentedControl>
         <button hidden="YES" id="5ze-7g-JDJ">
