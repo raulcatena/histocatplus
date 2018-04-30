@@ -493,11 +493,11 @@
                                             <rect key="frame" x="-3" y="100" width="725" height="541"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <clipView key="contentView" id="mVh-zm-F3q">
-                                                <rect key="frame" x="1" y="1" width="723" height="539"/>
-                                                <autoresizingMask key="autoresizingMask"/>
+                                                <rect key="frame" x="1" y="1" width="723" height="524"/>
+                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <view id="5lJ-K7-OS1">
-                                                        <rect key="frame" x="0.0" y="-45" width="736" height="524"/>
+                                                        <rect key="frame" x="0.0" y="-60" width="736" height="524"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                     </view>
                                                 </subviews>
@@ -528,7 +528,7 @@
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <clipView key="contentView" id="wdH-q7-jKc">
                                                 <rect key="frame" x="1" y="0.0" width="599" height="612"/>
-                                                <autoresizingMask key="autoresizingMask"/>
+                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" autosaveColumns="NO" headerView="1r2-Np-gjj" id="Xsa-VE-4EH">
                                                         <rect key="frame" x="0.0" y="0.0" width="599" height="589"/>
@@ -659,14 +659,14 @@
                                                     </connections>
                                                 </button>
                                                 <button verticalHuggingPriority="750" misplaced="YES" id="r03-kh-kqu">
-                                                    <rect key="frame" x="113" y="-2" width="132" height="32"/>
+                                                    <rect key="frame" x="119" y="-2" width="120" height="32"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                    <buttonCell key="cell" type="push" title="Export Binary..." bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="VrW-Kg-Rh5">
+                                                    <buttonCell key="cell" type="push" title="Export FCS..." bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="VrW-Kg-Rh5">
                                                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                         <font key="font" metaFont="system"/>
                                                     </buttonCell>
                                                     <connections>
-                                                        <action selector="exportBinary:" target="-2" id="77c-Mb-OKb"/>
+                                                        <action selector="exportFCS:" target="-2" id="vyo-4i-VFb"/>
                                                     </connections>
                                                 </button>
                                                 <button identifier="helpBinaryExport" horizontalHuggingPriority="750" verticalHuggingPriority="750" misplaced="YES" id="Thr-6m-MXU">
@@ -687,7 +687,7 @@
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <clipView key="contentView" id="LZg-c4-jDn">
                                                 <rect key="frame" x="1" y="0.0" width="717" height="612"/>
-                                                <autoresizingMask key="autoresizingMask"/>
+                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" autosaveColumns="NO" headerView="UAO-A7-670" id="AC1-NF-W0U">
                                                         <rect key="frame" x="0.0" y="0.0" width="717" height="589"/>
@@ -774,7 +774,7 @@
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <clipView key="contentView" id="JWP-aq-tfn">
                                                 <rect key="frame" x="1" y="1" width="676" height="522"/>
-                                                <autoresizingMask key="autoresizingMask"/>
+                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <view id="R1f-P8-62a">
                                                         <rect key="frame" x="0.0" y="0.0" width="676" height="522"/>

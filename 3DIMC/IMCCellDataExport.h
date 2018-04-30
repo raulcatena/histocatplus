@@ -8,6 +8,11 @@
 
 #import <Foundation/Foundation.h>
 
+@class IMCComputationOnMask;
+
 @interface IMCCellDataExport : NSObject
+
+//+(BOOL)saveDocumentAtPath:(NSString *)path computations:(NSArray <IMCComputationOnMask *> *)computations;
++(BOOL)exportComputations:(NSArray<IMCComputationOnMask *> *)computations atPath:(NSString *)path channels:(NSIndexSet *)channels;
 
 @end

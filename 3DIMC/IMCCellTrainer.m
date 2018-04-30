@@ -175,8 +175,6 @@
         NSInteger labelsToAdd = self.trainingNodes.firstObject.labelsTitles.count + 2;//2 is because I add one column per category as binary, plus another column with all categories, and a final one with the certainty
         NSInteger cells = [self numberOfSegments];
         
-        NSLog(@"Labels to add %@", self.trainingNodes.firstObject.labelsTitles);
-        NSLog(@"Labels to add %@", self.trainingNodes.firstObject.labels);
         float ** new = calloc(labelsToAdd, sizeof(float *));
         float ** old = calloc(oldNumberOfChannels, sizeof(float *));
         for (NSInteger i = 0; i < labelsToAdd; i++)

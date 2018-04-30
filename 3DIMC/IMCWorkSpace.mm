@@ -25,6 +25,7 @@
 #import "NSImage+OpenCV.h"
 
 #import "IMCFileExporter.h"
+#import "IMCCellDataExport.h"
 #import "IMCChannelOperations.h"
 #import "NSView+Utilities.h"
 #import "IMC3DHandler.h"
@@ -708,26 +709,33 @@ typedef enum {
     if(self.whichTableCoordinator.indexOfSelectedItem != 5 && self.whichTableCoordinator.indexOfSelectedItem != 7)
         return;
     
-    NSIndexSet *setMetadata = [IMCUtils inputTable:self.dataCoordinator.metadata[JSON_METADATA_KEYS] prompt:@"Do you want to stich metadata? Select which fields to add"];
-    
-    NSSavePanel * panel = [NSSavePanel savePanel];
-    NSString *proposedName = [NSString stringWithFormat:@"%f.", [NSDate timeIntervalSinceReferenceDate]];
-    if (type == TableExportTypeTSV) proposedName = [proposedName stringByAppendingString:@"tsv"];
-    if (type == TableExportTypeFCS) proposedName = [proposedName stringByAppendingString:@"fcs"];
-    if (type == TableExportTypeBinary) proposedName = [proposedName stringByAppendingString:@"hcat"];
-    
-    [panel setNameFieldStringValue:proposedName];
-    [panel beginSheetModalForWindow:self.windowForSheet completionHandler:^(NSInteger result){
-        if (result == NSFileHandlingPanelOKButton){
-            if (type == TableExportTypeTSV)
-                [IMCFileExporter saveCSVWithComputations:self.inScope3DMask ? @[self.inScope3DMask] : self.inScopeComputations atPath:panel.URL.path columnIndexes:self.channels.selectedRowIndexes dataCoordinator:self.dataCoordinator metadataIndexes:setMetadata];
-            if (type == TableExportTypeFCS)
-                [IMCFileExporter saveCSVWithComputations:self.inScope3DMask ? @[self.inScope3DMask] : self.inScopeComputations atPath:panel.URL.path columnIndexes:self.channels.selectedRowIndexes dataCoordinator:self.dataCoordinator metadataIndexes:setMetadata];
-            if (type == TableExportTypeBinary)
-                [IMCFileExporter saveBinaryWithComputations:self.inScope3DMask ? @[self.inScope3DMask] : self.inScopeComputations atPath:panel.URL.path columnIndexes:self.channels.selectedRowIndexes dataCoordinator:self.dataCoordinator metadataIndexes:setMetadata];
-        }
+    if(type == TableExportTypeFCS){
+        NSSavePanel * panel = [NSSavePanel savePanel];
+        NSString *proposedName = [NSString stringWithFormat:@"%f.", [NSDate timeIntervalSinceReferenceDate]];
+        proposedName = [proposedName stringByAppendingString:@"fcs"];
+        [panel setNameFieldStringValue:proposedName];
+        [panel beginSheetModalForWindow:self.windowForSheet completionHandler:^(NSInteger result){
+           [IMCCellDataExport exportComputations:self.inScope3DMask ? @[self.inScope3DMask] : self.inScopeComputations atPath:panel.URL.path channels:self.channels.selectedRowIndexes.copy];
+        }];
+    }else{
+        NSIndexSet *setMetadata = [IMCUtils inputTable:self.dataCoordinator.metadata[JSON_METADATA_KEYS] prompt:@"Do you want to stich metadata? Select which fields to add"];
+
+        NSSavePanel * panel = [NSSavePanel savePanel];
+        NSString *proposedName = [NSString stringWithFormat:@"%f.", [NSDate timeIntervalSinceReferenceDate]];
+        if (type == TableExportTypeTSV) proposedName = [proposedName stringByAppendingString:@"tsv"];
+        if (type == TableExportTypeBinary) proposedName = [proposedName stringByAppendingString:@"hcat"];
         
-    }];
+        [panel setNameFieldStringValue:proposedName];
+        [panel beginSheetModalForWindow:self.windowForSheet completionHandler:^(NSInteger result){
+            if (result == NSFileHandlingPanelOKButton){
+                if (type == TableExportTypeTSV)
+                    [IMCFileExporter saveCSVWithComputations:self.inScope3DMask ? @[self.inScope3DMask] : self.inScopeComputations atPath:panel.URL.path columnIndexes:self.channels.selectedRowIndexes.copy dataCoordinator:self.dataCoordinator metadataIndexes:setMetadata];
+                if (type == TableExportTypeBinary)
+                    [IMCFileExporter saveBinaryWithComputations:self.inScope3DMask ? @[self.inScope3DMask] : self.inScopeComputations atPath:panel.URL.path columnIndexes:self.channels.selectedRowIndexes.copy dataCoordinator:self.dataCoordinator metadataIndexes:setMetadata];
+            }
+            
+        }];
+    }
 }
 -(IBAction)exportCSV:(id)sender{
     [self generalExportCellDataTable:TableExportTypeTSV];

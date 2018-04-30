@@ -75,7 +75,6 @@
 		0D00AC021E64D53400887057 /* NSArchiverGZipAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DA2688B1E512F39007E6EDD /* NSArchiverGZipAdditions.m */; };
 		0D00AC031E64D53400887057 /* NSView+Utilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D5C20E91E38E5F000DCD346 /* NSView+Utilities.m */; };
 		0D00AC041E64D53400887057 /* NSArray+Statistics.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DB37D2D1E34B14E002975E2 /* NSArray+Statistics.m */; };
-		0D00AC051E64D53400887057 /* IMCCellDataExport.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DA6660D1E6059FB003DD274 /* IMCCellDataExport.m */; };
 		0D00AC061E64D53400887057 /* IMCPanoramaWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DB37CFD1E30BA0D002975E2 /* IMCPanoramaWrapper.m */; };
 		0D00AC071E64D53400887057 /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0DB37CDF1E304D25002975E2 /* AppDelegate.mm */; };
 		0D00AC081E64D53400887057 /* IMC3DHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DA8ACFB1E40AE2E008194C6 /* IMC3DHandler.m */; };
@@ -506,7 +505,6 @@
 		0D9F30B51EF909CF00E1E083 /* NSView+Utilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D5C20E91E38E5F000DCD346 /* NSView+Utilities.m */; };
 		0D9F30B61EF909CF00E1E083 /* IMCThresholdBatch.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D99BFCB1E82E34800E337A2 /* IMCThresholdBatch.m */; };
 		0D9F30B71EF909CF00E1E083 /* NSArray+Statistics.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DB37D2D1E34B14E002975E2 /* NSArray+Statistics.m */; };
-		0D9F30B81EF909CF00E1E083 /* IMCCellDataExport.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DA6660D1E6059FB003DD274 /* IMCCellDataExport.m */; };
 		0D9F30B91EF909CF00E1E083 /* IMCPanoramaWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DB37CFD1E30BA0D002975E2 /* IMCPanoramaWrapper.m */; };
 		0D9F30BA1EF909CF00E1E083 /* IMCPixelClassificationBatch.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D6627341E69A82800BC2C92 /* IMCPixelClassificationBatch.m */; };
 		0D9F30BB1EF909CF00E1E083 /* IMCMaskTraining.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D00ACA01E656E9300887057 /* IMCMaskTraining.m */; };
@@ -730,7 +728,6 @@
 		0DA630531F5EE7D20032E102 /* shaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = 0DA630511F5EE7D20032E102 /* shaders.metal */; };
 		0DA630561F5EF3CA0032E102 /* MetalKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0DA630551F5EF3CA0032E102 /* MetalKit.framework */; };
 		0DA630581F5EF3CF0032E102 /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0DA630571F5EF3CF0032E102 /* Metal.framework */; };
-		0DA6660E1E6059FB003DD274 /* IMCCellDataExport.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DA6660D1E6059FB003DD274 /* IMCCellDataExport.m */; };
 		0DA84DA31E3B53FE00D075C7 /* XMLDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DA84DA11E3B53FE00D075C7 /* XMLDictionary.m */; };
 		0DA884FB1E60842A00B9EC84 /* IMCGGPlot.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0DA884FA1E60842A00B9EC84 /* IMCGGPlot.mm */; };
 		0DA886BF1E60FC1300B9EC84 /* IMCTableDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DA886BE1E60FC1300B9EC84 /* IMCTableDelegate.m */; };
@@ -831,6 +828,9 @@
 		0DC508D31F5F4F6B00C1E9D8 /* AAPLMathUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DC508D21F5F4F6B00C1E9D8 /* AAPLMathUtilities.m */; };
 		0DC508D41F5F4F6B00C1E9D8 /* AAPLMathUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DC508D21F5F4F6B00C1E9D8 /* AAPLMathUtilities.m */; };
 		0DC508D51F5F4F6B00C1E9D8 /* AAPLMathUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DC508D21F5F4F6B00C1E9D8 /* AAPLMathUtilities.m */; };
+		0DD8AB0E2090720100CB965A /* IMCCellDataExport.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DA6660D1E6059FB003DD274 /* IMCCellDataExport.m */; };
+		0DD8AB0F209093EE00CB965A /* IMCCellDataExport.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DA6660D1E6059FB003DD274 /* IMCCellDataExport.m */; };
+		0DD8AB10209093EF00CB965A /* IMCCellDataExport.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DA6660D1E6059FB003DD274 /* IMCCellDataExport.m */; };
 		0DEA0B3D1EE976FF004E80C9 /* IMCMetadataTableDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DEA0B3C1EE976FF004E80C9 /* IMCMetadataTableDelegate.m */; };
 		0DEA0B3E1EE976FF004E80C9 /* IMCMetadataTableDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DEA0B3C1EE976FF004E80C9 /* IMCMetadataTableDelegate.m */; };
 		0DF81F101FBD9801000260F5 /* IMC3DVideoPrograms.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DF81F0F1FBD9801000260F5 /* IMC3DVideoPrograms.m */; };
@@ -2863,13 +2863,13 @@
 				0D0D83DB1FA12D040044EDC1 /* IMCMathWindowController.m in Sources */,
 				0D99BFCF1E82E35000E337A2 /* IMCThresholdBatch.m in Sources */,
 				0D00AC041E64D53400887057 /* NSArray+Statistics.m in Sources */,
-				0D00AC051E64D53400887057 /* IMCCellDataExport.m in Sources */,
 				0D00AC061E64D53400887057 /* IMCPanoramaWrapper.m in Sources */,
 				0D6627381E69B16600BC2C92 /* IMCPixelClassificationBatch.m in Sources */,
 				0D00ACA21E656E9300887057 /* IMCMaskTraining.m in Sources */,
 				0D04DBF21EEABA6000B16BAB /* IMCMetricsController.m in Sources */,
 				0D04DBF61EEABA7200B16BAB /* IMCMetricsCalculator.m in Sources */,
 				0D00AC071E64D53400887057 /* AppDelegate.mm in Sources */,
+				0DD8AB0E2090720100CB965A /* IMCCellDataExport.m in Sources */,
 				0D0D84091FA144BC0044EDC1 /* IMCCellBasicAlgorithms.m in Sources */,
 				0DC508CF1F5F3B3400C1E9D8 /* IMCMtkView.m in Sources */,
 				0D00AC081E64D53400887057 /* IMC3DHandler.m in Sources */,
@@ -3007,13 +3007,13 @@
 				0D0D83DC1FA12D040044EDC1 /* IMCMathWindowController.m in Sources */,
 				0D9F30B61EF909CF00E1E083 /* IMCThresholdBatch.m in Sources */,
 				0D9F30B71EF909CF00E1E083 /* NSArray+Statistics.m in Sources */,
-				0D9F30B81EF909CF00E1E083 /* IMCCellDataExport.m in Sources */,
 				0D9F30B91EF909CF00E1E083 /* IMCPanoramaWrapper.m in Sources */,
 				0D9F30BA1EF909CF00E1E083 /* IMCPixelClassificationBatch.m in Sources */,
 				0D9F30BB1EF909CF00E1E083 /* IMCMaskTraining.m in Sources */,
 				0D9F30BC1EF909CF00E1E083 /* IMCMetricsController.m in Sources */,
 				0D9F30BD1EF909CF00E1E083 /* IMCMetricsCalculator.m in Sources */,
 				0D9F30BE1EF909CF00E1E083 /* AppDelegate.mm in Sources */,
+				0DD8AB0F209093EE00CB965A /* IMCCellDataExport.m in Sources */,
 				0D0D84081FA139860044EDC1 /* IMCCellBasicAlgorithms.m in Sources */,
 				0DC508D01F5F3B3400C1E9D8 /* IMCMtkView.m in Sources */,
 				0D9F30BF1EF909CF00E1E083 /* IMC3DHandler.m in Sources */,
@@ -3150,7 +3150,6 @@
 				0DB37D2E1E34B14E002975E2 /* NSArray+Statistics.m in Sources */,
 				0D0D83DA1FA12D040044EDC1 /* IMCMathWindowController.m in Sources */,
 				0D99BFCD1E82E34800E337A2 /* IMCThresholdBatch.m in Sources */,
-				0DA6660E1E6059FB003DD274 /* IMCCellDataExport.m in Sources */,
 				0DB37CFE1E30BA0D002975E2 /* IMCPanoramaWrapper.m in Sources */,
 				0D00ACA11E656E9300887057 /* IMCMaskTraining.m in Sources */,
 				0D6627361E69A82800BC2C92 /* IMCPixelClassificationBatch.m in Sources */,
@@ -3158,6 +3157,7 @@
 				0D04DBF11EEABA6000B16BAB /* IMCMetricsController.m in Sources */,
 				0D04DBF51EEABA7200B16BAB /* IMCMetricsCalculator.m in Sources */,
 				0DA8ACFC1E40AE2E008194C6 /* IMC3DHandler.m in Sources */,
+				0DD8AB10209093EF00CB965A /* IMCCellDataExport.m in Sources */,
 				0D0D840A1FA144BD0044EDC1 /* IMCCellBasicAlgorithms.m in Sources */,
 				0DC508CE1F5F3B3400C1E9D8 /* IMCMtkView.m in Sources */,
 				0DAA1EF01E55F45700579003 /* IMCPreferencesController.m in Sources */,
