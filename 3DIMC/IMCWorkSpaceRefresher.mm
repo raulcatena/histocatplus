@@ -320,7 +320,7 @@
             NSMutableArray *ioi = self.parent.inOrderIndexes.copy;
             for (NSNumber * num in ioi) {
                 
-                if (overrideRefresh)
+                if (self->overrideRefresh)
                     return;
                 
                 NSColor *col = collColors[cursor];//Is like case 4 later
@@ -362,7 +362,7 @@
             
             for (NSDictionary *dict in arrayAll) {
                 
-                if (overrideRefresh)
+                if (self->overrideRefresh)
                     return;
                 
                 NSArray *keys = @[@"comp",@"mask",@"stack"];
@@ -399,7 +399,7 @@
         
         if(images.count > 0)
             dispatch_async(dispatch_get_main_queue(), ^{
-                if (overrideRefresh)
+                if (self->overrideRefresh)
                     return;
                 [self.parent.scrollViewTiles assembleTiledWithImages:images];
             });

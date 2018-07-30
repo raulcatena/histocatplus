@@ -16,12 +16,12 @@
 #import "NSMutableArrayAdditions.h"
 #import "IMCPanoramaWrapper.h"
 
-@interface IMCImageStack(){
+//@interface IMCImageStack(){
     UInt8 ** cachedValues;
     float ** cachedSettings;//MaxOffset, MinOffSet, Multiplication Factor, pixelFilterFactor, MAX
-}
+//}
 
-@end
+//@end
 
 @implementation IMCImageStack
 

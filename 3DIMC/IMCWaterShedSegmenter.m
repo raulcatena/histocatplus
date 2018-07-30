@@ -70,7 +70,7 @@
     do{
         NSArray *channs = [@[@"None"] arrayByAddingObjectsFromArray:inScopeImage.channels.copy];
         sChannel = [IMCUtils inputOptions:channs prompt:@"Do you want to use a channel to frame the nuclear signal?"] - 1;
-    }while (sChannel < 0 || sChannel == channel);
+    }while (sChannel == channel);
     
     int expansion = 0;
     do{
@@ -90,7 +90,7 @@
     dispatch_queue_t aQ = dispatch_queue_create([IMCUtils randomStringOfLength:5].UTF8String, NULL);
     dispatch_async(aQ, ^{
         for (IMCImageStack *stack in inScopeImages.copy)
-            [IMCWaterShedSegmenter extractMaskFromRender:stack channels:inOrderIndexes dictChannel:dict1 framingChannel:sChannel - 1 dictSChannel:dict2 threshold:threshold gradient:gradient minKernel:kernel expansion:expansion name:input];
+            [IMCWaterShedSegmenter extractMaskFromRender:stack channels:inOrderIndexes dictChannel:dict1 framingChannel:sChannel dictSChannel:dict2 threshold:threshold gradient:gradient minKernel:kernel expansion:expansion name:input];
     });
 }
 

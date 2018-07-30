@@ -21,6 +21,6 @@ void compute_student(float* X, int N, int D, float* P, float* unnorm_P);
 void compute_stiffnesses(float* P, float* Q, float* unnorm_Q, int N);
 void compute_gradient(float* Y, float* Z, float* dY, int N, int D);
 float evaluate_error(float* P, float* Q, int N);
-float randn();
+float randn(void);
 
 #endif

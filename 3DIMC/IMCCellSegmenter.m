@@ -17,7 +17,8 @@
     NSString *pathImage = [NSString stringWithFormat:@"%@/%@_seg_pmap.tiff", wf, hash];
     NSLog(@"Path image %@", pathImage);
     NSFileManager *fileManager = [NSFileManager defaultManager];
-    if(![fileManager fileExistsAtPath:pathImage isDirectory:NO])return;
+    if(![fileManager fileExistsAtPath:pathImage isDirectory:NULL])
+        return;
     
     NSString *pathTemplate = [[NSBundle mainBundle]pathForResource:@"cp_pmaps_only_mask_temp" ofType:nil];//Will choose from dynamic
     NSString *temp = [[NSString alloc]initWithContentsOfFile:pathTemplate encoding:NSUTF8StringEncoding error:NULL];
@@ -51,7 +52,8 @@
     NSString *pathCPPipe = [NSString stringWithFormat:@"%@/%@_cp_pipeline_prob.cppipe", [stack.fileWrapper workingFolder], hash.copy];
     
     NSFileManager *fileManager = [NSFileManager defaultManager];
-    if(![fileManager fileExistsAtPath:pathCPPipe isDirectory:NO])return;
+    if(![fileManager fileExistsAtPath:pathCPPipe isDirectory:NULL])
+        return;
     
     NSMutableArray *args = [NSMutableArray array];
     if(foreground == NO)[args addObject:@"-c"];

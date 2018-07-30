@@ -642,7 +642,7 @@
         dispatch_queue_t aQ = dispatch_queue_create([IMCUtils randomStringOfLength:5].UTF8String, NULL);
         dispatch_async(aQ, ^{
             int cycle = op.iterationCursor;
-            while (recording && cycle < op.numberOfCycles) {
+            while (self->recording && cycle < op.numberOfCycles) {
                 while (op.iterationCursor == cycle);
                 dispatch_async(dispatch_get_main_queue(), ^{[self updateGraph:nil];});
                 cycle = op.iterationCursor;

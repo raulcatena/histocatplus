@@ -339,7 +339,7 @@
 -(void)finishVideo{
     [_writerInput markAsFinished];
     [_videoWriter finishWritingWithCompletionHandler:^{
-        CVPixelBufferPoolRelease(_adaptor.pixelBufferPool);
+        CVPixelBufferPoolRelease(self->_adaptor.pixelBufferPool);
     }];
 }
 

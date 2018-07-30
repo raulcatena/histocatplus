@@ -17,12 +17,12 @@
 #import "IMCMasks.h"
 #import "NSArray+Statistics.h"
 
-@interface IMC3DMask(){
+//@interface IMC3DMask(){
     UInt8 *** auxiliaryData;
     NSIndexSet *lastIndexSet;
-}
+//}
 
-@end
+//@end
 
 @implementation IMC3DMask
 
@@ -1118,8 +1118,8 @@
             NSInteger offsetPlane = p * planeLength;
             NSInteger upperLimit = offsetPlane + planeLength;
             for (NSInteger i = offsetPlane; i < upperLimit; i++) {
-                if (_maskIds[i] > 0){
-                    NSInteger cellId = _maskIds[i] - 1;
+                if (self->_maskIds[i] > 0){
+                    NSInteger cellId = self->_maskIds[i] - 1;
                     NSArray *collectedVoxelIndexes = [self collectVoxelsForVoxelIndex:i width:self.width planeLength:planeLength totalMask:fullMask];
                     
                     if(collectedVoxelIndexes.count < 20)//RCF heuristic May pass as parameter
@@ -1156,8 +1156,8 @@
                         for (int j = 0; j < 6; j++) {
                             NSInteger test = tests[j];
                             if(test < fullMask && test >= 0)
-                                if (_maskIds[test] != 0 && _maskIds[test] != _maskIds[i])
-                                   [neighbors addObject:@(abs (_maskIds[test]))];
+                                if (self->_maskIds[test] != 0 && self->_maskIds[test] != self->_maskIds[i])
+                                   [neighbors addObject:@(abs (self->_maskIds[test]))];
                         }
                     }
                     for (NSInteger c = 0; c < channelsExtraction; c++)

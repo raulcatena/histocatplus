@@ -1619,10 +1619,11 @@ typedef enum {
     if([self canRender]){
         self.threeDProcessesIndicator.doubleValue = .0f;
         dispatch_queue_t queue = dispatch_queue_create([IMCUtils randomStringOfLength:5].UTF8String, NULL);
+        NSInteger channCount = self.channels.selectedRowIndexes.count;
         dispatch_async(queue, ^{
             if(![self.threeDHandler isReady])
                 return;
-            if(self.channels.selectedRowIndexes.count == 0)
+            if(channCount == 0)
                 return;
             
             NSIndexSet *channs = self.channels.selectedRowIndexes.copy;
@@ -2171,18 +2172,18 @@ typedef enum {
         whichComp = self.inScope3DMask;
     if(whichComp){
         [whichComp openIfNecessaryAndPerformBlock:^{
-            _currentCellAnalysis = NULL;
+            self.currentCellAnalysis = NULL;
             if(!self.cellAnalyses)
                 self.cellAnalyses = @[].mutableCopy;
             for(IMCCellBasicAlgorithms *analys in self.cellAnalyses)
                 if([analys containsComputations:@[whichComp]])
-                    _currentCellAnalysis = analys;
-            if(!_currentCellAnalysis){
-                _currentCellAnalysis = [[IMCCellBasicAlgorithms alloc]initWithComputation:whichComp];
-                _currentCellAnalysis.mainURL = self.fileURL.path;
-                [self.cellAnalyses addObject:_currentCellAnalysis];
+                    self.currentCellAnalysis = analys;
+            if(!self.currentCellAnalysis){
+                self.currentCellAnalysis = [[IMCCellBasicAlgorithms alloc]initWithComputation:whichComp];
+                self.currentCellAnalysis.mainURL = self.fileURL.path;
+                [self.cellAnalyses addObject:self.currentCellAnalysis];
             }
-            [[_currentCellAnalysis window] makeKeyAndOrderFront:_currentCellAnalysis];
+            [[self.currentCellAnalysis window] makeKeyAndOrderFront:self.currentCellAnalysis];
         }];
     }
 }
