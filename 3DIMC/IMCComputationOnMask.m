@@ -778,7 +778,8 @@
 }
 
 -(void)allocateCacheBufferContainers{
-    if(cachedValues != NULL)free(cachedValues);
+    if(cachedValues != NULL)
+        free(cachedValues);
     cachedValues = NULL;
     if(cachedValues == NULL){
         cachedValues = (UInt8 **)calloc(self.channels.count, sizeof(UInt8 *));
@@ -1267,7 +1268,7 @@ typedef enum{
                     kMeansData[counter] = data[cell][channel];
                     counter++;
                 }
-            kmeans(kMeansData, (int)allCells, (int)indexSet.count, (int)repetitions, (int)clustersIndicated, clusters, NULL);
+            kmeans(kMeansData, (int)allCells, (int)indexSet.count, (int)clustersIndicated, (int)repetitions, clusters, NULL);
             //K means will not clean the memory
             free(kMeansData);
             for(NSInteger cell = 0; cell < allCells; cell++)

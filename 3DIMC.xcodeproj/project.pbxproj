@@ -393,6 +393,7 @@
 		0D6720531E3FF3C800C19663 /* IMCTransformDictController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D6720521E3FF3C800C19663 /* IMCTransformDictController.m */; };
 		0D6720551E3FF3E400C19663 /* IMCTransformDictController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0D6720541E3FF3E400C19663 /* IMCTransformDictController.xib */; };
 		0D6F4F2B1E473CC200533127 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 0D6F4F2A1E473CC200533127 /* libz.tbd */; };
+		0D7CB26C217755F200EA36A5 /* License-AGPL3.0.txt in Resources */ = {isa = PBXBuildFile; fileRef = 0D7CB26B217755F200EA36A5 /* License-AGPL3.0.txt */; };
 		0D80B5AA2021DF73008CF561 /* IMCCellDataImport.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D80B5A92021DF73008CF561 /* IMCCellDataImport.m */; };
 		0D80B5AB2021DF73008CF561 /* IMCCellDataImport.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D80B5A92021DF73008CF561 /* IMCCellDataImport.m */; };
 		0D80B5AC2021DF73008CF561 /* IMCCellDataImport.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D80B5A92021DF73008CF561 /* IMCCellDataImport.m */; };
@@ -1009,6 +1010,8 @@
 		0D6720521E3FF3C800C19663 /* IMCTransformDictController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IMCTransformDictController.m; sourceTree = "<group>"; };
 		0D6720541E3FF3E400C19663 /* IMCTransformDictController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = IMCTransformDictController.xib; sourceTree = "<group>"; };
 		0D6F4F2A1E473CC200533127 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
+		0D7CB26B217755F200EA36A5 /* License-AGPL3.0.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = "License-AGPL3.0.txt"; sourceTree = "<group>"; };
+		0D7CB26F217756EB00EA36A5 /* SOFTWARE CONTRIBUTION AGREEMENT-UZH.doc */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SOFTWARE CONTRIBUTION AGREEMENT-UZH.doc"; sourceTree = "<group>"; };
 		0D80B5A82021DF73008CF561 /* IMCCellDataImport.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IMCCellDataImport.h; sourceTree = "<group>"; };
 		0D80B5A92021DF73008CF561 /* IMCCellDataImport.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = IMCCellDataImport.m; sourceTree = "<group>"; };
 		0D8171231E4229FC0058084C /* IMCImprovedRegistration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IMCImprovedRegistration.h; sourceTree = "<group>"; };
@@ -1984,6 +1987,8 @@
 		0DB37CD21E304D25002975E2 = {
 			isa = PBXGroup;
 			children = (
+				0D7CB26F217756EB00EA36A5 /* SOFTWARE CONTRIBUTION AGREEMENT-UZH.doc */,
+				0D7CB26B217755F200EA36A5 /* License-AGPL3.0.txt */,
 				0D57600E1EB9CAC2008CAB94 /* Frameworks */,
 				0D6F4F2A1E473CC200533127 /* libz.tbd */,
 				0DB37CDD1E304D25002975E2 /* 3DIMC */,
@@ -2706,6 +2711,7 @@
 				0DFB2EDE1E4B64160065AC61 /* miCAT3D_16.png in Resources */,
 				0DC0E48D1F64944C00DD1B62 /* SpillOverTableCleanWithZerosBioRXivs.txt in Resources */,
 				0DB400471E530B3E00179ECB /* IMCBrushTools.xib in Resources */,
+				0D7CB26C217755F200EA36A5 /* License-AGPL3.0.txt in Resources */,
 				0DAA1EF11E55F45700579003 /* IMCPreferencesController.xib in Resources */,
 				0DA268961E512F39007E6EDD /* README in Resources */,
 				0DB400411E53071C00179ECB /* IMCCellSegmentation.xib in Resources */,

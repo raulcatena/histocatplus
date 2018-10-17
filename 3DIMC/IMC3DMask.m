@@ -1707,11 +1707,12 @@
     
     float *expectedMatrix = calloc(maxCluster * maxCluster, sizeof(float));
     
-    for (NSInteger i = 0; i < maxCluster; i++)
-        for (NSInteger j = 0; j < maxCluster; j++)
+    for (NSInteger j = 0; j < maxCluster; j++)
+        for (NSInteger i = 0; i < maxCluster; i++)
             //if( i + j >= maxCluster)
-                expectedMatrix[j * maxCluster + i] = summary[i * 3 + 1]/(total - 1) * summary[j * 3 + 2] * summary[j * 3 + 1];
-    
+            expectedMatrix[j * maxCluster + i] = summary[i * 3 + 1]/(total - 1) * summary[j * 3 + 2] * summary[j * 3 + 1];
+
+            
     for (NSInteger j = 0; j < maxCluster; j++){
         for (NSInteger i = 0; i < maxCluster; i++)
             printf("%.3f ", expectedMatrix[j * maxCluster + i]);

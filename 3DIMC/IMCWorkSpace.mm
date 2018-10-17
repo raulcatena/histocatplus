@@ -1620,31 +1620,31 @@ typedef enum {
         self.threeDProcessesIndicator.doubleValue = .0f;
         dispatch_queue_t queue = dispatch_queue_create([IMCUtils randomStringOfLength:5].UTF8String, NULL);
         NSInteger channCount = self.channels.selectedRowIndexes.count;
+        NSIndexSet *channs = self.channels.selectedRowIndexes.copy;
+        NSIndexSet * objects = self.filesTree.selectedRowIndexes.copy;
+        
         dispatch_async(queue, ^{
             if(![self.threeDHandler isReady])
                 return;
             if(channCount == 0)
                 return;
             
-            NSIndexSet *channs = self.channels.selectedRowIndexes.copy;
-            NSIndexSet * objects = self.filesTree.selectedRowIndexes.copy;
             __block NSInteger ongoing = 0;
             __block NSInteger completed = 0;
             
             bool * seen = (bool *)calloc(objects.count, sizeof(bool));
             
             [objects enumerateIndexesUsingBlock:^(NSUInteger fileIdx, BOOL *stop){
-                while (ongoing > 3);
+                while (ongoing > 2);
                 ongoing++;
                 
-                dispatch_queue_t internalQueue = dispatch_queue_create([IMCUtils randomStringOfLength:5].UTF8String, NULL);
-                dispatch_async(internalQueue, ^{
-                    
+//                dispatch_queue_t internalQueue = dispatch_queue_create([IMCUtils randomStringOfLength:5].UTF8String, NULL);
+//                dispatch_async(internalQueue, ^{
+                
                     NSInteger external = [self.threeDHandler externalSliceIndexForInternal:fileIdx];
                     if(seen[external] == false){
                         seen[external] =  true;
-                        IMCNodeWrapper *anobj;
-                        anobj= [self.filesTree itemAtRow:fileIdx];
+                        IMCNodeWrapper *anobj = [self.filesTree itemAtRow:fileIdx];
                         
                         IMCImageStack *stack;
                         IMCComputationOnMask *comp;
@@ -1687,7 +1687,7 @@ typedef enum {
                     dispatch_async(dispatch_get_main_queue(), ^{
                         self.threeDProcessesIndicator.doubleValue += 100.f/objects.count;
                     });
-                });
+//                });
             }];
             while (completed < objects.count);
             [self.threeDHandler meanBlurModelWithKernel:3 forChannels:channs mode:self.cleanUpMode.indexOfSelectedItem];
@@ -1897,14 +1897,14 @@ typedef enum {
         IMCCellTrainerTool *seg = [[IMCCellTrainerTool alloc]initWithComputation:self.inScopeComputation andTraining:nil];
         [[seg window] makeKeyAndOrderFront:seg];
     }
-//    if(self.inScope3DMask.isLoaded){
-//        IMCCell3DTrainerTool *seg = [[IMCCell3DTrainerTool alloc]initWithComputation:self.inScope3DMask andTraining:nil];
-//        [[seg window] makeKeyAndOrderFront:seg];
-//    }
     if(self.inScope3DMask.isLoaded){
-        IMCSceneKitClassifier *seg = [[IMCSceneKitClassifier alloc]initWithComputation:self.inScope3DMask andTraining:nil];
+        IMCCell3DTrainerTool *seg = [[IMCCell3DTrainerTool alloc]initWithComputation:self.inScope3DMask andTraining:nil];
         [[seg window] makeKeyAndOrderFront:seg];
     }
+//    if(self.inScope3DMask.isLoaded){
+//        IMCSceneKitClassifier *seg = [[IMCSceneKitClassifier alloc]initWithComputation:self.inScope3DMask andTraining:nil];
+//        [[seg window] makeKeyAndOrderFront:seg];
+//    }
 }
 -(void)cellClassificationBatch:(id)sender{
     IMCCellClassificationBatch *seg;

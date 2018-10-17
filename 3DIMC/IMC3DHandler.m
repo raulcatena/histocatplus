@@ -131,7 +131,7 @@
         float pos = deltas_z[i];
         NSString *key = [NSString stringWithFormat:@"%.2f", pos];
         NSMutableArray *found = dict[key];
-        if(!found)
+        if(!found || found.count == 0)
             found = @[].mutableCopy;
         [found addObject:@(i)];
         [dict setValue:found forKey:key];

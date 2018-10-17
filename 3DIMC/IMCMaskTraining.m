@@ -64,10 +64,10 @@
     NSWindowController *cont;
     if([self.parent isMemberOfClass:[IMCComputationOnMask class]])
         cont = [[IMCCellTrainerTool alloc]initWithComputation:self.computation andTraining:self];
-//    if([self.parent isMemberOfClass:[IMC3DMask class]])
-//        cont = [[IMCCell3DTrainerTool alloc]initWithComputation:self.computation andTraining:self];
     if([self.parent isMemberOfClass:[IMC3DMask class]])
-        cont = [[IMCSceneKitClassifier alloc]initWithComputation:self.computation andTraining:self];
+        cont = [[IMCCell3DTrainerTool alloc]initWithComputation:self.computation andTraining:self];
+//    if([self.parent isMemberOfClass:[IMC3DMask class]])
+//        cont = [[IMCSceneKitClassifier alloc]initWithComputation:self.computation andTraining:self];
     [[cont window] makeKeyAndOrderFront:cont];
     [super loadLayerDataWithBlock:block];
     
