@@ -26,6 +26,8 @@
 #import "IMCThresholdBatch.h"
 #import "IMCMetricsController.h"
 #import "IMCMetalViewAndRenderer.h"
+#import "IMCMetalViewAndRenderer3DSampler.h"
+#import "IMCMetalPolygonizedFieldRenderer.h"
 #import "IMCMetalSphereRenderer.h"
 #import "IMCMetalSphereStripedRenderer.h"
 #import "IMCMtkView.h"

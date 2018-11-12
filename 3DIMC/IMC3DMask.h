@@ -48,6 +48,9 @@ typedef enum{
 @property (nonatomic, readonly) NSMutableArray * channels;
 @property (nonatomic, readonly) NSString * roiMask;
 @property (nonatomic, assign) int * maskIds;
+@property (nonatomic, assign) float * verts;
+@property (nonatomic, assign) unsigned * cellTriangleOffsets;
+@property (nonatomic, assign) int numberOfTriangleVertices;
 
 @property (nonatomic, strong) NSMutableArray<IMC3DMaskComputations *> *computationNodes;
 

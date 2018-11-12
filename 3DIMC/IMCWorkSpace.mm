@@ -85,8 +85,10 @@
 @property (nonatomic, strong) NSMutableArray *batchWindows;
 @property (nonatomic, strong) IMCMiniRConsole *rMiniConsole;
 @property (nonatomic, strong) IMCMetalViewAndRenderer *metalViewDelegate;
+@property (nonatomic, strong) IMCMetalViewAndRenderer3DSampler *metalViewDelegate3DSampler;
 @property (nonatomic, strong) IMCMetalSphereRenderer *sphereMetalViewDelegate;
 @property (nonatomic, strong) IMCMetalSphereRenderer *stripedSphereMetalViewDelegate;
+@property (nonatomic, strong) IMCMetalPolygonizedFieldRenderer *polygonMetalViewDelegate;
 @property (nonatomic, assign) NSModalSession compensationSession;
 @property (nonatomic, strong) IMCCompensation * compensationHandler;
 @property (nonatomic, strong) NSMutableArray<IMCCellBasicAlgorithms *> * cellAnalyses;
@@ -161,12 +163,16 @@
         [self.openGlViewPort removeFromSuperview];
         self.openGlViewPort = nil;
         self.metalViewDelegate = [[IMCMetalViewAndRenderer alloc]init];
+        self.metalViewDelegate3DSampler = [[IMCMetalViewAndRenderer3DSampler alloc]init];
         self.sphereMetalViewDelegate = [[IMCMetalSphereRenderer alloc]init];
         self.stripedSphereMetalViewDelegate = [[IMCMetalSphereStripedRenderer alloc]init];
+        self.polygonMetalViewDelegate = [[IMCMetalPolygonizedFieldRenderer alloc]init];
         self.metalView.delegate = self.metalViewDelegate;
         self.metalViewDelegate.delegate = self;
+        self.metalViewDelegate3DSampler.delegate = self;
         self.sphereMetalViewDelegate.delegate = self;
         self.stripedSphereMetalViewDelegate.delegate = self;
+        self.polygonMetalViewDelegate.delegate = self;
     }else{
         [self.metalView removeFromSuperview];
         self.metalView = nil;
@@ -276,6 +282,7 @@
     inScope3DMask.noBorders = (BOOL)self.with3Dgaps.indexOfSelectedItem;
     self.sphereMetalViewDelegate.computation = inScope3DMask;
     self.stripedSphereMetalViewDelegate.computation = inScope3DMask;
+    self.polygonMetalViewDelegate.computation = inScope3DMask;
     self.customChannelsDelegate.settingsJsonArray = inScope3DMask.channelSettings;
 }
 
@@ -1580,18 +1587,16 @@ typedef enum {
 -(void)typeOf3DMesh:(NSPopUpButton *)sender{
     self.cellModifier.hidden = sender.indexOfSelectedItem == 0;
     if(sender.indexOfSelectedItem == 0)self.metalView.delegate = self.metalViewDelegate;
-    if(sender.indexOfSelectedItem == 1)self.metalView.delegate = self.sphereMetalViewDelegate;
-    if(sender.indexOfSelectedItem == 2)self.metalView.delegate = self.stripedSphereMetalViewDelegate;
-    if(sender.indexOfSelectedItem == 3){
-        //TODO
-        [sender selectItemAtIndex:0];
-        self.metalView.delegate = self.metalViewDelegate;
-        [General runAlertModalWithMessage:@"Funcion not yet implemented, reset to voxels"];
-        
-    }
+    if(sender.indexOfSelectedItem == 1)self.metalView.delegate = self.polygonMetalViewDelegate;
+    if(sender.indexOfSelectedItem == 2)self.metalView.delegate = self.sphereMetalViewDelegate;
+    if(sender.indexOfSelectedItem == 3)self.metalView.delegate = self.stripedSphereMetalViewDelegate;
+    if(sender.indexOfSelectedItem == 4)self.metalView.delegate = self.metalViewDelegate3DSampler;
+    
     self.metalViewDelegate.forceColorBufferRecalculation = YES;
+    self.metalViewDelegate3DSampler.forceColorBufferRecalculation = YES;
     self.sphereMetalViewDelegate.forceColorBufferRecalculation = YES;
     self.stripedSphereMetalViewDelegate.forceColorBufferRecalculation = YES;
+    self.polygonMetalViewDelegate.forceColorBufferRecalculation = YES;
 }
 -(void)start3Dreconstruction:(NSButton *)sender{
     if([self canRender]){
@@ -1622,6 +1627,8 @@ typedef enum {
         NSInteger channCount = self.channels.selectedRowIndexes.count;
         NSIndexSet *channs = self.channels.selectedRowIndexes.copy;
         NSIndexSet * objects = self.filesTree.selectedRowIndexes.copy;
+        NSInteger cleanUpMode = self.cleanUpMode.indexOfSelectedItem;
+        
         
         dispatch_async(queue, ^{
             if(![self.threeDHandler isReady])
@@ -1690,7 +1697,7 @@ typedef enum {
 //                });
             }];
             while (completed < objects.count);
-            [self.threeDHandler meanBlurModelWithKernel:3 forChannels:channs mode:self.cleanUpMode.indexOfSelectedItem];
+            [self.threeDHandler meanBlurModelWithKernel:3 forChannels:channs mode:cleanUpMode];
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self calculateMemory];
                 self.threeDProcessesIndicator.doubleValue = 0.0f;
@@ -1788,6 +1795,7 @@ typedef enum {
 -(IBAction)refresh3D:(id)sender{
     [self.openGlViewPort refresh];
     self.metalViewDelegate.forceColorBufferRecalculation = YES;
+    //self.metalViewDelegate3DSampler.forceColorBufferRecalculation = YES;
 }
 -(NSArray *)inOrderIndexesArranged{
     return self.threeDHandler.indexesArranged;

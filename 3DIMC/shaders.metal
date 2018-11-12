@@ -35,7 +35,7 @@ struct PositionalData{
 
 struct VertexOut{
     float4 position [[ position ]];
-    float4 color;
+    half4 color;
 };
 
 
@@ -54,7 +54,7 @@ vertex VertexOut vertexShaderT(const device packed_float3 * vertexArray [[ buffe
     VertexOut out;
     float3 pos = float3(vertexArray[iid * 7]);
     out.position = uniforms.projectionMatrix * uniforms.baseModelMatrix * uniforms.modelViewMatrix * float4(pos, 1);
-    out.color = float4(1.0f/vid, 1.0f/36 * vid, 0.5, 0.5);
+    out.color = half4(1.0f/vid, 1.0f/36 * vid, 0.5, 0.5);
     return out;
 }
 
@@ -82,7 +82,7 @@ vertex VertexOut oldvertexShader(
     
     //if(mask[iid % positional.areaModel] == true){
         out.position = uniforms.projectionMatrix * uniforms.baseModelMatrix * uniforms.modelViewMatrix * float4(pos, 1);
-        out.color = float4(1.0f/vid, 1.0f/36 * vid, 0.5, 0.5);
+        out.color = half4(1.0f/vid, 1.0f/36 * vid, 0.5, 0.5);
     //}
     
     return out;
@@ -130,17 +130,13 @@ vertex VertexOut vertexShader(
     
     //out.position = uniforms.projectionMatrix * uniforms.baseModelMatrix * uniforms.modelViewMatrix * float4(pos, 1);
     out.position = uniforms.premultipliedMatrix * float4(pos, 1);
-    out.color = float4(colors[baseIndex + 1], colors[baseIndex + 2], colors[baseIndex + 3], colors[baseIndex]);
+    out.color = half4(colors[baseIndex + 1], colors[baseIndex + 2], colors[baseIndex + 3], colors[baseIndex]);
     
     return out;
-    
-    //return float4(vertex_array[vid], 1.0);
 }
 
 fragment half4 fragmentShader(const VertexOut interpolated [[ stage_in ]]){
-//    if(interpolated.position[0] == -100.0)
-//        discard_fragment();
-    return half4(interpolated.color);
+    return interpolated.color;
 }
 
 vertex VertexOut sphereVertexShader(
@@ -175,7 +171,7 @@ vertex VertexOut sphereVertexShader(
     
     
     out.position = uniforms.premultipliedMatrix * float4(pos, 1);
-    out.color = float4(colors[baseIndex + 1], colors[baseIndex + 2], colors[baseIndex + 3], colors[baseIndex]);
+    out.color = half4(colors[baseIndex + 1], colors[baseIndex + 2], colors[baseIndex + 3], colors[baseIndex]);
     
     return out;    
 }
@@ -234,13 +230,122 @@ vertex VertexOut stripedSphereVertexShader(
     
     
     out.position = uniforms.premultipliedMatrix * float4(pos, 1);
-    out.color = float4(colors[baseIndex + 4 * color + 1], colors[baseIndex + 4 * color + 2], colors[baseIndex + 4 * color + 3], 1);
+    out.color = half4(colors[baseIndex + 4 * color + 1], colors[baseIndex + 4 * color + 2], colors[baseIndex + 4 * color + 3], 1);
     
     return out;    
 }
 
 fragment half4 sphereFragmentShader(const VertexOut interpolated [[ stage_in ]]){
-    return half4(interpolated.color);
+    return interpolated.color;
 }
 
+//From Back
+#define NUM_QUADS 1000.0
 
+struct VertexOutBack{
+    float4 position [[ position ]];
+    float4 samplerPosition;
+};
+
+vertex VertexOutBack vertexShaderBack(
+                                      const device packed_float3* vertex_array [[ buffer(2) ]],
+                                      constant Constants & uniforms [[ buffer(1) ]],
+                                      constant PositionalData & positional [[ buffer(0) ]],
+                                      unsigned int vid [[ vertex_id ]],
+                                      unsigned int iid [[ instance_id ]]) {
+    
+    VertexOutBack out;
+
+    float maximumSide = max(positional.widthModel, positional.heightModel);
+    maximumSide = max(maximumSide, positional.halfTotalThickness * 2);
+    maximumSide *= 1.74;//1.732 is sqrt(3). This makes sure that the rotated model fits within the cube always
+    
+    float step_ = 1.74/NUM_QUADS;
+    float3 pos = float3(vertex_array[vid][0] , vertex_array[vid][1], vertex_array[vid][2] - 0.87 + iid * step_);
+    out.samplerPosition = uniforms.modelViewMatrix * float4(pos, 1);
+    pos = float3(vertex_array[vid][0] * maximumSide , vertex_array[vid][1] * maximumSide, (vertex_array[vid][2] - 0.87 + iid * step_) * maximumSide);
+    out.position = uniforms.projectionMatrix * uniforms.baseModelMatrix * float4(pos, 1);
+
+    return out;
+}
+
+fragment half4 fragmentShaderBack(const VertexOutBack interpolated [[ stage_in ]],
+                                  const device char * colors [[ buffer(0) ]],
+                                  constant PositionalData & positional [[ buffer(1) ]],
+                                  const device float * reverseDepths [[ buffer(2) ]]
+                                  ){
+    
+    float x = interpolated.samplerPosition.x;
+    float y = interpolated.samplerPosition.y;
+    float z = interpolated.samplerPosition.z;
+    
+    if(x < -0.5 || x > 0.5 || y < -0.5 || y > 0.5 || z <= -0.5 || z >= 0.5){
+        discard_fragment();
+    }else{
+        int ix = (int)round((x + 0.5) * positional.widthModel);
+        int iy = (int)round((y + 0.5) * positional.heightModel);
+        int iz = (int)round((z + 0.5) * (NUM_QUADS - 1));
+        
+        if(reverseDepths[iz] == -1.0){
+            discard_fragment();
+        }else{
+            unsigned index = (reverseDepths[iz] * positional.areaModel + iy * positional.widthModel + ix) * 4;
+            char a = colors[index];
+            if(a == 0){
+                discard_fragment();
+            }else{
+                char r = colors[index + 1];
+                char g = colors[index + 2];
+                char b = colors[index + 3];
+                return half4(r/255.0, g/255.0, b/255.0, a/255);
+            }
+        }
+    }
+    return half4(0.0);
+}
+
+//Polygonized
+vertex VertexOut vertexShaderPolygonized(
+                                      const device packed_float3* vertex_array [[ buffer(0) ]],
+                                      constant Constants & uniforms [[ buffer(1) ]],
+                                      constant PositionalData & positional [[ buffer(2) ]],
+                                      const device unsigned* offSetData [[ buffer(3) ]],
+                                      unsigned int vid [[ vertex_id ]]) {
+    
+    VertexOut out;
+    //Ascertain cell with a binary search
+    int halfWay = positional.stride/2;//I use stride here for number of cells
+//    int lastHalf = positional.stride;
+//    unsigned triang = vid/3;
+//    while(true){
+//        //Base cases first
+//        if(halfWay == 0)//Exhausted
+//            break;
+//
+//        unsigned left = offSetData[halfWay - 1];
+//        unsigned right = offSetData[halfWay];
+//
+//        if(triang >= left && triang < right){//In right sector, the other base case
+//            break;
+//        }
+//        //Binary search
+//        if(triang >= right){
+//            halfWay = (halfWay + lastHalf)/2;
+//        }else{
+//            lastHalf = halfWay;
+//            halfWay /= 2;
+//        }
+//    }
+    packed_float3 vert = vertex_array[vid];
+    float3 pos = float3(vert[0] - positional.widthModel/2, vert[1] - positional.heightModel/2, vert[2] * 2 - positional.halfTotalThickness);
+    out.position = uniforms.premultipliedMatrix * float4(pos, 1);
+    float fac = (offSetData[halfWay]%255)/255.f;
+    
+    out.color = half4(fac, 1 - fac, 0.7, 0.7);
+    
+    return out;
+}
+
+fragment half4 fragmentShaderPolygonized(const VertexOut interpolated [[ stage_in ]]){
+    return interpolated.color;
+}

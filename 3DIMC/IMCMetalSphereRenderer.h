@@ -10,6 +10,7 @@
 #import "IMC3DMask.h"
 #import <MetalKit/MetalKit.h>
 #import "OpenGLView.h"
+#import "IMCMtkView.h"
 
 @class IMC3DMask;
 

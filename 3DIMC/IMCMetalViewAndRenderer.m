@@ -86,7 +86,7 @@ bool heightDescriptor[] = {
 
 -(void)projectionMatrixSetup:(MTKView *)view{
     float aspect = fabs(view.bounds.size.width / view.bounds.size.height);
-    projectionMatrix = [Matrix4 makePerspectiveViewAngle:[Matrix4 degreesToRad:65.0] aspectRatio:aspect nearZ:0.01 farZ:1500];
+    projectionMatrix = [Matrix4 makePerspectiveViewAngle:[Matrix4 degreesToRad:65.0] aspectRatio:aspect nearZ:0.01 farZ:5000];
 }
 
 -(BOOL)checkNeedsUpdate{

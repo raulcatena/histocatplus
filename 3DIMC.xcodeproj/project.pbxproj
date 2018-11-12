@@ -398,6 +398,9 @@
 		0D80B5AB2021DF73008CF561 /* IMCCellDataImport.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D80B5A92021DF73008CF561 /* IMCCellDataImport.m */; };
 		0D80B5AC2021DF73008CF561 /* IMCCellDataImport.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D80B5A92021DF73008CF561 /* IMCCellDataImport.m */; };
 		0D8171251E4229FC0058084C /* IMCImprovedRegistration.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D8171241E4229FC0058084C /* IMCImprovedRegistration.m */; };
+		0D848A422197B8EB009A5896 /* IMCMetalPolygonizedFieldRenderer.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D848A412197B8EB009A5896 /* IMCMetalPolygonizedFieldRenderer.m */; };
+		0D848A432197B8EB009A5896 /* IMCMetalPolygonizedFieldRenderer.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D848A412197B8EB009A5896 /* IMCMetalPolygonizedFieldRenderer.m */; };
+		0D848A442197B8EB009A5896 /* IMCMetalPolygonizedFieldRenderer.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D848A412197B8EB009A5896 /* IMCMetalPolygonizedFieldRenderer.m */; };
 		0D873ECB1E8C06620097937B /* miCAT3D_1024.png in Resources */ = {isa = PBXBuildFile; fileRef = 0D873ECA1E8C06620097937B /* miCAT3D_1024.png */; };
 		0D873ECC1E8C06620097937B /* miCAT3D_1024.png in Resources */ = {isa = PBXBuildFile; fileRef = 0D873ECA1E8C06620097937B /* miCAT3D_1024.png */; };
 		0D99BFCD1E82E34800E337A2 /* IMCThresholdBatch.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D99BFCB1E82E34800E337A2 /* IMCThresholdBatch.m */; };
@@ -729,6 +732,9 @@
 		0DA630531F5EE7D20032E102 /* shaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = 0DA630511F5EE7D20032E102 /* shaders.metal */; };
 		0DA630561F5EF3CA0032E102 /* MetalKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0DA630551F5EF3CA0032E102 /* MetalKit.framework */; };
 		0DA630581F5EF3CF0032E102 /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0DA630571F5EF3CF0032E102 /* Metal.framework */; };
+		0DA76385218A539D00A19C07 /* IMCMetalViewAndRenderer3DSampler.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DA7637F218A49EE00A19C07 /* IMCMetalViewAndRenderer3DSampler.m */; };
+		0DA76386218A539E00A19C07 /* IMCMetalViewAndRenderer3DSampler.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DA7637F218A49EE00A19C07 /* IMCMetalViewAndRenderer3DSampler.m */; };
+		0DA76387218A539F00A19C07 /* IMCMetalViewAndRenderer3DSampler.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DA7637F218A49EE00A19C07 /* IMCMetalViewAndRenderer3DSampler.m */; };
 		0DA84DA31E3B53FE00D075C7 /* XMLDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DA84DA11E3B53FE00D075C7 /* XMLDictionary.m */; };
 		0DA884FB1E60842A00B9EC84 /* IMCGGPlot.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0DA884FA1E60842A00B9EC84 /* IMCGGPlot.mm */; };
 		0DA886BF1E60FC1300B9EC84 /* IMCTableDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DA886BE1E60FC1300B9EC84 /* IMCTableDelegate.m */; };
@@ -1018,6 +1024,8 @@
 		0D8171241E4229FC0058084C /* IMCImprovedRegistration.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IMCImprovedRegistration.m; sourceTree = "<group>"; };
 		0D8171261E422D4B0058084C /* IMCRegistration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IMCRegistration.h; sourceTree = "<group>"; };
 		0D8171271E422D4B0058084C /* IMCRegistration.m */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; fileEncoding = 4; path = IMCRegistration.m; sourceTree = "<group>"; };
+		0D848A402197B8EB009A5896 /* IMCMetalPolygonizedFieldRenderer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IMCMetalPolygonizedFieldRenderer.h; sourceTree = "<group>"; };
+		0D848A412197B8EB009A5896 /* IMCMetalPolygonizedFieldRenderer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = IMCMetalPolygonizedFieldRenderer.m; sourceTree = "<group>"; };
 		0D873ECA1E8C06620097937B /* miCAT3D_1024.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = miCAT3D_1024.png; sourceTree = "<group>"; };
 		0D99BFCA1E82E34800E337A2 /* IMCThresholdBatch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IMCThresholdBatch.h; sourceTree = "<group>"; };
 		0D99BFCB1E82E34800E337A2 /* IMCThresholdBatch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IMCThresholdBatch.m; sourceTree = "<group>"; };
@@ -1112,6 +1120,8 @@
 		0DA630571F5EF3CF0032E102 /* Metal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metal.framework; path = System/Library/Frameworks/Metal.framework; sourceTree = SDKROOT; };
 		0DA6660C1E6059FB003DD274 /* IMCCellDataExport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IMCCellDataExport.h; sourceTree = "<group>"; };
 		0DA6660D1E6059FB003DD274 /* IMCCellDataExport.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IMCCellDataExport.m; sourceTree = "<group>"; };
+		0DA7637E218A49EE00A19C07 /* IMCMetalViewAndRenderer3DSampler.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IMCMetalViewAndRenderer3DSampler.h; sourceTree = "<group>"; };
+		0DA7637F218A49EE00A19C07 /* IMCMetalViewAndRenderer3DSampler.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = IMCMetalViewAndRenderer3DSampler.m; sourceTree = "<group>"; };
 		0DA84DA01E3B53FE00D075C7 /* XMLDictionary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XMLDictionary.h; sourceTree = "<group>"; };
 		0DA84DA11E3B53FE00D075C7 /* XMLDictionary.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XMLDictionary.m; sourceTree = "<group>"; };
 		0DA884F91E60842A00B9EC84 /* IMCGGPlot.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IMCGGPlot.h; sourceTree = "<group>"; };
@@ -1945,11 +1955,15 @@
 				0DC508D21F5F4F6B00C1E9D8 /* AAPLMathUtilities.m */,
 				0DA630471F5EDE100032E102 /* IMCMetalViewAndRenderer.h */,
 				0DA630481F5EDE100032E102 /* IMCMetalViewAndRenderer.m */,
+				0DA7637E218A49EE00A19C07 /* IMCMetalViewAndRenderer3DSampler.h */,
+				0DA7637F218A49EE00A19C07 /* IMCMetalViewAndRenderer3DSampler.m */,
 				0DF81F1D1FC0D861000260F5 /* sphere.h */,
 				0DF81F131FC0816C000260F5 /* IMCMetalSphereRenderer.h */,
 				0DF81F141FC0816C000260F5 /* IMCMetalSphereRenderer.m */,
 				0DF81F211FC2C69D000260F5 /* IMCMetalSphereStripedRenderer.h */,
 				0DF81F221FC2C69D000260F5 /* IMCMetalSphereStripedRenderer.m */,
+				0D848A402197B8EB009A5896 /* IMCMetalPolygonizedFieldRenderer.h */,
+				0D848A412197B8EB009A5896 /* IMCMetalPolygonizedFieldRenderer.m */,
 				0DC508CC1F5F3B3400C1E9D8 /* IMCMtkView.h */,
 				0DC508CD1F5F3B3400C1E9D8 /* IMCMtkView.m */,
 				0DA630511F5EE7D20032E102 /* shaders.metal */,
@@ -2772,6 +2786,7 @@
 				0D00ABCD1E64D53400887057 /* General.m in Sources */,
 				0D00ABCE1E64D53400887057 /* IMC_TIFFLoader.m in Sources */,
 				0D00ABCF1E64D53400887057 /* IMCBlendModes.m in Sources */,
+				0DA76386218A539E00A19C07 /* IMCMetalViewAndRenderer3DSampler.m in Sources */,
 				0D00ABD01E64D53400887057 /* IMCTransformDictController.m in Sources */,
 				0D00ABD11E64D53400887057 /* IMCBrushBullet.m in Sources */,
 				0D9BA3751F744DC800C02457 /* IMC3dMasking.mm in Sources */,
@@ -2820,6 +2835,7 @@
 				0DA2B82D1E70A32900EAA438 /* IMCCombineMasks.mm in Sources */,
 				0D1B5024206D0F5600167F23 /* IMCHistogram.m in Sources */,
 				0D00ACA61E65C2CC00887057 /* IMCPixelMap.mm in Sources */,
+				0D848A432197B8EB009A5896 /* IMCMetalPolygonizedFieldRenderer.m in Sources */,
 				0D9BA37D1F74CECB00C02457 /* IMCVoxelMaskRenderer.m in Sources */,
 				0DBB876A1FA221AA00F468DA /* find_connected.c in Sources */,
 				0D6627321E69A72600BC2C92 /* IMCPixelTrainer.mm in Sources */,
@@ -2916,6 +2932,7 @@
 				0D9F30721EF909CF00E1E083 /* IMC_TIFFLoader.m in Sources */,
 				0D9F30731EF909CF00E1E083 /* IMCBlendModes.m in Sources */,
 				0D9F30741EF909CF00E1E083 /* IMCTransformDictController.m in Sources */,
+				0DA76387218A539F00A19C07 /* IMCMetalViewAndRenderer3DSampler.m in Sources */,
 				0D9F30751EF909CF00E1E083 /* IMCBrushBullet.m in Sources */,
 				0D9F30761EF909CF00E1E083 /* IMCCellTrainer.m in Sources */,
 				0D9BA3761F744DC800C02457 /* IMC3dMasking.mm in Sources */,
@@ -2964,6 +2981,7 @@
 				0D9F30941EF909CF00E1E083 /* IMCPixelMap.mm in Sources */,
 				0D1B5025206D0F5600167F23 /* IMCHistogram.m in Sources */,
 				0D9F30951EF909CF00E1E083 /* IMCPixelTrainer.mm in Sources */,
+				0D848A442197B8EB009A5896 /* IMCMetalPolygonizedFieldRenderer.m in Sources */,
 				0D9BA37E1F74CECB00C02457 /* IMCVoxelMaskRenderer.m in Sources */,
 				0DBB876D1FA2228B00F468DA /* find_connected.c in Sources */,
 				0D9F30961EF909CF00E1E083 /* NSUnarchiverGZipAdditions.m in Sources */,
@@ -3060,6 +3078,7 @@
 				0DFB2D651E473D5E0065AC61 /* IMCRegistrationOCV.mm in Sources */,
 				0DB37D041E30BDED002975E2 /* General.m in Sources */,
 				0DB37D1D1E32ADE9002975E2 /* IMC_TIFFLoader.m in Sources */,
+				0DA76385218A539D00A19C07 /* IMCMetalViewAndRenderer3DSampler.m in Sources */,
 				0DB37D571E36A1E2002975E2 /* IMCBlendModes.m in Sources */,
 				0D6720531E3FF3C800C19663 /* IMCTransformDictController.m in Sources */,
 				0DBB87621FA21FF400F468DA /* IMCFlockOperation.m in Sources */,
@@ -3108,6 +3127,7 @@
 				0DA268811E512702007E6EDD /* IMCMatLabParser.m in Sources */,
 				0D1B5023206D0B3100167F23 /* IMCHistogram.m in Sources */,
 				0DA2B8381E72E18000EAA438 /* IMCCellTrainerTool.mm in Sources */,
+				0D848A422197B8EB009A5896 /* IMCMetalPolygonizedFieldRenderer.m in Sources */,
 				0DB37D3E1E355C94002975E2 /* IMCChannelSettingsDelegate.m in Sources */,
 				0DA2B82C1E70A32900EAA438 /* IMCCombineMasks.mm in Sources */,
 				0D00ACA51E65C2CC00887057 /* IMCPixelMap.mm in Sources */,

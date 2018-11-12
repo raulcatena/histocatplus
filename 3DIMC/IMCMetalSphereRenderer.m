@@ -7,7 +7,6 @@
 //
 
 #import "IMCMetalSphereRenderer.h"
-#import "IMCMtkView.h"
 #import "sphere.h"
 
 @interface IMCMetalSphereRenderer()
@@ -139,7 +138,7 @@
     view.framebufferOnly = NO;
     if(view.refresh == NO && !self.forceColorBufferRecalculation)
         return;
-    if(!self.computation || !self.computation.isLoaded)
+    if(!self.computation || !self.computation.isLoaded || !self.computation.computedData)
         return;
     
     view.refresh = NO;

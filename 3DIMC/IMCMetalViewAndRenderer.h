@@ -32,6 +32,7 @@ typedef struct{
     uint32 heightModel;
     uint32 areaModel;
     uint32 stride;
+    uint32 lastQuad;
 } PositionalData;
 
 @class Matrix4;
