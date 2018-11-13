@@ -311,38 +311,38 @@ vertex VertexOut vertexShaderPolygonized(
                                       constant PositionalData & positional [[ buffer(2) ]],
                                       const device unsigned* offSetData [[ buffer(3) ]],
                                       unsigned int vid [[ vertex_id ]]) {
-    
+
     VertexOut out;
     //Ascertain cell with a binary search
     int halfWay = positional.stride/2;//I use stride here for number of cells
-//    int lastHalf = positional.stride;
-//    unsigned triang = vid/3;
-//    while(true){
-//        //Base cases first
-//        if(halfWay == 0)//Exhausted
-//            break;
-//
-//        unsigned left = offSetData[halfWay - 1];
-//        unsigned right = offSetData[halfWay];
-//
-//        if(triang >= left && triang < right){//In right sector, the other base case
-//            break;
-//        }
-//        //Binary search
-//        if(triang >= right){
-//            halfWay = (halfWay + lastHalf)/2;
-//        }else{
-//            lastHalf = halfWay;
-//            halfWay /= 2;
-//        }
-//    }
+    int lastHalf = positional.stride;
+    unsigned triang = vid/3;
+    while(true){
+        //Base cases first
+        if(halfWay == 0)//Exhausted
+            break;
+
+        unsigned left = offSetData[halfWay - 1];
+        unsigned right = offSetData[halfWay];
+
+        if(triang >= left && triang < right){//In right sector, the other base case
+            break;
+        }
+        //Binary search
+        if(triang >= right){
+            halfWay = (halfWay + lastHalf)/2;
+        }else{
+            lastHalf = halfWay;
+            halfWay /= 2;
+        }
+    }
     packed_float3 vert = vertex_array[vid];
     float3 pos = float3(vert[0] - positional.widthModel/2, vert[1] - positional.heightModel/2, vert[2] * 2 - positional.halfTotalThickness);
     out.position = uniforms.premultipliedMatrix * float4(pos, 1);
     float fac = (offSetData[halfWay]%255)/255.f;
-    
-    out.color = half4(fac, 1 - fac, 0.7, 0.7);
-    
+
+    out.color = half4(fac, 1 - fac, 0.7, 1.0);
+
     return out;
 }
 

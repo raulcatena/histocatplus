@@ -2030,6 +2030,7 @@
         //Get copy of al context values
         NSLog(@"Starting polygonizing process");
         NSInteger planeWidth = weakself.width;
+        NSLog(@"Plane width %li", planeWidth);
         NSInteger planeHeight = weakself.height;
         NSInteger planeArea = planeWidth * planeHeight;
         NSInteger parseW =  weakself.width - 1;
@@ -2064,7 +2065,7 @@
                     cubeVertexes[7] = maskIds[offset + planeWidth];
                     offset++;
                     
-                //Quick analysis to avoid procesing when all zeroes
+                    //Quick analysis to avoid procesing when all zeroes
                     BOOL someStuff = NO;
                     for(int l = 0; l < 8; ++l){
                         if(cubeVertexes[l] != 0){
@@ -2116,8 +2117,8 @@
         
         //Create this lookup table of vertex positions for the mid points of the 12 edges of a cube, will form triangles with that and with coordinates of hit
         
-#define HALF 0.5f
-#define WHOLE 1.0f
+        #define HALF 0.5f
+        #define WHOLE 1.0f
         
         float edgePoints[12][3] = {
             {HALF, 0.0, WHOLE},
@@ -2140,8 +2141,7 @@
         for(int a = 0; a < segments; ++a){
             totalTriangles += total_trinagles[a];
             weakself.cellTriangleOffsets[a] = totalTriangles;
-            NSLog(@"%i seg %u", a, totalTriangles);
-        }        
+        }
         
         //Allocate buffer for vertex and normal data (3(3) elements each, x, y, z, (nx, ny, nz) for 3 vertexes)
         NSLog(@"Total triangles are %i", totalTriangles);
@@ -2149,8 +2149,35 @@
         weakself.verts = (float *)calloc(self.numberOfTriangleVertices * 3, sizeof(float));
         
         float * copyPointVerts = weakself.verts;
+        
         NSInteger cursor = 0;
+        NSMutableArray *inOrderUniqueVertexes = @[].mutableCopy;////
+        NSInteger counterDistinctVertexes = 0;////
+        
         for(NSArray *arr in arrCollected){
+            //All vertexes as independent
+//            for(NSArray * coordsPlusTrilistVal in arr){
+//                float s = [coordsPlusTrilistVal[0]floatValue];
+//                float h = [coordsPlusTrilistVal[1]floatValue];
+//                float w = [coordsPlusTrilistVal[2]floatValue];
+//                unsigned char mask = (unsigned char)[coordsPlusTrilistVal[3]intValue];
+//                for(int a = 0; triTable[mask][a] != -1; a +=3){
+//                    for (unsigned char v = 0; v < 3; ++v) {
+//                        float * v_data = edgePoints[triTable[mask][a + v]];
+//
+//                        copyPointVerts[cursor + 0] = w + v_data[0];
+//                        copyPointVerts[cursor + 1] = h + v_data[1];
+//                        copyPointVerts[cursor + 2] = s + v_data[2];
+//
+//                        cursor += 3;
+//                    }
+//                }
+//            }
+            
+            //Individual vertexes to do indexing ////
+            NSMutableArray *inOrderUniqueVertexesObject = @[].mutableCopy;
+            NSMutableDictionary * trackerVertex = @{}.mutableCopy;
+            
             for(NSArray * coordsPlusTrilistVal in arr){
                 float s = [coordsPlusTrilistVal[0]floatValue];
                 float h = [coordsPlusTrilistVal[1]floatValue];
@@ -2158,16 +2185,30 @@
                 unsigned char mask = (unsigned char)[coordsPlusTrilistVal[3]intValue];
                 for(int a = 0; triTable[mask][a] != -1; a +=3){
                     for (unsigned char v = 0; v < 3; ++v) {
-                        //Here I double dimensions to avoid floats
                         float * v_data = edgePoints[triTable[mask][a + v]];
-                        copyPointVerts[cursor + 0] = w + v_data[0];
-                        copyPointVerts[cursor + 1] = h + v_data[1];
-                        copyPointVerts[cursor + 2] = s + v_data[2];
-                        cursor += 3;
+                        float x = w + v_data[0];
+                        float y = h + v_data[1];
+                        float z = s + v_data[2];
+                        
+                        NSString *str = [NSString stringWithFormat:@"%.2f_%.2f_%.2f", x, y, z];
+                        NSNumber * index = trackerVertex[str];
+                        if(!index){
+                            index = @(counterDistinctVertexes);
+                            trackerVertex[str] = [index copy];
+                            counterDistinctVertexes++;
+                            [inOrderUniqueVertexesObject addObject:coordsPlusTrilistVal];
+                        }
+                        
+                        copyPointVerts[cursor] = index.floatValue;
+
+                        cursor ++;
                     }
                 }
             }
+            [inOrderUniqueVertexes addObjectsFromArray:inOrderUniqueVertexesObject];
+            ////
         }
+        NSLog(@"Found %li unique vertexes (%li) with their corresponding %li indexes", inOrderUniqueVertexes.count, counterDistinctVertexes, cursor);
         free(triangle_numbers);
         free(total_trinagles);
         NSLog(@"Done polygonizing");

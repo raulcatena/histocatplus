@@ -124,6 +124,7 @@
 //    NSInteger doTrianglesVertices = 90000000;
 //    NSLog(@"Mem size %li instead", doTrianglesVertices * 3 * sizeof(unsigned));
 //    self.vertexBuffer = [self.device newBufferWithBytes:self.computation.verts length:doTrianglesVertices * 3 * sizeof(float) options:MTLResourceOptionCPUCacheModeDefault];
+    
     self.maskBuffer = [self.device newBufferWithBytes:self.computation.cellTriangleOffsets length:self.computation.segmentedUnits * sizeof(unsigned) options:MTLResourceOptionCPUCacheModeDefault];
 }
 
@@ -180,7 +181,6 @@
     positional.nearZ = view.nearZOffset * positional.halfTotalThickness * 4;
     positional.farZ = view.farZOffset * positional.halfTotalThickness * 4;
     positional.stride = (uint32)self.computation.segmentedUnits;
-
     
     self.positionalBuffer = [self.device newBufferWithBytes:&positional length:sizeof(positional) options:MTLResourceOptionCPUCacheModeDefault];
     
@@ -225,7 +225,7 @@
     
     NSInteger segments = self.computation.segmentedUnits;
     NSInteger cursor = 0;
-    NSInteger step = 10000;
+    NSInteger step = 5000;
     NSInteger cumTriangles = 0;
     NSInteger last = 0;
     float * copyVerts = self.computation.verts;
@@ -234,13 +234,13 @@
         if(last >= segments)
             break;
         NSInteger triangles = self.computation.cellTriangleOffsets[last] - cumTriangles;
-        
+
         self.vertexBuffer = [self.device newBufferWithBytes:copyVerts
                                                      length:triangles * 9 * sizeof(float)
                                                     options:MTLResourceOptionCPUCacheModeDefault];
         [renderEncoder setVertexBuffer:self.vertexBuffer offset:0 atIndex:0];
         [renderEncoder drawPrimitives:MTLPrimitiveTypeTriangle vertexStart:0 vertexCount:triangles * 3];
-        
+
         copyVerts += triangles * 9;
         cumTriangles += triangles;
     }
@@ -251,7 +251,7 @@
     [renderEncoder setVertexBuffer:self.vertexBuffer offset:0 atIndex:0];
     [renderEncoder drawPrimitives:MTLPrimitiveTypeTriangle vertexStart:0 vertexCount:triangles * 3];
     
-//    [renderEncoder drawPrimitives:MTLPrimitiveTypeTriangle vertexStart:0 vertexCount:90000000];//self.computation.numberOfTriangleVertices];
+//    [renderEncoder drawPrimitives:MTLPrimitiveTypeTriangle vertexStart:0 vertexCount:self.computation.numberOfTriangleVertices];//self.computation.numberOfTriangleVertices];
     
     [renderEncoder endEncoding];
     
