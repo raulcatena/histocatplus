@@ -7,6 +7,7 @@
 //
 
 #include <metal_stdlib>
+#include <metal_matrix>
 
 using namespace metal;
 
@@ -15,7 +16,7 @@ struct Constants {
     float4x4 modelViewMatrix;
     float4x4 projectionMatrix;
     float4x4 premultipliedMatrix;
-    float3x3 rotationMatrix;
+    float3x3 normalMatrix;
 };
 
 struct PositionalData{
@@ -35,7 +36,9 @@ struct PositionalData{
 
 struct VertexOut{
     float4 position [[ position ]];
-    half4 color;
+    float4 color;
+    float3 normal;
+    float3 eye;
 };
 
 
@@ -54,7 +57,7 @@ vertex VertexOut vertexShaderT(const device packed_float3 * vertexArray [[ buffe
     VertexOut out;
     float3 pos = float3(vertexArray[iid * 7]);
     out.position = uniforms.projectionMatrix * uniforms.baseModelMatrix * uniforms.modelViewMatrix * float4(pos, 1);
-    out.color = half4(1.0f/vid, 1.0f/36 * vid, 0.5, 0.5);
+    out.color = float4(1.0f/vid, 1.0f/36 * vid, 0.5, 0.5);
     return out;
 }
 
@@ -82,7 +85,7 @@ vertex VertexOut oldvertexShader(
     
     //if(mask[iid % positional.areaModel] == true){
         out.position = uniforms.projectionMatrix * uniforms.baseModelMatrix * uniforms.modelViewMatrix * float4(pos, 1);
-        out.color = half4(1.0f/vid, 1.0f/36 * vid, 0.5, 0.5);
+        out.color = float4(1.0f/vid, 1.0f/36 * vid, 0.5, 0.5);
     //}
     
     return out;
@@ -130,12 +133,12 @@ vertex VertexOut vertexShader(
     
     //out.position = uniforms.projectionMatrix * uniforms.baseModelMatrix * uniforms.modelViewMatrix * float4(pos, 1);
     out.position = uniforms.premultipliedMatrix * float4(pos, 1);
-    out.color = half4(colors[baseIndex + 1], colors[baseIndex + 2], colors[baseIndex + 3], colors[baseIndex]);
+    out.color = float4(colors[baseIndex + 1], colors[baseIndex + 2], colors[baseIndex + 3], colors[baseIndex]);
     
     return out;
 }
 
-fragment half4 fragmentShader(const VertexOut interpolated [[ stage_in ]]){
+fragment float4 fragmentShader(const VertexOut interpolated [[ stage_in ]]){
     return interpolated.color;
 }
 
@@ -171,7 +174,7 @@ vertex VertexOut sphereVertexShader(
     
     
     out.position = uniforms.premultipliedMatrix * float4(pos, 1);
-    out.color = half4(colors[baseIndex + 1], colors[baseIndex + 2], colors[baseIndex + 3], colors[baseIndex]);
+    out.color = float4(colors[baseIndex + 1], colors[baseIndex + 2], colors[baseIndex + 3], colors[baseIndex]);
     
     return out;    
 }
@@ -230,12 +233,12 @@ vertex VertexOut stripedSphereVertexShader(
     
     
     out.position = uniforms.premultipliedMatrix * float4(pos, 1);
-    out.color = half4(colors[baseIndex + 4 * color + 1], colors[baseIndex + 4 * color + 2], colors[baseIndex + 4 * color + 3], 1);
+    out.color = float4(colors[baseIndex + 4 * color + 1], colors[baseIndex + 4 * color + 2], colors[baseIndex + 4 * color + 3], 1);
     
     return out;    
 }
 
-fragment half4 sphereFragmentShader(const VertexOut interpolated [[ stage_in ]]){
+fragment float4 sphereFragmentShader(const VertexOut interpolated [[ stage_in ]]){
     return interpolated.color;
 }
 
@@ -269,7 +272,7 @@ vertex VertexOutBack vertexShaderBack(
     return out;
 }
 
-fragment half4 fragmentShaderBack(const VertexOutBack interpolated [[ stage_in ]],
+fragment float4 fragmentShaderBack(const VertexOutBack interpolated [[ stage_in ]],
                                   const device char * colors [[ buffer(0) ]],
                                   constant PositionalData & positional [[ buffer(1) ]],
                                   const device float * reverseDepths [[ buffer(2) ]]
@@ -297,55 +300,98 @@ fragment half4 fragmentShaderBack(const VertexOutBack interpolated [[ stage_in ]
                 char r = colors[index + 1];
                 char g = colors[index + 2];
                 char b = colors[index + 3];
-                return half4(r/255.0, g/255.0, b/255.0, a/255);
+                return float4(r/255.0, g/255.0, b/255.0, a/255);
             }
         }
     }
-    return half4(0.0);
+    return float4(0.0);
 }
 
 //Polygonized
+
+struct Light
+{
+    float3 direction;
+    float3 ambientColor;
+    float3 diffuseColor;
+    float3 specularColor;
+};
+
+constant Light light = {
+    .direction = { 0.13, 0.13, 0.68 },
+    .ambientColor = { 0.1, 0.1, 0.1 },
+    .diffuseColor = { 0.9, 0.9, 0.9 },
+    .specularColor = { 1, 1, 1 }
+};
+
+//struct Material
+//{
+//    float3 ambientColor;
+//    float3 diffuseColor;
+//    float3 specularColor;
+//    half specularPower;
+//};
+//
+//constant Material material = {
+//    .ambientColor = { 0.9, 0.1, 0 },
+//    .diffuseColor = { 0.9, 0.1, 0 },
+//    .specularColor = { 1, 1, 1 },
+//    .specularPower = 100
+//};
+
 vertex VertexOut vertexShaderPolygonized(
-                                      const device packed_float3* vertex_array [[ buffer(0) ]],
-                                      constant Constants & uniforms [[ buffer(1) ]],
-                                      constant PositionalData & positional [[ buffer(2) ]],
-                                      const device unsigned* offSetData [[ buffer(3) ]],
+                                      const device packed_float3 * vertex_array [[ buffer(0) ]],
+                                      const device unsigned * indexes [[ buffer(1) ]],
+                                      constant Constants & uniforms [[ buffer(2) ]],
+                                      constant PositionalData & positional [[ buffer(3) ]],
+                                      const device unsigned * cellId [[ buffer(4) ]],
+                                      const device packed_float4 * colors [[ buffer(5) ]],
+                                      const device packed_float3 * centroids [[ buffer(6) ]],
+                                      const device packed_float3 * normals [[ buffer(7) ]],
                                       unsigned int vid [[ vertex_id ]]) {
 
     VertexOut out;
-    //Ascertain cell with a binary search
-    int halfWay = positional.stride/2;//I use stride here for number of cells
-    int lastHalf = positional.stride;
-    unsigned triang = vid/3;
-    while(true){
-        //Base cases first
-        if(halfWay == 0)//Exhausted
-            break;
-
-        unsigned left = offSetData[halfWay - 1];
-        unsigned right = offSetData[halfWay];
-
-        if(triang >= left && triang < right){//In right sector, the other base case
-            break;
-        }
-        //Binary search
-        if(triang >= right){
-            halfWay = (halfWay + lastHalf)/2;
-        }else{
-            lastHalf = halfWay;
-            halfWay /= 2;
-        }
-    }
-    packed_float3 vert = vertex_array[vid];
-    float3 pos = float3(vert[0] - positional.widthModel/2, vert[1] - positional.heightModel/2, vert[2] * 2 - positional.halfTotalThickness);
+    unsigned cell = cellId[vid/3];
+    packed_float3 vert = vertex_array[indexes[vid]];
+    float3 centroid = centroids[cell];
+    float3 recentered = vert - centroid;
+    float factor = positional.stride/100.0;//Reuse this
+    recentered *= factor;
+    recentered += centroid;
+    float3 pos = float3(recentered[0] - positional.widthModel/2, recentered[1] - positional.heightModel/2, recentered[2] * 2 - positional.halfTotalThickness);
     out.position = uniforms.premultipliedMatrix * float4(pos, 1);
-    float fac = (offSetData[halfWay]%255)/255.f;
-
-    out.color = half4(fac, 1 - fac, 0.7, 1.0);
+    float3 normal = normals[indexes[vid]];
+    out.normal = uniforms.normalMatrix * normal;
+    out.color = colors[cell];
 
     return out;
 }
 
-fragment half4 fragmentShaderPolygonized(const VertexOut interpolated [[ stage_in ]]){
-    return interpolated.color;
+fragment float4 fragmentShaderPolygonized(const VertexOut interpolated [[ stage_in ]]){
+    if(interpolated.color.a == 0.0f)
+        discard_fragment();
+    
+    float3 rgbCol = interpolated.color.rgb;
+    float3 ambientTerm = light.ambientColor * rgbCol;
+    
+    float3 normal = normalize(interpolated.normal);
+    float diffuseIntensity = saturate(dot(normal, light.direction));
+    float3 diffuseTerm = light.diffuseColor * float3(interpolated.color.rgb) * diffuseIntensity;
+    
+//    float3 specularTerm(0);
+//    if (diffuseIntensity > 0)
+//    {
+//        float3 eyeDirection = normalize(interpolated.eye);
+//        float3 halfway = normalize(light.direction + eyeDirection);
+//        float specularFactor = pow(saturate(dot(normal, halfway)), material.specularPower);
+//        specularTerm = light.specularColor * material.specularColor * specularFactor;
+//    }
+    
+//    return float4(ambientTerm + diffuseTerm + specularTerm, 1);
+    
+//    return float4(float4(0.5) + normal/2.0, 1.0);
+    
+    return float4(ambientTerm + diffuseTerm, 1);
+    
+//    return interpolated.color;
 }

@@ -445,7 +445,7 @@
 
     [self releaseMask];
     
-    _maskIds = calloc(fullMask, sizeof(int));
+    _maskIds = (int*)calloc(fullMask, sizeof(int));
     bool * mask = self.threeDHandler.showMask;
     
     if(self.type == MASK3D_WATERSHED){
@@ -655,7 +655,7 @@
                 NSInteger offSet = allLength * i;
                     if(self.threeDHandler.allBuffer[i][0] != NULL)
                         free(self.threeDHandler.allBuffer[i][0]);
-                    self.threeDHandler.allBuffer[i][0] = calloc(allLength, sizeof(float));
+                    self.threeDHandler.allBuffer[i][0] = (UInt8 *)calloc(allLength, sizeof(float));
                     for (NSInteger j = 0; j < allLength; j++){
                         int maskId = _maskIds[offSet + j];
                         if(maskId > 0){
@@ -705,7 +705,7 @@
     if (_maskIds){
         NSInteger elems = self.slices * self.width * self.height;
         NSInteger count = elems * sizeof(int);
-        int * compMask = malloc(count);
+        int * compMask = (int*)malloc(count);
         
         int cursorComp = 0;
         int scopeValue = _maskIds[0], inRow = 1;
@@ -720,7 +720,7 @@
                 scopeValue = _maskIds[i];
             }
         }
-        compMask = realloc(compMask, cursorComp * sizeof(int));
+        compMask = (int *)realloc(compMask, cursorComp * sizeof(int));
         NSData *data = [NSData dataWithBytes:compMask length:cursorComp * sizeof(int)];
         NSError *error = nil;
         NSString *path = [self pathFile];
@@ -774,7 +774,7 @@
         [self releaseMask];
         NSInteger elems = self.slices * self.width * self.height;
         NSInteger count = elems * sizeof(int);
-        _maskIds = malloc(count);
+        _maskIds = (int *)malloc(count);
         
         NSInteger counter = 0;
         int reps;
@@ -823,8 +823,10 @@
     }
     self.isLoaded = YES;
     
-    [self poligonizeFieldWithMarchingCubes];
-    
+    NSInteger inputPoligonize = [General runAlertModalAreYouSureWithMessage:
+                       @"Would you like to compute the poligonized cell surface (This may take a few minutes)"];
+    if(inputPoligonize == NSAlertFirstButtonReturn)
+        [self poligonizeFieldWithMarchingCubes];
 }
 -(void)unLoadLayerDataWithBlock:(void (^)(void))block{
     [self releaseMask];
@@ -983,7 +985,7 @@
     newMask.itemName = [@"copy of " stringByAppendingString:newMask.itemName];
     NSInteger elems = self.slices * self.width * self.height;
     NSInteger count = elems * sizeof(int);
-    newMask.maskIds = malloc(count);
+    newMask.maskIds = (int *)malloc(count);
     [self openIfNecessaryAndPerformBlock:^{
         for (NSInteger i = 0; i < count; i++)
             newMask.maskIds[i] = self.maskIds[i];
@@ -997,9 +999,9 @@
     [self clearComputedData];
     
     NSInteger channels = [[self channels]count];
-    self.computedData = malloc(channels * sizeof(float *));
+    self.computedData = (float **)malloc(channels * sizeof(float *));
     for (NSInteger c = 0; c < channels; c++)
-        self.computedData[c] = calloc(self.segments, sizeof(float));
+        self.computedData[c] = (float *)calloc(self.segments, sizeof(float));
 }
 
 -(void)loadSlice:(IMCImageStack *)stack toBuffer:(UInt8 **)auxBuffer canvasW:(NSInteger)maxWidth canvasH:(NSInteger)maxHeight channels:(NSInteger)channelsExtraction planeLength:(NSInteger)planeLength{
@@ -1077,7 +1079,7 @@
     }
 
     [self allocateComputedData];
-    auxiliaryData = calloc(self.slices, sizeof(UInt8 **));
+    auxiliaryData = (UInt8 ***)calloc(self.slices, sizeof(UInt8 **));
     NSLog(@"Segments %li ", self.segments);
     
     dispatch_queue_t slicer = dispatch_queue_create([IMCUtils randomStringOfLength:5].UTF8String, NULL);
@@ -1103,10 +1105,10 @@
                 
                 if(!auxiliaryData[ext]){
                     NSLog(@"Load external %li", ext);
-                    auxiliaryData[ext] = calloc(channelsExtraction, sizeof(UInt8 *));
+                    auxiliaryData[ext] = (UInt8 **)calloc(channelsExtraction, sizeof(UInt8 *));
                     
                     for(NSInteger c = 0; c < channelsExtraction; c++)
-                        auxiliaryData[ext][c] = calloc(planeLength, sizeof(UInt8));
+                        auxiliaryData[ext][c] = (UInt8 *)calloc(planeLength, sizeof(UInt8));
                     NSArray *internals = [self.threeDHandler indexesArranged][ext];
                     for(NSNumber *internal in internals){
                         IMCImageStack *stack = self.threeDHandler.loader.inOrderImageWrappers[internal.integerValue];
@@ -1258,7 +1260,7 @@
                 //Allocate buffers if necessary
                 for (NSInteger i = 0; i < slices; i++)
                     if(!allBuff[i][channel])
-                        allBuff[i][channel] = calloc(planeLength, sizeof(UInt8));
+                        allBuff[i][channel] = (UInt8 *)calloc(planeLength, sizeof(UInt8));
                 
                 //Get real channel index
                 [indexesO addObject:@(channel)];
@@ -1282,9 +1284,9 @@
                 NSLog(@"Max %li ", maxes[i]);
             }
             
-            UInt8 ** proc = calloc(numberOfChannels, sizeof(UInt8 *));
+            UInt8 ** proc = (UInt8 **)calloc(numberOfChannels, sizeof(UInt8 *));
             for (int c = 0; c < numberOfChannels; c++)
-                proc[c] = calloc(numberOfSegments, sizeof(UInt8));
+                proc[c] = (UInt8 *)calloc(numberOfSegments, sizeof(UInt8));
             for (int c = 0; c < numberOfChannels; c++)
                 for (int s = 0; s < numberOfSegments; s++)
                     proc[c][s] = (UInt8)(self.computedData[indexes[c]][s] * 255.0f / maxes[c]);
@@ -1378,7 +1380,7 @@
         
         NSLog(@"We have %li %li", numberOfClusters, clusteringChannel);
         //Get abundances
-        NSInteger *abundances = calloc(numberOfClusters, sizeof(NSInteger));
+        NSInteger *abundances = (NSInteger *)calloc(numberOfClusters, sizeof(NSInteger));
         for (NSInteger i = 0; i < cells; i++)
             abundances[(NSInteger)(clusters[i] - 1)]++;
         
@@ -1392,9 +1394,9 @@
         [otherMask openIfNecessaryAndPerformBlock:^{
             NSInteger max = self.segmentedUnits;
             
-            float *results = calloc(max, sizeof(float));
-            bool *visited = calloc(max, sizeof(bool));
-            NSInteger *indexes = calloc(max, sizeof(NSInteger));
+            float *results = (float *)calloc(max, sizeof(float));
+            bool *visited = (bool *)calloc(max, sizeof(bool));
+            NSInteger *indexes = (NSInteger *)calloc(max, sizeof(NSInteger));
             
             NSInteger width = self.width;
             NSInteger height = self.height;
@@ -1499,10 +1501,10 @@
         [otherMask openIfNecessaryAndPerformBlock:^{
             NSInteger max = self.segmentedUnits;
             
-            float *results = calloc(max, sizeof(float));
+            float *results = (float *)calloc(max, sizeof(float));
             for(NSInteger c = 0; c < max; c++)
                 results[c] = CGFLOAT_MAX;
-            bool *visited = calloc(max, sizeof(bool));
+            bool *visited = (bool *)calloc(max, sizeof(bool));
             
             NSInteger width = self.width;
             NSInteger height = self.height;
@@ -1678,7 +1680,7 @@
         return NULL;
     
     //Generate summary
-    float *summary = calloc(maxCluster * 3, sizeof(float));
+    float *summary = (float *)calloc(maxCluster * 3, sizeof(float));
     for (NSInteger i = 0; i < total; i++) {
         NSInteger clust = (NSInteger)self.computedData[indexOfCategoricalVariable][i];
         summary[(clust - 1) * 3] += [matrix[i]count];
@@ -1703,7 +1705,7 @@
     if(summary == NULL || maxCluster <= 0)
         return NULL;
     
-    float *expectedMatrix = calloc(maxCluster * maxCluster, sizeof(float));
+    float *expectedMatrix = (float *)calloc(maxCluster * maxCluster, sizeof(float));
     
     for (NSInteger j = 0; j < maxCluster; j++)
         for (NSInteger i = 0; i < maxCluster; i++)
@@ -1729,7 +1731,7 @@
     if(summary == NULL || maxCluster <= 0)
         return NULL;
     
-    float *observedMatrix = calloc(maxCluster * maxCluster, sizeof(float));
+    float *observedMatrix = (float *)calloc(maxCluster * maxCluster, sizeof(float));
     
     for (NSInteger i = 0; i < total; i++){
         NSArray *arr = matrix[i];
@@ -1758,7 +1760,6 @@
         [self releaseVerts];
         
         //Adapted from http://paulbourke.net/geometry/polygonise/
-        
         //Tritable with the edges that are cut by the corresponding triangles for each index of covered vertexes
         int triTable[256][16] =
         {{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
@@ -2030,39 +2031,42 @@
         //Get copy of al context values
         NSLog(@"Starting polygonizing process");
         NSInteger planeWidth = weakself.width;
-        NSLog(@"Plane width %li", planeWidth);
         NSInteger planeHeight = weakself.height;
         NSInteger planeArea = planeWidth * planeHeight;
         NSInteger parseW =  weakself.width - 1;
         NSInteger parseH =  weakself.height - 1;
-        NSInteger parseS =  weakself.slices - 1;
+        NSInteger parseS =  weakself.slices;//Here I go past 1
         int * maskIds = weakself.maskIds;
         NSInteger segments = weakself.segmentedUnits;
         
         //Array of arrays. One per cell, and then will hold the char masks
         NSMutableArray *arrCollected = [NSMutableArray arrayWithCapacity:self.segmentedUnits];
         for(int a = 0; a < segments; ++a)
-            [arrCollected addObject:[NSMutableArray array]];
+            [arrCollected addObject:[NSMutableArray arrayWithCapacity:1000]];
         
         //Will keep a few counters of analyzed cells and discardable hits
         NSInteger discardable = 0;
         int * total_trinagles = (int *)calloc(segments, sizeof(int));
         
         //Loop through mask, add cases to arrCollected, increment discardable and total triangles as required
-        NSInteger offset = 0;
-        for(NSInteger s = 0; s < parseS; ++s){
+        NSInteger offset = -planeArea;//Start with half cube therefore adjust offset accordingly
+        for(NSInteger s = -1; s < parseS; ++s){//I do two extra, this is the second extra one, to make sure that top and low layers get processed
             for(NSInteger h = 0; h < parseH; ++h){
                 for(NSInteger w = 0; w < parseW; ++w){
                     int cubeVertexes[] = {0, 0, 0, 0, 0, 0, 0, 0};
                     NSInteger lowerPlane = offset + planeArea;
-                    cubeVertexes[0] = maskIds[lowerPlane];
-                    cubeVertexes[1] = maskIds[lowerPlane + 1];
-                    cubeVertexes[2] = maskIds[lowerPlane + planeWidth + 1];
-                    cubeVertexes[3] = maskIds[lowerPlane + planeWidth];
-                    cubeVertexes[4] = maskIds[offset];
-                    cubeVertexes[5] = maskIds[offset + 1];
-                    cubeVertexes[6] = maskIds[offset + planeWidth + 1];
-                    cubeVertexes[7] = maskIds[offset + planeWidth];
+                    if(s != parseS - 1){//Avoid seg fault when half cube out
+                        cubeVertexes[0] = maskIds[lowerPlane];
+                        cubeVertexes[1] = maskIds[lowerPlane + 1];
+                        cubeVertexes[2] = maskIds[lowerPlane + planeWidth + 1];
+                        cubeVertexes[3] = maskIds[lowerPlane + planeWidth];
+                    }
+                    if(s != -1){//Avoid seg fault when half cube out
+                        cubeVertexes[4] = maskIds[offset];
+                        cubeVertexes[5] = maskIds[offset + 1];
+                        cubeVertexes[6] = maskIds[offset + planeWidth + 1];
+                        cubeVertexes[7] = maskIds[offset + planeWidth];
+                    }
                     offset++;
                     
                     //Quick analysis to avoid procesing when all zeroes
@@ -2099,7 +2103,7 @@
                                 continue;
                             }
                             //Add mask to results and increment number of triangles per cell
-                            [[arrCollected objectAtIndex:val-1]addObject:@[@(s), @(h), @(w), @(cellMask)]];
+                            [[arrCollected objectAtIndex:val-1]addObject:@[@(s + 1), @(h), @(w), @(cellMask)]];//s + 1 to avoid negative numbers here
                             total_trinagles[val - 1] += triangle_numbers[cellMask];
                         }
                     }
@@ -2145,70 +2149,101 @@
         
         //Allocate buffer for vertex and normal data (3(3) elements each, x, y, z, (nx, ny, nz) for 3 vertexes)
         NSLog(@"Total triangles are %i", totalTriangles);
-        weakself.numberOfTriangleVertices = (int)totalTriangles * 3;
-        weakself.verts = (float *)calloc(self.numberOfTriangleVertices * 3, sizeof(float));
+        weakself.verts = (float *)calloc(totalTriangles * 9, sizeof(float));
+        weakself.normals = (float *)calloc(totalTriangles * 9, sizeof(float));
+        weakself.indexes = (unsigned *)calloc(totalTriangles * 3, sizeof(unsigned));
+        weakself.numberOfTriangleVertices = 0;
         
         float * copyPointVerts = weakself.verts;
+        float * copyPointNormals = weakself.normals;
+        unsigned * copyPointIndexes = weakself.indexes;
+        unsigned numberOfUniqueVertexes = 0;
         
         NSInteger cursor = 0;
-        NSMutableArray *inOrderUniqueVertexes = @[].mutableCopy;////
-        NSInteger counterDistinctVertexes = 0;////
-        
-        for(NSArray *arr in arrCollected){
-            //All vertexes as independent
-//            for(NSArray * coordsPlusTrilistVal in arr){
-//                float s = [coordsPlusTrilistVal[0]floatValue];
-//                float h = [coordsPlusTrilistVal[1]floatValue];
-//                float w = [coordsPlusTrilistVal[2]floatValue];
-//                unsigned char mask = (unsigned char)[coordsPlusTrilistVal[3]intValue];
-//                for(int a = 0; triTable[mask][a] != -1; a +=3){
-//                    for (unsigned char v = 0; v < 3; ++v) {
-//                        float * v_data = edgePoints[triTable[mask][a + v]];
-//
-//                        copyPointVerts[cursor + 0] = w + v_data[0];
-//                        copyPointVerts[cursor + 1] = h + v_data[1];
-//                        copyPointVerts[cursor + 2] = s + v_data[2];
-//
-//                        cursor += 3;
-//                    }
-//                }
-//            }
+
+        for(NSArray *arr in arrCollected){//Each cell
             
-            //Individual vertexes to do indexing ////
-            NSMutableArray *inOrderUniqueVertexesObject = @[].mutableCopy;
-            NSMutableDictionary * trackerVertex = @{}.mutableCopy;
+            NSMutableDictionary * trackerVertex = [NSMutableDictionary dictionaryWithCapacity:1000];
+            NSMutableDictionary *collectNormals = [NSMutableDictionary dictionaryWithCapacity:1000];
             
-            for(NSArray * coordsPlusTrilistVal in arr){
+            NSUInteger internalCursor = 0;
+            
+            for(NSArray * coordsPlusTrilistVal in arr){//Each hit by cube
+                
                 float s = [coordsPlusTrilistVal[0]floatValue];
                 float h = [coordsPlusTrilistVal[1]floatValue];
                 float w = [coordsPlusTrilistVal[2]floatValue];
                 unsigned char mask = (unsigned char)[coordsPlusTrilistVal[3]intValue];
-                for(int a = 0; triTable[mask][a] != -1; a +=3){
-                    for (unsigned char v = 0; v < 3; ++v) {
+                
+                for(int a = 0; triTable[mask][a] != -1; a +=3){//Each triangle
+                    
+                    for (unsigned char v = 0; v < 3; ++v) {//Each vertex
+                        
                         float * v_data = edgePoints[triTable[mask][a + v]];
+                        
                         float x = w + v_data[0];
                         float y = h + v_data[1];
                         float z = s + v_data[2];
                         
-                        NSString *str = [NSString stringWithFormat:@"%.2f_%.2f_%.2f", x, y, z];
-                        NSNumber * index = trackerVertex[str];
+                        NSNumber * key = @((unsigned)(x * 2) + (unsigned)(y * 2 * 10000) + (unsigned)(z * 100000000));
+                        NSNumber * index = trackerVertex[key];
                         if(!index){
-                            index = @(counterDistinctVertexes);
-                            trackerVertex[str] = [index copy];
-                            counterDistinctVertexes++;
-                            [inOrderUniqueVertexesObject addObject:coordsPlusTrilistVal];
+                            copyPointVerts[numberOfUniqueVertexes * 3] = x;
+                            copyPointVerts[numberOfUniqueVertexes * 3 + 1] = y;
+                            copyPointVerts[numberOfUniqueVertexes * 3 + 2] = z;
+                            index = @(numberOfUniqueVertexes);
+                            trackerVertex[key] = [index copy];
+                            numberOfUniqueVertexes++;
+                            internalCursor++;
                         }
                         
-                        copyPointVerts[cursor] = index.floatValue;
-
+                        copyPointIndexes[cursor] = index.unsignedIntValue;
                         cursor ++;
+                        
+                        //Find normal
+                        //Get the other 2 vertexes
+                        float * v_data_aux_B, * v_data_aux_C;
+                        v_data_aux_B = edgePoints[triTable[mask][a + (v + 1) % 3]];
+                        v_data_aux_C = edgePoints[triTable[mask][a + (v + 2) % 3]];
+
+                        //Calculate vector pairs
+                        float vec1[3], vec2[3];
+                        for(int k = 0; k < 3; ++k)
+                            vec2[k] = v_data_aux_B[k] - v_data[k];
+                        for(int k = 0; k < 3; ++k)
+                            vec1[k] = v_data_aux_C[k] - v_data[k];
+                        
+                        // Cross product of vector
+                        float cross[] = {vec1[1] * vec2[2] - vec1[2] * vec2[1],
+                                        vec1[2] * vec2[0] - vec1[0] * vec2[2],
+                                        vec1[0] * vec2[1] - vec1[1] * vec2[0]};
+                        
+//                        if(mask == 15 || mask == 240)
+//                            NSLog(@"Triangle with mask %u and values %f %f %f", mask, cross[0], cross[1], cross[2]);
+                        
+                        //Add normal to vertex
+                        if(!collectNormals[key])
+                            collectNormals[key] = [NSMutableArray arrayWithCapacity:10];
+                        [collectNormals[key]addObject:@[@(cross[0]), @(cross[1]), @(cross[2])]];//Add the normal here
                     }
                 }
             }
-            [inOrderUniqueVertexes addObjectsFromArray:inOrderUniqueVertexesObject];
-            ////
+            //Clean up the normals here. Will do the addition of all of them. Will result in non unit vectors
+            for(NSNumber *key in collectNormals.allKeys){
+                NSArray *normals = collectNormals[key];
+                float addNormals[] = {0, 0, 0};
+                for(NSArray *normalValues in normals)
+                    for(int k = 0; k < 3; ++k)
+                        addNormals[k] += [normalValues[k]floatValue];
+                for(int k = 0; k < 3; ++k)
+                    copyPointNormals[[trackerVertex[ key ]intValue] * 3 + k] = addNormals[k]/(float)normals.count;
+            }
         }
-        NSLog(@"Found %li unique vertexes (%li) with their corresponding %li indexes", inOrderUniqueVertexes.count, counterDistinctVertexes, cursor);
+        weakself.numberOfTriangleVertices = numberOfUniqueVertexes;
+        weakself.numberOfTriangles = totalTriangles;
+        weakself.verts = (float *)realloc(weakself.verts, numberOfUniqueVertexes * 3 * sizeof(float));
+        weakself.normals = (float *)realloc(weakself.normals, numberOfUniqueVertexes * 3 * sizeof(float));
+        NSLog(@"Found %u unique vertexes with their corresponding %li indexes", numberOfUniqueVertexes, cursor);
         free(triangle_numbers);
         free(total_trinagles);
         NSLog(@"Done polygonizing");

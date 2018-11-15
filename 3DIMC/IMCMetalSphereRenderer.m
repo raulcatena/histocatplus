@@ -226,6 +226,7 @@
         [renderEncoder setDepthStencilState:self.stencilState];
     [renderEncoder setFrontFacingWinding:MTLWindingCounterClockwise];
     [renderEncoder setCullMode:  MTLCullModeNone ];
+//    [renderEncoder setTriangleFillMode:MTLTriangleFillModeLines];
     [renderEncoder drawPrimitives:MTLPrimitiveTypeTriangle vertexStart:0 vertexCount:sphereNumVerts instanceCount:_cellsToRender];
     
     [renderEncoder endEncoding];

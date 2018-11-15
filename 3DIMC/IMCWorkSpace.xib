@@ -1110,7 +1110,7 @@
                                             </connections>
                                         </slider>
                                         <slider hidden="YES" verticalHuggingPriority="750" id="5gG-JT-9pY">
-                                            <rect key="frame" x="277" y="-5" width="199" height="20"/>
+                                            <rect key="frame" x="277" y="-1" width="199" height="20"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <sliderCell key="cell" state="on" alignment="left" minValue="0.0050000000000000001" maxValue="5" doubleValue="1" tickMarkPosition="above" sliderType="linear" id="PBZ-J8-KpU"/>
                                             <connections>
