@@ -10,7 +10,7 @@
 #import "sphere.h"
 
 @interface IMCMetalSphereRenderer()
-
+@property (nonatomic, strong) id<MTLBuffer> normalsBuffer;
 @end
 
 @implementation IMCMetalSphereRenderer
@@ -220,6 +220,7 @@
     [renderEncoder setVertexBuffer:self.uniformsBuffer offset:0 atIndex:1];
     [renderEncoder setVertexBuffer:self.positionalBuffer offset:0 atIndex:2];
     [renderEncoder setVertexBuffer:self.colorBuffer offset:0 atIndex:3];
+    [renderEncoder setVertexBuffer:self.normalsBuffer offset:0 atIndex:4];
     
     AlphaMode alphaMode = [self.delegate alphaMode];
     if(alphaMode == ALPHA_MODE_OPAQUE)
@@ -245,6 +246,7 @@
 -(void)addSphereVertexBuffer{
     NSInteger dataSize = sizeof(sphereVerts);
     self.vertexBuffer = [self.device newBufferWithBytes:sphereVerts length:dataSize options:MTLResourceOptionCPUCacheModeDefault];
+    self.normalsBuffer = [self.device newBufferWithBytes:sphereNormals length:dataSize options:MTLResourceOptionCPUCacheModeDefault];
 }
 -(void)createMetalStack{
     

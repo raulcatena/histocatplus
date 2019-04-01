@@ -2159,9 +2159,19 @@
         unsigned * copyPointIndexes = weakself.indexes;
         unsigned numberOfUniqueVertexes = 0;
         
+        float * centroidsX = [self xCentroids];
+        float * centroidsY = [self yCentroids];
+        float * centroidsZ = [self zCentroids];
+        
+        float hX = [self halfDimension:0];
+        float hY = [self halfDimension:1];
+        float hZ = [self halfDimension:2];
+        
         NSInteger cursor = 0;
-
+        NSInteger cellCursor = 0;
         for(NSArray *arr in arrCollected){//Each cell
+            
+            float centroid[] = {0,0,0};
             
             NSMutableDictionary * trackerVertex = [NSMutableDictionary dictionaryWithCapacity:1000];
             NSMutableDictionary *collectNormals = [NSMutableDictionary dictionaryWithCapacity:1000];
@@ -2184,6 +2194,8 @@
                         float x = w + v_data[0];
                         float y = h + v_data[1];
                         float z = s + v_data[2];
+                        
+                        centroid[0] += x; centroid[1] += y; centroid[2] += z;
                         
                         NSNumber * key = @((unsigned)(x * 2) + (unsigned)(y * 2 * 10000) + (unsigned)(z * 100000000));
                         NSNumber * index = trackerVertex[key];
@@ -2209,17 +2221,14 @@
                         //Calculate vector pairs
                         float vec1[3], vec2[3];
                         for(int k = 0; k < 3; ++k)
-                            vec2[k] = v_data_aux_B[k] - v_data[k];
+                            vec1[k] = v_data_aux_B[k] - v_data[k];
                         for(int k = 0; k < 3; ++k)
-                            vec1[k] = v_data_aux_C[k] - v_data[k];
+                            vec2[k] = v_data_aux_C[k] - v_data[k];
                         
                         // Cross product of vector
                         float cross[] = {vec1[1] * vec2[2] - vec1[2] * vec2[1],
                                         vec1[2] * vec2[0] - vec1[0] * vec2[2],
                                         vec1[0] * vec2[1] - vec1[1] * vec2[0]};
-                        
-//                        if(mask == 15 || mask == 240)
-//                            NSLog(@"Triangle with mask %u and values %f %f %f", mask, cross[0], cross[1], cross[2]);
                         
                         //Add normal to vertex
                         if(!collectNormals[key])
@@ -2238,7 +2247,31 @@
                 for(int k = 0; k < 3; ++k)
                     copyPointNormals[[trackerVertex[ key ]intValue] * 3 + k] = addNormals[k]/(float)normals.count;
             }
+            //Center model
+            centroidsX[cellCursor] = centroid[0]/(total_trinagles[cellCursor] * 3) -hX;
+            centroidsY[cellCursor] = centroid[1]/(total_trinagles[cellCursor] * 3) -hY;
+            centroidsZ[cellCursor] = centroid[2]/(total_trinagles[cellCursor] * 3) -hZ;
+            cellCursor++;
         }
+        
+        //Send all cell meshes to 0. Centroids are already collected
+        cellCursor = 0;//Reuse this cursor
+        bool * doneOffsetting = calloc(numberOfUniqueVertexes, sizeof(bool));
+        for(NSInteger i = 0; i < totalTriangles * 3; ++i){
+            unsigned vertex = copyPointIndexes[i];
+            
+            if(weakself.cellTriangleOffsets[cellCursor] == i/3)
+                cellCursor++;
+            
+            if(!doneOffsetting[vertex]){
+                copyPointVerts[vertex * 3 + 0] -= centroidsX[cellCursor] + hX;
+                copyPointVerts[vertex * 3 + 1] -= centroidsY[cellCursor] + hY;
+                copyPointVerts[vertex * 3 + 2] -= centroidsZ[cellCursor] + hZ;
+                doneOffsetting[vertex] = true;
+            }
+        }
+        free(doneOffsetting);
+        
         weakself.numberOfTriangleVertices = numberOfUniqueVertexes;
         weakself.numberOfTriangles = totalTriangles;
         weakself.verts = (float *)realloc(weakself.verts, numberOfUniqueVertexes * 3 * sizeof(float));

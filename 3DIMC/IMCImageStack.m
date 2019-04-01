@@ -231,10 +231,10 @@
     
     if(self.stackData == NULL){
         self.stackData = (float **)calloc(self.channels.count, sizeof(float *));
-        if(self.stackData)
-            for (int i = 0; i < self.channels.count; i++) {
-                self.stackData[i] = (float *)malloc(pixels * sizeof(float));
-            }
+        float * mem = (float *)malloc(self.channels.count * sizeof(float) * pixels);
+        if(mem)
+            for (int i = 0; i < self.channels.count; i++)
+                self.stackData[i] = mem + pixels * i;
     }
 }
 
@@ -873,13 +873,18 @@
 -(void)clearBuffers{
     NSLog(@"Clearing Buffers");
     if(self.stackData != NULL){
-        for (int i = 0; i < self.channels.count; i++) {
-            if(self.stackData[i] != NULL){
-                free(self.stackData[i]);
-                self.stackData[i] = NULL;
-            }
+        if(self.stackData[0] != NULL){
+            free(self.stackData[0]);
+            free(self.stackData);
         }
-        free(self.stackData);
+        
+//        for (int i = 0; i < self.channels.count; i++) {
+//            if(self.stackData[i] != NULL){
+//                free(self.stackData[i]);
+//                self.stackData[i] = NULL;
+//            }
+//        }
+//        free(self.stackData);
         self.stackData = NULL;
     }
     if(self.compensatedData != NULL){

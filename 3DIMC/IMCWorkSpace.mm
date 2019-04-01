@@ -2120,7 +2120,6 @@ typedef enum {
 -(IBAction)watershed2D:(id)sender{
     if(!self.inScopeImage || self.inOrderIndexes.count == 0)
         return;
-    
     [IMCWaterShedSegmenter wizard2DWatershedIndexes:self.inOrderIndexes.copy scopeImage:self.inScopeImage scopeImages:self.inScopeImages.copy];
 }
 
@@ -2217,10 +2216,9 @@ typedef enum {
 
 #pragma mark close things properly
 -(void)dealloc{
-    for (IMCFileWrapper *wrapp in self.dataCoordinator.fileWrappers) {
+    for (IMCFileWrapper *wrapp in self.dataCoordinator.fileWrappers)
         if (wrapp.isLoaded)
             [wrapp unLoadLayerDataWithBlock:nil];
-    }
 }
 
 #pragma mark help

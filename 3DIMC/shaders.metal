@@ -41,12 +41,20 @@ struct VertexOut{
     float3 eye;
 };
 
+struct Light
+{
+    float3 direction;
+    float3 ambientColor;
+    float3 diffuseColor;
+    float3 specularColor;
+};
 
-//vertex float4 vertexShader(const device packed_float3 * vertexArray [[ buffer(0)]],
-//                           unsigned int vid [[ vertex_id ]])
-//{
-//    return float4(vertexArray[vid], 1.0);
-//}
+constant Light light = {
+    .direction = { 0.0, 0.0, 1.0 },
+    .ambientColor = { 0.2, 0.2, 0.2 },
+    .diffuseColor = { 0.8, 0.8, 0.9 },
+    .specularColor = { 1, 1, 1 }
+};
 
 vertex VertexOut vertexShaderT(const device packed_float3 * vertexArray [[ buffer(4)]],
                               unsigned int iid [[ instance_id ]],
@@ -147,6 +155,7 @@ vertex VertexOut sphereVertexShader(
                               constant Constants & uniforms [[ buffer(1) ]],
                               constant PositionalData & positional [[ buffer(2) ]],
                               const device float * colors [[ buffer(3) ]],
+                              const device packed_float3* normals [[ buffer(4) ]],
                               unsigned int vid [[ vertex_id ]],
                               unsigned int iid [[ instance_id ]]) {
     
@@ -175,7 +184,7 @@ vertex VertexOut sphereVertexShader(
     
     out.position = uniforms.premultipliedMatrix * float4(pos, 1);
     out.color = float4(colors[baseIndex + 1], colors[baseIndex + 2], colors[baseIndex + 3], colors[baseIndex]);
-    
+    out.normal = (uniforms.modelViewMatrix * float4(normals[vid], 1)).xyz;
     return out;    
 }
 
@@ -186,6 +195,7 @@ vertex VertexOut stripedSphereVertexShader(
                                     constant Constants & uniforms [[ buffer(1) ]],
                                     constant PositionalData & positional [[ buffer(2) ]],
                                     const device float * colors [[ buffer(3) ]],
+                                    const device packed_float3* normals [[ buffer(4) ]],
                                     unsigned int vid [[ vertex_id ]],
                                     unsigned int iid [[ instance_id ]]) {
     
@@ -193,9 +203,8 @@ vertex VertexOut stripedSphereVertexShader(
     //unsigned int cum [] = {405, 567, 729, 891, 1053, 1215, 1377, 1539, 1701, 1944};
     unsigned int segment = 0;
     for(int a = 0; a < 10; a++)
-        if(vid >= cum[a]){
+        if(vid >= cum[a])
             segment = a + 1;
-        }
     
     int stripes = (positional.stride - 4)/4;
     int color = 1;
@@ -224,6 +233,22 @@ vertex VertexOut stripedSphereVertexShader(
         int pick[] = {0,1,1,2,2,3,3,4,4,5};
         color += pick[segment];
     }
+    if(stripes == 7){
+        int pick[] = {0,0,1,2,3,3,4,5,6,6};
+        color += pick[segment];
+    }
+    if(stripes == 8){
+        int pick[] = {0,0,1,2,3,4,5,6,7,7};
+        color += pick[segment];
+    }
+    if(stripes == 9){
+        int pick[] = {0,1,2,3,4,5,6,7,8,8};
+        color += pick[segment];
+    }
+    if(stripes == 10){
+        int pick[] = {0,1,2,3,4,5,6,7,8,9};
+        color += pick[segment];
+    }
     
     unsigned int baseIndex = iid * (positional.stride);
     
@@ -234,11 +259,20 @@ vertex VertexOut stripedSphereVertexShader(
     
     out.position = uniforms.premultipliedMatrix * float4(pos, 1);
     out.color = float4(colors[baseIndex + 4 * color + 1], colors[baseIndex + 4 * color + 2], colors[baseIndex + 4 * color + 3], 1);
-    
+    out.normal = (uniforms.modelViewMatrix * float4(normals[vid], 1)).xyz;
     return out;    
 }
 
 fragment float4 sphereFragmentShader(const VertexOut interpolated [[ stage_in ]]){
+    float3 rgbCol = interpolated.color.rgb;
+    float3 ambientTerm = light.ambientColor * rgbCol;
+    
+    float3 normal = normalize(interpolated.normal);
+    float diffuseIntensity = saturate(dot(normal, light.direction));
+    float3 diffuseTerm = light.diffuseColor * float3(interpolated.color.rgb) * diffuseIntensity;
+    
+    return float4(ambientTerm + diffuseTerm, interpolated.color.a);
+    
     return interpolated.color;
 }
 
@@ -308,22 +342,6 @@ fragment float4 fragmentShaderBack(const VertexOutBack interpolated [[ stage_in 
 }
 
 //Polygonized
-
-struct Light
-{
-    float3 direction;
-    float3 ambientColor;
-    float3 diffuseColor;
-    float3 specularColor;
-};
-
-constant Light light = {
-    .direction = { 0.13, 0.13, 0.68 },
-    .ambientColor = { 0.1, 0.1, 0.1 },
-    .diffuseColor = { 0.9, 0.9, 0.9 },
-    .specularColor = { 1, 1, 1 }
-};
-
 //struct Material
 //{
 //    float3 ambientColor;
@@ -354,14 +372,14 @@ vertex VertexOut vertexShaderPolygonized(
     unsigned cell = cellId[vid/3];
     packed_float3 vert = vertex_array[indexes[vid]];
     float3 centroid = centroids[cell];
-    float3 recentered = vert - centroid;
-    float factor = positional.stride/100.0;//Reuse this
+    float3 recentered = vert;
+    float factor = (positional.stride/100.0);
     recentered *= factor;
     recentered += centroid;
-    float3 pos = float3(recentered[0] - positional.widthModel/2, recentered[1] - positional.heightModel/2, recentered[2] * 2 - positional.halfTotalThickness);
+    float3 pos = float3(recentered[0], recentered[1], recentered[2]);
     out.position = uniforms.premultipliedMatrix * float4(pos, 1);
     float3 normal = normals[indexes[vid]];
-    out.normal = uniforms.normalMatrix * normal;
+    out.normal = (uniforms.modelViewMatrix * float4(normal, 1)).xyz;
     out.color = colors[cell];
 
     return out;
@@ -388,9 +406,7 @@ fragment float4 fragmentShaderPolygonized(const VertexOut interpolated [[ stage_
 //    }
     
 //    return float4(ambientTerm + diffuseTerm + specularTerm, 1);
-    
-//    return float4(float4(0.5) + normal/2.0, 1.0);
-    
+//    return float4(normal[2]/2 + 0.5,0,0,1.0);
     return float4(ambientTerm + diffuseTerm, 1);
     
 //    return interpolated.color;

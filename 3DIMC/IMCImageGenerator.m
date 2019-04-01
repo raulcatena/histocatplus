@@ -735,17 +735,18 @@ void threeDMeanBlur(UInt8 *** data, NSInteger width, NSInteger height, NSInteger
             UInt8 r = (UInt8) (components[0] * array[ui]);
             UInt8 g = (UInt8) (components[1] * array[ui]);
             UInt8 b = (UInt8) (components[2] * array[ui]);
+            int base = ui * 4;
             if (brightField) {
                 float totalRation = (float)MAX(1, (r + g + b)/255.0f);
-                colorizedBuffer[ui*4] = (UInt8)MAX(0, 255 - (g + b)/totalRation);
-                colorizedBuffer[ui*4+1] = (UInt8)MAX(0, 255 - (r + b)/totalRation);
-                colorizedBuffer[ui*4+2] = (UInt8)MAX(0, 255 - (r + g)/totalRation);
+                colorizedBuffer[base] = (UInt8)MAX(0, 255 - (g + b)/totalRation);
+                colorizedBuffer[base+1] = (UInt8)MAX(0, 255 - (r + b)/totalRation);
+                colorizedBuffer[base+2] = (UInt8)MAX(0, 255 - (r + g)/totalRation);
             }else{
-                colorizedBuffer[ui*4] = r;
-                colorizedBuffer[ui*4+1] = g;
-                colorizedBuffer[ui*4+2] = b;
+                colorizedBuffer[base] = r;
+                colorizedBuffer[base+1] = g;
+                colorizedBuffer[base+2] = b;
             }
-            colorizedBuffer[ui*4+3] = 255;
+            colorizedBuffer[base+3] = 255;
         }
     }else{
         

@@ -125,7 +125,7 @@
     view.framebufferOnly = NO;
     if(view.refresh == NO && !self.forceColorBufferRecalculation)
         return;
-    if(!self.computation || !self.computation.isLoaded || !self.computation.computedData)
+    if(!self.computation || !self.computation.isLoaded || !self.computation.computedData || !self.computation.verts)
         return;
     
     view.refresh = NO;
@@ -140,7 +140,8 @@
     //Uniforms
     Constants uniforms;
     
-    uniforms.modelViewMatrix = view.rotationMatrix->glkMatrix;
+    float sizeFactor = [self.delegate defaultThicknessValue];
+    uniforms.modelViewMatrix = GLKMatrix4Scale(view.rotationMatrix->glkMatrix, 1, 1, sizeFactor);
     uniforms.baseModelMatrix = view.baseModelMatrix->glkMatrix;
     uniforms.projectionMatrix = projectionMatrix->glkMatrix;
     GLKMatrix4 premultiplied = GLKMatrix4Multiply(uniforms.baseModelMatrix, uniforms.modelViewMatrix);
@@ -148,6 +149,7 @@
     uniforms.premultipliedMatrix = GLKMatrix4Multiply(uniforms.projectionMatrix, premultiplied);
     bool isInvertible;
     uniforms.normalMatrix = GLKMatrix3Transpose(GLKMatrix3Invert(rFromMV, &isInvertible));
+    
     
     self.uniformsBuffer = [self.device newBufferWithBytes:&uniforms length:sizeof(uniforms) options:MTLResourceOptionCPUCacheModeDefault];
     
@@ -175,7 +177,7 @@
     positional.halfTotalThickness = [self.computation halfDimension:2] * [self.delegate defaultThicknessValue];
     positional.nearZ = view.nearZOffset * positional.halfTotalThickness * 4;
     positional.farZ = view.farZOffset * positional.halfTotalThickness * 4;
-    positional.stride = (uint32)[self.delegate cellModifierFactor] * 20;
+    positional.stride = (uint)([self.delegate cellModifierFactor] * 20);
     
     self.positionalBuffer = [self.device newBufferWithBytes:&positional length:sizeof(positional) options:MTLResourceOptionCPUCacheModeDefault];
     

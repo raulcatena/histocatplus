@@ -178,26 +178,36 @@
     [stack clearBuffers];
     [stack allocateBufferWithPixels:stack.numberOfPixels];
 
-    float subBytes;
+    
+//    float subBytes;
+//    size_t size = sizeof(float);
+//    NSInteger clockChannels = 0;
+//    NSInteger clockPixs = 0;
+//    for (NSUInteger i = beggining; i < end; i += size) {
+//
+//        if(clockChannels == channelNumber){
+//            clockChannels = 0;
+//            clockPixs++;
+//        }
+//
+//        [data getBytes:&subBytes range:NSMakeRange(i, size)];
+//
+//        stack.stackData[clockChannels][clockPixs] = subBytes;
+//        clockChannels++;
+//    }
+    
+    //Faster load of MCD
+    float subBytes[channelNumber];
     size_t size = sizeof(float);
-    
-    
-    NSInteger clockChannels = 0;
     NSInteger clockPixs = 0;
-    
-    
-    for (NSUInteger i = beggining; i < end; i += size) {
-        
-        if(clockChannels == channelNumber){
-            clockChannels = 0;
-            clockPixs++;
-        }
-        
-        [data getBytes:&subBytes range:NSMakeRange(i, size)];
-        
-        stack.stackData[clockChannels][clockPixs] = subBytes;
-        clockChannels++;
+    NSInteger stepChannels = size * channelNumber;
+    for (NSUInteger i = beggining; i < end; i += stepChannels) {
+        [data getBytes:&subBytes range:NSMakeRange(i, stepChannels)];
+        for(NSInteger j = 0; j < channelNumber; ++j)
+            stack.stackData[j][clockPixs] = subBytes[j];
+        clockPixs++;
     }
+    
     return YES;
 }
 

@@ -146,7 +146,7 @@
     
 //    char *buff = "this is a test string";
 //    printf("%.*s", 4, buff + 10);
-    
+    NSLog(@"----");
     const char * bytes = (const char *)data.bytes;
     NSInteger lenght = data.length;
     
@@ -199,7 +199,7 @@
     NSInteger chan = 0;
     i = endOfHeader;
     NSInteger lastIndex = i;
-
+    
     if(nReturnOnly){
         for (; i < lineCursor; i++) {
             if(bytes[i] == 0x09){//Between numbers
@@ -235,7 +235,7 @@
                 break;
         }
     }
-    
+    NSLog(@"----");
     return [IMC_TxtLoader checkTXTMCDFile:imageStack fileLines:lines];
 }
 
