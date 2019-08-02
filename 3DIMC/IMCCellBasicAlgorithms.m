@@ -413,7 +413,7 @@
         free(colorData);
         colorData = NULL;
     }
-    if(self.colorVariableActive.state != NSOffState){
+    if(self.colorVariableActive.state != NSControlStateValueOff){
         colorData = (int *)calloc(self.computation.segmentedUnits * 3, sizeof(int));
         float ** preData = self.computation.computedData;
         NSInteger index = self.colorVariable.indexOfSelectedItem;
@@ -432,8 +432,10 @@
         for (NSInteger i = 0; i < self.computation.segmentedUnits; i++){
             colorData[i * 3] = MIN((int)((float)preData[index][i]/maxLocal*255.0f)/self.burnColorPoints.floatValue, 255);
             if (self.coloringType.selectedSegment == 1) {
-                if(self.showColor2.state == NSOnState)colorData[i * 3 + 1] = MIN((int)(preData[index2][i]/maxLocal2*255.0f)/self.burnColorPoints2.floatValue, 255);
-                if(self.showColor3.state == NSOnState)colorData[i * 3 + 2] = MIN((int)(preData[index3][i]/maxLocal3*255.0f)/self.burnColorPoints3.floatValue, 255);
+                if(self.showColor2.state == NSControlStateValueOn)
+                colorData[i * 3 + 1] = MIN((int)(preData[index2][i]/maxLocal2*255.0f)/self.burnColorPoints2.floatValue, 255);
+                if(self.showColor3.state == NSControlStateValueOn)
+                colorData[i * 3 + 2] = MIN((int)(preData[index3][i]/maxLocal3*255.0f)/self.burnColorPoints3.floatValue, 255);
             }
             
             if(self.coloringType.selectedSegment == 2){
@@ -557,11 +559,11 @@
 }
 -(NSDictionary *)titlesAndColorsDictionary{
     NSMutableDictionary *dict = @{self.computation.channels[self.colorVariable.indexOfSelectedItem]:[NSColor redColor]}.mutableCopy;
-    if(self.overrideTitleGraph.stringValue.length > 0 || self.colorVariableActive.state == NSOffState)
+    if(self.overrideTitleGraph.stringValue.length > 0 || self.colorVariableActive.state == NSControlStateValueOff)
         return nil;
-    if(self.showColor2.state == NSOnState)
+    if(self.showColor2.state == NSControlStateValueOn)
         [dict setObject:[NSColor greenColor] forKey:self.computation.channels[self.colorVariable2.indexOfSelectedItem]];
-    if(self.showColor3.state == NSOnState)
+    if(self.showColor3.state == NSControlStateValueOn)
         [dict setObject:[NSColor blueColor] forKey:self.computation.channels[self.colorVariable3.indexOfSelectedItem]];
     return dict;
 }

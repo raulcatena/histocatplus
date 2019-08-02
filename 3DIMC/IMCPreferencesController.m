@@ -44,7 +44,7 @@
     panel.allowsMultipleSelection = NO;
     
     [panel beginSheetModalForWindow:self.window completionHandler:^(NSInteger result){
-        if (result == NSFileHandlingPanelOKButton) {
+        if (result == NSModalResponseOK) {
             NSArray* urls = [panel URLs];
             for (NSURL *url in urls) {
                 NSLog(@"URL %@", url.path );

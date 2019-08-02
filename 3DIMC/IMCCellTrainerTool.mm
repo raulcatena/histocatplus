@@ -279,22 +279,22 @@
     
     NSMutableArray *refs = @[].mutableCopy;    
     
-    if(self.showTraining.state == NSOnState){
+    if(self.showTraining.state == NSControlStateValueOn){
         UInt8 * tempMask = [self createImageForTrainingWithmaskOption:MASK_NO_BORDERS maskType:MASK_ALL_CELL maskSingleColor:nil];
         [self addUint8Buffer:tempMask toStack:refs direction:YES];
     }
     
-    if(self.showPMap.state == NSOnState){
+    if(self.showPMap.state == NSControlStateValueOn){
         UInt8 * tempMask = [self createImageForClassificationWithmaskOption:MASK_NO_BORDERS maskType:MASK_ALL_CELL maskSingleColor:nil];
         [self addUint8Buffer:tempMask toStack:refs direction:YES];
     }
     
-    if(self.showImage.state == NSOnState && self.channelTableView.selectedRow != NSNotFound){
+    if(self.showImage.state == NSControlStateValueOn && self.channelTableView.selectedRow != NSNotFound){
         //TODO enable pixel data here
         CGImageRef ref = NULL;
-        if(self.showPixelData.state == NSOffState)
+        if(self.showPixelData.state == NSControlStateValueOff)
             ref = [self.trainer.computation coloredMaskForChannel:self.channelTableView.selectedRow color:[NSColor whiteColor] maskOption:MASK_FULL maskType:MASK_ALL_CELL maskSingleColor:[NSColor whiteColor] brightField:NO];
-        if(self.showPixelData.state == NSOnState){
+        if(self.showPixelData.state == NSControlStateValueOn){
             IMCImageStack *stack = self.trainer.computation.mask.imageStack;
             NSMutableArray *foundChannels = @[].mutableCopy;
             NSMutableArray *colors = @[].mutableCopy;
@@ -322,7 +322,7 @@
                                                    height:stack.height
                                            withTransforms:NO
                                                     blend:kCGBlendModeScreen
-                                                 andMasks:self.showMaskBorder.state == NSOnState?@[self.trainer.computation.mask]:nil
+                                                 andMasks:self.showMaskBorder.state == NSControlStateValueOn?@[self.trainer.computation.mask]:nil
                                           andComputations:nil
                                                maskOption:MASK_ONE_COLOR_BORDER
                                                  maskType:MASK_ALL_CELL
@@ -410,14 +410,14 @@
 
 -(IBAction)copyTrainingSettings:(id)sender{
     NSPasteboard * pasteBoard = [NSPasteboard generalPasteboard];
-    [pasteBoard declareTypes:[NSArray arrayWithObject:NSStringPboardType] owner:nil];
+    [pasteBoard declareTypes:[NSArray arrayWithObject:NSPasteboardTypeString] owner:nil];
     //NSInteger changeCount = [pasteBoard clearContents];
     NSString *string = [General jsonStringFromObject:@[[self.trainer.trainingNodes.firstObject useChannels], self.trainer.labels] prettryPrint:NO];
-    [pasteBoard setString:string forType:NSStringPboardType];
+    [pasteBoard setString:string forType:NSPasteboardTypeString];
 }
 -(IBAction)pasteTrainingSettings:(NSButton *)sender{
     NSPasteboard *pasteboard = [NSPasteboard generalPasteboard];
-    NSString *got = [pasteboard stringForType:NSStringPboardType];
+    NSString *got = [pasteboard stringForType:NSPasteboardTypeString];
     NSArray *options = [General objectFromString:got];
     IMCMaskTraining *training = self.trainer.trainingNodes[0];
     if(training){

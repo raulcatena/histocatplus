@@ -75,7 +75,7 @@ void drawHeat(CGContextRef context, CGRect rect)
     [super drawRect:dirtyRect];
     //BOOL isHeat = [self.delegate isHeatForLegend];
     
-    CGContextRef context = [[NSGraphicsContext currentContext] graphicsPort];
+    CGContextRef context = [[NSGraphicsContext currentContext] CGContext];
     
     NSInteger count = self.maxsForLegend.count;
     

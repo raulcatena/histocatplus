@@ -72,7 +72,7 @@
     NSFont *font = [NSFont fontWithName:@"Helvetica" size:self.axesPointSize];
     for (NSString *title in self.titlesX.copy) {
         NSMutableParagraphStyle *style  = [[NSMutableParagraphStyle alloc] init];
-        [style setAlignment:NSCenterTextAlignment];
+        [style setAlignment:NSTextAlignmentCenter];
         
         
         NSDictionary *attrs = @{
@@ -104,7 +104,7 @@
     for (NSString *title in self.titlesXY.copy) {
         
         NSMutableParagraphStyle *style  = [[NSMutableParagraphStyle alloc] init];
-        [style setAlignment:NSCenterTextAlignment];
+        [style setAlignment:NSTextAlignmentCenter];
         
         
         NSDictionary *attrs = @{
@@ -137,7 +137,7 @@
     
     NSFont *font = [NSFont fontWithName:@"Helvetica" size:12.0f];
     NSMutableParagraphStyle *style  = [[NSMutableParagraphStyle alloc] init];
-    [style setAlignment:NSCenterTextAlignment];
+    [style setAlignment:NSTextAlignmentCenter];
     NSDictionary *attrs = @{
                             NSForegroundColorAttributeName: self.axesColor,
                             NSFontAttributeName: font,
@@ -178,7 +178,7 @@
 -(void)addTopLabel:(NSString *)topTitle context:(CGContextRef)ctx dirtyRect:(CGRect)dirtyRect{
     NSFont *font = [NSFont fontWithName:@"Helvetica" size:self.axesPointSize];
     NSMutableParagraphStyle *style  = [[NSMutableParagraphStyle alloc] init];
-    [style setAlignment:NSCenterTextAlignment];
+    [style setAlignment:NSTextAlignmentCenter];
     NSDictionary *attrs = @{
                             NSForegroundColorAttributeName: self.axesColor,
                             NSFontAttributeName: font,
@@ -195,7 +195,7 @@
     NSInteger index = 0;
     for (NSString *topTitle in topTitles) {
         NSMutableParagraphStyle *style  = [[NSMutableParagraphStyle alloc] init];
-        [style setAlignment:NSCenterTextAlignment];
+        [style setAlignment:NSTextAlignmentCenter];
         NSDictionary *attrs = @{
                                 NSForegroundColorAttributeName: colors[index],
                                 NSFontAttributeName: font,

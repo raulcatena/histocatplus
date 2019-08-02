@@ -147,21 +147,21 @@
     {
         
         int * mask;
-        if(self.showInverse.state == NSOnState)
+        if(self.showInverse.state == NSControlStateValueOn)
             mask = [IMCMasks invertMaskCopy:self.thresholder.paintMask size:self.thresholder.stack.numberOfPixels];
         else
             mask = processed?[self.thresholder processedMask]:self.thresholder.paintMask;
         
         CGImageRef maskImage = [IMCImageGenerator colorMask:mask numberOfColors:20 singleColor:nil width:self.thresholder.stack.width height:self.thresholder.stack.height];
         [arr addObject:(__bridge id)maskImage];
-        if((mask && processed) || self.showInverse.state == NSOnState)
+        if((mask && processed) || self.showInverse.state == NSControlStateValueOn)
             free(mask);
     }
     self.scrollView.imageView.image = [IMCImageGenerator imageWithArrayOfCGImages:arr width:self.thresholder.stack.width height:self.thresholder.stack.height blendMode:kCGBlendModeScreen];
 }
 
 -(void)saveMask:(id)sender{
-    if(self.showInverse.state == NSOnState){
+    if(self.showInverse.state == NSControlStateValueOn){
         int * mask = mask = [IMCMasks invertMaskCopy:self.thresholder.paintMask size:self.thresholder.stack.numberOfPixels];
         int * retainMask = self.thresholder.paintMask;
         self.thresholder.paintMask = mask;

@@ -162,7 +162,7 @@
     NSParameterAssert(videoWriter);
     
     NSDictionary *videoSettings = [NSDictionary dictionaryWithObjectsAndKeys:
-                                   AVVideoCodecAppleProRes4444, AVVideoCodecKey,
+                                   AVVideoCodecTypeAppleProRes4444, AVVideoCodecKey,
                                    [NSNumber numberWithInt:size.width], AVVideoWidthKey,
                                    [NSNumber numberWithInt:size.height], AVVideoHeightKey,
                                    nil];
@@ -222,7 +222,7 @@
     NSParameterAssert(videoWriter);
     
     NSDictionary *videoSettings = [NSDictionary dictionaryWithObjectsAndKeys:
-                                   AVVideoCodecAppleProRes4444, AVVideoCodecKey,
+                                   AVVideoCodecTypeAppleProRes4444, AVVideoCodecKey,
                                    [NSNumber numberWithInt:size.width], AVVideoWidthKey,
                                    [NSNumber numberWithInt:size.height], AVVideoHeightKey,
                                    nil];
@@ -283,9 +283,9 @@
                                                                   error:&error];
         NSParameterAssert(_videoWriter);
         
-        NSString *codec = AVVideoCodecAppleProRes422;
+        NSString *codec = AVVideoCodecTypeAppleProRes422;
         if(videoType == IMCVIDEO_TYPE_MPG4)
-            codec = AVVideoCodecJPEG;
+        codec = AVVideoCodecTypeJPEG;
         
         if(videoType == IMCVIDEO_TYPE_MPG4)
             path = [[path stringByDeletingPathExtension]stringByAppendingPathExtension:@"mpg"];

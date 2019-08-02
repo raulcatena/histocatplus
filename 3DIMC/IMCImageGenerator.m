@@ -592,6 +592,7 @@ void threeDMeanBlur(UInt8 *** data, NSInteger width, NSInteger height, NSInteger
         ref = CGBitmapContextCreateImage (canvas);
         CFRelease(canvas);
     }
+    
     CFRelease(colorSpace);
     return ref;
 }
@@ -784,7 +785,10 @@ void threeDMeanBlur(UInt8 *** data, NSInteger width, NSInteger height, NSInteger
     CGColorSpaceRef colorspace = CGColorSpaceCreateDeviceRGB();
     CFDataRef rgbData = CFDataCreate(NULL, colorizedBuffer, width * height * 4);
     CGDataProviderRef provider = CGDataProviderCreateWithCFData(rgbData);
-    CGImageRef ref = CGImageCreate(width, height, 8, 32, width * 4, colorspace, kCGBitmapByteOrderDefault, provider, NULL, true, kCGRenderingIntentDefault);
+    
+    CGImageRef ref = CGImageCreate(width, height, 8, 32, width * 4, colorspace,
+                                   kCGImageAlphaNoneSkipLast|kCGBitmapByteOrderDefault, provider, NULL, true, kCGRenderingIntentDefault);
+    
     CFRelease(colorspace);
     CFRelease(rgbData);
     CFRelease(provider);

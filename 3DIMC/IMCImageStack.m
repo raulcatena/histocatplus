@@ -16,12 +16,12 @@
 #import "NSMutableArrayAdditions.h"
 #import "IMCPanoramaWrapper.h"
 
-//@interface IMCImageStack(){
+@interface IMCImageStack(){
     UInt8 ** cachedValues;
     float ** cachedSettings;//MaxOffset, MinOffSet, Multiplication Factor, pixelFilterFactor, MAX
-//}
+}
 
-//@end
+@end
 
 @implementation IMCImageStack
 
@@ -229,21 +229,18 @@
         free(self.stackData);
     self.stackData = NULL;
     
-    if(self.stackData == NULL){
-        self.stackData = (float **)calloc(self.channels.count, sizeof(float *));
-        float * mem = (float *)malloc(self.channels.count * sizeof(float) * pixels);
-        if(mem)
-            for (int i = 0; i < self.channels.count; i++)
-                self.stackData[i] = mem + pixels * i;
-    }
+    self.stackData = (float **)calloc(self.channels.count, sizeof(float *));
+    float * mem = (float *)malloc(self.channels.count * sizeof(float) * pixels);
+    if(mem)
+        for (int i = 0; i < self.channels.count; i++)
+            self.stackData[i] = mem + pixels * i;
 }
 
 -(void)allocateCacheBuffersForIndex:(NSUInteger)index withPixels:(NSUInteger)pixels{
-    if(cachedValues[index] != NULL)free(cachedValues[index]);
-    cachedValues[index] = NULL;
-    if(cachedValues[index] == NULL){
-        cachedValues[index] = (UInt8 *)calloc(self.numberOfPixels, sizeof(UInt8));
-    }
+    
+    if(cachedValues[index] != NULL)
+        free(cachedValues[index]);
+    cachedValues[index] = (UInt8 *)calloc(self.numberOfPixels, sizeof(UInt8));
     
     if(cachedSettings[index] == NULL){
         cachedSettings[index] = (float *)calloc(6, sizeof(float));
@@ -257,17 +254,14 @@
 }
 
 -(void)allocateCacheBufferContainers{
-    if(cachedValues != NULL)free(cachedValues);
-    cachedValues = NULL;
-    if(cachedValues == NULL){
-        cachedValues = (UInt8 **)calloc(self.channels.count, sizeof(UInt8 *));
-    }
     
-    if(cachedSettings != NULL)free(cachedSettings);
-    cachedSettings = NULL;
-    if(cachedSettings == NULL){
-        cachedSettings = (float **)calloc(self.channels.count, sizeof(float *));
-    }
+    if(cachedValues != NULL)
+        free(cachedValues);
+    cachedValues = (UInt8 **)calloc(self.channels.count, sizeof(UInt8 *));
+    
+    if(cachedSettings != NULL)
+        free(cachedSettings);
+    cachedSettings = (float **)calloc(self.channels.count, sizeof(float *));
 }
 
 -(void)allocateBuffer{
@@ -344,6 +338,7 @@
 -(void)recalculateChannelAtIndex:(NSInteger)index{
     if (self.stackData == NULL)
         return;
+    
     float ** data = self.usingCompensated == YES? self.compensatedData : self.stackData;
     
     if(data == NULL && self.usingCompensated){
@@ -365,13 +360,15 @@
     NSInteger pixs = self.numberOfPixels;
 
     float precalc = settings[2] * 255.0f/(settings[5] * settings[0]);
+    
     for (NSInteger i = 0; i < pixs; i++) {
         float val = vals[i];
         if(settings[4] == 1.0f)val = logf(val);
         if(settings[4] == 2.0f)val = asinhf(val/5.0f);
         //UInt8 bitValue = MIN(255, (val/(float)(settings[5] * settings[0]) * 255)*settings[2]);
         UInt8 bitValue = MIN(255, val * precalc);
-        if(bitValue < settings[1] * 255)bitValue = 0;
+        if(bitValue < settings[1] * 255)
+            bitValue = 0;
         cachedValues[index][i] = bitValue;
     }
     if(settings[3] > 0)
@@ -413,10 +410,10 @@
     
     if(cachedValues[index] == NULL || cachedSettings[index] == NULL)
         [self allocateCacheBuffersForIndex:index withPixels:self.numberOfPixels];
-    
+        
     if([self compareCachedSettingsWithCurrentForIndex:index] == YES)
         [self recalculateChannelAtIndex:index];
-
+    
     return cachedValues[index];
 }
 
@@ -451,10 +448,12 @@
         [indexes enumerateIndexesUsingBlock:^(NSUInteger index, BOOL *stop){
             if(self.stackData[index])
                 free(self.stackData[index]);self.stackData[index] = NULL;
-            if(cachedValues[index])
-                free(cachedValues[index]);cachedValues[index] = NULL;
-            if(cachedSettings[index])
-               free(cachedSettings[index]);cachedSettings[index] = NULL;
+            if(self->cachedValues[index])
+                free(self->cachedValues[index]);
+            self->cachedValues[index] = NULL;
+            if(self->cachedSettings[index])
+               free(self->cachedSettings[index]);
+            self->cachedSettings[index] = NULL;
         }];
         [self rerackBuffers];
         [[self channelSettings] removeObjectsAtIndexes:indexes];
@@ -535,7 +534,8 @@
     UInt8 ** pass = (UInt8 **)malloc(indexSet.count * sizeof(UInt8 *));
     
     for (NSNumber *num in indexSet) {
-        if(num.integerValue >= self.channels.count)continue;
+        if(num.integerValue >= self.channels.count)
+            continue;
         UInt8 *chanBuffer = [self getCachedBufferForIndex:num.integerValue];
         pass[[indexSet indexOfObject:num]] = chanBuffer;
     }
@@ -741,7 +741,7 @@
     
 
     float * factors = calloc(countIsotopes, sizeof(float));
-    NSLog(@"Start comp");
+    
     for (NSInteger j = 0; j < channelsCount; j++) {
 
         NSInteger indexIsotope = indexes[j];
@@ -845,6 +845,7 @@
     }];
 }
 -(void)unLoadLayerDataWithBlock:(void (^)(void))block{
+    
     [self clearBuffers];
     self.isLoaded = NO;
     self.fileWrapper.isLoaded = NO;
@@ -854,16 +855,22 @@
 #pragma mark memory clean up
 
 -(void)clearCacheBuffers{
+    NSLog(@"Clearing cache buffers");
     if(cachedValues != NULL){
         for (int i = 0; i < self.channels.count; i++) {
-            if(cachedValues[i] != NULL)free(cachedValues[i]);
+            if(cachedValues[i] != NULL)
+                free(cachedValues[i]);
+            cachedValues[i] = NULL;
         }
         free(cachedValues);
         cachedValues = NULL;
     }
+    
     if(cachedSettings != NULL){
         for (int i = 0; i < self.channels.count; i++) {
-            if(cachedSettings[i] != NULL)free(cachedSettings[i]);
+            if(cachedSettings[i] != NULL)
+                free(cachedSettings[i]);
+            cachedSettings[i] = NULL;
         }
         free(cachedSettings);
         cachedSettings = NULL;
@@ -873,20 +880,16 @@
 -(void)clearBuffers{
     NSLog(@"Clearing Buffers");
     if(self.stackData != NULL){
-        if(self.stackData[0] != NULL){
-            free(self.stackData[0]);
-            free(self.stackData);
+        for (int i = 0; i < self.channels.count; i++) {
+            if(self.stackData[i] != NULL){
+                self.stackData[i] = NULL;
+            }
+            free(self.stackData[0]);// Now I have everything allocate in one go
         }
-        
-//        for (int i = 0; i < self.channels.count; i++) {
-//            if(self.stackData[i] != NULL){
-//                free(self.stackData[i]);
-//                self.stackData[i] = NULL;
-//            }
-//        }
-//        free(self.stackData);
+        free(self.stackData);
         self.stackData = NULL;
     }
+    
     if(self.compensatedData != NULL){
         for (int i = 0; i < self.channels.count; i++) {
             if(self.compensatedData[i] != NULL){

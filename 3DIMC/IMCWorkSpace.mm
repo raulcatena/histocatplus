@@ -399,7 +399,7 @@
     [panel setAllowsMultipleSelection:YES];
     
     [panel beginSheetModalForWindow:self.windowForSheet completionHandler:^(NSInteger result){
-        if (result == NSFileHandlingPanelOKButton) {
+        if (result == NSModalResponseOK) {
             NSArray* urls = [panel URLs];
             [self.dataCoordinator openImagesFromURL:urls];
             [self refresh];
@@ -413,7 +413,7 @@
     [panel setCanCreateDirectories:NO];
     
     [panel beginSheetModalForWindow:self.windowForSheet completionHandler:^(NSInteger result){
-        if (result == NSFileHandlingPanelOKButton) {
+        if (result == NSModalResponseOK) {
             NSArray* urls = [panel URLs];
             [self.dataCoordinator tryMasksFromURL:urls.firstObject];
             [self refresh];
@@ -537,7 +537,7 @@
         panel.canChooseDirectories = YES;
         panel.canCreateDirectories = YES;
         [panel beginSheetModalForWindow:self.windowForSheet completionHandler:^(NSInteger result){
-            if (result == NSFileHandlingPanelOKButton)
+            if (result == NSModalResponseOK)
                 for (IMCImageStack *stck in self.inScopeImages.copy) {
                     BOOL wasLoaded = stck.isLoaded;
                     if(!wasLoaded)
@@ -554,7 +554,7 @@
         panel.directoryURL = [NSURL fileURLWithPath:[self.inScopeImage.fileWrapper workingFolder]];
         [panel setNameFieldStringValue:[[self.inScopeImage.itemName stringByDeletingPathExtension]stringByAppendingString:@".tiff"]];
         [panel beginSheetModalForWindow:self.windowForSheet completionHandler:^(NSInteger result){
-            if (result == NSFileHandlingPanelOKButton)
+            if (result == NSModalResponseOK)
                 [IMCFileExporter saveMultipageTiffAllChannels:self.inScopeImage path:panel.URL.path];
         }];
     }else{
@@ -573,7 +573,7 @@
         panel.canCreateDirectories = YES;
         NSIndexSet *indexes = self.channels.selectedRowIndexes.copy;
         [panel beginSheetModalForWindow:self.windowForSheet completionHandler:^(NSInteger result){
-            if (result == NSFileHandlingPanelOKButton)
+            if (result == NSModalResponseOK)
                 for (IMCImageStack *stck in self.inScopeImages.copy) {
                     BOOL wasLoaded = stck.isLoaded;
                     if(!wasLoaded)
@@ -590,7 +590,7 @@
         panel.directoryURL = [NSURL fileURLWithPath:[self.inScopeImage.fileWrapper workingFolder]];
         [panel setNameFieldStringValue:[[self.inScopeImage.itemName stringByDeletingPathExtension]stringByAppendingString:@".tiff"]];
         [panel beginSheetModalForWindow:self.windowForSheet completionHandler:^(NSInteger result){
-            if (result == NSFileHandlingPanelOKButton)
+            if (result == NSModalResponseOK)
                 [IMCFileExporter saveMultipageTiffFromStack:self.inScopeImage forSelectedIndexes:self.channels.selectedRowIndexes atDirPath:[panel URL].path.stringByDeletingLastPathComponent fileName:[panel URL].path.lastPathComponent];
         }];
     }else{
@@ -609,7 +609,7 @@
     
     panel.directoryURL = [NSURL fileURLWithPath:[self.fileURL.path stringByDeletingLastPathComponent]];
     [panel beginSheetModalForWindow:self.windowForSheet completionHandler:^(NSInteger result){
-        if (result == NSFileHandlingPanelOKButton){
+        if (result == NSModalResponseOK){
             NSArray *ims = self.inScopeImages.copy;
             dispatch_queue_t saver = dispatch_queue_create([IMCUtils randomStringOfLength:5].UTF8String, NULL);
             dispatch_async(saver, ^{
@@ -651,7 +651,7 @@
         NSString *proposedName = [NSString stringWithFormat:@"%f.jpg", [NSDate timeIntervalSinceReferenceDate]];
         [panel setNameFieldStringValue:proposedName];
         [panel beginSheetModalForWindow:self.windowForSheet completionHandler:^(NSInteger result){
-            if (result == NSFileHandlingPanelOKButton)
+            if (result == NSModalResponseOK)
                 [IMCFileExporter saveJPEGFromScroll:scr withPath:[panel URL].path allOrZoomed:zoomedIsYes];
         }];
     }
@@ -734,7 +734,7 @@ typedef enum {
         
         [panel setNameFieldStringValue:proposedName];
         [panel beginSheetModalForWindow:self.windowForSheet completionHandler:^(NSInteger result){
-            if (result == NSFileHandlingPanelOKButton){
+            if (result == NSModalResponseOK){
                 if (type == TableExportTypeTSV)
                     [IMCFileExporter saveCSVWithComputations:self.inScope3DMask ? @[self.inScope3DMask] : self.inScopeComputations atPath:panel.URL.path columnIndexes:self.channels.selectedRowIndexes.copy dataCoordinator:self.dataCoordinator metadataIndexes:setMetadata];
                 if (type == TableExportTypeBinary)
@@ -832,7 +832,7 @@ typedef enum {
     NSString *proposedName = [NSString stringWithFormat:@"%f.tsv", [NSDate timeIntervalSinceReferenceDate]];
     [panel setNameFieldStringValue:proposedName];
     [panel beginSheetModalForWindow:self.windowForSheet completionHandler:^(NSInteger result){
-        if (result == NSFileHandlingPanelOKButton)
+        if (result == NSModalResponseOK)
             [IMCFileExporter saveTSVWithMetadata:self.involvedStacksForMetadata atPath:panel.URL.path withCoordinator:self.dataCoordinator];
     }];
 }
@@ -1200,7 +1200,7 @@ typedef enum {
     [panel setCanChooseFiles:YES];
     [panel setAllowsMultipleSelection:NO];
     [panel beginSheetModalForWindow:self.windowForSheet completionHandler:^(NSInteger result){
-        if (result == NSFileHandlingPanelOKButton){
+        if (result == NSModalResponseOK){
             if (nuclear)
                 [self.inScopeMask getNuclearMaskAtURL:[[panel URLs]firstObject]];
             else
@@ -1270,7 +1270,7 @@ typedef enum {
     [panel setCanChooseFiles:YES];
     [panel setAllowsMultipleSelection:NO];
     [panel beginSheetModalForWindow:self.windowForSheet completionHandler:^(NSInteger result){
-        if (result == NSFileHandlingPanelOKButton){
+        if (result == NSModalResponseOK){
             id item = [self.filesTree itemAtRow:self.filesTree.selectedRow];
             if([item isMemberOfClass:[IMCComputationOnMask class]])
                 [(IMCComputationOnMask *)item addFeaturesFromCellProfiler:[[panel URLs]firstObject]];
@@ -1350,7 +1350,7 @@ typedef enum {
     [panel setCanChooseFiles:YES];
     [panel setAllowsMultipleSelection:NO];
     [panel beginSheetModalForWindow:self.windowForSheet completionHandler:^(NSInteger result){
-        if (result == NSFileHandlingPanelOKButton)
+        if (result == NSModalResponseOK)
             [IMCChannelOperations changeChannelsToStacks:self.inScopeImages withFile:panel.URLs.firstObject block:^{
                 [self refresh];
             }];
@@ -1361,7 +1361,7 @@ typedef enum {
     [pasteboard clearContents];
     IMCNodeWrapper *node = [self.filesTree itemAtRow:self.filesTree.selectedRow];
     NSData *jsonData = [NSJSONSerialization dataWithJSONObject:node.jsonDictionary options:NSJSONWritingPrettyPrinted error:NULL];
-    [pasteboard setString:[[NSString alloc]initWithData:jsonData encoding:NSUTF8StringEncoding] forType:NSStringPboardType];
+    [pasteboard setString:[[NSString alloc]initWithData:jsonData encoding:NSUTF8StringEncoding] forType:NSPasteboardTypeString];
 }
 -(void)editThresholdMask:(NSMenuItem *)sender{
     IMCPixelClassification * item = [self.filesTree itemAtRow:self.filesTree.selectedRow];
@@ -1381,7 +1381,7 @@ typedef enum {
 }
 #pragma mark Refresh
 -(void)changedWhiteBackground:(NSButton *)sender{
-    [self.multiImageFilters selectItemAtIndex:self.brightFieldEffect.state == NSOnState?1:2];
+    [self.multiImageFilters selectItemAtIndex:self.brightFieldEffect.state == NSControlStateValueOn?1:2];
     [self refresh];
 }
 -(void)calculateMemory{
@@ -1522,7 +1522,7 @@ typedef enum {
         float yCalc = y * .01f * pow(10, self.transformDictController.coarseValue.selectedSegment);
         
         [stack rotate:rotateCalc andTranslate:xCalc y:yCalc];
-        if(self.pegAligns.state == NSOnState){
+        if(self.pegAligns.state == NSControlStateValueOn){
             NSArray *arr = [self.dataCoordinator inOrderImageWrappers];
             NSInteger thisIndex = [arr indexOfObject:stack];
             for (NSInteger i = thisIndex + 1; i < arr.count; i++) {

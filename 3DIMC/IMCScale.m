@@ -38,7 +38,7 @@
 -(void)drawRect:(NSRect)dirtyRect{
     [super drawRect:dirtyRect];
     
-    CGContextRef ctx= [[NSGraphicsContext currentContext] graphicsPort];
+    CGContextRef ctx= [[NSGraphicsContext currentContext] CGContext];
     
     CGContextSetLineWidth(ctx,fontSize/10.0f);
     CGFloat components[4];

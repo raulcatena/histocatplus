@@ -157,7 +157,7 @@ int fltcompare(const void *a,const void *b) {
 
 - (void)drawRect:(NSRect)dirtyRect {
     [super drawRect:dirtyRect];
-    CGContextRef ctx= [[NSGraphicsContext currentContext] graphicsPort];
+    CGContextRef ctx= [[NSGraphicsContext currentContext] CGContext];
     [self setBackGroundColor:ctx dirtyRect:dirtyRect];
     [self drawAxes:ctx];
     [self drawLabels:ctx];

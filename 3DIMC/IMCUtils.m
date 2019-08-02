@@ -145,9 +145,9 @@
     NSMutableArray *buttons = @[].mutableCopy;
     for (NSString *val in values) {
         NSButton *but = [[NSButton alloc]initWithFrame:NSMakeRect(0, height - ([values indexOfObject:val] + 1) * heightButton, 300, heightButton)];
-        [but setButtonType:NSSwitchButton];
+        [but setButtonType:NSButtonTypeSwitch];
         but.title = val;
-        but.state = NSOffState;
+        but.state = NSControlStateValueOff;
         [but setTag:[values indexOfObject:val]];
         [inner addSubview:but];
         [buttons addObject:but];
@@ -159,7 +159,7 @@
     if (button == NSAlertFirstButtonReturn) {//NSAlertDefaultReturn
         NSMutableIndexSet *is = [[NSMutableIndexSet alloc]init];
         for (NSButton *but in buttons)
-            if(but.state == NSOnState)
+            if(but.state == NSControlStateValueOn)
                 [is addIndex:but.tag];
         return is;
     } else if (button == NSAlertSecondButtonReturn) {//NSAlertAlternateReturn

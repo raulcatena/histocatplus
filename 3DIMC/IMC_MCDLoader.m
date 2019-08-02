@@ -55,6 +55,7 @@
         
         
         for (NSDictionary *pan in panoramas) {
+            
             NSMutableDictionary *panDict;
             
             for (NSMutableDictionary *dict in panArray){
@@ -75,15 +76,15 @@
                 panWrapper = [[IMCPanoramaWrapper alloc]init];
                 panWrapper.jsonDictionary = panDict;
             }
-
+            
             NSArray *rois = [IMC_MCDLoader roisFormXml:xmlDict panoramaId:[pan[@"ID"]intValue]];
             for (NSDictionary *roi in rois) {
-                
                 NSMutableDictionary *imageDict;
-                for (NSMutableDictionary *dict in panDict[JSON_DICT_CONT_PANORAMA_IMAGES])
+                for (NSMutableDictionary *dict in panDict[JSON_DICT_CONT_PANORAMA_IMAGES]){
+                    
                     if([dict[JSON_DICT_IMAGE_ROI_INDEX]intValue] == [roi[@"ID"]intValue])
                         imageDict = [dict respondsToSelector:@selector(setObject:forKey:)]?dict:dict.mutableCopy;
-                
+                }
                 NSArray *acqs = [IMC_MCDLoader acquisitionsForRoiId:[roi[@"ID"]intValue] dict:xmlDict];
                 if(acqs.count > 1){
                     [General runAlertModalWithMessage:@"Error in MCD file"];
@@ -100,14 +101,14 @@
                 
                 IMCImageStack *stk;
                 for (IMCImageStack *stck in panWrapper.children){
-                    if(stck.jsonDictionary == imageDict)
+                    if(stck.jsonDictionary == imageDict){
                         stk = stck;
+                    }
                 }
                 
                 if(!stk){
                     stk  = [[IMCImageStack alloc]init];
                     stk.jsonDictionary = imageDict;
-                    NSLog(@"AT this point ------- %@ --------", stk.itemName);
                 }
                 
                 BOOL success = [self loadFromData:data intoImageStack:stk withAcqDict:acqs.firstObject andXMLDict:xmlDict];
@@ -266,7 +267,7 @@
             //printf("%i ", bytes);
             //printf("%c ", bytes);
         }
-        NSLog(@"METADATA %@", xml);
+        //NSLog(@"METADATA %@", xml);
         return xml;
     }
     return nil;

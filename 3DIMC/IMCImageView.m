@@ -183,7 +183,7 @@
     }
     
     _selectedArea = CGRectMake(start.x/width, start.y/height, (end.x - start.x)/width, (end.y - start.y)/height);
-    [self setNeedsDisplay];
+    [self setNeedsDisplay:YES];
 }
                      
 -(void)rightMouseUp:(NSEvent *)theEvent{
@@ -194,7 +194,7 @@
 -(void)drawROI{
     if(_selectedArea.size.width < .01f)return;
     
-    CGContextRef context = [[NSGraphicsContext currentContext] graphicsPort];
+    CGContextRef context = [[NSGraphicsContext currentContext] CGContext];
     
     CGContextSetLineWidth(context, 2.0);
     [[NSColor whiteColor] setStroke];
@@ -294,7 +294,7 @@
         
         
         cumulative = cumulative + width;
-        [field setNeedsDisplay];
+        [field setNeedsDisplay:YES];
         if(staticLabels == YES)[self.superview.superview addSubview:field];
         else [self addSubview:field];
     }

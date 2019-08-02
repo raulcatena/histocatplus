@@ -616,7 +616,7 @@ bool heightDescriptor[] = {
 
 -(void)addLabelsOverlayed:(IMCMtkView *)view{
     
-    if([[self.delegate legends]state] == NSOnState){
+    if([[self.delegate legends]state] == NSControlStateValueOn){
         NSArray *colorsObtained = [self.delegate colors];
         NSArray *channsObtained = [self.delegate channelsForCell];
         NSArray *indexesObtained = [self.delegate inOrderIndexes];

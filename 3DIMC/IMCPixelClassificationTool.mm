@@ -244,7 +244,7 @@
     NSMutableArray *refs = @[].mutableCopy;
     
     
-    if(self.showTraining.state == NSOnState){
+    if(self.showTraining.state == NSControlStateValueOn){
         UInt8 *remapped = [IMCImageGenerator mapMaskTo255:self.trainer.trainingNodes.firstObject.trainingBuffer length:self.trainer.stack.numberOfPixels toMax:4.0f];
         CGImageRef training = [IMCImageGenerator imageFromCArrayOfValues:remapped
                                                                    color:nil
@@ -267,7 +267,7 @@
         free(remapped);
     }
     
-    if(self.showPMap.state == NSOnState){
+    if(self.showPMap.state == NSControlStateValueOn){
         CGImageRef refi = [self.trainer.mapPrediction pMap];
         if(refi)
             [refs addObject:(__bridge id)refi];
@@ -275,7 +275,7 @@
     
     
     
-    if(self.showImage.state == NSOnState){
+    if(self.showImage.state == NSControlStateValueOn){
         [refs addObjectsFromArray:[self imageRefsForIndexSet:self.channelTableView.selectedRowIndexes]];
     }
     
@@ -352,14 +352,14 @@
 
 -(IBAction)copyTrainingSettings:(id)sender{
     NSPasteboard * pasteBoard = [NSPasteboard generalPasteboard];
-    [pasteBoard declareTypes:[NSArray arrayWithObject:NSStringPboardType] owner:nil];
+    [pasteBoard declareTypes:[NSArray arrayWithObject:NSPasteboardTypeString] owner:nil];
     //NSInteger changeCount = [pasteBoard clearContents];
     NSString *string = [General jsonStringFromObject:@[[self.trainer.trainingNodes.firstObject learningSettings], self.trainer.labels] prettryPrint:NO];
-    [pasteBoard setString:string forType:NSStringPboardType];
+    [pasteBoard setString:string forType:NSPasteboardTypeString];
 }
 -(IBAction)pasteTrainingSettings:(NSButton *)sender{
     NSPasteboard *pasteboard = [NSPasteboard generalPasteboard];
-    NSString *got = [pasteboard stringForType:NSStringPboardType];
+    NSString *got = [pasteboard stringForType:NSPasteboardTypeString];
     NSArray *options = [General objectFromString:got];
     IMCPixelTraining *training = self.trainer.trainingNodes[0];
     if(training){

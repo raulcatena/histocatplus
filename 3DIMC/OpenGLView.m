@@ -809,7 +809,7 @@ typedef struct
     
     [[self openGLContext] flushBuffer];
     
-    if([[self.delegate legends]state] == NSOnState)
+    if([[self.delegate legends]state] == NSControlStateValueOn)
         [self addLabelsOverlayed];
     
     working = NO;
@@ -986,7 +986,7 @@ typedef struct
         free(cBaseIndexesChannels);
     }
     
-    if([[self.delegate legends]state] == NSOnState)
+    if([[self.delegate legends]state] == NSControlStateValueOn)
         [self addLabelsOverlayed];
     
     [[self openGLContext] flushBuffer];

@@ -13,7 +13,7 @@
 - (void)drawRect:(NSRect)dirtyRect {
     [super drawRect:dirtyRect];
     
-    CGContextRef ctx= [[NSGraphicsContext currentContext] graphicsPort];
+    CGContextRef ctx= [[NSGraphicsContext currentContext] CGContext];
     CGContextSetRGBStrokeColor(ctx,.0f,.0f,.0f,0.7);
     CGContextSetLineWidth(ctx, 30.0f);
     

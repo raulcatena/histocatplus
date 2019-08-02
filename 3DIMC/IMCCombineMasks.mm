@@ -210,7 +210,7 @@
                 
                 int * cast = [IMCMasks extractFromMask:maskOr.mask withMask:targetPixStruct->mask width:maskOr.imageStack.width height:maskOr.imageStack.height tolerance:self.tolerance.floatValue exclude:(self.calculation.indexOfSelectedItem == 3) filterLabel:self.whichLabels.selectedSegment == 1?self.specificlabel.intValue:NSNotFound];
                 
-                if(self.captureId.state == NSOnState && self.calculation.indexOfSelectedItem == 2)
+                if(self.captureId.state == NSControlStateValueOn && self.calculation.indexOfSelectedItem == 2)
                     [IMCMasks idMask:cast target:targetPixStruct->mask size:maskOr.imageStack.size];
                 else
                     for (NSInteger i = 0; i < maskOr.imageStack.numberOfPixels; i++)

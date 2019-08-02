@@ -184,7 +184,7 @@
     CGRect rect = CGRectMake(0, 0, bitmap.size.width, bitmap.size.height);
     [NSGraphicsContext saveGraphicsState];
     [NSGraphicsContext setCurrentContext:ctx];
-    [b drawInRect:rect fromRect:rect operation:NSCompositeSourceOver fraction:fraction];
+    [b drawInRect:rect fromRect:rect operation:NSCompositingOperationSourceOver fraction:fraction];
     [NSGraphicsContext restoreGraphicsState];
     
     return [[NSImage alloc]initWithCGImage:bitmap.CGImage size:bitmap.size];
@@ -210,7 +210,7 @@
     NSData *imageData = [image TIFFRepresentation];
     NSBitmapImageRep *imageRep = [NSBitmapImageRep imageRepWithData:imageData];
     NSDictionary *imageProps = [NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:1.0] forKey:NSImageCompressionFactor];
-    imageData = [imageRep representationUsingType:NSJPEGFileType properties:imageProps];
+    imageData = [imageRep representationUsingType:NSBitmapImageFileTypeJPEG properties:imageProps];
     [imageData writeToFile:path atomically:NO];
 }
 

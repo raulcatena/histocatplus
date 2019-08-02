@@ -155,20 +155,20 @@
     NSMutableArray *refs = @[].mutableCopy;
     
     
-    if(self.showTraining.state == NSOnState){
+    if(self.showTraining.state == NSControlStateValueOn){
         UInt8 * tempMask = [self createImageForTraining];
         [self addUint8Buffer:tempMask toStack:refs direction:YES];
     }
     
-    if(self.showPMap.state == NSOnState){
+    if(self.showPMap.state == NSControlStateValueOn){
         UInt8 * tempMask = [self createImageForClassification];
         [self addUint8Buffer:tempMask toStack:refs direction:YES];
     }
     
-    if(self.showImage.state == NSOnState){
+    if(self.showImage.state == NSControlStateValueOn){
         //TODO enable pixel data here
         
-        if(self.showPixelData.state == NSOffState){
+        if(self.showPixelData.state == NSControlStateValueOff){
             __block int counter = 0;
             NSArray <NSColor *>*colors = @[
                                 [NSColor blueColor],

@@ -192,9 +192,11 @@
         panWrap.jsonDictionary = spContainer;
         panWrap.parent = self;
         
-        IMCImageStack * imageStack = [[IMCImageStack alloc]init];
-        imageStack.parent = panWrap;
-        imageStack.jsonDictionary = images.firstObject;
+        for(id image in images){
+            IMCImageStack * imageStack = [[IMCImageStack alloc]init];
+            imageStack.parent = panWrap;
+            imageStack.jsonDictionary = image;
+        }
     }
     [self.jsonDictionary setValue:[NSNumber numberWithBool:YES] forKey:JSON_DICT_FILE_IS_SOFT_LOADED];
 }

@@ -46,7 +46,7 @@
     
     if(counts){
         NSColor *col = [[NSColor blackColor]colorUsingColorSpace:[NSColorSpace sRGBColorSpace]];
-        CGContextRef ctx= [[NSGraphicsContext currentContext] graphicsPort];
+        CGContextRef ctx= [[NSGraphicsContext currentContext] CGContext];
         CGContextSetLineWidth(ctx, 2);
         float margin = dirtyRect.size.width * 0.2f;
         float width = dirtyRect.size.width - 2 * margin;

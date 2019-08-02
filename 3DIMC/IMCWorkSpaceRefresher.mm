@@ -128,7 +128,7 @@
         for(IMCNodeWrapper *wr in self.parent.inScopeComputations)
             if(wr.isLoaded)
                 open++;
-        if(open * self.parent.channels.selectedRowIndexes.count > 100 && self.parent.autoRefreshLock.state == NSOnState)
+        if(open * self.parent.channels.selectedRowIndexes.count > 100 && self.parent.autoRefreshLock.state == NSControlStateValueOn)
             if([General runAlertModalAreYouSureWithMessage:@"More than 100 images/channels to refresh, are you sure?"] == NSAlertSecondButtonReturn)
                 refreshImagesLastCheck = NO;
         if(refreshImagesLastCheck){
@@ -175,7 +175,7 @@
 -(void)refreshBlend{
     overrideRefresh = NO;
     
-    if(self.parent.autoRefreshLock.state == NSOffState)
+    if(self.parent.autoRefreshLock.state == NSControlStateValueOff)
         return;
     
 //    bool *mask = self.parent.threeDHandler.showMask;
@@ -227,6 +227,7 @@
         
         //3D alignment
         NSImage *image;
+        
         image = [IMCImageGenerator imageForImageStacks:self.parent.inScopeImages.copy
                                                indexes:self.parent.inOrderIndexes.copy
                                       withColoringType:colorSpaceSelector
@@ -262,7 +263,7 @@
         
 
         [self.parent.scrollViewBlends.histogram primeWithData:[self.parent.inScopeImage preparePassBuffers:self.parent.inOrderIndexes.copy] channels:self.parent.inOrderIndexes.count pixels:self.parent.inScopeImage.numberOfPixels colors:collColors];
-
+        
         self.parent.scrollViewBlends.imageView.image = image;
 
         [self scaleAndLegendChannelsBlend];
@@ -283,7 +284,7 @@
 -(void)refreshTiles{
     overrideRefresh = NO;
     
-    if(self.parent.autoRefreshLock.state == NSOffState)
+    if(self.parent.autoRefreshLock.state == NSControlStateValueOff)
         return;
     
 
@@ -413,11 +414,11 @@
 }
 
 -(void)scaleAndLegendChannelsBlend{
-    if(self.parent.scaleBar.state == NSOnState)
+    if(self.parent.scaleBar.state == NSControlStateValueOn)
         [self.parent.scrollViewBlends.imageView addScaleWithScaleFactor:self.parent.scaleBarCalibration.floatValue color:self.parent.scaleBarColor.color fontSize:self.parent.scaleBarFontSize.floatValue widthPhoto:self.parent.inScopeImage.width stepForced:self.parent.scaleBarSteps.integerValue onlyBorder:NO static:self.parent.scaleBarStatic.state];
     else [self.parent.scrollViewBlends.imageView removeScale];
     
-    if(self.parent.legends.state == NSOnState){
+    if(self.parent.legends.state == NSControlStateValueOn){
         NSMutableArray *arr = @[].mutableCopy;
         for(NSNumber *idx in self.parent.inOrderIndexes)
             [arr addObject:[self.parent channelsForCell][idx.integerValue]];
