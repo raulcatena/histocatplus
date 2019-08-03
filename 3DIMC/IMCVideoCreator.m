@@ -69,7 +69,7 @@
 }
 + (CVPixelBufferRef)pixelBufferWithData:(UInt8 *)data width:(NSInteger)width height:(NSInteger)height
 {
-
+    
     NSDictionary *options =
     [NSDictionary dictionaryWithObjectsAndKeys:
      [NSNumber numberWithBool:YES],
@@ -162,7 +162,7 @@
     NSParameterAssert(videoWriter);
     
     NSDictionary *videoSettings = [NSDictionary dictionaryWithObjectsAndKeys:
-                                   AVVideoCodecTypeAppleProRes4444, AVVideoCodecKey,
+                                   AVVideoCodecAppleProRes4444, AVVideoCodecKey,
                                    [NSNumber numberWithInt:size.width], AVVideoWidthKey,
                                    [NSNumber numberWithInt:size.height], AVVideoHeightKey,
                                    nil];
@@ -222,7 +222,7 @@
     NSParameterAssert(videoWriter);
     
     NSDictionary *videoSettings = [NSDictionary dictionaryWithObjectsAndKeys:
-                                   AVVideoCodecTypeAppleProRes4444, AVVideoCodecKey,
+                                   AVVideoCodecAppleProRes4444, AVVideoCodecKey,
                                    [NSNumber numberWithInt:size.width], AVVideoWidthKey,
                                    [NSNumber numberWithInt:size.height], AVVideoHeightKey,
                                    nil];
@@ -279,13 +279,13 @@
             fileType = AVFileTypeMPEG4;
         
         _videoWriter = [[AVAssetWriter alloc] initWithURL:[NSURL fileURLWithPath:path]
-                                                               fileType:fileType
-                                                                  error:&error];
+                                                 fileType:fileType
+                                                    error:&error];
         NSParameterAssert(_videoWriter);
         
-        NSString *codec = AVVideoCodecTypeAppleProRes422;
+        NSString *codec = AVVideoCodecAppleProRes422;
         if(videoType == IMCVIDEO_TYPE_MPG4)
-        codec = AVVideoCodecTypeJPEG;
+            codec = AVVideoCodecJPEG;
         
         if(videoType == IMCVIDEO_TYPE_MPG4)
             path = [[path stringByDeletingPathExtension]stringByAppendingPathExtension:@"mpg"];
@@ -299,7 +299,7 @@
                                        nil];
         
         _writerInput = [AVAssetWriterInput assetWriterInputWithMediaType:AVMediaTypeVideo
-                                                                             outputSettings:videoSettings];
+                                                          outputSettings:videoSettings];
         
         _writerInput.expectsMediaDataInRealTime = YES;
         
