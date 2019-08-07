@@ -40,9 +40,9 @@
 - (void)windowDidLoad
 {
     [super windowDidLoad];
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{//TODO
-        [[NSApplication sharedApplication] runModalForWindow:self.window];
-    });
+//    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{//TODO
+//        [[NSApplication sharedApplication] runModalForWindow:self.window];
+//    });
     
     self.scrollView.imageView.imageAlignment = NSImageAlignTopLeft;
     self.scrollView.delegate = self;

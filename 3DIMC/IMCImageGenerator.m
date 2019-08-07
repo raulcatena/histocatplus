@@ -887,14 +887,15 @@ void threeDMeanBlur(UInt8 *** data, NSInteger width, NSInteger height, NSInteger
 +(void *)bufferImage:(IMCImageStack *)imageStack index:(NSInteger)index bitsPerPixel:(NSInteger)bitsPerPixel{
     if(bitsPerPixel != 8 && bitsPerPixel != 16)return NULL;
     
+    UInt8 * data_cached = [imageStack preparePassBuffers:@[@(index)]][0];
     float * data = imageStack.stackData[index];
     void *newBuffer = calloc(imageStack.numberOfPixels, bitsPerPixel/8);
     UInt8 *eightBitCasted = (UInt8 *)newBuffer;
     UInt16 *sixteenBitCasted = (UInt16 *)newBuffer;
-        
+
     for (NSInteger i = 0, lenght = imageStack.numberOfPixels; i < lenght; i++) {
-        if(bitsPerPixel == 8)eightBitCasted[i] = (UInt8)(data[i]/255.0f);//TODO check this. Maybe should not use max
-        if(bitsPerPixel == 16)sixteenBitCasted[i] = (UInt16)data[i];
+        if(bitsPerPixel == 8)eightBitCasted[i] = (UInt8)data[i];
+        if(bitsPerPixel == 16)sixteenBitCasted[i] = (UInt16)(data_cached[i] * 255); // (UInt16)data[i]
     }
     
     return newBuffer;
@@ -921,7 +922,6 @@ void threeDMeanBlur(UInt8 *** data, NSInteger width, NSInteger height, NSInteger
 
 +(CGImageRef)rawImageFromImage:(IMCImageStack *)imageStack index:(NSInteger)imageIndex numberOfBits:(int)bits{
     if(bits != 8 && bits != 16)return NULL;
-    
     void *data = [IMCImageGenerator bufferImage:imageStack index:imageIndex bitsPerPixel:bits];
     
     CGColorSpaceRef colorspace = CGColorSpaceCreateDeviceGray();

@@ -2675,7 +2675,7 @@
 					"$(PROJECT_DIR)/../opencv/build/lib",
 				);
 				LINK_WITH_STANDARD_LIBRARIES = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				OTHER_LDFLAGS = (
 					"-lz",
 					"-lopencv_core",
@@ -2729,7 +2729,7 @@
 					"$(PROJECT_DIR)/../opencv/build/lib",
 				);
 				LINK_WITH_STANDARD_LIBRARIES = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				OTHER_LDFLAGS = (
 					"-lz",
 					"-lopencv_core",
@@ -2791,7 +2791,7 @@
 					"$(PROJECT_DIR)/../opencv/build/lib",
 				);
 				LINK_WITH_STANDARD_LIBRARIES = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				OTHER_LDFLAGS = (
 					"-lz",
 					"-lopencv_core",
@@ -2846,7 +2846,7 @@
 					"$(PROJECT_DIR)/../opencv/build/lib",
 				);
 				LINK_WITH_STANDARD_LIBRARIES = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				OTHER_LDFLAGS = (
 					"-lz",
 					"-lopencv_core",

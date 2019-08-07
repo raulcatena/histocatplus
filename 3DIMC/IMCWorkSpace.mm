@@ -1827,7 +1827,8 @@ typedef enum {
 -(void)segmentCells:(id)sender{
     if(self.inScopeImage.isLoaded){
         IMCCellSegmentation *seg = [[IMCCellSegmentation alloc]initWithStack:self.inScopeImage andTraining:nil];
-        [[seg window] makeKeyAndOrderFront:seg];
+        [[NSApplication sharedApplication] runModalForWindow:seg.window];
+        [[NSApplication sharedApplication] stopModal];
     }
 }
 -(void)segmentCellsBatch:(id)sender{
@@ -1848,7 +1849,9 @@ typedef enum {
 -(void)pixelClassify:(id)sender{
     if(self.inScopeImage.isLoaded){
         IMCPixelClassificationTool *seg = [[IMCPixelClassificationTool alloc]initWithStack:self.inScopeImage andTraining:nil];
-        [[seg window] makeKeyAndOrderFront:seg];
+        //[seg.window makeKeyWindow];
+        [[NSApplication sharedApplication] runModalForWindow:seg.window];
+        [[NSApplication sharedApplication] stopModal];
     }
 }
 
@@ -1872,13 +1875,15 @@ typedef enum {
 -(void)thresholdMask:(id)sender{
     if(self.inScopeImage.isLoaded){
         IMCThresholdMask *seg = [[IMCThresholdMask alloc]initWithStack:self.inScopeImage andMask:nil];
-        [[seg window] makeKeyAndOrderFront:seg];
+        [[NSApplication sharedApplication] runModalForWindow:seg.window];
+        [[NSApplication sharedApplication] stopModal];
     }
 }
 -(void)manualMask:(id)sender{
     if(self.inScopeImage.isLoaded){
         IMCPaintMask *seg = [[IMCPaintMask alloc]initWithStack:self.inScopeImage andMask:nil];
-        [[seg window] makeKeyAndOrderFront:seg];
+        [[NSApplication sharedApplication] runModalForWindow:seg.window];
+        [[NSApplication sharedApplication] stopModal];
     }
 }
 -(void)thresholdMaskBatch:(id)sender{
@@ -1893,21 +1898,25 @@ typedef enum {
     seg.delegate = self;
     if(![self.batchWindows containsObject:seg])
         [self.batchWindows addObject:seg];
-    [[seg window] makeKeyAndOrderFront:seg];
+    [[NSApplication sharedApplication] runModalForWindow:seg.window];
+    [[NSApplication sharedApplication] stopModal];
 }
 -(void)combineMasks:(id)sender{
     IMCCombineMasks *seg = [[IMCCombineMasks alloc]init];
     seg.delegate = self;
-    [[seg window] makeKeyAndOrderFront:seg];
+    [[NSApplication sharedApplication] runModalForWindow:seg.window];
+    [[NSApplication sharedApplication] stopModal];
 }
 -(void)cellClassification:(id)sender{
     if(self.inScopeComputation.isLoaded){
         IMCCellTrainerTool *seg = [[IMCCellTrainerTool alloc]initWithComputation:self.inScopeComputation andTraining:nil];
-        [[seg window] makeKeyAndOrderFront:seg];
+        [[NSApplication sharedApplication] runModalForWindow:seg.window];
+        [[NSApplication sharedApplication] stopModal];
     }
     if(self.inScope3DMask.isLoaded){
         IMCCell3DTrainerTool *seg = [[IMCCell3DTrainerTool alloc]initWithComputation:self.inScope3DMask andTraining:nil];
-        [[seg window] makeKeyAndOrderFront:seg];
+        [[NSApplication sharedApplication] runModalForWindow:seg.window];
+        [[NSApplication sharedApplication] stopModal];
     }
 //    if(self.inScope3DMask.isLoaded){
 //        IMCSceneKitClassifier *seg = [[IMCSceneKitClassifier alloc]initWithComputation:self.inScope3DMask andTraining:nil];

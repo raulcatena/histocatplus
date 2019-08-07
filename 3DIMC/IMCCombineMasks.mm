@@ -71,10 +71,6 @@
 
 - (void)windowDidLoad {
     [super windowDidLoad];
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{//TODO
-        [[NSApplication sharedApplication] runModalForWindow:self.window];
-        
-    });
     self.arrSegmentationMasks = @[].mutableCopy;
     self.arrAllMasks = @[].mutableCopy;
 }
@@ -179,12 +175,13 @@
     self.toleranceLabel.hidden = (self.calculation.indexOfSelectedItem < 2);
     self.captureId.hidden = (self.calculation.indexOfSelectedItem != 2);
     self.certaintyField.stringValue = [@"Certainty " stringByAppendingFormat:@"%.2f", self.certaintySlider.floatValue];
-    BOOL showCerts = [self.arrAllMasks[[self.targetMask indexOfSelectedItem]] isMemberOfClass:[IMCPixelMap class]];
-    self.certaintySlider.hidden = !showCerts;
-    self.certaintyField.hidden = !showCerts;
     
     if([self.originMask indexOfSelectedItem] >= 0 && [self.targetMask indexOfSelectedItem] >= 0){
-        
+    
+        BOOL showCerts = [self.arrAllMasks[[self.targetMask indexOfSelectedItem]] isMemberOfClass:[IMCPixelMap class]];
+        self.certaintySlider.hidden = !showCerts;
+        self.certaintyField.hidden = !showCerts;
+    
         IMCPixelClassification *maskOr = self.arrSegmentationMasks[self.originMask.indexOfSelectedItem];
         IMCNodeWrapper *maskTar = self.arrAllMasks[self.targetMask.indexOfSelectedItem];
         PixelStruct *targetPixStruct = [self structFromObject:maskTar withCertainty:self.certaintySlider.floatValue];

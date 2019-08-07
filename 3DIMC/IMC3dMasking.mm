@@ -29,10 +29,6 @@ UInt8 ** buffAll;
 
 - (void)windowDidLoad {
     [super windowDidLoad];
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{//TODO
-        [[NSApplication sharedApplication] runModalForWindow:self.window];
-        
-    });
     self.masks = [self.delegate masks];
     self.renderer = [[IMCVoxelMaskRenderer alloc]init];
     self.metalView.delegate = self.renderer;

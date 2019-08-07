@@ -20,15 +20,15 @@
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
     // Insert code here to initialize your application
     
-    if(!VIEWER_ONLY && !VIEWER_HISTO)
+    if(!VIEWER_ONLY && !VIEWER_HISTO){
         [[[NSApplication sharedApplication] mainMenu]removeItemAtIndex:6];
-    else{
+    }else{
         NSArray *allItems = [[[NSApplication sharedApplication]mainMenu]itemArray];
         for (NSMenuItem *item in allItems)
             for (NSMenuItem *subitem in item.submenu.itemArray)
-                if(subitem.tag == 1)
+                if(subitem.tag == 1 || subitem.tag == 3)
                     subitem.hidden = YES;
-        [[[NSApplication sharedApplication] mainMenu]removeItemAtIndex:5];
+        [[[NSApplication sharedApplication] mainMenu]removeItemAtIndex:6];
     }
     
     

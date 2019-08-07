@@ -107,13 +107,15 @@
     
     //Test for panoramas and masks first
     NSMutableArray *array = @[].mutableCopy;
-    [self.parent.filesTree.selectedRowIndexes enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop){
+    
+    [self.parent.filesTree.selectedRowIndexes.copy enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop){
         id anobj = [self.parent.filesTree itemAtRow:idx];
         
         if([anobj isMemberOfClass:[IMCPanoramaWrapper class]])
             if([(IMCPanoramaWrapper *)anobj isPanorama])
-                [self.parent.inScopePanoramas addObject:[(IMCPanoramaWrapper *)anobj panoramaImage]];
-            
+                if([(IMCPanoramaWrapper *)anobj panoramaImage])
+                    [self.parent.inScopePanoramas addObject:[(IMCPanoramaWrapper *)anobj panoramaImage]];
+        
         if([anobj isMemberOfClass:[IMCFileWrapper class]])
             [self.parent.inScopeFiles addObject:anobj];
         
@@ -125,11 +127,13 @@
             if(idx == self.parent.filesTree.selectedRow)
                 self.parent.inScopeMask = anobj;
         }
+        
         if([anobj isMemberOfClass:[IMCComputationOnMask class]]){
             [self.parent.inScopeComputations addObject:anobj];
             if(idx == self.parent.filesTree.selectedRow)
                 self.parent.inScopeComputation = anobj;
         }
+        
         if([anobj isMemberOfClass:[IMC3DMask class]]){
             if(idx == self.parent.filesTree.selectedRow)
                 self.parent.inScope3DMask = anobj;
@@ -142,6 +146,7 @@
                 break;
             node = node.children.firstObject;
         }
+        NSLog(@"H");
         if([node isMemberOfClass:[IMCImageStack class]] || [node isMemberOfClass:[IMCPixelMap class]]){
             BOOL anyFound = NO;
             for (IMCImageStack *stck in node.parent.children) {
@@ -164,7 +169,7 @@
         }
         
     }];
-
+    
     for (IMCImageStack *stack in array)
         if(![self.parent.inScopeImages containsObject:stack]){
             [self.parent.inScopeImages addObject:stack];
@@ -177,7 +182,7 @@
         if(![self.parent.involvedStacksForMetadata containsObject:mask.imageStack])
             [self.parent.involvedStacksForMetadata addObject:mask.imageStack];
     
-    
+    NSLog(@"3");
     [self.parent refresh];
 }
 
