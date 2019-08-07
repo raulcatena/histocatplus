@@ -146,7 +146,7 @@
                 break;
             node = node.children.firstObject;
         }
-        NSLog(@"H");
+
         if([node isMemberOfClass:[IMCImageStack class]] || [node isMemberOfClass:[IMCPixelMap class]]){
             BOOL anyFound = NO;
             for (IMCImageStack *stck in node.parent.children) {
@@ -182,7 +182,6 @@
         if(![self.parent.involvedStacksForMetadata containsObject:mask.imageStack])
             [self.parent.involvedStacksForMetadata addObject:mask.imageStack];
     
-    NSLog(@"3");
     [self.parent refresh];
 }
 
