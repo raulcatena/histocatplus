@@ -59,18 +59,20 @@
         [self loadBufferAction];
 }
 -(void)loadLayerDataWithBlock:(void (^)(void))block{
-    if(![self canLoad])return;
-    [self loadBuffer];
-    NSWindowController *cont;
-    if([self.parent isMemberOfClass:[IMCComputationOnMask class]])
-        cont = [[IMCCellTrainerTool alloc]initWithComputation:self.computation andTraining:self];
-    if([self.parent isMemberOfClass:[IMC3DMask class]])
-        cont = [[IMCCell3DTrainerTool alloc]initWithComputation:self.computation andTraining:self];
-//    if([self.parent isMemberOfClass:[IMC3DMask class]])
-//        cont = [[IMCSceneKitClassifier alloc]initWithComputation:self.computation andTraining:self];
-    [[cont window] makeKeyAndOrderFront:cont];
-    [super loadLayerDataWithBlock:block];
-    
+    if([self canLoad]){
+        [self loadBuffer];
+        NSWindowController *cont;
+        if([self.parent isMemberOfClass:[IMCComputationOnMask class]])
+            cont = [[IMCCellTrainerTool alloc]initWithComputation:self.computation andTraining:self];
+        if([self.parent isMemberOfClass:[IMC3DMask class]])
+            cont = [[IMCCell3DTrainerTool alloc]initWithComputation:self.computation andTraining:self];
+        //    if([self.parent isMemberOfClass:[IMC3DMask class]])
+        //        cont = [[IMCSceneKitClassifier alloc]initWithComputation:self.computation andTraining:self];
+        [[cont window] makeKeyAndOrderFront:cont];
+        [super loadLayerDataWithBlock:block];
+        [[NSApplication sharedApplication]runModalForWindow:cont.window];
+        [[NSApplication sharedApplication]stopModal];
+    }
 }
 -(NSMutableDictionary *)trainingDictionary{
     if(!self.jsonDictionary[JSON_DICT_PIXEL_MASK_TRAINING_TRAINED])

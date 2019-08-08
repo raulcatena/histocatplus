@@ -217,6 +217,8 @@
     [data writeToFile:self.absolutePath options:NSDataWritingAtomic error:&error];
     if(error)
         NSLog(@"Write returned error: %@", [error localizedDescription]);
+    [self clearCacheBuffers];
+    [self allocateCacheBufferContainers];
 }
 
 #pragma mark open
@@ -603,51 +605,52 @@
     
     NSString *str = [NSString stringWithContentsOfURL:url encoding:NSUTF8StringEncoding error:NULL];
     NSArray *lines = [str componentsSeparatedByString:@"\n"];
-    if(lines.count < 2)return;
     
-    NSArray *headers = [lines.firstObject componentsSeparatedByString:@"\t"];
-    NSInteger channelsCount = self.channels.count;
-    
-    NSLog(@"%@", self.channels);
-    
-    NSInteger allCount = channelsCount + headers.count;
-    
-    float ** newData = (float **)calloc(allCount, sizeof(float*));
-    for (NSInteger i = 0; i < allCount; i++) {
-        newData[i] = calloc(self.segmentedUnits, sizeof(float));
-    }
-    
-    int counterLine = 1;
-    
-    NSMutableArray *channels = [self channels];
-    for (NSInteger i = 0; i < self.segmentedUnits; i++) {
-        //First add the other data
-        for (int j = 0; j < channels.count; j++) {
-            newData[j][i] = self.computedData[j][i];
+    if(lines.count >= 2){
+        NSArray *headers = [lines.firstObject componentsSeparatedByString:@"\t"];
+        NSInteger channelsCount = self.channels.count;
+        
+        NSLog(@"%@", self.channels);
+        
+        NSInteger allCount = channelsCount + headers.count;
+        
+        float ** newData = (float **)calloc(allCount, sizeof(float*));
+        
+        for (NSInteger i = 0; i < allCount; i++)
+            newData[i] = calloc(self.segmentedUnits, sizeof(float));
+        
+        int counterLine = 1;
+        
+        NSMutableArray *channels = [self channels];
+        for (NSInteger i = 0; i < self.segmentedUnits; i++) {
+            //First add the other data
+            for (int j = 0; j < channels.count; j++)
+                newData[j][i] = self.computedData[j][i];
+            
+            BOOL valid = NO;
+            
+            NSString *line;
+            NSArray *values;
+            do {
+                line = [lines objectAtIndex:counterLine];
+                values = [line componentsSeparatedByString:@"\t"];
+                if(values.count < 3)return;
+                if([values[2]integerValue] > 0)valid = YES;
+                counterLine++;
+            } while (valid == NO);
+            
+            if(!values)
+                continue;
+            
+            for (int j = 0; j < headers.count; j++)
+                newData[j + channelsCount][i] = [values[j]floatValue] * 1000;
         }
+        [self release_computedData];
+        self.computedData = newData;
+        [self.channels addObjectsFromArray:headers];
         
-        BOOL valid = NO;
-        
-        NSString *line;
-        NSArray *values;
-        do {
-            line = [lines objectAtIndex:counterLine];
-            values = [line componentsSeparatedByString:@"\t"];
-            if(values.count < 3)return;
-            if([values[2]integerValue] > 0)valid = YES;
-            counterLine++;
-        } while (valid == NO);
-        if(!values)continue;
-        
-        for (int j = 0; j < headers.count; j++) {
-            newData[j + channelsCount][i] = [values[j]floatValue] * 1000;
-        }
+        [self saveData];
     }
-    [self release_computedData];
-    self.computedData = newData;
-    [self.channels addObjectsFromArray:headers];
-    
-    [self saveData];
 }
 
 #pragma mark Image Generation for mask
@@ -761,10 +764,7 @@
         return;
     if(cachedValues[index] != NULL)
         free(cachedValues[index]);
-    cachedValues[index] = NULL;
-    if(cachedValues[index] == NULL)
-        cachedValues[index] = (UInt8 *)calloc(self.mask.imageStack.numberOfPixels, sizeof(UInt8));
-    
+    cachedValues[index] = (UInt8 *)calloc(self.mask.imageStack.numberOfPixels, sizeof(UInt8));
     
     if(cachedSettings[index] == NULL){
         cachedSettings[index] = (float *)calloc(6, sizeof(float));
@@ -780,16 +780,11 @@
 -(void)allocateCacheBufferContainers{
     if(cachedValues != NULL)
         free(cachedValues);
-    cachedValues = NULL;
-    if(cachedValues == NULL){
-        cachedValues = (UInt8 **)calloc(self.channels.count, sizeof(UInt8 *));
-    }
+    cachedValues = (UInt8 **)calloc(self.channels.count, sizeof(UInt8 *));
     
-    if(cachedSettings != NULL)free(cachedSettings);
-    cachedSettings = NULL;
-    if(cachedSettings == NULL){
-        cachedSettings = (float **)calloc(self.channels.count, sizeof(float *));
-    }
+    if(cachedSettings != NULL)
+        free(cachedSettings);
+    cachedSettings = (float **)calloc(self.channels.count, sizeof(float *));
 }
 -(NSString *)absolutePath{
     return [[self.fileWrapper.workingFolder stringByAppendingPathComponent:self.mask.itemHash]stringByAppendingPathExtension:@"cbin"];

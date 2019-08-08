@@ -421,28 +421,29 @@
     }];
 }
 -(void)openCloseClick:(NSOutlineView *)sender{
-    if(self.filesTree.selectedRowIndexes.count > 1)return;
-    IMCNodeWrapper *anobj = [self.filesTree itemAtRow:self.filesTree.selectedRow];
-    if(!anobj.isLoaded)
-        [anobj loadLayerDataWithBlock:^{
-            [self refresh];
-            [self.dataCoordinator updateOrderedImageList];
-        }];
-    else{
-        if([anobj isMemberOfClass:[IMCPanoramaWrapper class]]){
-            IMCPanoramaWrapper *pan = (IMCPanoramaWrapper *)anobj;
-            NSImage *prevImage = pan.panoramaImage;
-            if([self.inScopePanoramas containsObject:prevImage])
-                [self.inScopePanoramas removeObject:prevImage];
-            
-            pan.after = !pan.after;
-            [self.inScopePanoramas insertObject:pan.panoramaImage atIndex:0];
-            [self refresh];
-        }
-        else
-            [anobj unLoadLayerDataWithBlock:^{
+    if(self.filesTree.selectedRowIndexes.count == 1){
+        IMCNodeWrapper *anobj = [self.filesTree itemAtRow:self.filesTree.selectedRow];
+        if(!anobj.isLoaded)
+            [anobj loadLayerDataWithBlock:^{
                 [self refresh];
+                [self.dataCoordinator updateOrderedImageList];
             }];
+        else{
+            if([anobj isMemberOfClass:[IMCPanoramaWrapper class]]){
+                IMCPanoramaWrapper *pan = (IMCPanoramaWrapper *)anobj;
+                NSImage *prevImage = pan.panoramaImage;
+                if([self.inScopePanoramas containsObject:prevImage])
+                    [self.inScopePanoramas removeObject:prevImage];
+                
+                pan.after = !pan.after;
+                [self.inScopePanoramas insertObject:pan.panoramaImage atIndex:0];
+                [self refresh];
+            }else{
+                [anobj unLoadLayerDataWithBlock:^{
+                    [self refresh];
+                }];
+            }
+        }
     }
 }
 -(void)openFileWrapper:(IMCNodeWrapper *)item{
@@ -1822,30 +1823,7 @@ typedef enum {
     }
 }
 
-#pragma mark Segment Cells and pixel classification
-
--(void)segmentCells:(id)sender{
-    if(self.inScopeImage.isLoaded){
-        IMCCellSegmentation *seg = [[IMCCellSegmentation alloc]initWithStack:self.inScopeImage andTraining:nil];
-        [[NSApplication sharedApplication] runModalForWindow:seg.window];
-        [[NSApplication sharedApplication] stopModal];
-    }
-}
--(void)segmentCellsBatch:(id)sender{
-    IMCSegmentationBatch *seg;
-    for (id obj in self.batchWindows)
-        if([obj isMemberOfClass:[IMCSegmentationBatch class]])
-            seg = (IMCSegmentationBatch *)obj;
-    
-    if(!seg)seg = [[IMCSegmentationBatch alloc]init];
-    
-    seg.delegate = self;
-    if(![self.batchWindows containsObject:seg])
-        [self.batchWindows addObject:seg];
-    
-    [[seg window] makeKeyAndOrderFront:seg];
-    [seg.mapsTableView reloadData];
-}
+#pragma mark Segment Cells, masks, and pixel and cell classifications one by one
 -(void)pixelClassify:(id)sender{
     if(self.inScopeImage.isLoaded){
         IMCPixelClassificationTool *seg = [[IMCPixelClassificationTool alloc]initWithStack:self.inScopeImage andTraining:nil];
@@ -1854,23 +1832,12 @@ typedef enum {
         [[NSApplication sharedApplication] stopModal];
     }
 }
-
--(void)pixelClassificatonBatch:(id)sender{
-    IMCPixelClassificationBatch *seg;
-    for (id obj in self.batchWindows)
-        if([obj isMemberOfClass:[IMCPixelClassificationBatch class]])
-            seg = (IMCPixelClassificationBatch *)obj;
-    
-    if(!seg)
-        seg = [[IMCPixelClassificationBatch alloc]init];
-
-    seg.delegate = self;
-    if(![self.batchWindows containsObject:seg])
-        [self.batchWindows addObject:seg];
-    [[seg window] makeKeyAndOrderFront:seg];
-    [seg.trainingsTableView reloadData];
-    [seg.stacksTableView reloadData];
-    
+-(void)segmentCells:(id)sender{
+    if(self.inScopeImage.isLoaded){
+        IMCCellSegmentation *seg = [[IMCCellSegmentation alloc]initWithStack:self.inScopeImage andTraining:nil];
+        [[NSApplication sharedApplication] runModalForWindow:seg.window];
+        [[NSApplication sharedApplication] stopModal];
+    }
 }
 -(void)thresholdMask:(id)sender{
     if(self.inScopeImage.isLoaded){
@@ -1886,6 +1853,56 @@ typedef enum {
         [[NSApplication sharedApplication] stopModal];
     }
 }
+-(void)cellClassification:(id)sender{
+    if(self.inScopeComputation.isLoaded){
+        IMCCellTrainerTool *seg = [[IMCCellTrainerTool alloc]initWithComputation:self.inScopeComputation andTraining:nil];
+        [[NSApplication sharedApplication] runModalForWindow:seg.window];
+        [[NSApplication sharedApplication] stopModal];
+    }
+    if(self.inScope3DMask.isLoaded){
+        IMCCell3DTrainerTool *seg = [[IMCCell3DTrainerTool alloc]initWithComputation:self.inScope3DMask andTraining:nil];
+        [[NSApplication sharedApplication] runModalForWindow:seg.window];
+        [[NSApplication sharedApplication] stopModal];
+    }
+    //    if(self.inScope3DMask.isLoaded){
+    //        IMCSceneKitClassifier *seg = [[IMCSceneKitClassifier alloc]initWithComputation:self.inScope3DMask andTraining:nil];
+    //        [[seg window] makeKeyAndOrderFront:seg];
+    //    }
+}
+#pragma mark Segment Cells, masks, and pixel and cell classifications BATCH
+-(void)pixelClassificatonBatch:(id)sender{
+    IMCPixelClassificationBatch *seg;
+    for (id obj in self.batchWindows)
+        if([obj isMemberOfClass:[IMCPixelClassificationBatch class]])
+            seg = (IMCPixelClassificationBatch *)obj;
+    
+    if(!seg)
+        seg = [[IMCPixelClassificationBatch alloc]init];
+    
+    seg.delegate = self;
+    if(![self.batchWindows containsObject:seg])
+        [self.batchWindows addObject:seg];
+    [[seg window] makeKeyAndOrderFront:seg];
+    [seg.trainingsTableView reloadData];
+    [seg.stacksTableView reloadData];
+    
+}
+-(void)segmentCellsBatch:(id)sender{
+    IMCSegmentationBatch *seg;
+    for (id obj in self.batchWindows)
+        if([obj isMemberOfClass:[IMCSegmentationBatch class]])
+            seg = (IMCSegmentationBatch *)obj;
+    
+    if(!seg)
+        seg = [[IMCSegmentationBatch alloc]init];
+    
+    seg.delegate = self;
+    if(![self.batchWindows containsObject:seg])
+        [self.batchWindows addObject:seg];
+    
+    [[seg window] makeKeyAndOrderFront:seg];
+    [seg.mapsTableView reloadData];
+}
 -(void)thresholdMaskBatch:(id)sender{
     IMCThresholdBatch *seg;
     for (id obj in self.batchWindows)
@@ -1900,28 +1917,6 @@ typedef enum {
         [self.batchWindows addObject:seg];
     [[NSApplication sharedApplication] runModalForWindow:seg.window];
     [[NSApplication sharedApplication] stopModal];
-}
--(void)combineMasks:(id)sender{
-    IMCCombineMasks *seg = [[IMCCombineMasks alloc]init];
-    seg.delegate = self;
-    [[NSApplication sharedApplication] runModalForWindow:seg.window];
-    [[NSApplication sharedApplication] stopModal];
-}
--(void)cellClassification:(id)sender{
-    if(self.inScopeComputation.isLoaded){
-        IMCCellTrainerTool *seg = [[IMCCellTrainerTool alloc]initWithComputation:self.inScopeComputation andTraining:nil];
-        [[NSApplication sharedApplication] runModalForWindow:seg.window];
-        [[NSApplication sharedApplication] stopModal];
-    }
-    if(self.inScope3DMask.isLoaded){
-        IMCCell3DTrainerTool *seg = [[IMCCell3DTrainerTool alloc]initWithComputation:self.inScope3DMask andTraining:nil];
-        [[NSApplication sharedApplication] runModalForWindow:seg.window];
-        [[NSApplication sharedApplication] stopModal];
-    }
-//    if(self.inScope3DMask.isLoaded){
-//        IMCSceneKitClassifier *seg = [[IMCSceneKitClassifier alloc]initWithComputation:self.inScope3DMask andTraining:nil];
-//        [[seg window] makeKeyAndOrderFront:seg];
-//    }
 }
 -(void)cellClassificationBatch:(id)sender{
     IMCCellClassificationBatch *seg;
@@ -1940,6 +1935,15 @@ typedef enum {
     [seg.computationsTableView reloadData];
 }
 
+#pragma mark combine masks
+-(void)combineMasks:(id)sender{
+    IMCCombineMasks *seg = [[IMCCombineMasks alloc]init];
+    seg.delegate = self;
+    [[NSApplication sharedApplication] runModalForWindow:seg.window];
+    [[NSApplication sharedApplication] stopModal];
+}
+
+#pragma mark Get nodes
 //Delegate batch PixClass
 -(NSArray *)allStacks{
     return self.dataCoordinator.inOrderImageWrappers;
@@ -2204,7 +2208,7 @@ typedef enum {
     }
 }
 
-#pragma mark
+#pragma mark AirLab
 -(void)cleanUpNamesWithAirlab:(id)sender{
     [IMCAirLabClient getInfoClones:self.inScopeImages subdomain:@"bodenmillerlab"];
 }

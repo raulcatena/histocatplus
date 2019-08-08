@@ -281,6 +281,7 @@
         });
     }
 }
+
 -(void)executeDistanceCalcForCalculation:(IMCComputationOnMask *)compOr pixStructTarget:(PixelStruct *)pixStruct{
     if(!compOr.isLoaded)
         [compOr loadLayerDataWithBlock:nil];
@@ -303,10 +304,22 @@
     UInt8 * trans = (UInt8 *)calloc(size, sizeof(UInt8));
     for (NSInteger i = 0; i < size; i++)
         trans[i] = (UInt8)((piz[i]/max) * 255.0f);
-    CGImageRef maskImage = [IMCImageGenerator imageFromCArrayOfValues:trans color:nil width:compOr.mask.imageStack.width height:compOr.mask.imageStack.height startingHueScale:170 hueAmplitude:170 direction:NO ecuatorial:NO brightField:NO];
+    
+    CGImageRef maskImage = [IMCImageGenerator imageFromCArrayOfValues:trans
+                                              color:nil
+                                              width:compOr.mask.imageStack.width
+                                              height:compOr.mask.imageStack.height
+                                              startingHueScale:170
+                                              hueAmplitude:170
+                                              direction:NO
+                                              ecuatorial:NO
+                                              brightField:NO];
+    
     self.outputScroll.imageView.image = [NSImage imageWithRef:maskImage];
-    if(trans)free(trans);
-    if(piz)free(piz);
+    if(trans)
+        free(trans);
+    if(piz)
+        free(piz);
 }
 
 #pragma mark changed which labels
