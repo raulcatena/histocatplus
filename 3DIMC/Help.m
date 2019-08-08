@@ -16,7 +16,13 @@
 }
 
 +(void)helpPlots{
-    [General runHelpModalWithMessage:@"For this to work you need to install R (No R Studio is necessary). Install R with the default installation destination for MacOS (/Library/Frameworks/R.framework) Go to the R console and make sure ggplot2 and RColorBrewer are installed. If you need to install these 2 packages, just type:\n\n>install.packages(\"ggplot2\")\n\n>install.packages(\"RColorBrewer\")\n\n(Do not copy the '>' symbol)\nSelect the mirror and the package should get installed just doing this." andTitle:@"Help plots"];
+    [General runHelpModalWithMessage:@"For this to work you need to install R (No R Studio is necessary). Install R with the default installation destination for MacOS (/Library/Frameworks/R.framework) Go to the R console and make sure ggplot2 and RColorBrewer are installed. If you need to install these 2 packages, just type:\
+        \n\n>install.packages('devtools');\
+        \n\n>require('devtools');\
+        \n\n>install_version('ggplot2', version = '2.1.0', repos = 'http://cran.us.r-project.org');\
+        \n\n>devtools::install_github('cran/ggplot2', force = TRUE);\
+        \n\n>install.packages(\"RColorBrewer\");\
+        \n\n(Do not copy the '>' symbol)\nSelect the mirror and the package should get installed just doing this." andTitle:@"Help plots"];
 }
 +(void)helpBinaryExport{
     [General runHelpModalWithMessage:@"Exports data as float32 binary, followed by a tab-separated UTF-8 string with the names of the channels. The first value is the number of cells, the second is the number of channels, the thrid is the offset of the UTF-8 string. From value 4 until the offset the binary data organized as cell_1_channel_1, cell_1_channel_2 ... cell_1_channel_n | then cell_2_channel_1 etc. ONLY the channels selected in the channels table will be exported. A cell_id and Acquisition column is also added automatically" andTitle:@"Help Binary Export"];

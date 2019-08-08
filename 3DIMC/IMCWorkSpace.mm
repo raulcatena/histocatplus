@@ -1866,7 +1866,8 @@ typedef enum {
     }
     //    if(self.inScope3DMask.isLoaded){
     //        IMCSceneKitClassifier *seg = [[IMCSceneKitClassifier alloc]initWithComputation:self.inScope3DMask andTraining:nil];
-    //        [[seg window] makeKeyAndOrderFront:seg];
+    //        [[NSApplication sharedApplication] runModalForWindow:seg.window];
+    //        [[NSApplication sharedApplication] stopModal];
     //    }
 }
 #pragma mark Segment Cells, masks, and pixel and cell classifications BATCH
@@ -2047,6 +2048,7 @@ typedef enum {
     seg.delegate = self;
     [[seg window] makeKeyAndOrderFront:seg];
 }
+
 -(void)threeDMasking:(Mask3D_Type)type{
     if(self.inOrderIndexes.count > 0){
         IMC3DMask *mask3d = [[IMC3DMask alloc]initWithLoader:self.dataCoordinator andHandler:self.threeDHandler];

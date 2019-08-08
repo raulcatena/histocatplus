@@ -69,8 +69,9 @@
     else
         tool = [[IMCPixelClassificationTool alloc]initWithStack:self.imageStack andTraining:self];
     
-    [[tool window] makeKeyAndOrderFront:tool];
-    [super loadLayerDataWithBlock:block];    
+    [super loadLayerDataWithBlock:block];
+    [[NSApplication sharedApplication]runModalForWindow:tool.window];
+    [[NSApplication sharedApplication]stopModal];
 }
 -(void)loadBuffer{
     

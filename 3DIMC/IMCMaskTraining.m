@@ -68,7 +68,6 @@
             cont = [[IMCCell3DTrainerTool alloc]initWithComputation:self.computation andTraining:self];
         //    if([self.parent isMemberOfClass:[IMC3DMask class]])
         //        cont = [[IMCSceneKitClassifier alloc]initWithComputation:self.computation andTraining:self];
-        [[cont window] makeKeyAndOrderFront:cont];
         [super loadLayerDataWithBlock:block];
         [[NSApplication sharedApplication]runModalForWindow:cont.window];
         [[NSApplication sharedApplication]stopModal];
