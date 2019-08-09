@@ -217,7 +217,6 @@
     [data writeToFile:self.absolutePath options:NSDataWritingAtomic error:&error];
     if(error)
         NSLog(@"Write returned error: %@", [error localizedDescription]);
-    [self clearCacheBuffers];
     [self allocateCacheBufferContainers];
 }
 

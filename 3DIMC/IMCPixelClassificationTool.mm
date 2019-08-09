@@ -176,8 +176,9 @@
 }
 
 -(void)tableViewSelectionDidChange:(NSNotification *)notification{
-    if(!self.inOrderIndexes)self.inOrderIndexes = @[].mutableCopy;
-    [General orderIndexesUponSelection:self.inOrderIndexes indexes:self.channelTableView.selectedRowIndexes];
+    if(!self.inOrderIndexes)
+        self.inOrderIndexes = @[].mutableCopy;
+    [General orderIndexesUponSelection:self.inOrderIndexes indexes:self.channelTableView.selectedRowIndexes.copy];
     [self refresh];
 }
 
@@ -274,15 +275,12 @@
             [refs addObject:(__bridge id)refi];
     }
     
-    
-    
     if(self.showImage.state == NSControlStateValueOn){
         [refs addObjectsFromArray:[self imageRefsForIndexSet:self.channelTableView.selectedRowIndexes]];
     }
+    NSImage *final_ = [IMCImageGenerator imageWithArrayOfCGImages:refs width:self.trainer.stack.width height:self.trainer.stack.height blendMode:[IMCBlendModes blendModeForValue:self.multiImageFilters.indexOfSelectedItem]];
     
-    NSImage *final = [IMCImageGenerator imageWithArrayOfCGImages:refs width:self.trainer.stack.width height:self.trainer.stack.height blendMode:[IMCBlendModes blendModeForValue:self.multiImageFilters.indexOfSelectedItem]];
-    
-    self.scrollView.imageView.image = final;
+    self.scrollView.imageView.image = final_;
 }
 
 -(IBAction)changedTolerance:(NSSlider *)sender{

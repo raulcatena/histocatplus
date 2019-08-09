@@ -19,6 +19,7 @@
     [General runHelpModalWithMessage:@"For this to work you need to install R (No R Studio is necessary). Install R with the default installation destination for MacOS (/Library/Frameworks/R.framework) Go to the R console and make sure ggplot2 and RColorBrewer are installed. If you need to install these 2 packages, just type:\
         \n\n>install.packages('devtools');\
         \n\n>require('devtools');\
+        \n\nIt is necessary to install a previous version of ggplot, v>3.0 does not work\
         \n\n>install_version('ggplot2', version = '2.1.0', repos = 'http://cran.us.r-project.org');\
         \n\n>devtools::install_github('cran/ggplot2', force = TRUE);\
         \n\n>install.packages(\"RColorBrewer\");\

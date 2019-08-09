@@ -207,21 +207,31 @@
 -(void)tryMasksFromURL:(NSURL *)url{
     if([General isDirectory:url]){
         for (NSString *itemUrl in [IMCLoader filesInDirectory:url]) {
-            if(![IMCLoader validFile:itemUrl])continue;
+            
+            if(![IMCLoader validFile:itemUrl])
+                continue;
             if([General isDirectory:[NSURL fileURLWithPath:itemUrl]])
                 continue;
             
             NSString *fullPath = [url.path stringByAppendingPathComponent:itemUrl];
-            if([fullPath.pathExtension isEqualToString:EXTENSION_TIFF] || [fullPath.pathExtension isEqualToString:EXTENSION_TIF] || [fullPath.pathExtension isEqualToString:EXTENSION_MAT])
-                if([itemUrl rangeOfString:@"mask"].location != NSNotFound)
-                    for (IMCImageStack *stack in self.inOrderImageWrappers)
+            
+            if([fullPath.pathExtension isEqualToString:EXTENSION_TIFF] ||
+               [fullPath.pathExtension isEqualToString:EXTENSION_TIF] ||
+               [fullPath.pathExtension isEqualToString:EXTENSION_MAT]){
+                if([itemUrl rangeOfString:@"mask"].location != NSNotFound){
+                    for (IMCImageStack *stack in self.inOrderImageWrappers){
                         if([itemUrl hasPrefix:[stack.itemName stringByDeletingPathExtension]]){
                             NSString *fullPath = [url.path stringByAppendingPathComponent:itemUrl];
                             [stack getMaskAtURL:[NSURL fileURLWithPath:fullPath]];
                         }
+                    }
+                }
+            }
+            
         }
     }
 }
+
 #pragma mark filewrapper objects
 -(void)updateFileWrappers{
     //NSLog(@"%@", self.jsonDescription);

@@ -114,7 +114,7 @@
 
 -(void)tableViewSelectionDidChange:(NSNotification *)notification{
     if(!self.inOrderIndexes)self.inOrderIndexes = @[].mutableCopy;
-    [General orderIndexesUponSelection:self.inOrderIndexes indexes:self.channelTableView.selectedRowIndexes];
+    [General orderIndexesUponSelection:self.inOrderIndexes indexes:self.channelTableView.selectedRowIndexes.copy];
     [self refresh];
 }
 

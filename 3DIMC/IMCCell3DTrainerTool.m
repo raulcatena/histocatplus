@@ -211,9 +211,9 @@
             }];
         }
     }
-    NSImage *final = [IMCImageGenerator imageWithArrayOfCGImages:refs width:[self mask].width height:[self mask].height blendMode:kCGBlendModeScreen];
+    NSImage *final_ = [IMCImageGenerator imageWithArrayOfCGImages:refs width:[self mask].width height:[self mask].height blendMode:kCGBlendModeScreen];
     
-    self.scrollView.imageView.image = final;
+    self.scrollView.imageView.image = final_;
     updating = NO;
 }
 

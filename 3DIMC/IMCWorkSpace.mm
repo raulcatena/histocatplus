@@ -1829,45 +1829,38 @@ typedef enum {
         IMCPixelClassificationTool *seg = [[IMCPixelClassificationTool alloc]initWithStack:self.inScopeImage andTraining:nil];
         //[seg.window makeKeyWindow];
         [[NSApplication sharedApplication] runModalForWindow:seg.window];
-        [[NSApplication sharedApplication] stopModal];
     }
 }
 -(void)segmentCells:(id)sender{
     if(self.inScopeImage.isLoaded){
         IMCCellSegmentation *seg = [[IMCCellSegmentation alloc]initWithStack:self.inScopeImage andTraining:nil];
         [[NSApplication sharedApplication] runModalForWindow:seg.window];
-        [[NSApplication sharedApplication] stopModal];
     }
 }
 -(void)thresholdMask:(id)sender{
     if(self.inScopeImage.isLoaded){
         IMCThresholdMask *seg = [[IMCThresholdMask alloc]initWithStack:self.inScopeImage andMask:nil];
         [[NSApplication sharedApplication] runModalForWindow:seg.window];
-        [[NSApplication sharedApplication] stopModal];
     }
 }
 -(void)manualMask:(id)sender{
     if(self.inScopeImage.isLoaded){
         IMCPaintMask *seg = [[IMCPaintMask alloc]initWithStack:self.inScopeImage andMask:nil];
         [[NSApplication sharedApplication] runModalForWindow:seg.window];
-        [[NSApplication sharedApplication] stopModal];
     }
 }
 -(void)cellClassification:(id)sender{
     if(self.inScopeComputation.isLoaded){
         IMCCellTrainerTool *seg = [[IMCCellTrainerTool alloc]initWithComputation:self.inScopeComputation andTraining:nil];
         [[NSApplication sharedApplication] runModalForWindow:seg.window];
-        [[NSApplication sharedApplication] stopModal];
     }
     if(self.inScope3DMask.isLoaded){
         IMCCell3DTrainerTool *seg = [[IMCCell3DTrainerTool alloc]initWithComputation:self.inScope3DMask andTraining:nil];
         [[NSApplication sharedApplication] runModalForWindow:seg.window];
-        [[NSApplication sharedApplication] stopModal];
     }
     //    if(self.inScope3DMask.isLoaded){
     //        IMCSceneKitClassifier *seg = [[IMCSceneKitClassifier alloc]initWithComputation:self.inScope3DMask andTraining:nil];
     //        [[NSApplication sharedApplication] runModalForWindow:seg.window];
-    //        [[NSApplication sharedApplication] stopModal];
     //    }
 }
 #pragma mark Segment Cells, masks, and pixel and cell classifications BATCH
@@ -1883,6 +1876,7 @@ typedef enum {
     seg.delegate = self;
     if(![self.batchWindows containsObject:seg])
         [self.batchWindows addObject:seg];
+    
     [[seg window] makeKeyAndOrderFront:seg];
     [seg.trainingsTableView reloadData];
     [seg.stacksTableView reloadData];
@@ -1916,8 +1910,10 @@ typedef enum {
     seg.delegate = self;
     if(![self.batchWindows containsObject:seg])
         [self.batchWindows addObject:seg];
-    [[NSApplication sharedApplication] runModalForWindow:seg.window];
-    [[NSApplication sharedApplication] stopModal];
+    
+    [[seg window] makeKeyAndOrderFront:seg];
+    [seg.thresholdedTableView reloadData];
+    [seg.stacksTableView reloadData];
 }
 -(void)cellClassificationBatch:(id)sender{
     IMCCellClassificationBatch *seg;
@@ -1931,6 +1927,7 @@ typedef enum {
     seg.delegate = self;
     if(![self.batchWindows containsObject:seg])
         [self.batchWindows addObject:seg];
+    
     [[seg window] makeKeyAndOrderFront:seg];
     [seg.trainingsTableView reloadData];
     [seg.computationsTableView reloadData];
@@ -1941,7 +1938,6 @@ typedef enum {
     IMCCombineMasks *seg = [[IMCCombineMasks alloc]init];
     seg.delegate = self;
     [[NSApplication sharedApplication] runModalForWindow:seg.window];
-    [[NSApplication sharedApplication] stopModal];
 }
 
 #pragma mark Get nodes

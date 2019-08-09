@@ -264,12 +264,17 @@
 }
 
 -(void)tableViewSelectionDidChange:(NSNotification *)notification{
+    
     if(self.parent.inScope3DMask)
         [self.parent.inScope3DMask passToHandlerChannels:self.parent.channels.selectedRowIndexes];
+    
     if(!self.parent.inOrderIndexes)
         self.parent.inOrderIndexes = @[].mutableCopy;
-    [General orderIndexesUponSelection:self.parent.inOrderIndexes indexes:self.parent.channels.selectedRowIndexes];
-    if(![self.parent.tabs.selectedTabViewItem.identifier isEqualToString:TAB_ID_DATAT])[self.parent refresh];
+    
+    [General orderIndexesUponSelection:self.parent.inOrderIndexes indexes:self.parent.channels.selectedRowIndexes.copy];
+    
+    if(![self.parent.tabs.selectedTabViewItem.identifier isEqualToString:TAB_ID_DATAT])
+        [self.parent refresh];
 }
 
 -(void)tableView:(NSTableView *)tableView willDisplayCell:(id)cell forTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row{

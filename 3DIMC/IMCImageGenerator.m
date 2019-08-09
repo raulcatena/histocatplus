@@ -712,10 +712,8 @@ void threeDMeanBlur(UInt8 *** data, NSInteger width, NSInteger height, NSInteger
 }
 
 +(NSImage *)imageWithArrayOfCGImages:(NSArray *)array width:(NSInteger)width height:(NSInteger)height blendMode:(CGBlendMode)blend{
-    
     CGImageRef ref = [IMCImageGenerator imageRefWithArrayOfCGImages:array width:width height:height blendMode:blend];
     NSImage *im = [[NSImage alloc]initWithCGImage:ref size:NSMakeSize(width, height)];
-    if(ref != NULL)CFRelease(ref);
     return im;
 }
 
