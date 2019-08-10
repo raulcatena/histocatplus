@@ -173,18 +173,6 @@
     [super unLoadLayerDataWithBlock:block];
 }
 
--(void)prepData{
-    
-    [self release_computedData];
-    
-    NSInteger countChannels = self.channels.count;
-    self.computedData = malloc(countChannels * sizeof(float*));
-    NSInteger segments = self.segmentedUnits;
-    for (NSInteger i = 0; i < countChannels; i++)
-        self.computedData[i] = calloc(segments, sizeof(float));;
-    
-    self.isLoaded = YES;
-}
 -(NSMutableArray *)lastTypes{
     if(_lastTypes){
         _lastTypes = @[].mutableCopy;
@@ -212,12 +200,11 @@
             [data appendBytes:self.computedData[i] length:self.segmentedUnits * sizeof(float)];
     }
     
-        
     NSError *error = nil;
     [data writeToFile:self.absolutePath options:NSDataWritingAtomic error:&error];
     if(error)
         NSLog(@"Write returned error: %@", [error localizedDescription]);
-    [self allocateCacheBufferContainers];
+    
 }
 
 #pragma mark open
@@ -227,28 +214,6 @@
 }
 
 -(void)open{
-    /*if([self hasBackData]){
-        [self prepData];
-        NSData *data = [NSData dataWithContentsOfFile:path];
-                
-        float value;
-        size_t floatSize = sizeof(float);
-        NSInteger counter = 0;
-
-        NSInteger channelsCount = self.channels.count;
-        NSInteger units = self.segmentedUnits;
-        
-        for (NSInteger i = 0; i < channelsCount; i++) {
-
-            for (NSInteger j = 0; j < units; j++) {
-//                if(counter + floatSize > data.length)
-//                    continue;
-                [data getBytes:&value range:NSMakeRange(counter, floatSize)];
-                self.computedData[i][j] = value;
-                counter += floatSize;
-            }
-        }
-    }*/
 
     if([self hasBackData]){
         
@@ -528,18 +493,18 @@
         }
     }
     
+    
+    [self saveData];
     NSInteger segments = self.segmentedUnits;
     //Neighbours
     int * neighbours = [self calculateNeighboursTouchingForMask:maskC width:width height:height];
     for (NSInteger i = 0; i < segments; i++)
         comp[computedChannels - 1][i] = neighbours[i];
     
-    [self saveData];
-    
     free(neighbours);
-    for (int a = 0; a < compartmentsExtractedFromChannels; a++){
+    
+    for (int a = 0; a < compartmentsExtractedFromChannels; a++)
         free(arr[a]);
-    }
     free(arr);
     
     if(rawOrProcessedData){
@@ -646,9 +611,11 @@
         }
         [self release_computedData];
         self.computedData = newData;
-        [self.channels addObjectsFromArray:headers];
         
+        [self clearCacheBuffers];//Clean cache before changing number of channels
+        [self.channels addObjectsFromArray:headers];
         [self saveData];
+        [self allocateCacheBufferContainers];
     }
 }
 
@@ -758,33 +725,6 @@
         free(vals);
 }
 
--(void)allocateCacheBuffersForIndex:(NSUInteger)index withPixels:(NSUInteger)pixels{
-    if(!cachedValues)
-        return;
-    if(cachedValues[index] != NULL)
-        free(cachedValues[index]);
-    cachedValues[index] = (UInt8 *)calloc(self.mask.imageStack.numberOfPixels, sizeof(UInt8));
-    
-    if(cachedSettings[index] == NULL){
-        cachedSettings[index] = (float *)calloc(6, sizeof(float));
-        cachedSettings[index][0] = .0f;
-        cachedSettings[index][1] = .0f;
-        cachedSettings[index][2] = .0f;
-        cachedSettings[index][3] = .0f;
-        cachedSettings[index][4] = .0f;
-        cachedSettings[index][5] = .0f;
-    }
-}
-
--(void)allocateCacheBufferContainers{
-    if(cachedValues != NULL)
-        free(cachedValues);
-    cachedValues = (UInt8 **)calloc(self.channels.count, sizeof(UInt8 *));
-    
-    if(cachedSettings != NULL)
-        free(cachedSettings);
-    cachedSettings = (float **)calloc(self.channels.count, sizeof(float *));
-}
 -(NSString *)absolutePath{
     return [[self.fileWrapper.workingFolder stringByAppendingPathComponent:self.mask.itemHash]stringByAppendingPathExtension:@"cbin"];
 }
@@ -1056,8 +996,6 @@
 #pragma mark add results
 -(void)addBuffer:(float *)buffer withName:(NSString *)name atIndex:(NSInteger)index{
     
-    [self clearCacheBuffers];
-    
     if(index == NSNotFound || index > self.channels.count)
         index = self.channels.count;
     
@@ -1068,32 +1006,23 @@
     NSInteger oldNumberOfChannels = self.channels.count;
     
     float ** old = calloc(oldNumberOfChannels, sizeof(float *));
+    
     for(NSInteger i = 0; i < oldNumberOfChannels; i++)
         old[i] = self.computedData[i];
     
     NSUInteger alreadyInComp = [self.channels indexOfObject:name];
-    
     if(alreadyInComp != NSNotFound){
         if(self.computedData[alreadyInComp])
             free(self.computedData[alreadyInComp]);
         self.computedData[alreadyInComp] = buffer;
     }else{
         [self.channels insertObject:name atIndex:index];
-        NSLog(@"%li", index);
-        if(self.computedData)
-            free(self.computedData);
+        self.computedData = realloc(self.computedData, self.channels.count * sizeof(float *));
         
-        self.computedData = calloc(self.channels.count, sizeof(float *));
-        
-        for(NSInteger i = 0; i < oldNumberOfChannels + 1; i++){
-            if(i == index)
-                self.computedData[i] = buffer;
-            else
-                self.computedData[i] = old[i - (i > index)];
-        }
+        for(NSInteger i = 0; i < oldNumberOfChannels + 1; i++)
+            if(i == index) self.computedData[i] = buffer;
+            else self.computedData[i] = old[i - (i > index)];
     }
-    
-    [self saveData];
     free(old);
 }
 #pragma mark other operations on channels
@@ -1120,9 +1049,9 @@
             }
         }
         
+        [self clearCacheBuffers];
         free(self.computedData);
         self.computedData = new;
-        [self clearCacheBuffers];
         [self saveData];
     }
 }
@@ -1142,8 +1071,9 @@
             for (NSInteger i = 0; i < cells; i++)
                 newChan[i] += self.computedData[idx][i];
         }];
-        
+        [self clearCacheBuffers];// Clear before number of channels change
         [self addBuffer:newChan withName:[NSString stringWithFormat:@"SUM(%@)", str] atIndex:index];
+        [self saveData];
     }
 }
 -(void)multiplyChannelsWithIndexSet:(NSIndexSet *)indexSet toInlineIndex:(NSInteger)index{
@@ -1166,8 +1096,9 @@
             for (NSInteger i = 0; i < cells; i++)
                 newChan[i] *= self.computedData[idx][i];
         }];
-        
+        [self clearCacheBuffers];// Clear before number of channels change
         [self addBuffer:newChan withName:[NSString stringWithFormat:@"PROD(%@)", str] atIndex:index];
+        [self saveData];
     }
 }
 
@@ -1179,6 +1110,7 @@ typedef enum{
 }ClusterType;
 
 +(BOOL)flockForComps:(NSArray<IMCComputationOnMask *> *)comps indexes:(NSIndexSet *)indexSet{
+    NSLog(@"AA");
     return [IMCComputationOnMask clusterComps:comps indexes:indexSet method:CLUSTER_FLOCK r:NSNotFound clusters:NSNotFound];
 }
 +(BOOL)kMeansForComps:(NSArray<IMCComputationOnMask *> *)comps indexes:(NSIndexSet *)indexSet{
@@ -1281,6 +1213,7 @@ typedef enum{
         NSString *opName = [method == CLUSTER_FLOCK ? @"Flock_": @"KMeans" stringByAppendingString:stamp];
         
         for (IMCComputationOnMask *comp in comps) {
+            [comp clearCacheBuffers];// Before changes occur, clean the cache
             NSInteger cellsComp = comp.segmentedUnits;
             float * result = malloc(cellsComp * sizeof(float));
             for (int i = 0; i < cellsComp; i++)
@@ -1293,6 +1226,7 @@ typedef enum{
                 [comp addBuffer:itemized withName:[NSString stringWithFormat:@"Cluster_%i_%@", j + 1, opName] atIndex:comp.channels.count];
             }
             offSetCells += cellsComp;
+            [comp saveData];
         }
         free(clusters);
         
@@ -1305,6 +1239,17 @@ typedef enum{
 
 #pragma mark memmory management
 
+-(void)prepData{
+    
+    [self release_computedData];
+    
+    NSInteger countChannels = self.channels.count;
+    self.computedData = malloc(countChannels * sizeof(float*));
+    NSInteger segments = self.segmentedUnits;
+    for (NSInteger i = 0; i < countChannels; i++)
+        self.computedData[i] = calloc(segments, sizeof(float));;
+    self.isLoaded = YES;
+}
 -(void)release_computedData{
     if(self.computedData){
         for (NSInteger i = 0; i < self.channels.count; i++)
@@ -1318,6 +1263,28 @@ typedef enum{
     }
 }
 
+-(void)allocateCacheBufferContainers{
+    cachedValues = (UInt8 **)calloc(self.channels.count, sizeof(UInt8 *));
+    cachedSettings = (float **)calloc(self.channels.count, sizeof(float *));
+}
+
+-(void)allocateCacheBuffersForIndex:(NSUInteger)index withPixels:(NSUInteger)pixels{
+    if(!cachedValues)
+        return;
+    if(cachedValues[index] != NULL)
+        free(cachedValues[index]);
+    cachedValues[index] = (UInt8 *)calloc(self.mask.imageStack.numberOfPixels, sizeof(UInt8));
+    
+    if(cachedSettings[index] == NULL){
+        cachedSettings[index] = (float *)calloc(6, sizeof(float));
+        cachedSettings[index][0] = .0f;
+        cachedSettings[index][1] = .0f;
+        cachedSettings[index][2] = .0f;
+        cachedSettings[index][3] = .0f;
+        cachedSettings[index][4] = .0f;
+        cachedSettings[index][5] = .0f;
+    }
+}
 -(void)clearCacheBuffers{
     if(cachedValues != NULL){
         for (int i = 0; i < self.channels.count; i++)
