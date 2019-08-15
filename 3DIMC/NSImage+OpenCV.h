@@ -17,10 +17,10 @@ using namespace cv;
     
 }
 
-+ (NSImage *)imageWithCVMat:(const cv::Mat&)cvMat;
+//+ (NSImage *)imageWithCVMat:(const cv::Mat&)cvMat;
 + (NSImage *)imageWithRef:(CGImageRef)ref;
-- (instancetype)initWithCVMat:(const cv::Mat&)cvMat;
-- (CGImageRef)refWithCVMat:(const cv::Mat&)cvMat;
++ (NSImage *)imageWithCVMat:(const cv::Mat&)cvMat;
++ (CGImageRef)refWithCVMat:(const cv::Mat&)cvMat;
 
 //Image transformations
 //http://www.bogotobogo.com/OpenCV/opencv_3_tutorial_imgproc_gausian_median_blur_bilateral_filter_image_smoothing.php
@@ -54,6 +54,5 @@ using namespace cv;
 
 @property(nonatomic, readonly) cv::Mat CVMat;
 @property(nonatomic, readonly) cv::Mat CVGrayscaleMat;
-@property(nonatomic, readonly) CGImageRef CGImage;
 
 @end

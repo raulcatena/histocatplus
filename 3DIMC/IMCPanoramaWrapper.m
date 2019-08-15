@@ -71,6 +71,8 @@
     self.isLoaded = NO;
     for(IMCImageStack *child in self.children)
         [child unLoadLayerDataWithBlock:nil];
+    self.panoramaImage = nil;
+    self.afterPanoramaImage = nil;
     [super unLoadLayerDataWithBlock:block];
 }
 

@@ -10,6 +10,7 @@
 
 @interface NSImage (Utilities)
 
+@property(nonatomic, readonly) CGImageRef CGImage;
 -(NSBitmapImageRep *)bitmapImageRepresentation;
 
 @end

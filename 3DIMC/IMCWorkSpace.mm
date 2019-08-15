@@ -1824,10 +1824,11 @@ typedef enum {
 }
 
 #pragma mark Segment Cells, masks, and pixel and cell classifications one by one
+
 -(void)pixelClassify:(id)sender{
     if(self.inScopeImage.isLoaded){
         IMCPixelClassificationTool *seg = [[IMCPixelClassificationTool alloc]initWithStack:self.inScopeImage andTraining:nil];
-        //[seg.window makeKeyWindow];
+        [seg.window makeKeyWindow];
         [[NSApplication sharedApplication] runModalForWindow:seg.window];
     }
 }
@@ -1840,6 +1841,7 @@ typedef enum {
 -(void)thresholdMask:(id)sender{
     if(self.inScopeImage.isLoaded){
         IMCThresholdMask *seg = [[IMCThresholdMask alloc]initWithStack:self.inScopeImage andMask:nil];
+        [seg.window makeKeyWindow];
         [[NSApplication sharedApplication] runModalForWindow:seg.window];
     }
 }

@@ -12,7 +12,7 @@
 #import "IMCCellTrainer.h"
 #import "IMCImageGenerator.h"
 #import "IMCPixelClassification.h"
-#import "NSImage+OpenCV.h"
+#import "NSImage+Utilities.h"
 #import "IMCBlendModes.h"
 #import "IMCFileExporter.h"
 
@@ -113,7 +113,8 @@
 }
 
 -(void)tableViewSelectionDidChange:(NSNotification *)notification{
-    if(!self.inOrderIndexes)self.inOrderIndexes = @[].mutableCopy;
+    if(!self.inOrderIndexes)
+        self.inOrderIndexes = @[].mutableCopy;
     [General orderIndexesUponSelection:self.inOrderIndexes indexes:self.channelTableView.selectedRowIndexes.copy];
     [self refresh];
 }
@@ -260,8 +261,10 @@
     const CGFloat myMaskingColors[6] = { 0, 100, 0, 100, 0, 100 };
     CGImageRef masked = CGImageCreateWithMaskingColors (refi, myMaskingColors);
     
-    if(masked)
+    if(masked){
+        CFRetain(masked); // Makes no sense but this removes the crash. Maybe leaks if not in a runmodal window
         [stackRefs addObject:(__bridge id)masked];
+    }
     if(refi)
         CFRelease(refi);
     
@@ -329,8 +332,10 @@
         }
         
 //        NSImage *image = [IMCImageGenerator imageForImageStacks:nil indexes:self.inOrderIndexes withColoringType:0 customColors:nil minNumberOfColors:3 width:self.trainer.computation.mask.imageStack.width height:self.trainer.computation.mask.imageStack.height withTransforms:NO blend:kCGBlendModeScreen andMasks:nil andComputations:@[self.trainer.computation] maskOption:0 maskType:MASK_ALL_CELL maskSingleColor:nil isAlignmentPair:NO brightField:NO];
-        if(ref)
+        if(ref){
+            CFRetain(ref); // Makes no sense but this removes the crash. Maybe leaks if not in a runmodal window
             [refs addObject:(__bridge id)ref];
+        }
     }
     if(refs.count > 0)
         self.scrollView.imageView.image = [IMCImageGenerator imageWithArrayOfCGImages:refs width:self.trainer.computation.mask.imageStack.width height:self.trainer.computation.mask.imageStack.height blendMode:kCGBlendModeOverlay];

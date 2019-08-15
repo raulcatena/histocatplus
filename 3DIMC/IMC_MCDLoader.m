@@ -39,7 +39,7 @@
             panWrapper.jsonDictionary[JSON_DICT_CONT_PANORAMA_H] = [NSNumber numberWithFloat:panWrapper.panoramaImage.size.height];
     }
     if(endAfter > begginingAfter && endAfter < data.length)
-        panWrapper.afterPanoramaImage = [[NSImage alloc]initWithData:[data subdataWithRange:NSMakeRange(begginingAfter, endAfter - begginingAfter)]];
+        panWrapper.afterPanoramaImage = [[NSImage alloc]initWithData:[data subdataWithRange:NSMakeRange(begginingAfter, endAfter - begginingAfter)]];    
 }
 
 +(BOOL)loadMCD:(NSData *)data toIMCFileWrapper:(IMCFileWrapper *)wrapper{
@@ -128,8 +128,8 @@
                     if(![[panWrapper images]containsObject:imageDict]){
                         [[panWrapper images]addObject:imageDict];
                     }
-
-                    [IMC_MCDLoader selectedPanorama:pan andData:data panWrapper:panWrapper roiOrDict:acqs[0]];
+                    if(roi == rois.firstObject)
+                        [IMC_MCDLoader selectedPanorama:pan andData:data panWrapper:panWrapper roiOrDict:acqs[0]];
                 }
             }
         }
@@ -197,17 +197,44 @@
 //        clockChannels++;
 //    }
     
+    
+    
     //Faster load of MCD
     float subBytes[channelNumber];
     size_t size = sizeof(float);
     NSInteger clockPixs = 0;
     NSInteger stepChannels = size * channelNumber;
-    for (NSUInteger i = beggining; i < end; i += stepChannels) {
-        [data getBytes:&subBytes range:NSMakeRange(i, stepChannels)];
-        for(NSInteger j = 0; j < channelNumber; ++j)
-            stack.stackData[j][clockPixs] = subBytes[j];
-        clockPixs++;
+    float ** destination = stack.stackData;
+
+    if(destination){
+        for (NSUInteger i = beggining; i < end; i += stepChannels) {
+            [data getBytes:subBytes range:NSMakeRange(i, stepChannels)];
+            for(NSInteger j = 0; j < channelNumber; ++j)
+                destination[j][clockPixs] = subBytes[j];
+            clockPixs++;
+        }
     }
+
+    
+    // Yet Faster load of MCD
+//    size_t size = end - beggining;
+//    NSInteger clockPixs = 0;
+//    float ** destination = stack.stackData;
+//
+//    if(destination){
+//        NSData *subData = [data subdataWithRange:NSMakeRange(beggining, size)];
+//        size /= sizeof(float);
+//        float * subBytes = (float *)subData.bytes;
+//        for (NSUInteger i = 0; i < size; i += channelNumber) {
+//            for(NSInteger j = 0; j < channelNumber; ++j)
+//                destination[j][clockPixs] = subBytes[i + j];
+//            clockPixs++;
+//        }
+//    }
+    
+//    [data enumerateByteRangesUsingBlock:^(const void *bytes, NSRange byteRange, BOOL *stop) {
+//        NSLog(@"You get the chunk in range: %@", NSStringFromRange(byteRange));
+//    }];
     
     return YES;
 }

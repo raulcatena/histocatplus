@@ -49,15 +49,11 @@
 }
 -(NSImage *)getImageBitMapFromRect:(CGRect)rect
 {
-    NSBitmapImageRep* imageRep=[self
-                                bitmapImageRepForCachingDisplayInRect:rect];
-    NSGraphicsContext *previousContext = [NSGraphicsContext
-                                          currentContext];
-    [NSGraphicsContext setCurrentContext:[NSGraphicsContext
-                                          graphicsContextWithBitmapImageRep:imageRep]];
+    NSBitmapImageRep* imageRep=[self bitmapImageRepForCachingDisplayInRect:rect];
+    NSGraphicsContext *previousContext = [NSGraphicsContext currentContext];
+    [NSGraphicsContext setCurrentContext:[NSGraphicsContext graphicsContextWithBitmapImageRep:imageRep]];
     [[NSColor clearColor] set];
     NSSize imageRepSize = [imageRep size];
-    
     NSRectFill(NSMakeRect(0, 0, imageRepSize.width, imageRepSize.height));
     [NSGraphicsContext setCurrentContext:previousContext];
     [self cacheDisplayInRect:rect toBitmapImageRep:imageRep];

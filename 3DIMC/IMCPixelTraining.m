@@ -71,7 +71,6 @@
     
     [super loadLayerDataWithBlock:block];
     [[NSApplication sharedApplication]runModalForWindow:tool.window];
-    [[NSApplication sharedApplication]stopModal];
 }
 -(void)loadBuffer{
     

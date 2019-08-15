@@ -7,63 +7,79 @@
 //
 
 #import "NSImage+OpenCV.h"
+#import "NSImage+Utilities.h"
 
 using namespace cv;
 
 @implementation NSImage (OpenCV)
 
--(CGImageRef)CGImage
-{
+
+
+-(UInt8 *)data{
     
     CGContextRef bitmapCtx = CGBitmapContextCreate(NULL/*data - pass NULL to let CG allocate the memory*/,
                                                    [self size].width,
                                                    [self size].height,
                                                    8 /*bitsPerComponent*/,
-                                                   0 /*bytesPerRow - CG will calculate it for you if it's allocating the data.  This might get padded out a bit for better alignment*/,
+                                                   4 * [self size].width /*bytesPerRow - CG will calculate it for you if it's allocating the data.  This might get padded out a bit for better alignment*/,
                                                    [[NSColorSpace genericRGBColorSpace] CGColorSpace],
                                                    //kCGBitmapByteOrder32Host|kCGImageAlphaPremultipliedFirst);
-                                                   kCGImageAlphaPremultipliedFirst);
+                                                   kCGImageAlphaNoneSkipLast);
     
     [NSGraphicsContext saveGraphicsState];
     [NSGraphicsContext setCurrentContext:[NSGraphicsContext graphicsContextWithCGContext:bitmapCtx flipped:NO]];
+    
     [self drawInRect:NSMakeRect(0,0, [self size].width, [self size].height) fromRect:NSZeroRect operation:NSCompositingOperationCopy fraction:1.0];
     
     
-    CGImageRef cgImage = CGBitmapContextCreateImage(bitmapCtx);
+    void * data_ = CGBitmapContextGetData(bitmapCtx);
+    size_t size_data = [self size].width * [self size].height * 4;
+    UInt8 * retVal = (UInt8 *)malloc(size_data);
+    memcpy(retVal, data_, size_data);
     CGContextRelease(bitmapCtx);
     [NSGraphicsContext restoreGraphicsState];
-    return cgImage;
-}
-
-+ (NSImage *)imageWithRef:(CGImageRef)ref{
-    NSImage *im = [[NSImage alloc]initWithCGImage:ref size:NSMakeSize(CGImageGetWidth(ref), CGImageGetHeight(ref))];
-    CFRelease(ref);
-    return im;
+    return retVal;
 }
 
 
 -(cv::Mat)CVMat
 {
-    CGImageRef imageRef = [self CGImage];
-    CGColorSpaceRef colorSpace = CGImageGetColorSpace(imageRef);
+    UInt8 * data_ = [self data];
     CGFloat cols = self.size.width;
     CGFloat rows = self.size.height;
-    cv::Mat cvMat(rows, cols, CV_8UC4); // 8 bits per component, 4 channels
+    Mat m(rows, cols, CV_8UC4, data_);
+    Mat retVal = m.clone();
+    free(data_);
+    return retVal;
     
-    CGContextRef contextRef = CGBitmapContextCreate(cvMat.data,                 // Pointer to backing data
-                                                    cols,                      // Width of bitmap
-                                                    rows,                     // Height of bitmap
-                                                    8,                          // Bits per component
-                                                    cvMat.step[0],              // Bytes per row
-                                                    colorSpace,                 // Colorspace
-                                                    kCGImageAlphaNoneSkipLast |
-                                                    kCGBitmapByteOrderDefault); // Bitmap info flags
     
-    CGContextDrawImage(contextRef, CGRectMake(0, 0, cols, rows), imageRef);
-    CGContextRelease(contextRef);
-    CGImageRelease(imageRef);
-
-    return cvMat;
+//    CGImageRef imageRef = [self CGImage];
+//
+//
+//    CGColorSpaceRef colorSpace = CGImageGetColorSpace(imageRef);
+//    CGFloat cols = self.size.width;
+//    CGFloat rows = self.size.height;
+//    cv::Mat cvMat(rows, cols, CV_8UC4); // 8 bits per component, 4 channels
+//
+//    CGContextRef contextRef = CGBitmapContextCreate(NULL,                 // Pointer to backing data
+//                                                    cols,                      // Width of bitmap
+//                                                    rows,                     // Height of bitmap
+//                                                    8,                          // Bits per component
+//                                                    cvMat.step[0],              // Bytes per row
+//                                                    colorSpace,                 // Colorspace
+//                                                    kCGImageAlphaNoneSkipLast |
+//                                                    kCGBitmapByteOrderDefault); // Bitmap info flags
+//
+//    CGContextDrawImage(contextRef, CGRectMake(0, 0, cols, rows), imageRef);
+//
+//    void * data_context = CGBitmapContextGetData(contextRef);
+//    memcpy(cvMat.data, data_context, rows * cols * 4);
+//
+//    CGContextRelease(contextRef); // This OK? Probably not, the context ref shares pointer with the CVMat returned
+//    //    CGImageRelease(imageRef); // This is OK, Release causes a bug
+//    CGColorSpaceRelease(colorSpace);
+//
+//    return cvMat.clone();
 }
 
 -(cv::Mat)CVGrayscaleMat
@@ -80,87 +96,123 @@ using namespace cv;
                                                     8,                          // Bits per component
                                                     cvMat.step[0],              // Bytes per row
                                                     colorSpace,                 // Colorspace
-                                                    kCGImageAlphaNone |
+                                                    kCGImageAlphaNone | 
                                                     kCGBitmapByteOrderDefault); // Bitmap info flags
     
     CGContextDrawImage(contextRef, CGRectMake(0, 0, cols, rows), imageRef);
-    CGContextRelease(contextRef);
+    CGContextRelease(contextRef);// This OK? Probably not, the context ref shares pointer with the CVMat returned
+    CGImageRelease(imageRef);// This is OK, as data is copied
     CGColorSpaceRelease(colorSpace);
-    CGImageRelease(imageRef);
+    
     return cvMat;
 }
 
-+ (NSImage *)imageWithCVMat:(const cv::Mat&)cvMat
-{
-    return [[NSImage alloc] initWithCVMat:cvMat];
++ (NSImage *)imageWithRef:(CGImageRef)ref{
+    return [[NSImage alloc]initWithCGImage:ref size:NSMakeSize(CGImageGetWidth(ref), CGImageGetHeight(ref))];
 }
 
-
-- (instancetype)initWithCVMat:(const cv::Mat&)cvMat
++ (NSImage *)imageWithCVMat:(const cv::Mat &)cvMat
 {
-    
-//    CGImageRef imageRef = [self refWithCVMat:cvMat];
-//    
-//    NSBitmapImageRep *bitmapRep = [[NSBitmapImageRep alloc] initWithCGImage:imageRef];
-//    NSImage *image = [[NSImage alloc] init];
-//    [image addRepresentation:bitmapRep];
-//    
-//    CGImageRelease(imageRef);
-//    
-//    return image;
-    self = [self init];
-    if(self){
-        CGImageRef imageRef = [self refWithCVMat:cvMat];
-        NSBitmapImageRep *bitmapRep = [[NSBitmapImageRep alloc] initWithCGImage:imageRef];
-        //        NSImage *image = [[NSImage alloc] init];
-        [self addRepresentation:bitmapRep];
-        CGImageRelease(imageRef);
+    CGImageRef ref = [NSImage refWithCVMat:cvMat];
+    if(ref){
+        NSImage * im = [NSImage imageWithRef:ref];
+        CGImageRelease(ref);
+        return im;
+    }else{
+        return nil;
     }
-    return self;
 }
 
-- (CGImageRef)refWithCVMat:(const cv::Mat&)cvMat
++ (CGImageRef)refWithCVMat:(const cv::Mat&)cvMat
 {
+
 //    This was a bug. It is important to copy the data since the CvMat, when out of scope releases the memory and garbage enters the buffer.
 //    NSData *data = [NSData dataWithBytesNoCopy:cvMat.data
 //                                        length:cvMat.elemSize() * cvMat.total()
 //                                  freeWhenDone:NO];
 
-    NSData *data = [NSData dataWithBytes:cvMat.data
-                                        length:cvMat.elemSize() * cvMat.total()
-                                  ];
+//    NSData *data = [NSData dataWithBytes:cvMat.data length:cvMat.elemSize() * cvMat.total()];
     
     CGColorSpaceRef colorSpace;
+    CGImageAlphaInfo alphaInfo;
+    const unsigned width = cvMat.cols;
+    const unsigned height = cvMat.rows;
     
     if (cvMat.elemSize() == 1)
     {
         colorSpace = CGColorSpaceCreateDeviceGray();
+        alphaInfo = kCGImageAlphaNone;
     }
     else
     {
         colorSpace = CGColorSpaceCreateDeviceRGB();
+        alphaInfo = kCGImageAlphaNoneSkipLast;
     }
     
-    CGDataProviderRef provider = CGDataProviderCreateWithCFData((__bridge CFDataRef)data);
+    UInt8 * data = (UInt8 *)calloc(cvMat.total() * 4, sizeof(UInt8));
     
-    CGImageRef imageRef = CGImageCreate(cvMat.cols,                                     // Width
-                                        cvMat.rows,                                     // Height
-                                        8,                                              // Bits per component
-                                        8 * cvMat.elemSize(),                           // Bits per pixel
-                                        cvMat.step[0],                                  // Bytes per row
-                                        colorSpace,                                     // Colorspace
-                                        kCGImageAlphaNone,  // Bitmap info flags
-                                        provider,                                       // CGDataProviderRef
-                                        NULL,                                           // Decode
-                                        false,                                          // Should interpolate
-                                        kCGRenderingIntentDefault);                     // Intent
+    CGImageRef imageRef = NULL;
     
-    CGDataProviderRelease(provider);
-    CGColorSpaceRelease(colorSpace);
-    
+    if(data){
+        memcpy(data, cvMat.data, cvMat.total() * cvMat.elemSize() * sizeof(UInt8));
+        
+        CGImageAlphaInfo info;
+        if (cvMat.elemSize() == 1)
+            info = kCGImageAlphaNone;
+        else
+            info = kCGImageAlphaNoneSkipLast;
+        
+        CGContextRef ctx = CGBitmapContextCreate(data,
+                                                 width,
+                                                 height,
+                                                 8,
+                                                 cvMat.elemSize() * width,
+                                                 colorSpace,
+                                                 info);
+        
+        imageRef = CGBitmapContextCreateImage(ctx);
+        
+        
+        //    CGDataProviderRef provider = CGDataProviderCreateWithCFData((__bridge CFDataRef)data);
+        //
+        //    CGImageRef imageRef = CGImageCreate(cvMat.cols,                                     // Width
+        //                                        cvMat.rows,                                     // Height
+        //                                        8,                                              // Bits per component
+        //                                        8 * cvMat.elemSize(),                           // Bits per pixel
+        //                                        cvMat.step[0],                                  // Bytes per row
+        //                                        colorSpace,                                     // Colorspace
+        //                                        alphaInfo,                                      // Use to be None    // Bitmap info flags
+        //                                        provider,                                       // CGDataProviderRef
+        //                                        NULL,                                           // Decode
+        //                                        false,                                          // Should interpolate
+        //                                        kCGRenderingIntentDefault);                     // Intent
+        
+        //    CGDataProviderRelease(provider);
+        
+        
+        CGContextRelease(ctx);
+        CGColorSpaceRelease(colorSpace);
+        if(data)
+            free(data);
+    }
     
     return imageRef;
 }
+
+
+//- (instancetype)initWithCVMat:(const cv::Mat&)cvMat
+//{
+//
+//    self = [self init];
+//    if(self){
+//        CGImageRef imageRef = [NSImage refWithCVMat:cvMat];
+//        NSBitmapImageRep *bitmapRep = [[NSBitmapImageRep alloc] initWithCGImage:imageRef];
+//        //        NSImage *image = [[NSImage alloc] init];
+//        [self addRepresentation:bitmapRep];
+//        //CGImageRelease(imageRef);// This was not good. It seems that the NSImage uses the same memory as the CGImageRef
+//    }
+//    return self;
+//}
 
 #pragma mark Average Blurred
 - (Mat)matAveragingBlurred:(unsigned)kernelSize{
@@ -172,7 +224,7 @@ using namespace cv;
 }
 - (uchar *)dataAveragingBlurred:(unsigned)kernelSize{
     Mat mat = [self matAveragingBlurred:kernelSize];
-    return mat.data;;
+    return mat.data;
 }
 - (NSImage *)averagingBlurred:(unsigned)kernelSize{
     return [NSImage imageWithCVMat:[self matAveragingBlurred:kernelSize]];
@@ -188,7 +240,7 @@ using namespace cv;
 }
 - (uchar *)dataGaussianBlurred:(unsigned)kernelSize{
     Mat mat = [self matGaussianBlurred:kernelSize];
-    return mat.data;;
+    return mat.data;
 }
 - (NSImage *)gaussianBlurred:(unsigned)kernelSize{
     if(kernelSize % 2 == 0)kernelSize++;
@@ -205,7 +257,7 @@ using namespace cv;
 }
 - (uchar *)dataMedianBlurred:(unsigned)kernelSize{
     Mat mat = [self matMedianBlurred:kernelSize];
-    return mat.data;;
+    return mat.data;
 }
 - (NSImage *)medianBlurred:(unsigned)kernelSize{
     if(kernelSize % 2 == 0)kernelSize++;
@@ -222,7 +274,7 @@ using namespace cv;
 }
 - (uchar *)dataBilateralBlurred:(unsigned)kernelSize{
     Mat mat = [self matBilateralBlurred:kernelSize];
-    return mat.data;;
+    return mat.data;
 }
 - (NSImage *)bilateralBlurred:(unsigned int)kernelSize{
     if(kernelSize % 2 == 0)kernelSize++;
@@ -269,7 +321,7 @@ using namespace cv;
 }
 - (uchar *)dataCanny:(unsigned)kernelSize{
     Mat mat = [self matCanny:kernelSize];
-    return mat.data;;
+    return mat.data;
 }
 - (NSImage *)canny:(unsigned)kernelSize{
     return [NSImage imageWithCVMat:[self matCanny:kernelSize]];

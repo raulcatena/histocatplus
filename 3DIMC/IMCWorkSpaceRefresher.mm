@@ -17,6 +17,7 @@
 #import "IMC3DMask.h"
 #import "IMCComputationOnMask.h"
 #import "IMCImageGenerator.h"
+#import "NSImage+Utilities.h"
 #import "NSImage+OpenCV.h"
 #import "IMCRegistration.h"
 #import "IMCRegistrationOCV.h"
@@ -57,7 +58,7 @@
 
     overrideRefresh = YES;
     
-    self.parent.scrollViewBlends.imageView.stacks = 0;
+    self.parent.scrollViewBlends.imageView.stacks = nil;
     
     //If mask is selected directly
     self.parent.maskVisualizeSelector.hidden = (self.parent.inScopeMasks.count == 0 && self.parent.inScopeComputations.count == 0);
@@ -142,11 +143,9 @@
             }
         }
     }
-  
 //    if([self.parent.tabs.selectedTabViewItem.identifier isEqualToString:@"4"]){
 //        [self refreshRControls];
 //    }
-
     if([self.parent.tabs.selectedTabViewItem.identifier isEqualToString:TAB_ID_ANALYTICS]){
         [self.parent.metricsController refreshTables];
     }
@@ -245,6 +244,7 @@
                                        isAlignmentPair:isAlignment
                                            brightField:brightFieldEffect];
         
+        
         if(self.parent.blur.indexOfSelectedItem == 1)
             image = [image gaussianBlurred:(unsigned)self.parent.gaussianBlur.integerValue];
         if(self.parent.blur.indexOfSelectedItem == 2)
@@ -257,15 +257,20 @@
         if(overrideRefresh)
             return;
         
+        self.parent.scrollViewBlends.imageView.image = image;
+        
         //Precalculate histogram
         if(!self.parent.scrollViewBlends.histogram)
             self.parent.scrollViewBlends.histogram = [[IMCHistogram alloc]init];
         
-
-        [self.parent.scrollViewBlends.histogram primeWithData:[self.parent.inScopeImage preparePassBuffers:self.parent.inOrderIndexes.copy] channels:self.parent.inOrderIndexes.count pixels:self.parent.inScopeImage.numberOfPixels colors:collColors];
+        UInt8 ** data = [self.parent.inScopeImage preparePassBuffers:self.parent.inOrderIndexes.copy];
+        [self.parent.scrollViewBlends.histogram primeWithData:data
+                                                     channels:self.parent.inOrderIndexes.count
+                                                       pixels:self.parent.inScopeImage.numberOfPixels
+                                                       colors:collColors];
+        if (data)free(data);
         
-        self.parent.scrollViewBlends.imageView.image = image;
-
+        
         [self scaleAndLegendChannelsBlend];
         [self intensityLegend];
     }

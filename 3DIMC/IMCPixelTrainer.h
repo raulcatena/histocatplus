@@ -29,7 +29,7 @@
 -(NSInteger)numberRefsInScope;
 -(NSMutableArray *)imageRefsInScopeForStack:(IMCImageStack *)stack;
 -(void)toogleOption:(IMCButtonLayer *)lay;
--(NSImage *)imageForNode:(IMCButtonLayer *)node inStack:(IMCImageStack *)stack;
+-(CGImageRef)cgImageForNode:(IMCButtonLayer *)node inStack:(IMCImageStack *)stack;
 
 -(void)saveTrainingSettingsSegmentation:(IMCPixelTraining *)training;
 -(void)saveTrainingMask:(IMCPixelTraining *)training;

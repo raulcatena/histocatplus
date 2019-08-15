@@ -154,6 +154,7 @@
 }
 
 - (void)drawRect:(NSRect)dirtyRect {
+    
     [super drawRect:dirtyRect];
     [self drawROI];
     if(self.stacks.count > 0)

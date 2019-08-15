@@ -9,7 +9,7 @@
 #import "IMCPixelMap.h"
 #import "IMC_TIFFLoader.h"
 #import "IMCImageGenerator.h"
-#import "NSImage+OpenCV.h"
+#import "NSImage+Utilities.h"
 #import "IMCPixelTraining.h"
 
 @implementation IMCPixelMap
@@ -117,7 +117,8 @@
         free(dataPic);
     }
     
-    return [[IMCImageGenerator imageWithArrayOfCGImages:array width:self.width height:self.height blendMode:kCGBlendModeScreen]gaussianBlurred:1].CGImage;
+//    return [[IMCImageGenerator imageWithArrayOfCGImages:array width:self.width height:self.height blendMode:kCGBlendModeScreen]gaussianBlurred:1].CGImage;
+    return [IMCImageGenerator imageRefWithArrayOfCGImages:array width:self.width height:self.height blendMode:kCGBlendModeScreen];
 }
 
 -(void)savePixelMapPredictions{

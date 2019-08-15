@@ -117,6 +117,8 @@
         size_t stride = CGImageGetWidth(ref);
         
         [self writer:writer writeBuffer:bytes width:(int)stride height:(int)CGImageGetHeight(ref) page:i bpPixel:(int)bitsPerPixel samplesPerPixel:samples totalPages:(int)images.count imageName:writeTitles == YES?[titles objectAtIndex:i]:nil];
+        
+        CGImageRelease(ref);
     }
     TIFFClose(writer);
 }
@@ -166,6 +168,10 @@
 
 +(NSImage *)getNSImageForIMCScrollView:(IMCScrollView *)scroll zoomed:(BOOL)zoomed{
     NSImage *someImage;
+    if(zoomed)
+        NSLog(@"Zoomed");
+    else
+        NSLog(@"Not zoomed");
     if(zoomed)someImage = [scroll getImageBitMapFull];
     else{
         CGFloat prev = scroll.magnification;

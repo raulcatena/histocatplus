@@ -323,8 +323,10 @@ int gaussianMatrix [9][3] = {
 //            }
             UInt8 * copyS = (UInt8 *)calloc(allLength, sizeof(UInt8));
             
-            if(chanImageS)
+            if(chanImageS){
                 [self gaussianFilter2D_l3:width allLength:allLength buff:chanImageS receiver:copyS];
+                free(chanImageS);
+            }
             
             int cellId = 1;
             for (float analyze = 1.0f; analyze > threshold; analyze -= gradient) {
@@ -369,6 +371,7 @@ int gaussianMatrix [9][3] = {
             free(copies);
             free(copyS);
         }
+        free(chanImage);
     }];
     
     //Reset negative values

@@ -12,6 +12,7 @@
 #import "IMCPixelMap.h"
 #import "IMCComputationOnMask.h"
 #import "IMCImageGenerator.h"
+#import "NSImage+Utilities.h"
 #import "NSImage+OpenCV.h"
 #import "IMCMasks.h"
 

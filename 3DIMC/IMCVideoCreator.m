@@ -203,6 +203,12 @@
         CVBufferRelease(buffer);
         i++;
     }
+    
+    for (int i = 1; i < array.count; i++){
+        ref = (__bridge_retained CGImageRef)array[i];
+        CGImageRelease(ref);
+    }
+    
     [writerInput markAsFinished];
     [videoWriter finishWritingWithCompletionHandler:^{
         CVPixelBufferPoolRelease(adaptor.pixelBufferPool);

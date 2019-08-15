@@ -135,12 +135,10 @@
     //CGImageRef masked = CGImageCreateWithMaskingColors (refi, myMaskingColors);
     
     //if(masked)
-    //    [stackRefs addObject:(__bridge id)masked];
+    //    [stackRefs addObject:(__bridge_transfer id)masked];
     
     if(refi)
-        [stackRefs addObject:(__bridge id)refi];
-//    if(refi)
-//        CFRelease(refi);
+        [stackRefs addObject:(__bridge_transfer id)refi];
     
     if(buffer)
         free(buffer);
@@ -202,9 +200,13 @@
                 
                 NSColor *color = colors[counter];
                 ref = [IMCImageGenerator imageFromCArrayOfValues:image color:color width:[self mask].width height:[self mask].height startingHueScale:0 hueAmplitude:170 direction:NO ecuatorial:NO brightField:NO];
-                if(ref)
+                if(ref){
+                    CFRetain(ref); // Makes no sense but this removes the crash. Maybe leaks if not in a runmodal window
                     [refs addObject:(__bridge id)ref];
+                }
+                
                 free(image);
+                
                 counter++;
                 if(counter == 5)
                     *stop = YES;

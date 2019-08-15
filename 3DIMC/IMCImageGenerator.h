@@ -51,6 +51,8 @@ void threeDMeanBlur(UInt8 *** data, NSInteger width, NSInteger height, NSInteger
 //Helper for registration
 +(CGImageRef)whiteRotatedBufferForImage:(IMCImageStack *)stack atIndex:(NSInteger)index superCanvasW:(NSInteger)widthSuper superCanvasH:(NSInteger)heightSuper;
 
++(CGImageRef)imageRefWithArrayOfCGImages:(NSMutableArray *)array width:(NSInteger)width height:(NSInteger)height blendMode:(CGBlendMode)blend;
+
 +(CGImageRef)refForMaskComputation:(IMCComputationOnMask *)computation
                            indexes:(NSArray *)indexArray
                       coloringType:(NSInteger)coloringType
@@ -67,7 +69,7 @@ void threeDMeanBlur(UInt8 *** data, NSInteger width, NSInteger height, NSInteger
 
 +(CGImageRef)refMask:(IMCPixelClassification *)mask coloringType:(NSInteger)coloringType width:(NSInteger)width height:(NSInteger)height withTransforms:(BOOL)applyTransforms blendMode:(CGBlendMode)blend maskOption:(MaskOption)maskOption maskType:(MaskType)maskType maskSingleColor:(NSColor *)maskSingleColor;
 
-+(NSImage *)imageWithArrayOfCGImages:(NSArray *)array width:(NSInteger)width height:(NSInteger)height blendMode:(CGBlendMode)blend;
++(NSImage *)imageWithArrayOfCGImages:(NSMutableArray *)array width:(NSInteger)width height:(NSInteger)height blendMode:(CGBlendMode)blend;
 //Other functions
 +(CGImageRef)imageFromCArrayOfValues:(UInt8 *)array color:(NSColor *)color width:(NSInteger)width height:(NSInteger)height startingHueScale:(int)startHue hueAmplitude:(int)amplitude direction:(BOOL)positive ecuatorial:(BOOL)ecHueTraverse brightField:(BOOL)brightField;
 

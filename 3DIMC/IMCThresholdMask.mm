@@ -45,7 +45,6 @@
     [super windowDidLoad];
     [self initGUIRelatedOptions];
     [self.tableViewChannels setDoubleAction:@selector(doubleClickTable:)];
-    
 }
 - (void)windowWillClose:(NSNotification *)notification
 {

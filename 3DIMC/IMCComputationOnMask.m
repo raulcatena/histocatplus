@@ -622,13 +622,21 @@
 #pragma mark Image Generation for mask
 
 -(UInt8 *)getCachedBufferForIndex:(NSInteger)index maskOption:(MaskOption)option maskType:(MaskType)maskType maskSingleColor:(NSColor *)maskSingleColor{
-    if(cachedValues == NULL || cachedSettings == NULL)
+    
+    if(cachedValues == NULL || cachedSettings == NULL){
+        NSLog(@"No cache");
         [self allocateCacheBufferContainers];
-    if(cachedValues[index] == NULL || cachedSettings[index] == NULL)
+    }
+    
+    if(cachedValues[index] == NULL || cachedSettings[index] == NULL){
+        NSLog(@"No cache in index %li", index);
         [self allocateCacheBuffersForIndex:index withPixels:self.mask.imageStack.numberOfPixels];
+    }
+    
     if([self compareCachedSettingsWithCurrentForIndex:index] == YES
                     || option != [self.lastOptions[index]integerValue]
                     || maskType != [self.lastTypes[index]integerValue]){
+        NSLog(@"No cache in index %li", index);
         [self recalculateChannelAtIndex:index maskOption:option maskType:maskType maskSingleColor:maskSingleColor];
     }
     [self.lastOptions replaceObjectAtIndex:index withObject:[NSNumber numberWithInteger:option]];
@@ -637,7 +645,10 @@
 }
 
 -(BOOL)compareCachedSettingsWithCurrentForIndex:(NSInteger)index{//Compares and prepares the buffer
-    if(index >= self.channels.count || cachedSettings == NULL)return YES;
+    
+    if(index >= self.channels.count || cachedSettings == NULL)
+        return YES;
+    
     float * settings = cachedSettings[index];
     NSMutableDictionary *setts = [self channelSettings][index];
     

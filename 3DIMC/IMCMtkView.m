@@ -213,7 +213,7 @@ static void ReleaseCVPixelBuffer(void *pixel, const void *data, size_t size)
     CGDataProviderRef provider = CGDataProviderCreateWithData(nil, p, selftureSize, ReleaseCVPixelBuffer);
     CGImageRef cgImageRef = CGImageCreate(width, height, 8, 32, rowBytes, pColorSpace, bitmapInfo, provider, nil, YES, kCGRenderingIntentDefault);
     CFRelease(provider);
-    //free(p);
+    //free(p); /// RCF check TODO
     return cgImageRef;
 }
 -(NSImage *)captureImage{

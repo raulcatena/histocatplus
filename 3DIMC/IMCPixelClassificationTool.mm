@@ -227,17 +227,10 @@
     [self refresh];
 }
 
--(NSMutableArray *)imageRefsForIndexSet:(NSIndexSet *)indexSet{
-    NSMutableArray *refs = @[].mutableCopy;
-    [indexSet enumerateIndexesUsingBlock:^(NSUInteger index, BOOL *stop){
-        IMCButtonLayer *lay = [self.channelTableView itemAtRow:self.channelTableView.selectedRow];
-        NSImage *image = [self.trainer imageForNode:lay inStack:self.trainer.stack];
-        [refs addObject:(__bridge id)image.CGImage];
-    }];
-    return refs;
-}
 
+// Read https://medium.com/@notestomyself/bridge-vs-bridge-transfer-vs-bridge-retained-f84e6b6406d1
 -(void)refresh{
+    
     NSMutableArray *colors = [NSMutableArray arrayWithCapacity:self.channelTableView.selectedRowIndexes.count];
     for (int i = 0; i < self.channelTableView.selectedRowIndexes.count; i++) {
         [colors addObject:[NSColor whiteColor]];
@@ -248,6 +241,7 @@
     
     if(self.showTraining.state == NSControlStateValueOn){
         UInt8 *remapped = [IMCImageGenerator mapMaskTo255:self.trainer.trainingNodes.firstObject.trainingBuffer length:self.trainer.stack.numberOfPixels toMax:4.0f];
+        
         CGImageRef training = [IMCImageGenerator imageFromCArrayOfValues:remapped
                                                                    color:nil
                                                                    width:self.trainer.stack.width
@@ -258,27 +252,34 @@
                                                               ecuatorial:NO
                                                             brightField:NO];
         
+        free(remapped);
+        
         const CGFloat myMaskingColors[6] = { 0, 100, 0, 100, 0, 100 };
         CGImageRef masked = CGImageCreateWithMaskingColors (training, myMaskingColors);
-        
         if(masked)
-            [refs addObject:(__bridge id)masked];
+            [refs addObject:(__bridge id _Nonnull)masked];
         if(training)
             CFRelease(training);
-    
-        free(remapped);
     }
     
     if(self.showPMap.state == NSControlStateValueOn){
         CGImageRef refi = [self.trainer.mapPrediction pMap];
-        if(refi)
-            [refs addObject:(__bridge id)refi];
+        if(refi){
+            [refs addObject:(__bridge id _Nonnull)refi];
+        }
     }
     
     if(self.showImage.state == NSControlStateValueOn){
-        [refs addObjectsFromArray:[self imageRefsForIndexSet:self.channelTableView.selectedRowIndexes]];
+        [self.channelTableView.selectedRowIndexes.copy enumerateIndexesUsingBlock:^(NSUInteger index, BOOL *stop){
+            IMCButtonLayer *lay = [self.channelTableView itemAtRow:self.channelTableView.selectedRow];
+            CGImageRef ref = [self.trainer cgImageForNode:lay inStack:self.trainer.stack];
+            [refs addObject:(__bridge id _Nonnull)ref];
+        }];
     }
-    NSImage *final_ = [IMCImageGenerator imageWithArrayOfCGImages:refs width:self.trainer.stack.width height:self.trainer.stack.height blendMode:[IMCBlendModes blendModeForValue:self.multiImageFilters.indexOfSelectedItem]];
+
+    NSImage *final_ = [IMCImageGenerator imageWithArrayOfCGImages:refs
+                                                            width:self.trainer.stack.width height:self.trainer.stack.height
+                                                        blendMode:[IMCBlendModes blendModeForValue:self.multiImageFilters.indexOfSelectedItem]];
     
     self.scrollView.imageView.image = final_;
 }

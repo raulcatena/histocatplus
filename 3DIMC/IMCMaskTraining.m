@@ -70,7 +70,6 @@
         //        cont = [[IMCSceneKitClassifier alloc]initWithComputation:self.computation andTraining:self];
         [super loadLayerDataWithBlock:block];
         [[NSApplication sharedApplication]runModalForWindow:cont.window];
-        [[NSApplication sharedApplication]stopModal];
     }
 }
 -(NSMutableDictionary *)trainingDictionary{

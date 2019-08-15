@@ -298,7 +298,8 @@
 }
 
 -(BOOL)compareCachedSettingsWithCurrentForIndex:(NSInteger)index{//Compares and prepares the buffer
-    if(index >= self.channels.count)return YES;
+    if(index >= self.channels.count)
+        return YES;
     float * settings = cachedSettings[index];
     
     NSMutableDictionary *setts = [self channelSettings][index];
@@ -311,7 +312,7 @@
             settings[i] = [setts[keys[i]]floatValue];
         }
     }
-    return foundDiff;;
+    return foundDiff;
 }
 
 -(float)maxInBuffer:(float *)buffer{
@@ -855,7 +856,6 @@
 #pragma mark memory clean up
 
 -(void)clearCacheBuffers{
-    NSLog(@"Clearing cache buffers");
     if(cachedValues != NULL){
         for (int i = 0; i < self.channels.count; i++) {
             if(cachedValues[i] != NULL)
@@ -878,14 +878,17 @@
 }
 
 -(void)clearBuffers{
-    NSLog(@"Clearing Buffers");
     if(self.stackData != NULL){
-        for (int i = 0; i < self.channels.count; i++) {
+        for (int i = 1; i < self.channels.count; i++) {//Leave alone the first one
             if(self.stackData[i] != NULL){
                 self.stackData[i] = NULL;
             }
-            free(self.stackData[0]);// Now I have everything allocate in one go
         }
+        // Now I have everything allocated in one go
+        if(*self.stackData != NULL)
+            free(*self.stackData);
+        *self.stackData = NULL;
+        
         free(self.stackData);
         self.stackData = NULL;
     }

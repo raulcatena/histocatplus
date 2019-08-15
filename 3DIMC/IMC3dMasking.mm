@@ -10,12 +10,12 @@
 #import "IMCPixelClassification.h"
 #import "IMCImageGenerator.h"
 #import "IMCVoxelMaskRenderer.h"
-#import "NSImage+OpenCV.h"
+#import "NSImage+Utilities.h"
 
 
-UInt8 ** buffAll;
+
 @interface IMC3dMasking (){
-//    UInt8 ** buffAll;
+    UInt8 ** buffAll;
 }
 @property (nonatomic, strong) NSArray * masks;
 @property (nonatomic, strong) IMCVoxelMaskRenderer * renderer;

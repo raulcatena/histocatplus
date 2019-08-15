@@ -10,6 +10,7 @@
 #import "IMCPixelClassification.h"
 #import "IMCImageGenerator.h"
 #import "IMCMasks.h"
+#import "NSImage+Utilities.h"
 #import "NSImage+OpenCV.h"
 
 @interface IMCThresholder()
@@ -173,17 +174,19 @@
         
         NSInteger length = self.stack.numberOfPixels * 4;
         UInt8 *newImageBuffer = (UInt8 *)malloc(length/4 * sizeof(UInt8));
-        
-        for (NSInteger i = 0; i < length; i+=4)
-            newImageBuffer[i/4] = (UInt8)((NSInteger)refData[i] * ABS(framerRefData[i] - 255)/255);
-        
-        ref = [IMCImageGenerator whiteImageFromCArrayOfValues:newImageBuffer width:self.stack.width height:self.stack.height];
-        image = [[NSImage alloc]initWithCGImage:ref size:self.stack.size];
+        if(newImageBuffer){
+            for (NSInteger i = 0; i < length; i+=4)
+                newImageBuffer[i/4] = (UInt8)((NSInteger)refData[i] * ABS(framerRefData[i] - 255)/255);
+            
+            ref = [IMCImageGenerator whiteImageFromCArrayOfValues:newImageBuffer width:self.stack.width height:self.stack.height];
+            image = [[NSImage alloc]initWithCGImage:ref size:self.stack.size];
+            free(newImageBuffer);
+        }
     }
     if(old != self.stack.channelSettings)
         self.stack.channelSettings = old;
 
-    return image.CGImage;
+    return CGImageCreateCopy(image.CGImage);//Copy to avoid crash
 }
 -(int *)processedMask{
     

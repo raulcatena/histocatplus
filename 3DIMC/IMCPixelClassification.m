@@ -178,6 +178,7 @@
        bordersOnlyMask(copy, self.imageStack.width, self.imageStack.height);
    if(option == 2)
        noBordersMask(copy, self.imageStack.width, self.imageStack.height);
+    
    saveRef = [IMCImageGenerator colorMask:copy
                            numberOfColors:option < 3?20:1
                               singleColor:option == 3?color:nil
@@ -312,7 +313,7 @@
     
     [self.imageStack.fileWrapper checkAndCreateWorkingFolder];
     
-    [IMCFileExporter writeArrayOfRefImages:@[(__bridge id)imageRet] withTitles:@[@"mask"] atPath:self.absolutePath in16bits:YES];
+    [IMCFileExporter writeArrayOfRefImages:@[(__bridge_transfer id)imageRet] withTitles:@[@"mask"] atPath:self.absolutePath in16bits:YES];
     CGColorSpaceRelease(colorspace);
     CGDataProviderRelease(provider);
     CFRelease(dataRef);

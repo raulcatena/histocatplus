@@ -261,7 +261,6 @@
                                                                      atIndex:channel
                                                                 superCanvasW:self.width superCanvasH:self.height];
             CFDataRef rawData = CGDataProviderCopyData(CGImageGetDataProvider(image));
-            
             UInt8 * buf = (UInt8 *) CFDataGetBytePtr(rawData);
             NSInteger length = CFDataGetLength(rawData);
 

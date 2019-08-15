@@ -520,7 +520,8 @@ void threeDMeanBlur(UInt8 *** data, NSInteger width, NSInteger height, NSInteger
         }
     }
     for (IMCComputationOnMask *comp in computations) {
-        if(!comp.isLoaded)continue;
+        if(!comp.isLoaded)
+            continue;
         
         CGImageRef ref = [IMCImageGenerator refForMaskComputation:comp indexes:indexArray coloringType:coloringType customColors:customColors minNumberOfColors:minAmountColors width:width height:height withTransforms:applyTransforms blendMode:blend maskOption:maskOption maskType:maskType maskSingleColor:maskSingleColor brightField:brightField];
         
@@ -682,38 +683,67 @@ void threeDMeanBlur(UInt8 *** data, NSInteger width, NSInteger height, NSInteger
     return ref;
 }
 
-+(CGImageRef)imageRefWithArrayOfCGImages:(NSArray *)array width:(NSInteger)width height:(NSInteger)height blendMode:(CGBlendMode)blend{
++(CGImageRef)imageRefWithArrayOfCGImages:(NSMutableArray *)array width:(NSInteger)width height:(NSInteger)height blendMode:(CGBlendMode)blend{
     
     void * buffer = calloc(width * height * 4, sizeof(UInt8));
     CGColorSpaceRef colorSpace = CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB);
     CGContextRef canvas = CGBitmapContextCreate(buffer, width, height, 8, 4 * width, colorSpace, kCGImageAlphaPremultipliedLast);
-    
-    CGImageRef ref = NULL;
 
+    CGImageRef ref = NULL;
+    
     if(canvas != NULL){
         CGContextSetBlendMode(canvas, blend);//TODO. Pass Blend
         
-        for (int i = 0; i < array.count; i++) {
-            CGImageRef ref = (__bridge CGImageRef)array[i];
+        while (array.count > 0){
+            id last = [array firstObject];
+            [array removeObjectAtIndex:0];
+            CGImageRef refi = (__bridge CGImageRef)last;
             CGRect framePaint = CGRectMake(0, 0, width, height);
-            CGContextDrawImage(canvas, framePaint, ref);
-            
+            CGContextDrawImage(canvas, framePaint, refi);
+            CGImageRelease(refi);
         }
-        for (int i = 0; i < array.count; i++) {
-            CGImageRef ref = (__bridge CGImageRef)array[i];
-            CFRelease(ref);
-        }
-        ref = CGBitmapContextCreateImage (canvas);
-        CFRelease(canvas);
+
+        //ref = CGBitmapContextCreateImage (canvas); //This leaked a lot changed to...
+        // https://stackoverflow.com/questions/1434714/another-iphone-cgbitmapcontextcreateimage-leak/23669476#23669476
+        // https://stackoverflow.com/questions/1434714/another-iphone-cgbitmapcontextcreateimage-leak
+        
+        // So I include this
+        //*
+        CGDataProviderRef provider = CGDataProviderCreateWithData(buffer,// First argument to ReleaseImageBuffer
+                                                                  buffer,// Data
+                                                                  width * height * 4 * sizeof(UInt8), // size
+                                                                  ReleaseImageBuffer); // Callback that takes care of memory
+        
+        ref = CGImageCreate(width,
+                            height,
+                            8,
+                            32,
+                            width * 4,
+                            colorSpace,
+                            (CGBitmapInfo)kCGImageAlphaNoneSkipLast,
+                            provider,
+                            NULL,
+                            true,
+                            kCGRenderingIntentDefault);
+        
+        if(provider)
+            CGDataProviderRelease(provider);
+        //*/
+        
+        CGContextRelease(canvas);
     }
     CGColorSpaceRelease(colorSpace);
-    free(buffer);//RCF not sure I can leave this buffer alone
+//    if(buffer)
+//        free(buffer);
     return ref;
 }
+static void ReleaseImageBuffer(void *pixel, const void *data, size_t size) { free(pixel); }
 
-+(NSImage *)imageWithArrayOfCGImages:(NSArray *)array width:(NSInteger)width height:(NSInteger)height blendMode:(CGBlendMode)blend{
++(NSImage *)imageWithArrayOfCGImages:(NSMutableArray *)array width:(NSInteger)width height:(NSInteger)height blendMode:(CGBlendMode)blend{
+
     CGImageRef ref = [IMCImageGenerator imageRefWithArrayOfCGImages:array width:width height:height blendMode:blend];
-    NSImage *im = [[NSImage alloc]initWithCGImage:ref size:NSMakeSize(width, height)];
+    NSImage * im = [[NSImage alloc]initWithCGImage:ref size:NSMakeSize(width, height)];
+    CGImageRelease(ref);// The provider's ReleaseBuffer function will take care of it now
     return im;
 }
 
@@ -790,7 +820,7 @@ void threeDMeanBlur(UInt8 *** data, NSInteger width, NSInteger height, NSInteger
     CFRelease(colorspace);
     CFRelease(rgbData);
     CFRelease(provider);
-    free(colorizedBuffer);////TODO check if breaks
+    free(colorizedBuffer);
     return ref;
 }
 
@@ -798,7 +828,9 @@ void threeDMeanBlur(UInt8 *** data, NSInteger width, NSInteger height, NSInteger
 
 +(CGImageRef)whiteImageFromCArrayOfValues:(UInt8 *)array width:(NSInteger)width height:(NSInteger)height{
     
-    if (array == NULL)return NULL;
+    if (array == NULL)
+        return NULL;
+    
     CGColorSpaceRef colorspace = CGColorSpaceCreateDeviceGray();
     CFDataRef data = CFDataCreate(NULL, array, width * height);
     CGDataProviderRef provider = CGDataProviderCreateWithCFData(data);

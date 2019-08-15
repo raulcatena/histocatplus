@@ -11,6 +11,7 @@
 #import "IMCButtonLayer.h"
 #import "IMCImageGenerator.h"
 #import "NSImage+OpenCV.h"
+#import "NSImage+Utilities.h"
 #import "IMCRandomForests.h"
 #import "IMCPixelMap.h"
 
@@ -201,6 +202,7 @@
 
 -(NSImage *)rawImageForNode:(IMCButtonLayer *)node inStack:(IMCImageStack *)stack{
     IMCButtonLayer *parent = node.parent?node.parent:node;
+    
     NSNumber *indexNode = [NSNumber numberWithInteger:[self.options indexOfObject:parent]];
     
     NSImage * image = [IMCImageGenerator imageForImageStacks:@[stack].mutableCopy
@@ -222,7 +224,8 @@
     return image;
 }
 
--(NSImage *)imageForNode:(IMCButtonLayer *)node inStack:(IMCImageStack *)stack{
+-(CGImageRef)cgImageForNode:(IMCButtonLayer *)node inStack:(IMCImageStack *)stack{
+    
     NSImage *image = [self rawImageForNode:node inStack:stack];
     
     if(node.parent){
@@ -238,7 +241,7 @@
         if(node.type >= PIXEL_LAYER_GAUSSIAN_GRAD_3)
             image = [image gaussianGradient:[[[[node nameForOption]componentsSeparatedByString:@"x"]lastObject]intValue]];
     }
-    return image;
+    return CGImageCreateCopy(image.CGImage); // Need to copy because otherwise it breaks
 }
 -(UInt8 *)bufferForNode:(IMCButtonLayer *)node inStack:(IMCImageStack *)stack{
     NSImage *image = [self rawImageForNode:node inStack:stack];
@@ -265,8 +268,11 @@
     NSMutableArray *refs = @[].mutableCopy;
     for(IMCButtonLayer *par in self.useChannels){
         for (IMCButtonLayer *child in par.children) {
-            NSImage *image = [self imageForNode:child inStack:stack];
-            [refs addObject:(__bridge id)image.CGImage];
+            CGImageRef ref = [self cgImageForNode:child inStack:stack];
+            if(ref){
+                CFRetain(ref); // Makes no sense but this removes the crash. Maybe leaks if not in a runmodal window
+                [refs addObject:(__bridge id)ref];
+            }
         }
     }
     return refs;
@@ -368,7 +374,7 @@
     for (int i =0; i < scopeImages.count; i++) {
         CGImageRef ref = (__bridge CGImageRef)[scopeImages objectAtIndex:i];
         if(ref)
-            CFRelease(ref);
+            CGImageRelease(ref);
         
         if(allData[i])
             free(allData[i]);
@@ -391,7 +397,8 @@
         CGImageRef ref = (__bridge CGImageRef)[scopeProbando objectAtIndex:i];
         UInt8 * data = [IMCImageGenerator bufferForImageRef:ref];
         allDataProbando[i] = data;
-        if(ref)CFRelease(ref);
+        if(ref)
+            CGImageRelease(ref);
     }
     float * filteredChannelsAndClassProbando = (float *)calloc((chanCount + 1) * pixels, sizeof(float));
     for(NSInteger i = 0; i < pixels; i++)
