@@ -262,7 +262,6 @@
     CGImageRef masked = CGImageCreateWithMaskingColors (refi, myMaskingColors);
     
     if(masked){
-        CFRetain(masked); // Makes no sense but this removes the crash. Maybe leaks if not in a runmodal window
         [stackRefs addObject:(__bridge id)masked];
     }
     if(refi)
@@ -333,7 +332,6 @@
         
 //        NSImage *image = [IMCImageGenerator imageForImageStacks:nil indexes:self.inOrderIndexes withColoringType:0 customColors:nil minNumberOfColors:3 width:self.trainer.computation.mask.imageStack.width height:self.trainer.computation.mask.imageStack.height withTransforms:NO blend:kCGBlendModeScreen andMasks:nil andComputations:@[self.trainer.computation] maskOption:0 maskType:MASK_ALL_CELL maskSingleColor:nil isAlignmentPair:NO brightField:NO];
         if(ref){
-            CFRetain(ref); // Makes no sense but this removes the crash. Maybe leaks if not in a runmodal window
             [refs addObject:(__bridge id)ref];
         }
     }

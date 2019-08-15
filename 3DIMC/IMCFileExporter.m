@@ -195,6 +195,7 @@
     
     return [[NSImage alloc]initWithCGImage:bitmap.CGImage size:bitmap.size];
 }
+
 +(void)copyToClipBoardFromScroll:(IMCScrollView *)scroll allOrZoomed:(BOOL)zoomed{
     NSImage *im = [IMCFileExporter getNSImageForIMCScrollView:scroll zoomed:zoomed];
     NSPasteboard *pasteboard = [NSPasteboard generalPasteboard];

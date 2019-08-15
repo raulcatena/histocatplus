@@ -270,7 +270,6 @@
         for (IMCButtonLayer *child in par.children) {
             CGImageRef ref = [self cgImageForNode:child inStack:stack];
             if(ref){
-                CFRetain(ref); // Makes no sense but this removes the crash. Maybe leaks if not in a runmodal window
                 [refs addObject:(__bridge id)ref];
             }
         }

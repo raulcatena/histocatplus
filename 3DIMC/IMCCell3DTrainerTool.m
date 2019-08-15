@@ -201,7 +201,6 @@
                 NSColor *color = colors[counter];
                 ref = [IMCImageGenerator imageFromCArrayOfValues:image color:color width:[self mask].width height:[self mask].height startingHueScale:0 hueAmplitude:170 direction:NO ecuatorial:NO brightField:NO];
                 if(ref){
-                    CFRetain(ref); // Makes no sense but this removes the crash. Maybe leaks if not in a runmodal window
                     [refs addObject:(__bridge id)ref];
                 }
                 
