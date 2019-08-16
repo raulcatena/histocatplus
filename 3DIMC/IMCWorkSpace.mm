@@ -1624,12 +1624,18 @@ typedef enum {
 -(void)addBuffersForStackImages:(NSButton *)sender{
     if([self canRender]){
         self.threeDProcessesIndicator.doubleValue = .0f;
+        
         dispatch_queue_t queue = dispatch_queue_create([IMCUtils randomStringOfLength:5].UTF8String, NULL);
+        dispatch_queue_t internalQueue = dispatch_queue_create([IMCUtils randomStringOfLength:5].UTF8String, NULL);
         NSInteger channCount = self.channels.selectedRowIndexes.count;
         NSIndexSet *channs = self.channels.selectedRowIndexes.copy;
         NSIndexSet * objects = self.filesTree.selectedRowIndexes.copy;
         NSInteger cleanUpMode = self.cleanUpMode.indexOfSelectedItem;
         
+        NSMutableDictionary *objs = [NSMutableDictionary dictionaryWithCapacity:objects.count];
+        [objects enumerateIndexesUsingBlock:^(NSUInteger fileIdx, BOOL *stop){
+            objs[@(fileIdx)] = [self.filesTree itemAtRow:fileIdx];
+        }];
         
         dispatch_async(queue, ^{
             if(![self.threeDHandler isReady])
@@ -1646,14 +1652,12 @@ typedef enum {
                 while (ongoing > 2);
                 ongoing++;
                 
-//                dispatch_queue_t internalQueue = dispatch_queue_create([IMCUtils randomStringOfLength:5].UTF8String, NULL);
-//                dispatch_async(internalQueue, ^{
+                dispatch_async(internalQueue, ^{
                 
                     NSInteger external = [self.threeDHandler externalSliceIndexForInternal:fileIdx];
                     if(seen[external] == false){
                         seen[external] =  true;
-                        IMCNodeWrapper *anobj = [self.filesTree itemAtRow:fileIdx];
-                        
+                        IMCNodeWrapper *anobj = objs[@(fileIdx)];
                         IMCImageStack *stack;
                         IMCComputationOnMask *comp;
                         IMCPixelClassification *mask;
@@ -1695,7 +1699,7 @@ typedef enum {
                     dispatch_async(dispatch_get_main_queue(), ^{
                         self.threeDProcessesIndicator.doubleValue += 100.f/objects.count;
                     });
-//                });
+                });
             }];
             while (completed < objects.count);
             [self.threeDHandler meanBlurModelWithKernel:3 forChannels:channs mode:cleanUpMode];

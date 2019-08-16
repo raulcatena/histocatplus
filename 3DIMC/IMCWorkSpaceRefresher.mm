@@ -317,7 +317,7 @@
     NSInteger maskOption = self.parent.maskVisualizeSelector.selectedSegment;
     MaskType maskType = [self maskType];
 
-    dispatch_queue_t  threadPainting = dispatch_queue_create([IMCUtils randomStringOfLength:5].UTF8String, NULL);
+    static dispatch_queue_t  threadPainting = dispatch_queue_create([IMCUtils randomStringOfLength:5].UTF8String, NULL);
     dispatch_async(threadPainting, ^{
     
         int cursor = 0;

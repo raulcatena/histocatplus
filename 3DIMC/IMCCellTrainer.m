@@ -119,10 +119,6 @@
     self.randomForests.numberOfClasses = (int)labelsCount;
     self.randomForests.attributesPerSample = (int)chanCount;
     
-    for (int i =0; i < scopeImages.count; i++) {
-        CGImageRef ref = (__bridge_retained CGImageRef)[scopeImages objectAtIndex:i];
-        CFRelease(ref);
-    }
     return YES;
 }
 -(void)loadDataInRRFF{
