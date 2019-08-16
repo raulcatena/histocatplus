@@ -29,10 +29,15 @@
 @property (nonatomic, readonly) NSUInteger numberOfPixels;
 @property (nonatomic, strong) NSString * name;
 
+
 @property (nonatomic, strong) NSMutableArray<IMCPixelTraining *> *pixelTrainings;
 @property (nonatomic, strong) NSMutableArray<IMCPixelMap *> *pixelMaps;
 @property (nonatomic, strong) NSMutableArray<IMCPixelClassification *> *pixelMasks;
 
+-(BOOL)hasTIFFBackstore;
+-(NSString *)backStoreTIFFPath;
+-(void)saveBIMCAtPath:(NSString *)path;
+-(void)saveTIFFAtPath:(NSString *)path;
 
 -(void)clearBuffers;
 -(void)allocateBuffer;

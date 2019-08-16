@@ -10,6 +10,7 @@
 #import "XMLDictionary.h"
 #import "IMCPanoramaWrapper.h"
 #import "IMCImageStack.h"
+#import "IMC_TIFFLoader.h"
 
 @implementation IMC_MCDLoader
 
@@ -100,18 +101,25 @@
                 imageDict[JSON_DICT_IMAGE_RECT_IN_PAN] = NSStringFromRect(rect);
                 
                 IMCImageStack *stk;
-                for (IMCImageStack *stck in panWrapper.children){
-                    if(stck.jsonDictionary == imageDict){
+                for (IMCImageStack *stck in panWrapper.children)
+                    if(stck.jsonDictionary == imageDict)
                         stk = stck;
-                    }
-                }
                 
                 if(!stk){
                     stk  = [[IMCImageStack alloc]init];
                     stk.jsonDictionary = imageDict;
                 }
                 
-                BOOL success = [self loadFromData:data intoImageStack:stk withAcqDict:acqs.firstObject andXMLDict:xmlDict];
+                BOOL success = NO;
+                if(![stk hasTIFFBackstore]){
+                    success = [self loadFromData:data intoImageStack:stk withAcqDict:acqs.firstObject andXMLDict:xmlDict];
+                }else{
+                    NSData *tiffData = [NSData dataWithContentsOfFile:[stk backStoreTIFFPath]
+                                                              options:NSDataReadingUncached
+                                                                error:NULL];
+                    success = [IMC_TIFFLoader loadTIFFData:tiffData toIMCImageStack:stk];
+                }
+                
                 if(!success)
                     dispatch_async(dispatch_get_main_queue(), ^{
                         [General runAlertModalWithMessage:

@@ -18,10 +18,8 @@
 +(void)savefiles:(NSArray <IMCFileWrapper *>*)files block:(void(^)(void))block{
     dispatch_queue_t aQ = dispatch_queue_create([IMCUtils randomStringOfLength:5].UTF8String, NULL);
     dispatch_async(aQ, ^{
-        for (IMCFileWrapper *file in files){
+        for (IMCFileWrapper *file in files)
             [file save];
-        }
-        
         if(block)dispatch_async(dispatch_get_main_queue(), ^{block();});
     });
 }
@@ -50,40 +48,55 @@
     if (sure == NSAlertSecondButtonReturn)
         return NO;
     
-    NSMutableArray *closedFiles = @[].mutableCopy;
+    NSMutableArray *involvedFileWrappers = @[].mutableCopy;
     for (IMCImageStack *stack in images)
-        if(!stack.fileWrapper.isLoaded)
-            if(![closedFiles containsObject:stack.fileWrapper])
-                [closedFiles addObject:stack.fileWrapper];
+        if(![involvedFileWrappers containsObject:stack.fileWrapper])
+            [involvedFileWrappers addObject:stack.fileWrapper];
+    
+    NSMutableArray *closedFiles = @[].mutableCopy;
+    for (IMCFileWrapper *wrap in involvedFileWrappers)
+        if(!wrap.isLoaded)
+            if(![closedFiles containsObject:wrap])
+                [closedFiles addObject:wrap];
     
     dispatch_queue_t aQ = dispatch_queue_create([IMCUtils randomStringOfLength:5].UTF8String, NULL);
     dispatch_async(aQ, ^{
-        for (IMCImageStack *stack in images) {
+        
+        for(IMCFileWrapper *wrap in involvedFileWrappers){
+            if(!wrap.isLoaded)
+                [wrap loadLayerDataWithBlock:nil];
+            while(!wrap.isLoaded);
             
-            if(!stack.fileWrapper.isLoaded)
-                [stack.fileWrapper loadLayerDataWithBlock:nil];
-            while(!stack.fileWrapper.isLoaded);
-            
-            switch (operation) {
-                case OPERATION_REMOVE_CHANNELS:
-                    [stack removeChannelsWithIndexSet:indexSet];
-                    break;
-                case OPERATION_ADD_CHANNELS:
-                    [stack addChannelsWithIndexSet:indexSet toInlineIndex:index];
-                    break;
-                case OPERATION_MULTIPLY_CHANNELS:
-                    [stack multiplyChannelsWithIndexSet:indexSet toInlineIndex:index];
-                    break;
+            for (IMCImageStack *stack in images) {
+                if (stack.fileWrapper == wrap){
+                    if(!stack.fileWrapper.isLoaded)
+                        [stack.fileWrapper loadLayerDataWithBlock:nil];
+                    while(!stack.fileWrapper.isLoaded);
                     
-                default:
-                    break;
+                    switch (operation) {
+                        case OPERATION_REMOVE_CHANNELS:
+                            [stack removeChannelsWithIndexSet:indexSet];
+                            break;
+                        case OPERATION_ADD_CHANNELS:
+                            [stack addChannelsWithIndexSet:indexSet toInlineIndex:index];
+                            break;
+                        case OPERATION_MULTIPLY_CHANNELS:
+                            [stack multiplyChannelsWithIndexSet:indexSet toInlineIndex:index];
+                            break;
+                            
+                        default:
+                            break;
+                    }
+                    [stack saveTIFFAtPath:[stack backStoreTIFFPath]];
+                }
             }
-            [stack.fileWrapper saveTIFFAtPath:[stack.fileWrapper backStoreTIFFPath]];
-            if([closedFiles containsObject:stack.fileWrapper]){
-                [stack.fileWrapper unLoadLayerDataWithBlock:nil];
-                [closedFiles removeObject:stack.fileWrapper];
+            if([closedFiles containsObject:wrap]){
+                [wrap unLoadLayerDataWithBlock:nil];
+                [closedFiles removeObject:wrap];
             }
         }
+        
+        
         dispatch_async(dispatch_get_main_queue(), ^{
             [images.firstObject.fileWrapper.coordinator.delegate saveActionFromCoordinator];
         });
@@ -243,10 +256,16 @@
     dispatch_queue_t aQ = dispatch_queue_create([IMCUtils randomStringOfLength:5].UTF8String, NULL);
     dispatch_async(aQ, ^{
         for (IMCFileWrapper *wrapper in files) {
-            if([wrapper.fileType hasPrefix:EXTENSION_TIFF_PREFIX] || [wrapper hasTIFFBackstore])continue;//Is already
             BOOL loaded = wrapper.isLoaded;
-            if(!wrapper.isLoaded)[wrapper loadLayerDataWithBlock:nil];
-            [wrapper saveTIFFAtPath:[wrapper backStoreTIFFPath]];
+            for(IMCImageStack *stack in [wrapper allStacks]){
+                if([stack hasTIFFBackstore])
+                    continue;//Is already
+                NSLog(@"With stack %@", stack.itemName);
+                if(!wrapper.isLoaded)
+                    [wrapper loadLayerDataWithBlock:nil];
+                while(!wrapper.isLoaded);
+                [stack saveTIFFAtPath:[stack backStoreTIFFPath]];
+            }
             if(!loaded)[wrapper unLoadLayerDataWithBlock:nil];
         }
         if(block)dispatch_async(dispatch_get_main_queue(), ^{block();});

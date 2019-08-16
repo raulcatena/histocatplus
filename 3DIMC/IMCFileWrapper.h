@@ -19,8 +19,6 @@
 @property (nonatomic, weak) IMCLoader *coordinator;
 
 -(NSMutableArray *)containers;
--(NSString *)backStoreTIFFPath;
--(BOOL)hasTIFFBackstore;
 -(BOOL)isSoftLoaded;
 -(void)softLoad;
 
@@ -28,9 +26,7 @@
 -(void)loadFileWithBlock:(void(^)(void))block;
 -(void)loadOrUnloadFileWithBlock:(void(^)(void))block;
 -(NSArray *)allStacks;
-//Specific for BIMC
--(void)saveBIMCAtPath:(NSString *)path;
--(void)saveTIFFAtPath:(NSString *)path;
 -(void)save;
+
 
 @end

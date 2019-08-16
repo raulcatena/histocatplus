@@ -915,20 +915,24 @@ static void ReleaseImageBuffer(void *pixel, const void *data, size_t size) { fre
 }
 
 +(void *)bufferImage:(IMCImageStack *)imageStack index:(NSInteger)index bitsPerPixel:(NSInteger)bitsPerPixel{
-    if(bitsPerPixel != 8 && bitsPerPixel != 16)return NULL;
     
-    UInt8 * data_cached = [imageStack preparePassBuffers:@[@(index)]][0];
-    float * data = imageStack.stackData[index];
-    void *newBuffer = calloc(imageStack.numberOfPixels, bitsPerPixel/8);
-    UInt8 *eightBitCasted = (UInt8 *)newBuffer;
-    UInt16 *sixteenBitCasted = (UInt16 *)newBuffer;
-
-    for (NSInteger i = 0, lenght = imageStack.numberOfPixels; i < lenght; i++) {
-        if(bitsPerPixel == 8)eightBitCasted[i] = (UInt8)data[i];
-        if(bitsPerPixel == 16)sixteenBitCasted[i] = (UInt16)(data_cached[i] * 255); // (UInt16)data[i]
+    if(bitsPerPixel != 8 && bitsPerPixel != 16)
+        return NULL;
+    
+    if(bitsPerPixel == 8){
+        UInt8 * data_cached = [imageStack preparePassBuffers:@[@(index)]][0];
+        UInt8 *newBuffer = calloc(imageStack.numberOfPixels, bitsPerPixel/8);
+        for (NSInteger i = 0, lenght = imageStack.numberOfPixels; i < lenght; ++i)
+            newBuffer[i] = (UInt8)data_cached[i];
+        return newBuffer;
+    }else if (bitsPerPixel == 16){
+        float * data = imageStack.stackData[index];
+        UInt16 *newBuffer = calloc(imageStack.numberOfPixels, bitsPerPixel/8);
+        for (NSInteger i = 0, lenght = imageStack.numberOfPixels; i < lenght; ++i)
+            newBuffer[i] = (UInt16)data[i];
+        return newBuffer;
     }
-    
-    return newBuffer;
+    return NULL;
 }
 
 //+(void *)transformWhitebufferToRGB:(void *)buffer lenght:(NSInteger)length withBits:(NSInteger)bits finalBitsPerPixel:(NSInteger)bitsPerPixel{
@@ -952,23 +956,26 @@ static void ReleaseImageBuffer(void *pixel, const void *data, size_t size) { fre
 
 +(CGImageRef)rawImageFromImage:(IMCImageStack *)imageStack index:(NSInteger)imageIndex numberOfBits:(int)bits{
     if(bits != 8 && bits != 16)return NULL;
+    
     void *data = [IMCImageGenerator bufferImage:imageStack index:imageIndex bitsPerPixel:bits];
-    
-    CGColorSpaceRef colorspace = CGColorSpaceCreateDeviceGray();
-    CFDataRef dataRef = CFDataCreate(NULL, data, imageStack.numberOfPixels * bits/8);
-    CGDataProviderRef provider = CGDataProviderCreateWithCFData(dataRef);
-    
-    CGBitmapInfo bmInfo = bits == 8?kCGBitmapByteOrderDefault:kCGBitmapByteOrder16Little;
-    
-    CGImageRef imageRet = CGImageCreate(imageStack.width, imageStack.height, bits, bits, imageStack.width * bits/8, colorspace, bmInfo, provider, NULL, true, kCGRenderingIntentDefault);
-    
-    CGColorSpaceRelease(colorspace);
-    CGDataProviderRelease(provider);
-    CFRelease(dataRef);
-    
-    free(data);
-    
-    return imageRet;
+    if(data){
+        CGColorSpaceRef colorspace = CGColorSpaceCreateDeviceGray();
+        CFDataRef dataRef = CFDataCreate(NULL, data, imageStack.numberOfPixels * bits/8);
+        CGDataProviderRef provider = CGDataProviderCreateWithCFData(dataRef);
+        
+        CGBitmapInfo bmInfo = bits == 8?kCGBitmapByteOrderDefault:kCGBitmapByteOrder16Little;
+        
+        CGImageRef imageRet = CGImageCreate(imageStack.width, imageStack.height, bits, bits, imageStack.width * bits/8, colorspace, bmInfo, provider, NULL, true, kCGRenderingIntentDefault);
+        
+        CGColorSpaceRelease(colorspace);
+        CGDataProviderRelease(provider);
+        CFRelease(dataRef);
+        
+        free(data);
+        
+        return imageRet;
+    }
+    return NULL;
 }
 
 #pragma mark Prepared Buffers

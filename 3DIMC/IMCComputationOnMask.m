@@ -1432,7 +1432,6 @@ typedef enum{
 
 
 -(void)dealloc{
-    NSLog(@"_____DEALLOCING MASK COMPS");
     [self release_computedData];
     [self clearCacheBuffers];
 }

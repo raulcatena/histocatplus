@@ -8,11 +8,11 @@
 
 #import "IMCFileWrapper.h"
 #import "IMC_TxtLoader.h"
+#import "IMC_MatlabLoader.h"
+#import "IMCFileExporter.h"
 #import "IMC_BIMCLoader.h"
 #import "IMC_MCDLoader.h"
 #import "IMC_TIFFLoader.h"
-#import "IMC_MatlabLoader.h"
-#import "IMCFileExporter.h"
 
 //TODO. Generate absolute path from relative and data coordinator in case the folder has been moved
 
@@ -22,8 +22,6 @@
 -(NSString *)itemName{
     NSString *prefix = @"";
     if(self.hasChanges)prefix = @"Unsaved * ";
-    if(self.hasTIFFBackstore == YES)prefix = [prefix stringByAppendingString:@"TIFF*"];
-    
     return [prefix stringByAppendingString:self.fileName?self.fileName:@""];
 }
 -(NSString *)itemSubName{
@@ -55,10 +53,6 @@
     return self.pathMainDoc.stringByDeletingLastPathComponent;
 }
 
--(NSString *)backStoreTIFFPath{
-    return [self.absolutePath.stringByDeletingPathExtension stringByAppendingString:@".tiff"];
-}
-
 -(NSString *)workingFolder{
     NSString *relPath = [[self relativePath]stringByDeletingPathExtension];
     NSString *docPath = [self.pathMainDoc stringByDeletingLastPathComponent];
@@ -76,11 +70,6 @@
 
 #pragma mark more
 
--(BOOL)hasTIFFBackstore{
-    NSFileManager *man = [NSFileManager defaultManager];
-    return [man fileExistsAtPath:[self backStoreTIFFPath]];
-}
-
 -(NSArray *)allStacks{
     NSMutableArray *arr = @[].mutableCopy;
     for (IMCPanoramaWrapper *pan in self.children)
@@ -89,25 +78,16 @@
     return arr;
 }
 
--(void)saveBIMCAtPath:(NSString *)path{
-    BOOL success = [IMC_BIMCLoader saveBIMCdata:(IMCImageStack *)self.children.firstObject.children.firstObject toPath:path];
-    self.hasChanges = !success;
-}
--(void)saveTIFFAtPath:(NSString *)path{
-    [self openIfNecessaryAndPerformBlock:^{
-        [IMCFileExporter saveMultipageTiffAllChannels:(IMCImageStack *)self.children.firstObject.children.firstObject path:path];
-    }];
-}
 -(void)save{
-    if([self hasTIFFBackstore]){
-        NSLog(@"There is backstore");
-        [self saveTIFFAtPath:[self backStoreTIFFPath]];
-        return;
+    for(IMCImageStack *stck in [self allStacks]){
+        if([stck hasTIFFBackstore]){
+            [stck saveTIFFAtPath:[stck backStoreTIFFPath]];
+            continue;
+        }
+        if([self.fileType isEqualToString:EXTENSION_BIMC])[stck saveBIMCAtPath:self.absolutePath];
+        if([self.fileType hasPrefix:EXTENSION_TIFF_PREFIX])[stck saveTIFFAtPath:self.absolutePath];
     }
-    if([self.fileType isEqualToString:EXTENSION_BIMC])[self saveBIMCAtPath:self.absolutePath];
-    if([self.fileType hasPrefix:EXTENSION_TIFF_PREFIX])[self saveTIFFAtPath:self.absolutePath];
 }
-
 
 -(NSMutableArray *)containers{
     if(![self.jsonDictionary valueForKey:JSON_DICT_FILE_CONTAINERS])
@@ -210,10 +190,7 @@
             [super loadLayerDataWithBlock:block];
             return;
         }
-        NSString *path = [[self.pathMainDoc stringByDeletingLastPathComponent]stringByAppendingString:[self relativePath]];
-        if([self hasTIFFBackstore])
-            path = [self backStoreTIFFPath];
-        
+        NSString *path = [[self.pathMainDoc stringByDeletingLastPathComponent]stringByAppendingString:[self relativePath]];        
         NSData *data = [NSData dataWithContentsOfFile:path];
         BOOL success = NO;
         if(data){
@@ -231,7 +208,6 @@
             if([path.pathExtension isEqualToString:EXTENSION_MCD]){
                 [self populateJsonDictForMCDImagesFile:path data:data success:&success];
             }
-            
         }
         if(!success)
             dispatch_async(dispatch_get_main_queue(), ^{

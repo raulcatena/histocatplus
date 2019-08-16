@@ -320,7 +320,6 @@
 }
 
 -(void)dealloc{
-   NSLog(@"_____DEALLOCING MASK");
    if(self.mask)
        free(self.mask);
    if(saveRef)

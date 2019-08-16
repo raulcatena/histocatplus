@@ -28,10 +28,12 @@
 //Quick save as tiff
 +(void)saveTIFFFromImageStack:(IMCImageStack *)stack atIndex:(int)index atPath:(NSString *)path bits:(int)bits{
     CGImageRef imageRef = [IMCImageGenerator rawImageFromImage:stack index:index numberOfBits:bits];
-    NSImage *image = [[NSImage alloc]initWithCGImage:imageRef size:NSMakeSize(stack.width, stack.height)];
-    NSData *data = [image TIFFRepresentation];
-    [data writeToFile:path atomically:YES];
-    CFRelease(imageRef);
+    if(imageRef){
+        NSImage *image = [[NSImage alloc]initWithCGImage:imageRef size:NSMakeSize(stack.width, stack.height)];
+        NSData *data = [image TIFFRepresentation];
+        [data writeToFile:path atomically:YES];
+        CFRelease(imageRef);
+    }
 }
 
 //Save imagewise stack for miCAT
@@ -74,7 +76,8 @@
     if(name){
         name = [name sanitizeFileNameString];
         char cname[name.length];
-        for(int a = 0; a < name.length; a++)cname[a] = [name characterAtIndex:a];
+        for(int a = 0; a < name.length; a++)
+            cname[a] = [name characterAtIndex:a];
         TIFFSetField(tiff, TIFFTAG_IMAGEDESCRIPTION, &cname);
     }
     
@@ -97,6 +100,7 @@
 +(void)writeArrayOfRefImages:(NSArray *)images withTitles:(NSArray *)titles atPath:(NSString *)path in16bits:(BOOL)sixteenBits{
     
     BOOL writeTitles = NO;
+    
     if(titles.count == images.count)writeTitles = YES;
     
     TIFF *writer = TIFFOpen(path.UTF8String, "w");
@@ -104,21 +108,22 @@
     for (int i = 0; i < images.count; i++) {
         
         CGImageRef ref = (__bridge CGImageRef)[images objectAtIndex:i];
-        NSBitmapImageRep *imageRep = [[NSBitmapImageRep alloc]initWithCGImage:ref];
+        if(ref){
+            NSBitmapImageRep *imageRep = [[NSBitmapImageRep alloc]initWithCGImage:ref];
+            unsigned char * bytes = imageRep.bitmapData;
+            NSInteger bitsPerPixel = imageRep.bitsPerPixel;
+            //NSInteger bytesRow = imageRep.bytesPerRow;
+            //int sampleBits = imageRep.bitsPerSample;
+            int samples = sixteenBits == YES?1:3;
+            //NSBitmapFormat format = imageRep.bitmapFormat;
+            
+            size_t stride = CGImageGetWidth(ref);
+            
+            [self writer:writer writeBuffer:bytes width:(int)stride height:(int)CGImageGetHeight(ref) page:i bpPixel:(int)bitsPerPixel samplesPerPixel:samples totalPages:(int)images.count imageName:writeTitles == YES?[titles objectAtIndex:i]:nil];
+            
+            CGImageRelease(ref);
+        }
         
-        unsigned char * bytes = imageRep.bitmapData;
-        
-        NSInteger bitsPerPixel = imageRep.bitsPerPixel;
-        //NSInteger bytesRow = imageRep.bytesPerRow;
-        //int sampleBits = imageRep.bitsPerSample;
-        int samples = sixteenBits == YES?1:3;
-        //NSBitmapFormat format = imageRep.bitmapFormat;
-        
-        size_t stride = CGImageGetWidth(ref);
-        
-        [self writer:writer writeBuffer:bytes width:(int)stride height:(int)CGImageGetHeight(ref) page:i bpPixel:(int)bitsPerPixel samplesPerPixel:samples totalPages:(int)images.count imageName:writeTitles == YES?[titles objectAtIndex:i]:nil];
-        
-        CGImageRelease(ref);
     }
     TIFFClose(writer);
 }
@@ -131,13 +136,17 @@
     
     NSMutableArray *arr = [NSMutableArray arrayWithCapacity:stack.channels.count];
     NSMutableString *names = @"".mutableCopy;
+    NSMutableArray *collectedChannels = @[].mutableCopy;
+    
     [indexes enumerateIndexesUsingBlock:^(NSUInteger index, BOOL *stop){
         CGImageRef imageRef = [IMCImageGenerator rawImageFromImage:stack index:index numberOfBits:16];
-        [arr addObject:(__bridge id _Nonnull)(imageRef)];
-        [names appendString:@"_"];
-        NSString *comp = stack.channels[index];
-        [names appendString:[comp sanitizeFileNameString]];
-        CFRelease(imageRef);
+        if(imageRef){
+            [arr addObject:(__bridge id _Nonnull)(imageRef)];
+            [names appendString:@"_"];
+            NSString *comp = stack.channels[index];
+            [collectedChannels addObject:[comp sanitizeFileNameString]];
+            [names appendString:collectedChannels.lastObject];
+        }
     }];
     
     NSString *passName =  fileName?fileName:stack.itemName.stringByDeletingPathExtension;
@@ -152,18 +161,17 @@
     
     NSString *fullPath = [NSString stringWithFormat:@"%@/%@selected%@.tiff", dirpath, [passName sanitizeFileNameString], [names sanitizeFileNameString]];
     
-    [IMCFileExporter writeArrayOfRefImages:arr withTitles:stack.channels atPath:fullPath in16bits:YES];
+    [IMCFileExporter writeArrayOfRefImages:arr withTitles:collectedChannels atPath:fullPath in16bits:YES];
 }
 
 +(void)saveMultipageTiffAllChannels:(IMCImageStack *)stack path:(NSString *)path{
     NSMutableArray *arr = [NSMutableArray arrayWithCapacity:stack.channels.count];
     for (int i = 0; i < stack.channels.count; i++) {
         CGImageRef imageRef = [IMCImageGenerator rawImageFromImage:stack index:i numberOfBits:16];
-        [arr addObject:(__bridge id _Nonnull)(imageRef)];
-        CFRelease(imageRef);
+        if(imageRef)
+            [arr addObject:(__bridge id _Nonnull)(imageRef)];
     }
-    path = [path.stringByDeletingPathExtension stringByAppendingString:@".tiff"];
-    [IMCFileExporter writeArrayOfRefImages:arr withTitles:nil atPath:path in16bits:YES];
+    [IMCFileExporter writeArrayOfRefImages:arr withTitles:stack.channels atPath:path in16bits:YES];
 }
 
 +(NSImage *)getNSImageForIMCScrollView:(IMCScrollView *)scroll zoomed:(BOOL)zoomed{

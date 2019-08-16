@@ -15,6 +15,10 @@
 #import "IMCMasks.h"
 #import "NSMutableArrayAdditions.h"
 #import "IMCPanoramaWrapper.h"
+#import "IMC_BIMCLoader.h"
+#import "IMC_MCDLoader.h"
+#import "IMC_TIFFLoader.h"
+#import "IMCFileExporter.h"
 
 @interface IMCImageStack(){
     UInt8 ** cachedValues;
@@ -26,14 +30,22 @@
 @implementation IMCImageStack
 
 -(NSString *)itemName{
+    NSString *prefix = @"";
+    //if(self.hasChanges)prefix = @"Unsaved * ";
+    if(self.hasTIFFBackstore == YES)prefix = [prefix stringByAppendingString:@"TIFF*"];
+    
     if (![self.jsonDictionary[JSON_DICT_ITEM_NAME]isEqualToString:@"UnknownFileName"]) {
         if(self.jsonDictionary[JSON_DICT_ITEM_NAME])
-            return self.jsonDictionary[JSON_DICT_ITEM_NAME];
+            return [prefix stringByAppendingString:self.jsonDictionary[JSON_DICT_ITEM_NAME]];
         
         if([(IMCPanoramaWrapper *)self.parent isPanorama])
-            return [NSString stringWithFormat:@"%@ (%@, %@)", self.name ? self.name : @"Unknown ROI name", [(IMCPanoramaWrapper *)self.parent panoramaName], self.fileWrapper.itemName];
+            return [prefix stringByAppendingString:
+                    [NSString stringWithFormat:@"%@ (%@, %@)", self.name ? self.name : @"Unknown ROI name",
+                                                                [(IMCPanoramaWrapper *)self.parent panoramaName],
+                                                                self.fileWrapper.itemName]
+                    ];
     }
-    return self.fileWrapper.fileName;
+    return [prefix stringByAppendingString:self.fileWrapper.fileName];
 }
 -(NSString *)itemSubName{
     return @"";
@@ -68,6 +80,32 @@
                 
                 childNode.parent = nil;
             }
+}
+
+#pragma backup as TIFF or bimc
+
+-(NSString *)backStoreTIFFPath{
+    NSInteger index = [self.parent.children indexOfObject:self];
+    if(index != NSNotFound){
+        NSString * extension = @".tiff";
+        if(self.parent.children.count > 1)
+            extension = [[NSString stringWithFormat:@"_%li", index]stringByAppendingString:extension];
+        return [self.fileWrapper.absolutePath.stringByDeletingPathExtension stringByAppendingString:extension];
+    }
+    return nil;
+}
+-(BOOL)hasTIFFBackstore{
+    NSFileManager *man = [NSFileManager defaultManager];
+    return [man fileExistsAtPath:[self backStoreTIFFPath]];
+}
+-(void)saveBIMCAtPath:(NSString *)path{
+    BOOL success = [IMC_BIMCLoader saveBIMCdata:self toPath:path];
+    self.hasChanges = !success;
+}
+-(void)saveTIFFAtPath:(NSString *)path{
+    [self openIfNecessaryAndPerformBlock:^{
+        [IMCFileExporter saveMultipageTiffAllChannels:self path:path];
+    }];
 }
 
 -(void)initAllChildrenOfStack{
@@ -910,7 +948,6 @@
 
 -(void)dealloc{
     [self clearBuffers];
-    NSLog(@"____DEALOCATING MEMORY");
 }
 
 @end

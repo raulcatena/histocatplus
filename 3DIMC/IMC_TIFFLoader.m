@@ -8,6 +8,7 @@
 
 #import "IMC_TIFFLoader.h"
 #import "NSTiffSplitter.h"
+#import "NSString+MD5.h"
 
 @implementation IMC_TIFFLoader
 
@@ -119,8 +120,9 @@
 
             NSImage *im = [[NSImage alloc]initWithData:data];
             NSBitmapImageRep *rep = (NSBitmapImageRep *)im.representations.firstObject;
-            NSString *nameImage270 = [splitter titleForImage_270:splitter index:(int)i];
-            if(nameImage270)[channs addObject:nameImage270];
+            NSString *nameImage270 = [[splitter titleForImage_270:splitter index:(int)i]sanitizeFileNameString];
+            if(nameImage270)
+                [channs addObject:nameImage270];
             else [channs addObject:[NSString stringWithFormat:@"%li", i + 1]];
             
             if(initialWidth == 0)initialWidth = rep.pixelsWide;
@@ -144,20 +146,26 @@
             imageStack.origChannels = @[].mutableCopy;
         
         NSInteger prevChannelCount = imageStack.channels.count;
-        if(prevChannelCount < channs.count)
-            for (int i = 0; i < channs.count - prevChannelCount; i++)
-                [imageStack.channels addObject:[NSString stringWithFormat:@"Unknown channel %i", i + 1]];
+        if(prevChannelCount == 0){
+            imageStack.channels = channs;
+            imageStack.origChannels = channs;
+        }else{
+            if(prevChannelCount < channs.count)
+                for (int i = 0; i < channs.count - prevChannelCount; i++)
+                    [imageStack.channels addObject:[NSString stringWithFormat:@"Unknown channel %i", i + 1]];
+            
+            NSInteger prevOriginalChannelCount = imageStack.origChannels.count;
+            if(prevOriginalChannelCount < channs.count)
+                for (int i = 0; i < channs.count - prevOriginalChannelCount; i++)
+                    [imageStack.origChannels addObject:[NSString stringWithFormat:@"Unknown channel %i", i + 1]];
+            
+            
+            if(imageStack.channels.count > channs.count)
+                imageStack.channels = [[imageStack.channels subarrayWithRange:NSMakeRange(0, channs.count)]mutableCopy];
+            if(imageStack.origChannels.count > channs.count)
+                imageStack.origChannels = [[imageStack.origChannels subarrayWithRange:NSMakeRange(0, channs.count)]mutableCopy];
+        }
         
-        NSInteger prevOriginalChannelCount = imageStack.origChannels.count;
-        if(prevOriginalChannelCount < channs.count)
-            for (int i = 0; i < channs.count - prevOriginalChannelCount; i++)
-                [imageStack.origChannels addObject:[NSString stringWithFormat:@"Unknown channel %i", i + 1]];
-        
-        
-        if(imageStack.channels.count > channs.count)
-            imageStack.channels = [[imageStack.channels subarrayWithRange:NSMakeRange(0, channs.count)]mutableCopy];
-        if(imageStack.origChannels.count > channs.count)
-            imageStack.origChannels = [[imageStack.origChannels subarrayWithRange:NSMakeRange(0, channs.count)]mutableCopy];
         
         
         [imageStack clearBuffers];

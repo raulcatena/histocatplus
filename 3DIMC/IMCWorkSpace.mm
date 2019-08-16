@@ -522,7 +522,10 @@
 #pragma mark File exporting and copying
 -(BOOL)checkThereIsImageInScopeAndChannelsSelected:(BOOL)channelsRequired{
     if(!self.inScopeImage){
-        [General runAlertModalWithMessage:channelsRequired?@"You need to open and select one image stack and at least one channel first":@"You need to open and select one image stack first"];
+        if(channelsRequired && self.channels.selectedRowIndexes.count == 0)
+            [General runAlertModalWithMessage:@"You need to open and select one image stack and at least one channel first"];
+        else
+            [General runAlertModalWithMessage:@"You need to open and select one image stack first"];
         return NO;
     }
     return YES;
@@ -532,71 +535,47 @@
     if(![self checkThereIsImageInScopeAndChannelsSelected:NO])
         return;
     
-    if(self.inScopeImages.count > 1){
-        NSOpenPanel *panel = [NSOpenPanel openPanel];
-        panel.canChooseFiles = NO;
-        panel.canChooseDirectories = YES;
-        panel.canCreateDirectories = YES;
-        [panel beginSheetModalForWindow:self.windowForSheet completionHandler:^(NSInteger result){
-            if (result == NSModalResponseOK)
-                for (IMCImageStack *stck in self.inScopeImages.copy) {
-                    BOOL wasLoaded = stck.isLoaded;
-                    if(!wasLoaded)
-                        [stck loadLayerDataWithBlock:nil];
-                    while (!wasLoaded);
-                    [IMCFileExporter saveMultipageTiffAllChannels:stck path:[panel.URL.path stringByAppendingPathComponent:stck.fileWrapper.relativePath.lastPathComponent]];
-                    if(!wasLoaded)
-                        [stck unLoadLayerDataWithBlock:nil];
-                }
-        }];
-    }else if(self.inScopeImages.count == 1){
-        NSSavePanel * panel = [NSSavePanel savePanel];
-        [self.inScopeImage.fileWrapper checkAndCreateWorkingFolder];
-        panel.directoryURL = [NSURL fileURLWithPath:[self.inScopeImage.fileWrapper workingFolder]];
-        [panel setNameFieldStringValue:[[self.inScopeImage.itemName stringByDeletingPathExtension]stringByAppendingString:@".tiff"]];
-        [panel beginSheetModalForWindow:self.windowForSheet completionHandler:^(NSInteger result){
-            if (result == NSModalResponseOK)
-                [IMCFileExporter saveMultipageTiffAllChannels:self.inScopeImage path:panel.URL.path];
-        }];
-    }else{
-    
-    }
+    NSOpenPanel *panel = [NSOpenPanel openPanel];
+    panel.canChooseFiles = NO;
+    panel.canChooseDirectories = YES;
+    panel.canCreateDirectories = YES;
+    [panel beginSheetModalForWindow:self.windowForSheet completionHandler:^(NSInteger result){
+        if (result == NSModalResponseOK)
+            for (IMCImageStack *stck in self.inScopeImages.copy) {
+                BOOL wasLoaded = stck.isLoaded;
+                if(!wasLoaded)
+                    [stck loadLayerDataWithBlock:nil];
+                while (!stck.isLoaded);
+                [IMCFileExporter saveMultipageTiffAllChannels:stck path:[panel.URL.path
+                               stringByAppendingPathComponent:[stck backStoreTIFFPath].lastPathComponent]];
+                
+                if(!wasLoaded)
+                    [stck unLoadLayerDataWithBlock:nil];
+            }
+    }];
 }
 -(IBAction)saveMultiPageTIFFsWithSelected:(NSButton *)sender{
+    
     if(![self checkThereIsImageInScopeAndChannelsSelected:YES])
         return;
     
-    
-    if(self.inScopeImages.count > 1){
-        NSOpenPanel *panel = [NSOpenPanel openPanel];
-        panel.canChooseFiles = NO;
-        panel.canChooseDirectories = YES;
-        panel.canCreateDirectories = YES;
-        NSIndexSet *indexes = self.channels.selectedRowIndexes.copy;
-        [panel beginSheetModalForWindow:self.windowForSheet completionHandler:^(NSInteger result){
-            if (result == NSModalResponseOK)
-                for (IMCImageStack *stck in self.inScopeImages.copy) {
-                    BOOL wasLoaded = stck.isLoaded;
-                    if(!wasLoaded)
-                        [stck loadLayerDataWithBlock:nil];
-                    while (!wasLoaded);
-                    [IMCFileExporter saveMultipageTiffFromStack:stck forSelectedIndexes:indexes atDirPath:[panel URL].path fileName:nil];
-                    if(!wasLoaded)
-                        [stck unLoadLayerDataWithBlock:nil];
-                }
-        }];
-    }else if(self.inScopeImages.count == 1){
-        NSSavePanel * panel = [NSSavePanel savePanel];
-        [self.inScopeImage.fileWrapper checkAndCreateWorkingFolder];
-        panel.directoryURL = [NSURL fileURLWithPath:[self.inScopeImage.fileWrapper workingFolder]];
-        [panel setNameFieldStringValue:[[self.inScopeImage.itemName stringByDeletingPathExtension]stringByAppendingString:@".tiff"]];
-        [panel beginSheetModalForWindow:self.windowForSheet completionHandler:^(NSInteger result){
-            if (result == NSModalResponseOK)
-                [IMCFileExporter saveMultipageTiffFromStack:self.inScopeImage forSelectedIndexes:self.channels.selectedRowIndexes atDirPath:[panel URL].path.stringByDeletingLastPathComponent fileName:[panel URL].path.lastPathComponent];
-        }];
-    }else{
-    
-    }
+    NSOpenPanel *panel = [NSOpenPanel openPanel];
+    panel.canChooseFiles = NO;
+    panel.canChooseDirectories = YES;
+    panel.canCreateDirectories = YES;
+    NSIndexSet *indexes = self.channels.selectedRowIndexes.copy;
+    [panel beginSheetModalForWindow:self.windowForSheet completionHandler:^(NSInteger result){
+        if (result == NSModalResponseOK)
+            for (IMCImageStack *stck in self.inScopeImages.copy) {
+                BOOL wasLoaded = stck.isLoaded;
+                if(!wasLoaded)
+                    [stck loadLayerDataWithBlock:nil];
+                while (!stck.isLoaded);
+                [IMCFileExporter saveMultipageTiffFromStack:stck forSelectedIndexes:indexes atDirPath:[panel URL].path fileName:nil];
+                if(!wasLoaded)
+                    [stck unLoadLayerDataWithBlock:nil];
+            }
+    }];
 }
 -(IBAction)saveTIFFStackInFolder:(NSButton *)sender{
     if(![self checkThereIsImageInScopeAndChannelsSelected:NO])

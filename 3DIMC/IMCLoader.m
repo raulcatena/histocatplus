@@ -364,7 +364,6 @@
 //Thin wrapper for images
 
 -(void)updateOrderedImageList{
-    NSLog(@"UPDATING LIST");
     
     if(!_inOrderImageWrappers){
         _inOrderImageWrappers = @[].mutableCopy;

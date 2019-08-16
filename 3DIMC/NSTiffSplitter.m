@@ -189,7 +189,9 @@
         int tagItems = [self valueForBytesAt:ifdOffset + 2 + i * 12 + 4 count:4];
         int tagValue_offset = [self valueForBytesAt:ifdOffset + 2 + i * 12 + 8 count:4];
         
-        if(tagNumber == 270)return [[NSString alloc]initWithData:[self.data subdataWithRange:NSMakeRange(tagValue_offset, tagItems)] encoding:NSASCIIStringEncoding];
+        if(tagNumber == 270)
+            return [[NSString alloc]initWithData:[self.data subdataWithRange:NSMakeRange(tagValue_offset, tagItems)] encoding:NSASCIIStringEncoding];
+        
     }
     return nil;
 }
