@@ -111,6 +111,7 @@
                 }
                 
                 BOOL success = NO;
+                
                 if(![stk hasTIFFBackstore]){
                     success = [self loadFromData:data intoImageStack:stk withAcqDict:acqs.firstObject andXMLDict:xmlDict];
                 }else{

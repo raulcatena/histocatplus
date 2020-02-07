@@ -97,6 +97,7 @@
     //Otherwise
     for (NSTableView *tv in @[self.parent.filesTree, self.parent.channels, self.parent.channelsCustom])
         [tv reloadData];
+    
     [self.parent.eventsTable reloadData];//This one goes aside to avoid crash in viewer only version
     
     if(self.parent.inScopeComputations.count > 0 || self.parent.inScope3DMask)

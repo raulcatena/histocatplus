@@ -650,8 +650,10 @@
         return YES;
     
     float * settings = cachedSettings[index];
+    if (!settings){
+        return YES;
+    }
     NSMutableDictionary *setts = [self channelSettings][index];
-    
     BOOL foundDiff = NO;
     NSArray *keys = @[JSON_DICT_CHANNEL_SETTINGS_MAXOFFSET, JSON_DICT_CHANNEL_SETTINGS_OFFSET, JSON_DICT_CHANNEL_SETTINGS_MULTIPLIER,JSON_DICT_CHANNEL_SETTINGS_SPF, JSON_DICT_CHANNEL_SETTINGS_TRANSFORM];
     

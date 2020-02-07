@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14109" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" customObjectInstantitationMethod="direct">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" customObjectInstantitationMethod="direct">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14109"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14460.31"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -13,7 +13,7 @@
             <rect key="frame" x="0.0" y="0.0" width="222" height="155"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" misplaced="YES" id="TbS-LA-6Fh">
+                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="TbS-LA-6Fh">
                     <rect key="frame" x="8" y="78" width="30" height="17"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Max" id="xh2-xT-qbo">
@@ -22,7 +22,7 @@
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
                 </textField>
-                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" misplaced="YES" id="zXW-fr-fSh">
+                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="zXW-fr-fSh">
                     <rect key="frame" x="8" y="53" width="53" height="17"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Offset" id="bxJ-YZ-Rpe">
@@ -31,7 +31,7 @@
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
                 </textField>
-                <slider verticalHuggingPriority="750" misplaced="YES" id="23q-ej-PIg">
+                <slider verticalHuggingPriority="750" id="23q-ej-PIg">
                     <rect key="frame" x="37" y="78" width="180" height="20"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <sliderCell key="cell" state="on" alignment="left" maxValue="1" doubleValue="1" tickMarkPosition="above" sliderType="linear" id="bPd-L2-1iB"/>
@@ -39,7 +39,7 @@
                         <action selector="selectedChannel:" target="c22-O7-iKe" id="m7Q-zt-2L5"/>
                     </connections>
                 </slider>
-                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" misplaced="YES" id="dtz-Sg-mhs">
+                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="dtz-Sg-mhs">
                     <rect key="frame" x="8" y="29" width="33" height="17"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Mult" id="UEu-H3-Mu8">
@@ -48,7 +48,7 @@
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
                 </textField>
-                <slider verticalHuggingPriority="750" misplaced="YES" id="w71-JX-Jho">
+                <slider verticalHuggingPriority="750" id="w71-JX-Jho">
                     <rect key="frame" x="37" y="30" width="180" height="20"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <sliderCell key="cell" state="on" alignment="left" minValue="1" maxValue="10" doubleValue="5" tickMarkPosition="above" sliderType="linear" id="7Dc-oR-3rk"/>
@@ -56,7 +56,7 @@
                         <action selector="selectedChannel:" target="c22-O7-iKe" id="I1M-Tt-JgP"/>
                     </connections>
                 </slider>
-                <slider verticalHuggingPriority="750" misplaced="YES" id="yA3-1U-apk">
+                <slider verticalHuggingPriority="750" id="yA3-1U-apk">
                     <rect key="frame" x="37" y="6" width="180" height="20"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <sliderCell key="cell" state="on" alignment="left" minValue="1" maxValue="10" doubleValue="1" tickMarkPosition="above" sliderType="linear" id="MDJ-Lj-Y5k"/>
@@ -64,7 +64,7 @@
                         <action selector="selectedChannel:" target="c22-O7-iKe" id="yEf-52-aDT"/>
                     </connections>
                 </slider>
-                <slider verticalHuggingPriority="750" misplaced="YES" id="gCc-9I-rBr">
+                <slider verticalHuggingPriority="750" id="gCc-9I-rBr">
                     <rect key="frame" x="37" y="54" width="180" height="20"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <sliderCell key="cell" state="on" alignment="left" maxValue="1" tickMarkPosition="above" sliderType="linear" id="upJ-HU-6R0"/>
@@ -72,7 +72,7 @@
                         <action selector="selectedChannel:" target="c22-O7-iKe" id="oAv-5J-baG"/>
                     </connections>
                 </slider>
-                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" misplaced="YES" id="tdj-3h-78w">
+                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="tdj-3h-78w">
                     <rect key="frame" x="8" y="5" width="39" height="17"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="SPF" id="5JP-Ve-ZSJ">
@@ -81,19 +81,19 @@
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
                 </textField>
-                <popUpButton verticalHuggingPriority="750" misplaced="YES" id="C0b-NV-Mgq">
+                <popUpButton verticalHuggingPriority="750" id="C0b-NV-Mgq">
                     <rect key="frame" x="3" y="129" width="218" height="26"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <popUpButtonCell key="cell" type="push" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" id="3CH-Xw-CJX">
                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                        <font key="font" metaFont="menu"/>
+                        <font key="font" metaFont="system"/>
                         <menu key="menu" id="0Ns-FU-1aB"/>
                     </popUpButtonCell>
                     <connections>
                         <action selector="changedChannel:" target="c22-O7-iKe" id="QqC-K0-kcn"/>
                     </connections>
                 </popUpButton>
-                <colorWell misplaced="YES" id="LIn-3z-hye">
+                <colorWell id="LIn-3z-hye">
                     <rect key="frame" x="7" y="103" width="44" height="23"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <color key="color" red="0.05813049898" green="0.055541899059999997" blue="1" alpha="1" colorSpace="calibratedRGB"/>
@@ -101,7 +101,7 @@
                         <action selector="selectedChannel:" target="c22-O7-iKe" id="hCj-LL-dsG"/>
                     </connections>
                 </colorWell>
-                <segmentedControl verticalHuggingPriority="750" misplaced="YES" id="RGW-sh-xH0">
+                <segmentedControl verticalHuggingPriority="750" id="RGW-sh-xH0">
                     <rect key="frame" x="76" y="101" width="143" height="24"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <segmentedCell key="cell" borderStyle="border" alignment="left" style="rounded" trackingMode="selectOne" id="xtk-oa-gQA">
@@ -128,7 +128,7 @@
                 <outlet property="showOrNot" destination="9Lc-Vs-lhe" id="jBO-cj-gxv"/>
                 <outlet property="transformData" destination="RGW-sh-xH0" id="Gsg-s7-Npy"/>
             </connections>
-            <point key="canvasLocation" x="13" y="88.5"/>
+            <point key="canvasLocation" x="-240" y="96"/>
         </customView>
         <customView id="Cnq-tP-scc">
             <rect key="frame" x="0.0" y="0.0" width="222" height="155"/>

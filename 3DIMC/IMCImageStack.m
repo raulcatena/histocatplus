@@ -88,15 +88,16 @@
     NSInteger index = [self.parent.children indexOfObject:self];
     if(index != NSNotFound){
         NSString * extension = @".tiff";
-        if(self.parent.children.count > 1)
+        if(self.parent.children.count > 1){
             extension = [[NSString stringWithFormat:@"_%li", index]stringByAppendingString:extension];
+        }
         return [self.fileWrapper.absolutePath.stringByDeletingPathExtension stringByAppendingString:extension];
     }
     return nil;
 }
 -(BOOL)hasTIFFBackstore{
     NSFileManager *man = [NSFileManager defaultManager];
-    return [man fileExistsAtPath:[self backStoreTIFFPath]];
+    return self.parent ? [man fileExistsAtPath:[self backStoreTIFFPath]] : NO;
 }
 -(void)saveBIMCAtPath:(NSString *)path{
     BOOL success = [IMC_BIMCLoader saveBIMCdata:self toPath:path];
@@ -379,7 +380,7 @@
         return;
     
     float ** data = self.usingCompensated == YES? self.compensatedData : self.stackData;
-    
+        
     if(data == NULL && self.usingCompensated){
         [self compensateTheData];
         data = self.compensatedData;

@@ -46,8 +46,10 @@
     [self.settingsDictionary setValue:[NSNumber numberWithInteger:self.transformData.selectedSegment] forKey:JSON_DICT_CHANNEL_SETTINGS_TRANSFORM];
     [self.settingsDictionary setValue:[self.color.color hexEncoding] forKey:JSON_DICT_CHANNEL_SETTINGS_COLOR];
     
+    if([sender isMemberOfClass:[NSColorWell class]])
+        [sender resignFirstResponder];
+    
     [self.delegate madeChannelConfChanges];
-    if([sender isMemberOfClass:[NSColorWell class]])[sender becomeFirstResponder];
 }
 
 -(void)changedChannel:(NSPopUpButton *)sender{
