@@ -102,8 +102,9 @@
     return [[self.jsonDictionary valueForKey:JSON_DICT_FILE_IS_SOFT_LOADED]boolValue];
 }
 
--(void)populateJsonDictForSingleImageFile:(NSString *)path data:(NSData *)data success:(BOOL *)success{
+-(void)populateJsonDictForSingleImageFile:(NSString *)path success:(BOOL *)success{
     IMCImageStack * imageStack;
+    NSLog(@"1");
     if (self.children.count == 0) {
         //Suppose TXT has only 1 posible image. This condition avoid redoing dictionary.
         //TODO. Dict reparison function
@@ -131,7 +132,12 @@
     }
     else
         imageStack = (IMCImageStack *)self.children.firstObject.children.firstObject;
-    
+    NSLog(@"%@", path);
+    if([imageStack hasTIFFBackstore]){
+        path = [imageStack backStoreTIFFPath];
+        NSLog(@"%@", path);
+    }
+    NSData *data = [NSData dataWithContentsOfFile:path];
     [self loadSingleFiler:imageStack data:data path:path success:success];
 }
 
@@ -158,9 +164,10 @@
 
 }
 
--(void)populateJsonDictForMCDImagesFile:(NSString *)path data:(NSData *)data success:(BOOL *)success{
+-(void)populateJsonDictForMCDImagesFile:(NSString *)path success:(BOOL *)success{
     //if (self.children.count != 1) {
-        *success = [IMC_MCDLoader loadMCD:data toIMCFileWrapper:self];
+    NSData *data = [NSData dataWithContentsOfFile:path];
+    *success = [IMC_MCDLoader loadMCD:data toIMCFileWrapper:self];
     //}
 }
 -(void)softLoad{
@@ -182,6 +189,7 @@
 }
 
 -(void)loadLayerDataWithBlock:(void (^)(void))block{
+    
     if(![self canLoad])return;
     
     dispatch_queue_t aQ = dispatch_queue_create([IMCUtils randomStringOfLength:5].UTF8String, NULL);
@@ -190,24 +198,24 @@
             [super loadLayerDataWithBlock:block];
             return;
         }
-        NSString *path = [[self.pathMainDoc stringByDeletingLastPathComponent]stringByAppendingString:[self relativePath]];        
-        NSData *data = [NSData dataWithContentsOfFile:path];
+        NSString *path = [[self.pathMainDoc stringByDeletingLastPathComponent]stringByAppendingString:[self relativePath]];
+        
+        
         BOOL success = NO;
-        if(data){
-            if([path.pathExtension isEqualToString:EXTENSION_TXT]
-               || [path.pathExtension isEqualToString:EXTENSION_BIMC]
-               || [path.pathExtension isEqualToString:EXTENSION_TIFF]
-               || [path.pathExtension isEqualToString:EXTENSION_TIF]
-               || [path.pathExtension isEqualToString:EXTENSION_MAT]
-               || [path.pathExtension isEqualToString:EXTENSION_JPG]
-               || [path.pathExtension isEqualToString:EXTENSION_JPEG]
-               || [path.pathExtension isEqualToString:EXTENSION_BMP]
-               || [path.pathExtension isEqualToString:EXTENSION_PNG]){
-                [self populateJsonDictForSingleImageFile:path data:data success:&success];
-            }
-            if([path.pathExtension isEqualToString:EXTENSION_MCD]){
-                [self populateJsonDictForMCDImagesFile:path data:data success:&success];
-            }
+        if([path.pathExtension isEqualToString:EXTENSION_TXT]
+           || [path.pathExtension isEqualToString:EXTENSION_BIMC]
+           || [path.pathExtension isEqualToString:EXTENSION_TIFF]
+           || [path.pathExtension isEqualToString:EXTENSION_TIF]
+           || [path.pathExtension isEqualToString:EXTENSION_MAT]
+           || [path.pathExtension isEqualToString:EXTENSION_JPG]
+           || [path.pathExtension isEqualToString:EXTENSION_JPEG]
+           || [path.pathExtension isEqualToString:EXTENSION_BMP]
+           || [path.pathExtension isEqualToString:EXTENSION_PNG]){
+            
+            [self populateJsonDictForSingleImageFile:path success:&success];
+        }
+        if([path.pathExtension isEqualToString:EXTENSION_MCD]){
+            [self populateJsonDictForMCDImagesFile:path success:&success];
         }
         if(!success)
             dispatch_async(dispatch_get_main_queue(), ^{

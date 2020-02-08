@@ -336,7 +336,6 @@
 
 - (BOOL)readFromData:(NSData *)data ofType:(NSString *)typeName error:(NSError **)outError {
     NSError *error;
-    
     if([self.fileURL.pathExtension isEqualToString:EXTENSION_WORKSPACE]){
         NSMutableDictionary * json = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&error];
         
@@ -423,11 +422,12 @@
 -(void)openCloseClick:(NSOutlineView *)sender{
     if(self.filesTree.selectedRowIndexes.count == 1){
         IMCNodeWrapper *anobj = [self.filesTree itemAtRow:self.filesTree.selectedRow];
-        if(!anobj.isLoaded)
+        if(!anobj.isLoaded){
             [anobj loadLayerDataWithBlock:^{
                 [self refresh];
                 [self.dataCoordinator updateOrderedImageList];
             }];
+        }
         else{
             if([anobj isMemberOfClass:[IMCPanoramaWrapper class]]){
                 IMCPanoramaWrapper *pan = (IMCPanoramaWrapper *)anobj;
@@ -1068,7 +1068,9 @@ typedef enum {
         for (IMCNodeWrapper *node in nodes) {
             counter++;
             while(counter>4);
+            NSLog(@"1");
             [node loadLayerDataWithBlock:^{counter--;}];
+            NSLog(@"1\2");
         }
         [self refresh];
     });

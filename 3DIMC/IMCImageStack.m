@@ -96,6 +96,7 @@
     return nil;
 }
 -(BOOL)hasTIFFBackstore{
+    
     NSFileManager *man = [NSFileManager defaultManager];
     return self.parent ? [man fileExistsAtPath:[self backStoreTIFFPath]] : NO;
 }
