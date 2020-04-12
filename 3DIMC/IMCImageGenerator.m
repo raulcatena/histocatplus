@@ -700,7 +700,7 @@ void threeDMeanBlur(UInt8 *** data, NSInteger width, NSInteger height, NSInteger
             CGImageRef refi = (__bridge CGImageRef)last;
             CGRect framePaint = CGRectMake(0, 0, width, height);
             CGContextDrawImage(canvas, framePaint, refi);
-            CGImageRelease(refi);
+//            CGImageRelease(refi);
         }
 
         //ref = CGBitmapContextCreateImage (canvas); //This leaked a lot changed to...

@@ -132,12 +132,17 @@
     }
     else
         imageStack = (IMCImageStack *)self.children.firstObject.children.firstObject;
-    NSLog(@"%@", path);
+    
     if([imageStack hasTIFFBackstore]){
         path = [imageStack backStoreTIFFPath];
-        NSLog(@"%@", path);
+        
     }
     NSData *data = [NSData dataWithContentsOfFile:path];
+    NSError * error = nil;
+    data = [NSData dataWithContentsOfFile:path options:0 error:&error];
+    if(error)
+        NSLog(@"Error ---- > %@ %@", error, error.userInfo);
+    NSLog(@"%@",data);
     [self loadSingleFiler:imageStack data:data path:path success:success];
 }
 

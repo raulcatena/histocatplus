@@ -775,6 +775,7 @@
 		0D6720511E3FF3C800C19663 /* IMCTransformDictController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IMCTransformDictController.h; sourceTree = "<group>"; };
 		0D6720521E3FF3C800C19663 /* IMCTransformDictController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IMCTransformDictController.m; sourceTree = "<group>"; };
 		0D6720541E3FF3E400C19663 /* IMCTransformDictController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = IMCTransformDictController.xib; sourceTree = "<group>"; };
+		0D6AFD87244288E700B9BF38 /* histoCAT++3D.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "histoCAT++3D.entitlements"; sourceTree = "<group>"; };
 		0D6F4F2A1E473CC200533127 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		0D7CB26B217755F200EA36A5 /* License-AGPL3.0.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = "License-AGPL3.0.txt"; sourceTree = "<group>"; };
 		0D7CB26F217756EB00EA36A5 /* SOFTWARE CONTRIBUTION AGREEMENT-UZH.doc */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SOFTWARE CONTRIBUTION AGREEMENT-UZH.doc"; sourceTree = "<group>"; };
@@ -1524,6 +1525,7 @@
 		0DB37CD21E304D25002975E2 = {
 			isa = PBXGroup;
 			children = (
+				0D6AFD87244288E700B9BF38 /* histoCAT++3D.entitlements */,
 				0D7CB26F217756EB00EA36A5 /* SOFTWARE CONTRIBUTION AGREEMENT-UZH.doc */,
 				0D7CB26B217755F200EA36A5 /* License-AGPL3.0.txt */,
 				0D57600E1EB9CAC2008CAB94 /* Frameworks */,
@@ -1933,6 +1935,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 				Base,
 			);
@@ -2762,6 +2765,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = NO;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = "histoCAT++3D.entitlements";
 				CODE_SIGN_IDENTITY = "";
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = HA3BXXH796;
@@ -2825,6 +2829,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = NO;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = "histoCAT++3D.entitlements";
 				CODE_SIGN_IDENTITY = "";
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = HA3BXXH796;

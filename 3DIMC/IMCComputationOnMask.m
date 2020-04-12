@@ -786,6 +786,51 @@
     return img;
 }
 
+-(UInt8 *)createImageForCategoricalMaskWithCellDataIndex:(NSUInteger)index maskType:(MaskType)maskType{
+    if(!self.mask.mask)
+        return NULL;
+    
+    int * copy = copyMask(self.mask.mask, (int)self.mask.imageStack.width, (int)self.mask.imageStack.height);
+    UInt8 * img = calloc(self.mask.imageStack.numberOfPixels, sizeof(UInt8));
+    
+    if(self.computedData == NULL)
+        return NULL;
+    float * data = self.computedData[index];
+    
+    NSInteger pix = self.mask.imageStack.numberOfPixels;
+    
+    for (NSInteger i = 0; i < pix; i++) {
+        if(copy[i] == 0)continue;
+        NSInteger index = abs(copy[i]) - 1;
+        
+        
+        if(maskType == MASK_ALL_CELL){
+            img[i] = data[index];
+            copy[i] = abs(copy[i]);
+        }
+        
+        else if(maskType == MASK_CYT){
+            img[i] = MAX((copy[i] > 0) * data[index], 0);
+            copy[i] = copy[i] > 0?copy[i]:0;
+        }
+        
+        else if(maskType == MASK_NUC){
+            img[i] = MAX((copy[i] < 0) * data[index], 0);
+            copy[i] = copy[i] < 0?-copy[i]:0;
+        }
+        else if(maskType == MASK_NUC_PLUS_CYT){
+            img[i] = (copy[i]/abs(copy[i])) * data[index];
+        }
+    }
+    
+    for (NSInteger i = 0; i < pix; i++)
+        if(copy[i] == 0)
+            img[i] = 0;
+    
+    free(copy);
+    return img;
+}
+
 -(CGImageRef)coloredMaskForChannel:(NSInteger)channel color:(NSColor *)color maskOption:(MaskOption)option maskType:(MaskType)maskType maskSingleColor:(NSColor *)maskSingleColor brightField:(BOOL)brightField{
     if(channel == NSNotFound)
         return NULL;

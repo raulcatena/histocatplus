@@ -554,6 +554,40 @@
             }
     }];
 }
+
+-(IBAction)savePixelClassificationsAsTIFFs:(NSButton *)sender{
+    
+    
+    NSOpenPanel *panel = [NSOpenPanel openPanel];
+    panel.canChooseFiles = NO;
+    panel.canChooseDirectories = YES;
+    panel.canCreateDirectories = YES;
+    [panel beginSheetModalForWindow:self.windowForSheet completionHandler:^(NSInteger result){
+        if (result == NSModalResponseOK)
+            for (IMCComputationOnMask *comp in self.inScopeComputations.copy) {
+                BOOL wasLoaded = comp.isLoaded;
+                if(!wasLoaded)
+                    [comp loadLayerDataWithBlock:nil];
+                while (!comp.isLoaded);
+                if([panel.URL.path isEqualToString:self.dataCoordinator.filePath])
+                {
+                    [General runAlertModalWithMessage:@"Choose a directory different to the main project directory"];
+                }else if(self.channels.selectedRow == NSNotFound){
+                    [General runAlertModalWithMessage:@"One channel must be selected"];
+                }
+                else
+                {
+                    NSLog(@"____");
+                    [IMCFileExporter saveMask:comp channel:self.channels.selectedRow path:[panel.URL.path
+                                   stringByAppendingPathComponent:[comp.mask.imageStack backStoreTIFFPath].lastPathComponent]];
+                    
+                    if(!wasLoaded)
+                        [comp unLoadLayerDataWithBlock:nil];
+                }
+            }
+    }];
+}
+
 -(IBAction)saveMultiPageTIFFsWithSelected:(NSButton *)sender{
     
     if(![self checkThereIsImageInScopeAndChannelsSelected:YES])

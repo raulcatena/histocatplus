@@ -408,10 +408,12 @@
                 
                 NSArray *titles = @[@"Export FCS file...",
                                     @"Add features from Cell Profiler file...",
+                                    @"Save mask..."
                                     //@"Convert to mask"
                                     ];
                 NSArray *selectors = @[@"exportFCSFile...",
                                        @"addFeaturesFromCP:",
+                                       @"savePixelClassificationsAsTIFFs:"
                                     //   @"convertToMask:"
                                     ];
                 [addingTitles addObjectsFromArray:titles];

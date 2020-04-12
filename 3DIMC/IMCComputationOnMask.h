@@ -28,6 +28,7 @@
 -(void)addFeaturesFromCellProfiler:(NSURL *)url;
 -(void)extractDataForMask:(NSIndexSet *)computations processedData:(BOOL)rawOrProcessedData;
 -(float *)createImageForMaskWithCellData:(float *)data maskOption:(MaskOption)option maskType:(MaskType)maskType maskSingleColor:(NSColor *)maskSingleColor;
+-(UInt8 *)createImageForCategoricalMaskWithCellDataIndex:(NSUInteger)index maskType:(MaskType)maskType;
 -(CGImageRef)coloredMaskForChannel:(NSInteger)channel color:(NSColor *)color maskOption:(MaskOption)maskOption maskType:(MaskType)maskType maskSingleColor:(NSColor *)maskSingleColor brightField:(BOOL)brightField;
 -(BOOL)hasBackData;
 -(void)saveData;

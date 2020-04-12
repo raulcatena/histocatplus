@@ -86,10 +86,8 @@
         TIFFSetField(tiff, TIFFTAG_SUBFILETYPE, FILETYPE_PAGE);
     }
     
-    int bytesPix = 32/bitsPixel;//Improve RCF
-    
+    int bytesPix = 8/bitsPixel;//Improve RCF
     for (int i = 0; i < height; i++) {
-        
         TIFFWriteScanline(tiff, &buffer[i * width * bytesPix], i, 0);//1 because there is always a leading 0
     }
     
@@ -172,6 +170,21 @@
             [arr addObject:(__bridge id _Nonnull)(imageRef)];
     }
     [IMCFileExporter writeArrayOfRefImages:arr withTitles:stack.channels atPath:path in16bits:YES];
+}
+
++(void)saveMask:(IMCComputationOnMask *)mask channel:(NSInteger)channel path:(NSString *)path{
+    
+    UInt8 * bytes = [mask createImageForCategoricalMaskWithCellDataIndex:channel maskType:MASK_ALL_CELL];
+    
+    TIFF *writer = TIFFOpen(path.UTF8String, "w");
+    
+    NSInteger bitsPerPixel = 8;
+    int samples = 1;
+                
+    [self writer:writer writeBuffer:bytes width:(int)mask.mask.imageStack.width height:(int)mask.mask.imageStack.height page:0 bpPixel:(int)bitsPerPixel samplesPerPixel:samples totalPages:1 imageName:[mask.channels objectAtIndex:channel]];
+            
+    TIFFClose(writer);
+    free(bytes);
 }
 
 +(NSImage *)getNSImageForIMCScrollView:(IMCScrollView *)scroll zoomed:(BOOL)zoomed{

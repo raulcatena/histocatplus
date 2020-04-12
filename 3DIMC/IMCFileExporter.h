@@ -12,6 +12,7 @@
 @class IMCScrollView;
 @class IMCComputationOnMask;
 @class IMCLoader;
+@class IMCPixelClassification;
 
 @interface IMCFileExporter : NSObject
 
@@ -25,6 +26,9 @@
 +(void)saveMultipageTiffFromStack:(IMCImageStack *)stack forSelectedIndexes:(NSIndexSet *)indexes atDirPath:(NSString *)dirpath  fileName:(NSString *)fileName;//Save multipage if filename null
 //this is a subroutine, but useful to expose
 +(void)writeArrayOfRefImages:(NSArray *)images withTitles:(NSArray *)titles atPath:(NSString *)path in16bits:(BOOL)sixteenBits;//Array of ImageRefs multipage
+
+//Mask saving
++(void)saveMask:(IMCComputationOnMask *)mask channel:(NSInteger)channel path:(NSString *)path;
 
 //JPEG quick saving
 +(void)saveJPEGFromScroll:(IMCScrollView *)scroll withPath:(NSString *)fullPath allOrZoomed:(BOOL)zoomed;

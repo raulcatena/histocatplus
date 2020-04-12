@@ -127,6 +127,10 @@
     return NO;
 }
 
+-(BOOL)saveMaskForExternalRegistration{
+    return YES;
+}
+
 -(BOOL)loadNuclearMask{
     if(!self.secondRelativePath)
         self.secondRelativePath =
