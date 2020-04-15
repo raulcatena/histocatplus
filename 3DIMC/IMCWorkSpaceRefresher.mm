@@ -217,7 +217,23 @@
         
         if(maxW == 0 && maxH == 0)return;
         
-        float factor = 1 + (self.parent.applyTransfomrs.indexOfSelectedItem * 0.5);
+        // Check if transform business is necessary at all. eg. already aligned TIFFs
+        BOOL useTransforms = NO;
+        float factor = 1;
+        if(self.parent.applyTransfomrs.indexOfSelectedItem){
+            for(IMCImageStack * stck in self.parent.inScopeImages){
+                if([stck.transform[JSON_DICT_IMAGE_TRANSFORM_ROTATION]floatValue] != 0 ||
+                   [stck.transform[JSON_DICT_IMAGE_TRANSFORM_OFFSET_X]floatValue] != 0 ||
+                   [stck.transform[JSON_DICT_IMAGE_TRANSFORM_COMPRESS_X]floatValue] != 1 ||
+                   [stck.transform[JSON_DICT_IMAGE_TRANSFORM_COMPRESS_Y]floatValue] != 1 ||
+                   [stck.transform[JSON_DICT_IMAGE_TRANSFORM_OFFSET_Y]floatValue] != 0){
+                    useTransforms = YES;
+                    factor = 1 + (self.parent.applyTransfomrs.indexOfSelectedItem * 0.5);
+                    break;
+                }
+            }
+        }
+        
         
         BOOL isAlignment = NO;
         if(self.parent.inScopeImages.count == 2
@@ -235,7 +251,7 @@
                                      minNumberOfColors:3
                                                  width:maxW * factor
                                                 height:maxH * factor
-                                        withTransforms:(BOOL)self.parent.applyTransfomrs.indexOfSelectedItem
+                                        withTransforms:useTransforms
                                                  blend:[IMCBlendModes blendModeForValue:imageFilterSelected]
                                               andMasks:self.parent.inScopeMasks.copy
                                        andComputations:self.parent.inScopeComputations.copy

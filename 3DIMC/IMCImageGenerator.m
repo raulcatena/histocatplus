@@ -13,6 +13,7 @@
 #import "IMCPixelClassification.h"
 #import "IMCComputationOnMask.h"
 #import "NSArray+Statistics.h"
+#import <Quartz/Quartz.h>
 
 @implementation IMCImageGenerator
 

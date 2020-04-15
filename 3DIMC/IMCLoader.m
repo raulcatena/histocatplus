@@ -81,13 +81,18 @@
 
     NSFileHandle *handle = [NSFileHandle fileHandleForReadingAtPath:path];
     unsigned long long fileSize = [[[NSFileManager defaultManager] attributesOfItemAtPath:path error:nil] fileSize];
-    NSData *nsData = [handle readDataOfLength:MIN(FILE_SAMPLE_BYTES, fileSize)];//This way I don't need to read the whole file
+    NSData *nsData = [handle readDataOfLength:MAX(FILE_SAMPLE_BYTES, fileSize)];//This way I don't need to read the whole file
     [handle closeFile];
     //NSData *nsData = [NSData dataWithContentsOfFile:path options:NSDataReadingUncached error:&error];
     //NSData *nsData = [NSData dataWithContentsOfURL:url options:NSDataReadingMappedIfSafe error:&error];
+    NSMutableData * subdata = [NSMutableData dataWithCapacity:fileSize/10];
+    char * byts = (char *)nsData.bytes;
+    for (char * i = 0; i < byts + fileSize; i += 10){
+        [subdata appendBytes:i length:1];
+    }
     if(error)NSLog(@"Error__ %@", error);
     if (nsData)
-        return [nsData MD5];
+        return [subdata MD5];
     return nil;
 }
 
@@ -201,6 +206,7 @@
             if (checkSum)[self setCheckSum:checkSum filePath:url.path];
         }
     }
+    
     [self updateFileWrappers];
     [self updateOrderedImageList];
 }
